@@ -1,0 +1,32 @@
+package com.learnershigh.repository;
+
+
+import com.learnershigh.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+// @Repository // jparepository를 확장받으면 repository 작성하지 않아도 됨.
+// mybatis할 때 dao역할임. DB랑 대화하는 애
+
+// ---- 방법 1
+//@Repository
+//@RequiredArgsConstructor
+//public class UserRepository { // jparepository 사용시 <Entity 클래스, PK타입>
+//
+//private final EntityManager em;
+//
+//// 회원가입
+//public void savd(User user){
+//    em.persist(user);
+//}
+
+// -- 방법 2
+public interface UserRepository extends JpaRepository<User, Long>{
+
+    User findByUserId(String userid);
+
+}
+
+
+
+
+
