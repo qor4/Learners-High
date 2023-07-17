@@ -1,0 +1,46 @@
+package com.learnershigh.domain;
+
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@NoArgsConstructor
+public class JobCareer {
+
+    // 경력 no
+    @Id @GeneratedValue
+    @Column(name = "job_career_no")
+    private int jobCareerNo;
+
+    // 사용자 user_no랑 단방향 매핑
+    @ManyToOne
+    @JoinColumn(name = "user_no")
+    private User userNo;
+
+    // 회사명
+    @NotNull
+    @Column(name = "company_name",length = 20)
+    private String companyName;
+
+    // 회사 소속 부서
+    @NotNull
+    @Column(name = "depart_name",length = 20)
+    private String departName;
+
+    // 입사일
+    @NotNull
+    @Column(name = "hire_start_date")
+    private LocalDate hireStartDate;
+
+    // 퇴사일
+    @NotNull
+    @Column(name = "hire_end_date")
+    private LocalDate hireEndDate;
+}
