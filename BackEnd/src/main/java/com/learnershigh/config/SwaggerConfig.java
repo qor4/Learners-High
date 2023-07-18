@@ -1,4 +1,6 @@
-package com.learnershigh.swagger;
+package com.learnershigh.config;
+
+
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.foruser"))
+                .apis(RequestHandlerSelectors.basePackage("com.learnershigh"))
                 .paths(PathSelectors.any())
                 .build();
     }

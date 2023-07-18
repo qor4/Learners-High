@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -17,7 +15,7 @@ public class JobCareer {
     // 경력 no
     @Id @GeneratedValue
     @Column(name = "job_career_no")
-    private int jobCareerNo;
+    private Long jobCareerNo;
 
     // 사용자 user_no랑 단방향 매핑
     @ManyToOne
@@ -36,11 +34,11 @@ public class JobCareer {
 
     // 입사일
     @NotNull
-    @Column(name = "hire_start_date")
-    private LocalDate hireStartDate;
+    @Column(name = "hire_start_date", length = 7)
+    private String hireStartDate;
 
     // 퇴사일
     @NotNull
-    @Column(name = "hire_end_date")
-    private LocalDate hireEndDate;
+    @Column(name = "hire_end_date", length = 7)
+    private String hireEndDate;
 }

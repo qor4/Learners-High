@@ -16,6 +16,6 @@ public class JoinDto {
 
     private String profileImg;
 
-    private Character userType;
+    private String userType;
 
 }
