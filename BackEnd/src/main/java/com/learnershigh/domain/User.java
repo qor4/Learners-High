@@ -2,12 +2,14 @@ package com.learnershigh.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -17,7 +19,7 @@ public class User {
     // user_no, PK값
     @Id @GeneratedValue
     @Column(name = "user_no")
-    private int userNo;
+    private Long userNo;
 
     // user id
     @NotNull
@@ -36,7 +38,7 @@ public class User {
 
     // user password
     @NotNull
-    @Column(name = "user_password",length = 20)
+    @Column(name = "user_password",length = 60)
     private String userPassword;
 
     // user tel
@@ -50,7 +52,8 @@ public class User {
     private String userInfo;
 
     // user date (가입 시간)
-    @NotNull
+//    @NotNull
+    @CreationTimestamp
     @Column(name = "user_join_date")
     private LocalDateTime userJoinDate;
 
@@ -60,7 +63,7 @@ public class User {
 
     // user type 학사 강사 구분
     @Column(length = 1, name = "user_type")
-    private Character userType;
+    private String userType;
 
 
     // is active 탈퇴 여부

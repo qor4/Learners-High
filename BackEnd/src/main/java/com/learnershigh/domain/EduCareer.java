@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -14,7 +13,7 @@ public class EduCareer {
 
     @Id @GeneratedValue
     @Column(name = "edu_career_no")
-    private int eduCareerNo;
+    private Long eduCareerNo;
 
     // 사용자 userno랑 단방향 매핑하기
     @ManyToOne
@@ -38,11 +37,11 @@ public class EduCareer {
 
     // 입학일
     @NotNull
-    @Column(name = "edu_start_date")
-    private LocalDate eduStartDate;
+    @Column(name = "edu_start_date", length = 7)
+    private String eduStartDate;
 
     // 졸업일
     @NotNull
-    @Column(name = "edu_end_date")
-    private LocalDate eduEndDate;
+    @Column(name = "edu_end_date", length = 7)
+    private String eduEndDate;
 }
