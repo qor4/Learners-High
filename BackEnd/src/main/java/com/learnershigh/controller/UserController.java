@@ -42,7 +42,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @PostMapping("/locallogin")
 //    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto){
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
