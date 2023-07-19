@@ -3,12 +3,11 @@ package com.learnershigh.controller;
 import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
-import com.learnershigh.dto.EduDto;
-import com.learnershigh.dto.JobDto;
-import com.learnershigh.dto.JoinDto;
+import com.learnershigh.dto.*;
 import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,11 +19,6 @@ public class UserController {
 
     private final UserService userService;
 
-
-    @GetMapping("/hello")
-    public String hello(){
-        return "안녕";
-    }
     // 회원가입
     @PostMapping("/userjoin")
 
@@ -47,5 +41,14 @@ public class UserController {
         return userService.eduJoin(eduDto);
     }
 
-
+    // 로그인
+    @PostMapping("/login")
+//    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
+    public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto){
+        CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
+        TokenDto token = userService.userLogin(loginDto);
+        responseBody.getList().add(token);
+//        return new ResponseEntity<>(userService.userLogin(loginDto), HttpStatus.OK);
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

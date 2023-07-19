@@ -23,7 +23,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, Long>{
 
     // 아이디로 user 객체 리턴
-    User findByUserId(String userid);
+    User findByUserId(String userId);
 
 }
 

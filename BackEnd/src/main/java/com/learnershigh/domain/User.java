@@ -70,6 +70,9 @@ public class User {
     @Column(name = "is_active")
     private boolean isActive;
 
+//    // refresh token 사용자 refreshToken
+//    @Column(name = "refresh_token")
+//    private String refreshToken;
 
     // 강사 한명당 수업 여러개일수도 있기때문에 리스트 생성
 //    @OneToMany(mappedBy = "userNo")

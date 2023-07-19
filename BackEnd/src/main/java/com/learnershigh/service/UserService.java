@@ -4,13 +4,13 @@ package com.learnershigh.service;
 import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
-import com.learnershigh.dto.EduDto;
-import com.learnershigh.dto.JobDto;
-import com.learnershigh.dto.JoinDto;
+import com.learnershigh.dto.*;
 import com.learnershigh.repository.EduRepository;
 import com.learnershigh.repository.JobRepository;
 import com.learnershigh.repository.UserRepository;
+import com.learnershigh.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,8 @@ public class UserService {
     private final JobRepository jobCareerRepository;
     private final EduRepository eduRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final TokenProvider tokenProvider;
 
     // 회원가입 (유저 정보 insert)
     public User userJoin(JoinDto joinDto) {
@@ -139,6 +141,22 @@ public class UserService {
         eduCareer.setEduEndDate(eduDto.getEduEndDate());
 
         return eduRepository.save(eduCareer);
+    }
+    // 로그인
+    public TokenDto userLogin(LoginDto loginDto) {
+        User user = userRepository.findByUserId(loginDto.getUserId());
+        if(user == null) {
+            throw new BadCredentialsException("잘못된 계정정보입니다.");
+        }
+        if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
+            throw new BadCredentialsException("잘못된 계정정보입니다.");
+        }
+        TokenDto token = new TokenDto();
+
+        token.setAccessToken(tokenProvider.createToken(user.getUserId()));
+
+
+        return token;
     }
 
 }
