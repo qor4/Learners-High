@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입
-    @PostMapping("/userjoin")
+    @PostMapping("/user-join")
 
     public User userJoin(@RequestBody JoinDto joinDto) {
 
@@ -28,21 +28,21 @@ public class UserController {
     }
 
     // 경력 추가
-    @PostMapping("/jobjoin")
+    @PostMapping("/job-join")
     public JobCareer jobJoin(@RequestBody JobDto jobDto) {
 
         return userService.jobJoin(jobDto);
     }
 
     // 학위 추가
-    @PostMapping("/edujoin")
+    @PostMapping("/edu-join")
     public EduCareer eduJoin(@RequestBody EduDto eduDto) {
 
         return userService.eduJoin(eduDto);
     }
 
     // 로그인
-    @PostMapping("/locallogin")
+    @PostMapping("/local-login")
 //    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto){
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
