@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class EduCareer {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "edu_career_no")
     private Long eduCareerNo;
 
@@ -22,12 +23,12 @@ public class EduCareer {
 
     // 대학교(원)
     @NotNull
-    @Column(name = "university_name",length = 20)
+    @Column(name = "university_name", length = 20)
     private String universityName;
 
     // 전공명
     @NotNull
-    @Column(name = "major_name",length = 20)
+    @Column(name = "major_name", length = 20)
     private String majorName;
 
     // 학위 종류

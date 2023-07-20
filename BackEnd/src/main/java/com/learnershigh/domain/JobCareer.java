@@ -13,7 +13,8 @@ import javax.validation.constraints.NotNull;
 public class JobCareer {
 
     // 경력 no
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_career_no")
     private Long jobCareerNo;
 
@@ -24,12 +25,12 @@ public class JobCareer {
 
     // 회사명
     @NotNull
-    @Column(name = "company_name",length = 20)
+    @Column(name = "company_name", length = 20)
     private String companyName;
 
     // 회사 소속 부서
     @NotNull
-    @Column(name = "depart_name",length = 20)
+    @Column(name = "depart_name", length = 20)
     private String departName;
 
     // 입사일

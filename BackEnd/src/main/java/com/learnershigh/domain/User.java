@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -17,38 +14,39 @@ import java.time.LocalDateTime;
 public class User {
 
     // user_no, PK값
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_no")
     private Long userNo;
 
     // user id
     @NotNull
-    @Column(name = "user_id",length = 20)
+    @Column(name = "user_id", length = 20)
     private String userId;
 
     //user name
     @NotNull
-    @Column(name = "user_name",length = 20)
+    @Column(name = "user_name", length = 20)
     private String userName;
 
     // user email
     @NotNull
-    @Column(name = "user_email",length = 50)
+    @Column(name = "user_email", length = 50)
     private String userEmail;
 
     // user password
     @NotNull
-    @Column(name = "user_password",length = 60)
+    @Column(name = "user_password", length = 60)
     private String userPassword;
 
     // user tel
     @NotNull
-    @Column(name = "user_tel",length = 20)
+    @Column(name = "user_tel", length = 20)
     private String userTel;
 
     // user info
     @NotNull
-    @Column(name = "user_info",length = 30)
+    @Column(name = "user_info", length = 30)
     private String userInfo;
 
     // user date (가입 시간)

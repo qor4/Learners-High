@@ -12,7 +12,7 @@ import java.util.List;
 public class ClassType {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_type_no")
     private int classTypeNo;
 

@@ -15,7 +15,7 @@ public class Class {
 
     // 수업 no
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_no")
     private int classNo;
 
