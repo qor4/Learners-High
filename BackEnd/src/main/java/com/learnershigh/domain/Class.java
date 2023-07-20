@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -17,7 +19,7 @@ public class Class {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_no")
-    private int classNo;
+    private Long classNo;
 
     // 강사 no (FK,NN)
     @ManyToOne
@@ -83,4 +85,8 @@ public class Class {
     @CreationTimestamp
     @Column(name = "class_join_datetime")
     private LocalDateTime classJoinDatetime;
+
+    // 수업 회차
+    @OneToMany(mappedBy = "classNo")
+    List<ClassRound> classRoundList = new ArrayList<>();
 }
