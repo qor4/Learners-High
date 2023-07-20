@@ -50,18 +50,17 @@ public class ClassController {
     @PostMapping("/class-round-join")
     public ResponseEntity<BaseResponseBody> classRoundJoin(@RequestBody List<ClassRoundJoinDto> classRoundJoinDtoList) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
-        classRoundService.classRoundJoin(classRoundJoinDtoList);
-//        try {
-//            classRoundService.classRoundJoin(classRoundJoinDtoList);
-//        } catch (IllegalStateException e) {
-//            responseBody.setResultCode(-1);
-//            responseBody.setResultMsg(e.getMessage());
-//            return ResponseEntity.ok().body(responseBody);
-//        } catch (Exception e) {
-//            responseBody.setResultCode(-2);
-//            responseBody.setResultMsg(e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-//        }
+        try {
+            classRoundService.classRoundJoin(classRoundJoinDtoList);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
         return ResponseEntity.ok().body(responseBody);
     }
 }
