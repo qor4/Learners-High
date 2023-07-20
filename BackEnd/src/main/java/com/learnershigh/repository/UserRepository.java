@@ -20,11 +20,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 //}
 
 // -- 방법 2
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long> {
 
     // 아이디로 user 객체 리턴
     User findByUserId(String userId);
 
+    User findByUserNo(Long userNo);
 }
 
 
