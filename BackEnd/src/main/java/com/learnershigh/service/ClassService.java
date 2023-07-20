@@ -21,7 +21,7 @@ public class ClassService {
 
     // 강의 개설 (강의 정보 insert)
     @Transactional
-    public void classJoin(ClassJoinDto classJoinDto) {
+    public Class classJoin(ClassJoinDto classJoinDto) {
         Class classDomain = new Class();
         if (classJoinDto.getUserNo() == null || userRepository.findByUserNo(classJoinDto.getUserNo()) == null) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
@@ -59,7 +59,7 @@ public class ClassService {
         classDomain.setClassThumbnailImg(classJoinDto.getClassThumbnailImg());
         classDomain.setClassThumbnailInfo(classJoinDto.getClassThumbnailInfo());
         classDomain.setClassStatus(classJoinDto.getClassStatus());
-        classRepository.save(classDomain); // 저장한 객체를 반환함.
-
+        Class classEntity = classRepository.save(classDomain); // 저장한 객체를 반환함.
+        return classEntity;
     }
 }
