@@ -24,7 +24,7 @@ public class ClassController {
     private final ClassRoundService classRoundService;
 
     // 강의 개설
-    @PostMapping("/class-join")
+    @PostMapping("/join")
     public ResponseEntity<CustomResponseBody> classJoin(@RequestBody ClassJoinDto classJoinDto) {
         CustomResponseBody responseBody = new CustomResponseBody("강의 개설 성공");
         try {
@@ -44,7 +44,7 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @PostMapping("/class-round-join")
+    @PostMapping("/join/round")
     public ResponseEntity<BaseResponseBody> classRoundJoin(@RequestBody List<ClassRoundJoinDto> classRoundJoinDtoList) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
         try {
@@ -61,7 +61,7 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @GetMapping("/class-list/upcoming")
+    @GetMapping("/list/upcoming")
     public ResponseEntity<CustomResponseBody> upcomingClassList() {
         CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
         try {
