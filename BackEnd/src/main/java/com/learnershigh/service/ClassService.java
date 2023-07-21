@@ -1,14 +1,16 @@
 package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
-import com.learnershigh.domain.User;
 import com.learnershigh.dto.ClassJoinDto;
+import com.learnershigh.dto.ClassListProjectionInterface;
 import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassTypeRepository;
 import com.learnershigh.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -61,5 +63,9 @@ public class ClassService {
         classDomain.setClassStatus(classJoinDto.getClassStatus());
         Class classEntity = classRepository.save(classDomain); // 저장한 객체를 반환함.
         return classEntity;
+    }
+
+    public List<ClassListProjectionInterface> upcomingClassList() {
+        return classRepository.upcomingClassList();
     }
 }
