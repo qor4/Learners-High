@@ -8,10 +8,7 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,18 +47,35 @@ public class ClassController {
     @PostMapping("/class-round-join")
     public ResponseEntity<BaseResponseBody> classRoundJoin(@RequestBody List<ClassRoundJoinDto> classRoundJoinDtoList) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
-        classRoundService.classRoundJoin(classRoundJoinDtoList);
-//        try {
-//            classRoundService.classRoundJoin(classRoundJoinDtoList);
-//        } catch (IllegalStateException e) {
-//            responseBody.setResultCode(-1);
-//            responseBody.setResultMsg(e.getMessage());
-//            return ResponseEntity.ok().body(responseBody);
-//        } catch (Exception e) {
-//            responseBody.setResultCode(-2);
-//            responseBody.setResultMsg(e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-//        }
+        try {
+            classRoundService.classRoundJoin(classRoundJoinDtoList);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/class-list/upcoming")
+    public ResponseEntity<CustomResponseBody> upcomingClassList() {
+        CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
+        try {
+            List<ClassListProjectionInterface> list = classService.upcomingClassList();
+            responseBody.getList().add(list);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
         return ResponseEntity.ok().body(responseBody);
     }
 }
