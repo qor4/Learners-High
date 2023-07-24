@@ -78,4 +78,26 @@ public class ClassController {
         }
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @GetMapping("/writing/{userNo}")
+    public ResponseEntity<CustomResponseBody> isWritingByUserNo(@PathVariable Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 조회 완료");
+        HashMap<String, Object> isWriting = new HashMap<>();
+        Class classDomain = classService.isWritingByUserNo(userNo);
+        if (classDomain != null) {
+            isWriting.put("isWriging", Boolean.TRUE);
+            isWriting.put("classNo", classDomain.getClassNo());
+        } else {
+            isWriting.put("isWriging", Boolean.FALSE);
+        }
+        responseBody.getList().add(isWriting);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/writing/info/{classNo}")
+    public ResponseEntity<CustomResponseBody> getInfoByClassNo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
+        responseBody.getList().add(classService.getInfoByClassNo(classNo));
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

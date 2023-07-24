@@ -14,10 +14,6 @@ public class ClassJoinDto {
     private int classTypeNo;
     // 수업 이름
     private String className;
-    // 시작 날짜
-    private LocalDate classStartDate;
-    // 종료 날짜
-    private LocalDate classEndDate;
     // 수업 정보
     private String classInfo;
     // 최대 수강 학생 수
@@ -30,4 +26,6 @@ public class ClassJoinDto {
     private String classThumbnailInfo;
     // 수업 상태
     private String classStatus;
+    // 수업 총 회차
+    private int classTotalRound;
 }

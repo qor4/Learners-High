@@ -37,12 +37,10 @@ public class Class {
     private String className;
 
     // 시작 날짜
-    @NotNull
     @Column(name = "class_start_date", columnDefinition = "DATE")
     private LocalDate classStartDate;
 
     // 종료 날짜
-    @NotNull
     @Column(name = "class_end_date", columnDefinition = "DATE")
     private LocalDate classEndDate;
 
@@ -85,6 +83,10 @@ public class Class {
     @CreationTimestamp
     @Column(name = "class_join_datetime")
     private LocalDateTime classJoinDatetime;
+
+    // 수업 총 회차
+    @Column(name = "class_total_round", columnDefinition = "TINYINT")
+    private int classTotalRound;
 
     // 수업 회차
     @OneToMany(mappedBy = "classNo")

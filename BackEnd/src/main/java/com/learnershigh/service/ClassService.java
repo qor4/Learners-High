@@ -35,12 +35,6 @@ public class ClassService {
         if (classJoinDto.getClassName().isBlank()) {
             throw new IllegalStateException("수업 이름을 입력해주세요.");
         }
-        if (classJoinDto.getClassStartDate() == null) {
-            throw new IllegalStateException("수업 시작 날짜를 선택해주세요.");
-        }
-        if (classJoinDto.getClassEndDate() == null) {
-            throw new IllegalStateException("수업 종료 날짜를 선택해주세요.");
-        }
         if (classJoinDto.getMaxStudent() == 0) {
             throw new IllegalStateException("최대 수강 학생 수를 올바르게 입력해주세요.");
         }
@@ -53,8 +47,6 @@ public class ClassService {
         classDomain.setUserNo(userRepository.findByUserNo(classJoinDto.getUserNo()));
         classDomain.setClassTypeNo(classTypeRepository.findByClassTypeNo(classJoinDto.getClassTypeNo()));
         classDomain.setClassName(classJoinDto.getClassName());
-        classDomain.setClassStartDate(classJoinDto.getClassStartDate());
-        classDomain.setClassEndDate(classJoinDto.getClassEndDate());
         classDomain.setClassInfo(classJoinDto.getClassInfo());
         classDomain.setMaxStudent(classJoinDto.getMaxStudent());
         classDomain.setClassPrice(classJoinDto.getClassPrice());
@@ -67,5 +59,26 @@ public class ClassService {
 
     public List<ClassListProjectionInterface> upcomingClassList() {
         return classRepository.upcomingClassList();
+    }
+
+    public Class isWritingByUserNo(Long userNo) {
+        return classRepository.isWritingByUserNo(userNo);
+    }
+
+    @Transactional
+    public ClassJoinDto getInfoByClassNo(Long classNo) {
+        Class classDomain = classRepository.findByClassNo(classNo);
+        ClassJoinDto classJoin = new ClassJoinDto();
+        classJoin.setUserNo(classDomain.getUserNo().getUserNo());
+        classJoin.setClassTypeNo(classDomain.getClassTypeNo().getClassTypeNo());
+        classJoin.setClassName(classDomain.getClassName());
+        classJoin.setClassInfo(classDomain.getClassInfo());
+        classJoin.setMaxStudent(classDomain.getMaxStudent());
+        classJoin.setClassPrice(classDomain.getClassPrice());
+        classJoin.setClassThumbnailImg(classDomain.getClassThumbnailImg());
+        classJoin.setClassThumbnailInfo(classDomain.getClassThumbnailInfo());
+        classJoin.setClassStatus(classDomain.getClassStatus());
+        classJoin.setClassTotalRound(classDomain.getClassTotalRound());
+        return classJoin;
     }
 }
