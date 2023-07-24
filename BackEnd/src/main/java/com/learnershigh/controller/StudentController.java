@@ -34,4 +34,22 @@ public class StudentController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+
+    @DeleteMapping("/wish/{userNo}/{classNo}")
+    public ResponseEntity<BaseResponseBody> deleteWish(@PathVariable Long userNo, @PathVariable Long classNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("강의 위시 취소");
+        try {
+            studentService.deleteWish(userNo, classNo);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
 }

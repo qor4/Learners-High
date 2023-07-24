@@ -28,4 +28,9 @@ public class StudentService {
         studentWishlistRepository.save(studentWishlist);
     }
 
+    @Transactional
+    public void deleteWish(Long userNo, Long classNo) {
+        StudentWishlist studentWishlist = studentWishlistRepository.findByUserNoAndClassNo(userNo, classNo);
+        studentWishlistRepository.delete(studentWishlist);
+    }
 }
