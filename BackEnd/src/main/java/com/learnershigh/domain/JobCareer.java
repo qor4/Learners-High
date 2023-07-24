@@ -42,4 +42,12 @@ public class JobCareer {
     @NotNull
     @Column(name = "hire_end_date", length = 7)
     private String hireEndDate;
+
+    public void jobModify(String companyName, String departName, String hireStartDate, String hireEndDate) //
+    {
+       this.companyName = companyName;
+       this.departName = departName;
+       this.hireStartDate = hireStartDate;
+       this.hireEndDate = hireEndDate;
+    }
 }

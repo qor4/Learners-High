@@ -39,6 +39,13 @@ public class UserService {
 
     private final TokenProvider tokenProvider;
 
+    // 이메일로 userNo 뽑아내기
+    public Long getUserNo(String userEmail){
+        User user = userRepository.findByUserEmail(userEmail);
+
+        return user.getUserNo();
+    }
+
     // 회원가입 (유저 정보 insert)
     @Transactional
     public User userJoin(JoinDto joinDto) {
@@ -58,13 +65,17 @@ public class UserService {
             throw new IllegalStateException("이메일 형식을 다시 맞춰주세요.");
         }
 
+        if(!duplicateEmail(joinDto.getUserEmail())){
+            throw new IllegalStateException("이미 가입된 이메일 입니다.");
+        }
+
         // 비밀번호 유효성 검사
         if (!Pattern.matches("^.*(?=^.{9,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$", joinDto.getUserPassword())) {
             throw new IllegalStateException("비밀번호 형식이 맞지않습니다.");
         }
 
         // 전화번호 유효성 검사
-        if (!Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", joinDto.getUserTel())) {
+        if (!Pattern.matches("^\\d{11}$", joinDto.getUserTel())) {
             throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
         }
         // 한마디 글자수 유효성 검사
@@ -271,22 +282,24 @@ public class UserService {
 //
 //    }
 
-    // 경력 정보 insert
+    // 강사 경력 정보 insert
     @Transactional
-    public JobCareer jobJoin(JobDto jobDto) {
+    public JobCareer jobJoin(JobDto jobDto, Long userNo) {
         JobCareer jobCareer = new JobCareer();
 
         jobCareer.setCompanyName(jobDto.getCompanyName());
         jobCareer.setDepartName(jobDto.getDepartName());
         jobCareer.setHireStartDate(jobDto.getHireStartDate());
         jobCareer.setHireEndDate(jobDto.getHireEndDate());
+        jobCareer.setUserNo(userRepository.findByUserNo(userNo));
+
 
         return jobCareerRepository.save(jobCareer);
     }
 
-    // 학위 정보 insert
+    // 강사 학위 정보 insert
     @Transactional
-    public EduCareer eduJoin(EduDto eduDto) {
+    public EduCareer eduJoin(EduDto eduDto, Long userNo) {
         EduCareer eduCareer = new EduCareer();
 
         eduCareer.setUniversityName(eduDto.getUniversityName());
@@ -294,6 +307,7 @@ public class UserService {
         eduCareer.setDegree(eduDto.getDegree());
         eduCareer.setEduStartDate(eduDto.getEduStartDate());
         eduCareer.setEduEndDate(eduDto.getEduEndDate());
+        eduCareer.setUserNo(userRepository.findByUserNo(userNo));
 
         return eduRepository.save(eduCareer);
     }
@@ -343,6 +357,29 @@ public class UserService {
 
         // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
         user.mypageModify(joinDto.getUserName(), joinDto.getUserTel(), joinDto.getUserInfo());
+
+    }
+
+    // 강사 경력 수정
+    @Transactional
+    public void jobModify(Long userNo, JobDto jobDto){
+
+        JobCareer jobCareer = jobCareerRepository.findByUserNo(userNo);
+
+
+        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+        jobCareer.jobModify(jobDto.getCompanyName(), jobDto.getDepartName(), jobDto.getHireStartDate(), jobDto.getHireEndDate());
+
+    }
+
+    // 강사 학력 수정
+    @Transactional
+    public void eduModify(Long userNo, EduDto eduDto){
+
+        EduCareer eduCareer = eduRepository.findByUserNo(userNo);
+
+        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+        eduCareer.eduModify(eduDto.getUniversityName(), eduDto.getMajorName(), eduDto.getDegree(), eduDto.getEduStartDate(), eduDto.getEduEndDate());
 
     }
 

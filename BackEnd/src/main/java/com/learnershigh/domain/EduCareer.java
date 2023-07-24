@@ -45,4 +45,13 @@ public class EduCareer {
     @NotNull
     @Column(name = "edu_end_date", length = 7)
     private String eduEndDate;
+
+    public void eduModify(String universityName, String majorName, String degree, String eduStartDate, String eduEndDate) //
+    {
+       this.universityName = universityName;
+       this.majorName = majorName;
+       this.degree = degree;
+       this.eduStartDate = eduStartDate;
+       this.eduEndDate = eduEndDate;
+    }
 }

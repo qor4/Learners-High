@@ -21,6 +21,12 @@ public class UserController {
 
     private final UserService userService;
 
+    // 유저 이메일로 userNo 값 뽑아내는 거 (userNo로 연관되니깐.)
+    @GetMapping("/getUserNo")
+    public Long getUserNo(@RequestParam("userEmail") String userEmail){
+        return userService.getUserNo(userEmail);
+    }
+
     // 회원가입
     @PostMapping("/join")
     public User userJoin(@RequestBody JoinDto joinDto) {
@@ -78,17 +84,17 @@ public class UserController {
     }
 
     // 경력 추가
-    @PostMapping("/join/job")
-    public JobCareer jobJoin(@RequestBody JobDto jobDto) {
+    @PostMapping("/join/job/{userNo}")
+    public JobCareer jobJoin(@RequestBody JobDto jobDto, @PathVariable("userNo") Long userNo) {
 
-        return userService.jobJoin(jobDto);
+        return userService.jobJoin(jobDto, userNo);
     }
 
     // 학위 추가
-    @PostMapping("/join/edu")
-    public EduCareer eduJoin(@RequestBody EduDto eduDto) {
+    @PostMapping("/join/edu/{userNo}")
+    public EduCareer eduJoin(@RequestBody EduDto eduDto, @PathVariable("userNo") Long userNo) {
 
-        return userService.eduJoin(eduDto);
+        return userService.eduJoin(eduDto, userNo);
     }
 
     // 로그인
@@ -111,8 +117,26 @@ public class UserController {
     }
 
     // 마이페이지 정보 수정하기
-    @PutMapping("/user/modify/{userNo}")
+    @PutMapping("mypage/modify/{userNo}")
     public void mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
          userService.mypageModify(userNo, joinDto);
     }
+
+    // 강사 학력 수정
+    @PutMapping("/modify/edu/{userNo}")
+    public void eduModify(@PathVariable("userNo") Long userNo, @RequestBody EduDto eduDto){
+
+
+    }
+
+    // 강사 학력 삭제
+    @DeleteMapping()
+
+    // 강사 경력 수정
+    @PutMapping("/modify/job/{userNo}")
+    public void eduModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
+
+
+    }
+    // 강사 경력 삭제
 }
