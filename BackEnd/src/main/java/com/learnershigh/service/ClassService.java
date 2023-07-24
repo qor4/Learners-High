@@ -68,4 +68,14 @@ public class ClassService {
     public List<ClassListProjectionInterface> upcomingClassList() {
         return classRepository.upcomingClassList();
     }
+
+    public boolean isWritingByUserNo(Long userNo) {
+        Class classDomain = classRepository.isWritingByUserNo(userNo);
+        if(classDomain != null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

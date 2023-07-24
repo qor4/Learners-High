@@ -78,4 +78,17 @@ public class ClassController {
         }
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @GetMapping("/writing/{userNo}")
+    public ResponseEntity<CustomResponseBody> isWritingByUserNo(@PathVariable Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 조회 완료");
+        HashMap<String, Boolean> isWriting = new HashMap<>();
+        if (classService.isWritingByUserNo(userNo)) {
+            isWriting.put("isWriging", Boolean.TRUE);
+        } else {
+            isWriting.put("isWriging", Boolean.FALSE);
+        }
+        responseBody.getList().add(isWriting);
+        return ResponseEntity.ok().body(responseBody);
+    }
 }
