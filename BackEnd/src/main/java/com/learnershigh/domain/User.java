@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,7 +17,7 @@ public class User {
 
     // user_no, PK값
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_no")
     private Long userNo;
 
@@ -35,17 +37,17 @@ public class User {
     private String userEmail;
 
     // user password
-    @NotNull
+
     @Column(name = "user_password", length = 60)
     private String userPassword;
 
     // user tel
-    @NotNull
+
     @Column(name = "user_tel", length = 20)
     private String userTel;
 
     // user info
-    @NotNull
+
     @Column(name = "user_info", length = 30)
     private String userInfo;
 
@@ -63,18 +65,25 @@ public class User {
     @Column(length = 1, name = "user_type")
     private String userType;
 
-
     // is active 탈퇴 여부
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = true)
     private boolean isActive;
+
+    @PrePersist
+    public void setIsActive() {
+        this.isActive = true;
+    }
 
 //    // refresh token 사용자 refreshToken
 //    @Column(name = "refresh_token")
 //    private String refreshToken;
 
-    // 강사 한명당 수업 여러개일수도 있기때문에 리스트 생성
-//    @OneToMany(mappedBy = "userNo")
-//    List<Class> classList = new ArrayList<>();
+    // 강사 한명당 학위 여러개일수도 있기때문에 리스트 생성
+    @OneToMany(mappedBy = "userNo")
+    List<EduCareer> eduList = new ArrayList<>();
 
+    // 강사 한명당 경력 여러개일수도 있기때문에 리스트 생성
+    @OneToMany(mappedBy = "userNo")
+    List<EduCareer> jobList = new ArrayList<>();
 
 }
