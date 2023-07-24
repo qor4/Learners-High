@@ -2,6 +2,7 @@ package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
 import com.learnershigh.dto.ClassJoinDto;
+import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.ClassListProjectionInterface;
 import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassTypeRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,14 +59,32 @@ public class ClassService {
         return classEntity;
     }
 
-    public List<ClassListProjectionInterface> upcomingClassList() {
-        return classRepository.upcomingClassList();
+    public List<ClassListDto> upcomingClassList() {
+//        return classRepository.upcomingClassList();
+        List<Class> classList = classRepository.findByUpcomingClass();
+        List<ClassListDto> classListDtoList = new ArrayList<>();
+        for(Class classDomain : classList){
+            ClassListDto classListDto = new ClassListDto();
+            classListDto.setClassNo(classDomain.getClassNo());
+            classListDto.setUserNo(classDomain.getUserNo().getUserNo());
+            classListDto.setUserName(classDomain.getUserNo().getUserName());
+            classListDto.setClassTypeNo(classDomain.getClassTypeNo().getClassTypeNo());
+            classListDto.setClassTypeName(classDomain.getClassTypeNo().getClassTypeName());
+            classListDto.setClassName(classDomain.getClassName());
+            classListDto.setClassStartDate(classDomain.getClassStartDate());
+            classListDto.setClassEndDate(classDomain.getClassEndDate());
+            classListDto.setMaxStudent(classDomain.getMaxStudent());
+            classListDto.setClassPrice(classDomain.getClassPrice());
+            classListDto.setClassThumbnailImg(classDomain.getClassThumbnailImg());
+            classListDtoList.add(classListDto);
+        }
+        return classListDtoList;
     }
 
     public Class isWritingByUserNo(Long userNo) {
         return classRepository.isWritingByUserNo(userNo);
     }
-    
+
     public ClassJoinDto getInfoByClassNo(Long classNo) {
         Class classDomain = classRepository.findByClassNo(classNo);
         ClassJoinDto classJoin = new ClassJoinDto();
