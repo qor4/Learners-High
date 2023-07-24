@@ -86,6 +86,10 @@ public class User {
     @OneToMany(mappedBy = "userNo", fetch = FetchType.LAZY)
     List<EduCareer> jobList = new ArrayList<>();
 
+    // 학생 한명당 위시 리스트가 여러개일수도 있기 때문에 리스트 생성
+    @OneToMany(mappedBy = "userNo", fetch = FetchType.LAZY)
+    List<StudentWishlist> studentWishlist = new ArrayList<>();
+
     public void mypageModify(String userName, String userTel, String userInfo) // 프로필??
     {
         this.userName = userName;
