@@ -66,7 +66,8 @@ public class ClassController {
     public ResponseEntity<CustomResponseBody> upcomingClassList() {
         CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
         try {
-            List<ClassListProjectionInterface> list = classService.upcomingClassList();
+//            List<ClassListProjectionInterface> list = classService.upcomingClassList();
+            List<ClassListDto> list = classService.upcomingClassList();
             responseBody.getList().add(list);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
