@@ -1,5 +1,6 @@
 package com.learnershigh.service;
 
+import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import com.learnershigh.dto.ClassRoundJoinDto;
 import com.learnershigh.repository.ClassRepository;
@@ -21,10 +22,13 @@ public class ClassRoundService {
     // 강의 회차 정보 추가
     @Transactional
     public void classRoundJoin(List<ClassRoundJoinDto> classRoundJoinDtoList) {
-
+        List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classRoundJoinDtoList.get(0).getClassNo());
+        for(ClassRound classRound : classRoundList){
+            System.out.println(classRound.getClassRoundTitle());
+            classRoundRepository.delete(classRound);
+        }
         for (ClassRoundJoinDto classRoundJoinDto : classRoundJoinDtoList) {
             ClassRound classRound = new ClassRound();
-            System.out.println(classRoundJoinDto.getClassNo());
             if (classRepository.findByClassNo(classRoundJoinDto.getClassNo()) == null) {
                 throw new IllegalStateException("유효한 수업이 아닙니다.");
             }
@@ -52,5 +56,10 @@ public class ClassRoundService {
             classRound.setHomework(classRoundJoinDto.isHomework());
             classRoundRepository.save(classRound);
         }
+        // 회차 정보를 통해 수업의 시작, 종료 날짜 설정
+        Class classEntity = classRepository.findByClassNo(classRoundJoinDtoList.get(0).getClassNo());
+        classEntity.setClassStartDate(classRoundJoinDtoList.get(0).getClassRoundStartDatetime().toLocalDate());
+        classEntity.setClassEndDate(classRoundJoinDtoList.get(classRoundJoinDtoList.size() - 1).getClassRoundStartDatetime().toLocalDate());
+        classRepository.save(classEntity);
     }
 }
