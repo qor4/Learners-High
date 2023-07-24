@@ -82,9 +82,11 @@ public class ClassController {
     @GetMapping("/writing/{userNo}")
     public ResponseEntity<CustomResponseBody> isWritingByUserNo(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 조회 완료");
-        HashMap<String, Boolean> isWriting = new HashMap<>();
-        if (classService.isWritingByUserNo(userNo)) {
+        HashMap<String, Object> isWriting = new HashMap<>();
+        Class classDomain = classService.isWritingByUserNo(userNo);
+        if (classDomain != null) {
             isWriting.put("isWriging", Boolean.TRUE);
+            isWriting.put("classNo", classDomain.getClassNo());
         } else {
             isWriting.put("isWriging", Boolean.FALSE);
         }

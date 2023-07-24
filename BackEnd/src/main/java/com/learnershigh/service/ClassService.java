@@ -69,13 +69,8 @@ public class ClassService {
         return classRepository.upcomingClassList();
     }
 
-    public boolean isWritingByUserNo(Long userNo) {
-        Class classDomain = classRepository.isWritingByUserNo(userNo);
-        if(classDomain != null){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public Class isWritingByUserNo(Long userNo) {
+        return classRepository.isWritingByUserNo(userNo);
+
     }
 }
