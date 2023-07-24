@@ -1,56 +1,28 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
-import com.learnershigh.domain.OAuthToken;
 import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.io.IOException;
 
 
 @RestController
 @RequestMapping("/user")
 @Api(tags = {"사용자에 대한 API"})
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class UserController {
 
     private final UserService userService;
 
-//    @GetMapping("/test")
-//    @ResponseBody
-//    public String index(){
-//        return /;
-//    }
-
-//        @GetMapping("/test")
-//        @ResponseBody
-//    public ModelAndView index() throws IOException {
-//        // ~ 코드 생략
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("kakaologin");
-//        modelAndView.addObject("response", "suceess");
-//
-//        return modelAndView;
-//    }
-
     // 회원가입
-    @PostMapping("/user-join")
+    @PostMapping("/join")
     public User userJoin(@RequestBody JoinDto joinDto) {
 
         return userService.userJoin(joinDto);
@@ -60,7 +32,7 @@ public class UserController {
     }
 
     // 아이디 중복
-    @GetMapping("/join-id-duplicate/{id}")
+    @GetMapping("/duplicate/id/{id}")
     public ResponseEntity<BaseResponseBody> duplicateId(@PathVariable("id") String userId) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
         if (userService.duplicateId(userId)) {
@@ -73,7 +45,7 @@ public class UserController {
     }
 
     // 이메일 중복
-    @GetMapping("/join-email-duplicate/{email}")
+    @GetMapping("/duplicate/email/{email}")
     public ResponseEntity<BaseResponseBody> duplicateEmail(@PathVariable("email") String userEmail) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
         if (userService.duplicateId(userEmail)) {
@@ -88,7 +60,7 @@ public class UserController {
 
     // 카카오 로그인
 
-    @GetMapping("/auth/kakao/callback")
+    @GetMapping("/login/kakao/callback")
     @ResponseBody
     public Boolean kakaoCallback(String code) throws JsonProcessingException {
 
@@ -105,23 +77,22 @@ public class UserController {
 
     }
 
-
     // 경력 추가
-    @PostMapping("/job-join")
+    @PostMapping("/join/job")
     public JobCareer jobJoin(@RequestBody JobDto jobDto) {
 
         return userService.jobJoin(jobDto);
     }
 
     // 학위 추가
-    @PostMapping("/edu-join")
+    @PostMapping("/join/edu")
     public EduCareer eduJoin(@RequestBody EduDto eduDto) {
 
         return userService.eduJoin(eduDto);
     }
 
     // 로그인
-    @PostMapping("/local-login")
+    @PostMapping("/login")
 //    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto) {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
@@ -131,13 +102,17 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    // mypage에 넣을 사용자 정보 추출하기
+    // 마이페이지에서 보일 사용자 정보 추출하기
     @GetMapping("/mypage/{userNo}")
-    public User mypageUser(@PathVariable("userNo") Long userNo){
+    public JoinDto mypageUser(@PathVariable("userNo") Long userNo){
+
         return userService.mypageUser(userNo);
 
     }
 
     // 마이페이지 정보 수정하기
-
+    @PutMapping("/user/modify/{userNo}")
+    public void mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
+         userService.mypageModify(userNo, joinDto);
+    }
 }

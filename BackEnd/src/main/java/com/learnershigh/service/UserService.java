@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -38,6 +40,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     // 회원가입 (유저 정보 insert)
+    @Transactional
     public User userJoin(JoinDto joinDto) {
         User user = new User();
 
@@ -80,11 +83,13 @@ public class UserService {
         user.setUserTel(joinDto.getUserTel());
         user.setUserInfo(joinDto.getUserInfo());
         user.setProfileImg(joinDto.getProfileImg());
+        user.setUserType(joinDto.getUserType());
 
         return userRepository.save(user); // 저장한 객체를 반환함.
 
     }
 
+    @Transactional
     public User kakaoUserJoin(String code) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 
@@ -176,6 +181,8 @@ public class UserService {
 
     }
 
+    // 카카오 로그인 이후 더 받을 정보들 받는 것.
+    @Transactional
     public User kakaoPlus(JoinDto joinDto) {
 
         User user = new User();
@@ -265,6 +272,7 @@ public class UserService {
 //    }
 
     // 경력 정보 insert
+    @Transactional
     public JobCareer jobJoin(JobDto jobDto) {
         JobCareer jobCareer = new JobCareer();
 
@@ -277,7 +285,7 @@ public class UserService {
     }
 
     // 학위 정보 insert
-
+    @Transactional
     public EduCareer eduJoin(EduDto eduDto) {
         EduCareer eduCareer = new EduCareer();
 
@@ -307,8 +315,35 @@ public class UserService {
         return token;
     }
 
-    public User mypageUser(Long userNo){
-       return userRepository.findByUserNo(userNo);
+
+    // 마이페이지에 보일 유저 정보 추출
+
+    public JoinDto mypageUser(Long userNo){
+        //System.out.println(userRepository.findByUserNo(userNo));
+        User user = userRepository.findByUserNo(userNo);
+
+        JoinDto joinDto = new JoinDto();
+
+        joinDto.setUserId(user.getUserId());
+        joinDto.setUserName(user.getUserName());
+        joinDto.setUserEmail(user.getUserEmail());
+        joinDto.setUserTel(user.getUserTel());
+        joinDto.setUserInfo(user.getUserInfo());
+        joinDto.setProfileImg(user.getProfileImg());
+
+        return joinDto;
+    }
+
+    // 마이페이지 수정
+    @Transactional
+    public void mypageModify(Long userNo, JoinDto joinDto){
+
+        User user = userRepository.findByUserNo(userNo);
+
+
+        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+        user.mypageModify(joinDto.getUserName(), joinDto.getUserTel(), joinDto.getUserInfo());
+
     }
 
 }

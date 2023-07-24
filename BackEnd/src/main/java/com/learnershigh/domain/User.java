@@ -79,11 +79,17 @@ public class User {
 //    private String refreshToken;
 
     // 강사 한명당 학위 여러개일수도 있기때문에 리스트 생성
-    @OneToMany(mappedBy = "userNo")
+    @OneToMany(mappedBy = "userNo", fetch = FetchType.LAZY)
     List<EduCareer> eduList = new ArrayList<>();
 
     // 강사 한명당 경력 여러개일수도 있기때문에 리스트 생성
-    @OneToMany(mappedBy = "userNo")
+    @OneToMany(mappedBy = "userNo", fetch = FetchType.LAZY)
     List<EduCareer> jobList = new ArrayList<>();
 
+    public void mypageModify(String userName, String userTel, String userInfo) // 프로필??
+    {
+        this.userName = userName;
+        this.userTel = userTel;
+        this.userInfo = userInfo;
+    }
 }
