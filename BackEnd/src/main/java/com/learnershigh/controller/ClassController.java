@@ -93,4 +93,11 @@ public class ClassController {
         responseBody.getList().add(isWriting);
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @GetMapping("/writing/info/{classNo}")
+    public ResponseEntity<CustomResponseBody> getInfoByClassNo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
+        responseBody.getList().add(classService.getInfoByClassNo(classNo));
+        return ResponseEntity.ok().body(responseBody);
+    }
 }
