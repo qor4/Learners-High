@@ -1,1 +1,0 @@
-redux react-redux redux-actions redux-saga redux-thunk styled-components react-router-dom redux-devtools-extension classnames axios react-icons
