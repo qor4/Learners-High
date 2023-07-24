@@ -6,6 +6,7 @@ import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.StudentWishlistRepository;
 import com.learnershigh.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,9 @@ public class StudentService {
     @Transactional
     public void deleteWish(Long userNo, Long classNo) {
         StudentWishlist studentWishlist = studentWishlistRepository.findByUserNoAndClassNo(userNo, classNo);
+        if(studentWishlist==null){
+            throw new BadCredentialsException("잘못된 위시 정보입니다.");
+        }
         studentWishlistRepository.delete(studentWishlist);
     }
 }
