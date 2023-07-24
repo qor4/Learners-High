@@ -64,8 +64,7 @@ public class ClassService {
     public Class isWritingByUserNo(Long userNo) {
         return classRepository.isWritingByUserNo(userNo);
     }
-
-    @Transactional
+    
     public ClassJoinDto getInfoByClassNo(Long classNo) {
         Class classDomain = classRepository.findByClassNo(classNo);
         ClassJoinDto classJoin = new ClassJoinDto();

@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/class")
 @Api(tags = {"수업에 대한 API"})
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ClassController {
 
     private final ClassService classService;
@@ -98,6 +99,12 @@ public class ClassController {
     public ResponseEntity<CustomResponseBody> getInfoByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
         responseBody.getList().add(classService.getInfoByClassNo(classNo));
+        return ResponseEntity.ok().body(responseBody);
+    }
+    @GetMapping("/writing/round/{classNo}")
+    public ResponseEntity<CustomResponseBody> getRoundByClassNo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 회차 정보 조회 완료");
+        responseBody.getList().add(classRoundService.getRoundByClassNo(classNo));
         return ResponseEntity.ok().body(responseBody);
     }
 }
