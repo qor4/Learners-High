@@ -2,6 +2,7 @@ package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
+import com.learnershigh.dto.ClassJoinDto;
 import com.learnershigh.dto.ClassRoundJoinDto;
 import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassRoundRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +26,6 @@ public class ClassRoundService {
     public void classRoundJoin(List<ClassRoundJoinDto> classRoundJoinDtoList) {
         List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classRoundJoinDtoList.get(0).getClassNo());
         for(ClassRound classRound : classRoundList){
-            System.out.println(classRound.getClassRoundTitle());
             classRoundRepository.delete(classRound);
         }
         for (ClassRoundJoinDto classRoundJoinDto : classRoundJoinDtoList) {
@@ -61,5 +62,22 @@ public class ClassRoundService {
         classEntity.setClassStartDate(classRoundJoinDtoList.get(0).getClassRoundStartDatetime().toLocalDate());
         classEntity.setClassEndDate(classRoundJoinDtoList.get(classRoundJoinDtoList.size() - 1).getClassRoundStartDatetime().toLocalDate());
         classRepository.save(classEntity);
+    }
+    public List<ClassRoundJoinDto> getRoundByClassNo(Long classNo) {
+        List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classNo);
+        List<ClassRoundJoinDto> classRoundJoinDtoList = new ArrayList<>();
+        for(ClassRound classRound:classRoundList){
+            ClassRoundJoinDto classRoundJoinDto = new ClassRoundJoinDto();
+            classRoundJoinDto.setClassNo(classRound.getClassNo().getClassNo());
+            classRoundJoinDto.setClassRoundNumber(classRound.getClassRoundNumber());
+            classRoundJoinDto.setClassRoundTitle(classRound.getClassRoundTitle());
+            classRoundJoinDto.setClassRoundFileName(classRound.getClassRoundFileName());
+            classRoundJoinDto.setClassRoundFileOriginName(classRound.getClassRoundFileOriginName());
+            classRoundJoinDto.setClassRoundStartDatetime(classRound.getClassRoundStartDatetime());
+            classRoundJoinDto.setClassRoundEndDatetime(classRound.getClassRoundEndDatetime());
+            classRoundJoinDto.setHomework(classRound.isHomework());
+            classRoundJoinDtoList.add(classRoundJoinDto);
+        }
+        return classRoundJoinDtoList;
     }
 }
