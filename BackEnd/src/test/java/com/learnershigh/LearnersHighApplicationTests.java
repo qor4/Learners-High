@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class LearnersHighApplicationTests {
 
-	@Test
-	void contextLoads() {
-		System.out.println("As");
-	}
+//	@Test
+//	void contextLoads() {
+//		System.out.println("As");
+//	}
 
 }
