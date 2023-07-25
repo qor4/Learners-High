@@ -5,6 +5,7 @@ import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
+import com.learnershigh.service.EmailService;
 import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    private final EmailService emailService;
 
     // 유저 이메일로 userNo 값 뽑아내는 거 (userNo로 연관되니깐.)
     @GetMapping("/getUserNo")
@@ -65,6 +68,15 @@ public class UserController {
             baseResponseBody.setResultMsg("이미 가입된 이메일입니다.");
         }
         return ResponseEntity.ok().body(baseResponseBody);
+    }
+
+    // 이메일 인증 번호
+    @PostMapping("/cert/email")
+    @ResponseBody
+    public String mainSend(@RequestParam String email) throws Exception{
+        String code = emailService.sendSimpleMessage(email);
+        System.out.println("인증코드 : " + code);
+        return code;
     }
 
 
