@@ -60,7 +60,7 @@ const UserJoinTeacherEdu = (props) => {
     const postTeacherEdu = () => {
         // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
         eduInputList.map((item) => (    
-            axios.post(`${url}/user/join/edu`, 
+            axios.post(`${url}/user/join/du`, 
             item,
             {headers: {"Content-Type": 'application/json'}}
             )
