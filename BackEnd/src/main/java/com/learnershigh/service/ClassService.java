@@ -1,12 +1,13 @@
 package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
+import com.learnershigh.domain.StudentClassList;
+import com.learnershigh.domain.StudentWishlist;
 import com.learnershigh.dto.ClassJoinDto;
 import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.ClassListProjectionInterface;
-import com.learnershigh.repository.ClassRepository;
-import com.learnershigh.repository.ClassTypeRepository;
-import com.learnershigh.repository.UserRepository;
+import com.learnershigh.dto.StudentClassActionDto;
+import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final UserRepository userRepository;
     private final ClassTypeRepository classTypeRepository;
+    private final StudentClassListRepository studentClassListRepository;
 
     // 강의 개설 (강의 정보 insert)
     @Transactional
@@ -60,10 +62,9 @@ public class ClassService {
     }
 
     public List<ClassListDto> upcomingClassList() {
-//        return classRepository.upcomingClassList();
         List<Class> classList = classRepository.findByUpcomingClass();
         List<ClassListDto> classListDtoList = new ArrayList<>();
-        for(Class classDomain : classList){
+        for (Class classDomain : classList) {
             ClassListDto classListDto = new ClassListDto();
             classListDto.setClassNo(classDomain.getClassNo());
             classListDto.setUserNo(classDomain.getUserNo().getUserNo());
@@ -99,5 +100,14 @@ public class ClassService {
         classJoin.setClassStatus(classDomain.getClassStatus());
         classJoin.setClassTotalRound(classDomain.getClassTotalRound());
         return classJoin;
+    }
+
+    @Transactional
+    public void apply(StudentClassActionDto studentClassActionDto) {
+        StudentClassList studentClassList = new StudentClassList();
+        studentClassList.setUserNo(userRepository.findByUserNo(studentClassActionDto.getUserNo()));
+        studentClassList.setClassNo(classRepository.findByClassNo(studentClassActionDto.getClassNo()));
+
+        studentClassListRepository.save(studentClassList);
     }
 }
