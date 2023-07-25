@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WishDto {
+public class StudentClassActionDto {
     private Long userNo;
     private Long classNo;
 }

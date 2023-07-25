@@ -108,4 +108,22 @@ public class ClassController {
         responseBody.getList().add(classRoundService.getRoundByClassNo(classNo));
         return ResponseEntity.ok().body(responseBody);
     }
+
+    // 수강 신청 API
+    @PostMapping("/apply")
+    public ResponseEntity<BaseResponseBody> apply(@RequestBody StudentClassActionDto studentClassActionDto) {
+        BaseResponseBody responseBody = new BaseResponseBody("강의 수강 성공");
+        try {
+            classService.apply(studentClassActionDto);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
 }
