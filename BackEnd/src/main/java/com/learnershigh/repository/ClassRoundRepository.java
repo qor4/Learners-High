@@ -1,6 +1,5 @@
 package com.learnershigh.repository;
 
-import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,11 @@ public interface ClassRoundRepository extends JpaRepository<ClassRound, Long> {
 
     @Query(value = "SELECT cr FROM ClassRound cr JOIN StudentClassList scl ON scl.classNo.classNo = cr.classNo.classNo WHERE scl.userNo.userNo = :userNo " +
             "AND date(cr.classRoundStartDatetime) = subdate(curdate(),date_format(curdate(),'%w')- :n)")
-    List<ClassRound> getWeeklyClassRoundByUserNo(@Param("userNo") Long userNo, @Param("n") String n);
+    List<ClassRound> getWeeklyClassRoundByStudent(@Param("userNo") Long userNo, @Param("n") String n);
+
+    @Query(value = "SELECT cr FROM ClassRound cr JOIN Class c ON c.classNo = cr.classNo.classNo WHERE c.userNo.userNo = :userNo " +
+            "AND date(cr.classRoundStartDatetime) = subdate(curdate(),date_format(curdate(),'%w')- :n)")
+    List<ClassRound> getWeeklyClassRoundByTeacher(@Param("userNo") Long userNo, @Param("n") String n);
 }
 
 
