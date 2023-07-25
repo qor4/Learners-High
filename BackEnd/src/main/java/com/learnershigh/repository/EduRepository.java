@@ -8,4 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface EduRepository extends JpaRepository<EduCareer, Long>{
 
     EduCareer findByUserNo(Long userNo);
+
+    EduCareer findByeduCareerNo(Long eduCareerNo);
+
+
 }

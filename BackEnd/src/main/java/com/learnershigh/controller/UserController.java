@@ -85,16 +85,16 @@ public class UserController {
 
     // 경력 추가
     @PostMapping("/join/job/{userNo}")
-    public JobCareer jobJoin(@RequestBody JobDto jobDto, @PathVariable("userNo") Long userNo) {
+    public void jobJoin(@RequestBody JobDto jobDto, @PathVariable("userNo") Long userNo) {
 
-        return userService.jobJoin(jobDto, userNo);
+         userService.jobJoin(jobDto, userNo);
     }
 
     // 학위 추가
     @PostMapping("/join/edu/{userNo}")
-    public EduCareer eduJoin(@RequestBody EduDto eduDto, @PathVariable("userNo") Long userNo) {
+    public void eduJoin(@RequestBody EduDto eduDto, @PathVariable("userNo") Long userNo) {
 
-        return userService.eduJoin(eduDto, userNo);
+         userService.eduJoin(eduDto, userNo);
     }
 
     // 로그인
@@ -123,20 +123,27 @@ public class UserController {
     }
 
     // 강사 학력 수정
-    @PutMapping("/modify/edu/{userNo}")
-    public void eduModify(@PathVariable("userNo") Long userNo, @RequestBody EduDto eduDto){
+    @PutMapping("/modify/edu/{eduCareerNo}")
+    public void eduModify(@PathVariable("eduCareerNo") Long eduCareerNo, @RequestBody EduDto eduDto){
 
-
+        userService.eduModify(eduCareerNo,eduDto);
     }
 
     // 강사 학력 삭제
-    @DeleteMapping()
+    @DeleteMapping("/edu/delete/{eduCareerNo}")
+    public void eduDelete(@PathVariable("eduCareerNo") Long eduCareerNo){
+         userService.eduDelete(eduCareerNo);
+    }
 
     // 강사 경력 수정
-    @PutMapping("/modify/job/{userNo}")
-    public void eduModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
-
+    @PutMapping("/modify/job/{jobCareerNo}")
+    public void eduModify(@PathVariable("jobCareerNo") Long jobCareerNo, @RequestBody JobDto jobDto){
+    userService.jobModify(jobCareerNo, jobDto);
 
     }
     // 강사 경력 삭제
+    @DeleteMapping("/job/delete/{jobCareerNo}")
+    public void jobDelete(@PathVariable("jobCareerNo") Long jobCareerNo){
+        userService.jobDelete(jobCareerNo);
+    }
 }

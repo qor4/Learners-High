@@ -9,4 +9,6 @@ public interface JobRepository extends JpaRepository<JobCareer, Long> {
 
     JobCareer findByUserNo(Long userNo);
 
+    JobCareer findByJobCareerNo(Long jobCareerNo);
+
 }

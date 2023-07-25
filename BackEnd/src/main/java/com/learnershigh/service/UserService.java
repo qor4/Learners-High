@@ -40,7 +40,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     // 이메일로 userNo 뽑아내기
-    public Long getUserNo(String userEmail){
+    public Long getUserNo(String userEmail) {
         User user = userRepository.findByUserEmail(userEmail);
 
         return user.getUserNo();
@@ -65,7 +65,7 @@ public class UserService {
             throw new IllegalStateException("이메일 형식을 다시 맞춰주세요.");
         }
 
-        if(!duplicateEmail(joinDto.getUserEmail())){
+        if (!duplicateEmail(joinDto.getUserEmail())) {
             throw new IllegalStateException("이미 가입된 이메일 입니다.");
         }
 
@@ -284,7 +284,7 @@ public class UserService {
 
     // 강사 경력 정보 insert
     @Transactional
-    public JobCareer jobJoin(JobDto jobDto, Long userNo) {
+    public void jobJoin(JobDto jobDto, Long userNo) {
         JobCareer jobCareer = new JobCareer();
 
         jobCareer.setCompanyName(jobDto.getCompanyName());
@@ -294,12 +294,12 @@ public class UserService {
         jobCareer.setUserNo(userRepository.findByUserNo(userNo));
 
 
-        return jobCareerRepository.save(jobCareer);
+         jobCareerRepository.save(jobCareer);
     }
 
     // 강사 학위 정보 insert
     @Transactional
-    public EduCareer eduJoin(EduDto eduDto, Long userNo) {
+    public void eduJoin(EduDto eduDto, Long userNo) {
         EduCareer eduCareer = new EduCareer();
 
         eduCareer.setUniversityName(eduDto.getUniversityName());
@@ -309,7 +309,7 @@ public class UserService {
         eduCareer.setEduEndDate(eduDto.getEduEndDate());
         eduCareer.setUserNo(userRepository.findByUserNo(userNo));
 
-        return eduRepository.save(eduCareer);
+         eduRepository.save(eduCareer);
     }
 
     // 로그인
@@ -332,7 +332,7 @@ public class UserService {
 
     // 마이페이지에 보일 유저 정보 추출
 
-    public JoinDto mypageUser(Long userNo){
+    public JoinDto mypageUser(Long userNo) {
         //System.out.println(userRepository.findByUserNo(userNo));
         User user = userRepository.findByUserNo(userNo);
 
@@ -350,7 +350,7 @@ public class UserService {
 
     // 마이페이지 수정
     @Transactional
-    public void mypageModify(Long userNo, JoinDto joinDto){
+    public void mypageModify(Long userNo, JoinDto joinDto) {
 
         User user = userRepository.findByUserNo(userNo);
 
@@ -360,11 +360,12 @@ public class UserService {
 
     }
 
+    // 수정 버튼에 job_career_no가 있어야 함.
     // 강사 경력 수정
     @Transactional
-    public void jobModify(Long userNo, JobDto jobDto){
+    public void jobModify(Long jobCareerNo, JobDto jobDto) {
 
-        JobCareer jobCareer = jobCareerRepository.findByUserNo(userNo);
+        JobCareer jobCareer = jobCareerRepository.findByJobCareerNo(jobCareerNo);
 
 
         // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
@@ -372,14 +373,38 @@ public class UserService {
 
     }
 
+    // 수정 버튼에 edu_career_no가 있어야 함.
     // 강사 학력 수정
     @Transactional
-    public void eduModify(Long userNo, EduDto eduDto){
+    public void eduModify(Long eduCareerNo, EduDto eduDto) {
 
-        EduCareer eduCareer = eduRepository.findByUserNo(userNo);
+        EduCareer eduCareer = eduRepository.findByeduCareerNo(eduCareerNo);
 
         // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
         eduCareer.eduModify(eduDto.getUniversityName(), eduDto.getMajorName(), eduDto.getDegree(), eduDto.getEduStartDate(), eduDto.getEduEndDate());
+
+    }
+
+    // 삭제 버튼에 edu_career_no가 있어야 함.
+    // 강사 학력 삭제
+    @Transactional
+    public void eduDelete(Long eduCareerNo) {
+        EduCareer eduCareer = eduRepository.findByeduCareerNo(eduCareerNo);
+       // System.out.println(eduCareer);
+
+
+        eduRepository.delete(eduCareer);
+
+    }
+
+    // 삭제 버튼에 job_career_no가 있어야 함.
+    // 강사 경력 삭제
+    @Transactional
+    public void jobDelete(Long jobCareerNo) {
+        JobCareer jobCareer = jobCareerRepository.findByJobCareerNo(jobCareerNo);
+
+        jobCareerRepository.delete(jobCareer);
+
 
     }
 
