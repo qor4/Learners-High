@@ -7,9 +7,11 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
+
 import persistedReducer from './store';
 import {PersistGate} from 'redux-persist/integration/react'
 import {persistStore} from 'redux-persist'
+
 
 const store = configureStore({
   reducer: persistedReducer,
