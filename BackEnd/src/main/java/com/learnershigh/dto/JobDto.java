@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobDto {
 
+    private Long jobCareerNo;
+
     private String companyName;
     private String departName;
 

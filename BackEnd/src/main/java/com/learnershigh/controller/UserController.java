@@ -9,7 +9,11 @@ import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -120,6 +124,55 @@ public class UserController {
     @PutMapping("mypage/modify/{userNo}")
     public void mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
          userService.mypageModify(userNo, joinDto);
+    }
+
+    // 강사 학위 all 출력
+    @GetMapping("edu-all-list/{userNo}")
+    public List<EduDto> eduList(@PathVariable("userNo") User userNo){
+        List<EduCareer> eduList = userService.eduList(userNo);
+
+        List<EduDto> eduDtoList = new ArrayList<>();
+
+        for (EduCareer ec : eduList){
+            EduDto eduDto = new EduDto();
+
+            eduDto.setEduCareerNo(ec.getEduCareerNo());
+            eduDto.setUniversityName(ec.getUniversityName());
+            eduDto.setMajorName(ec.getMajorName());
+            eduDto.setDegree(ec.getDegree());
+            eduDto.setEduStartDate(ec.getEduStartDate());
+            eduDto.setEduEndDate(ec.getEduEndDate());
+
+            eduDtoList.add(eduDto);
+        }
+
+        return eduDtoList;
+
+
+    }
+
+
+    // 강사 경력 all 출력
+    @GetMapping("job-all-list/{userNo}")
+    public List<JobDto> jobList(@PathVariable("userNo") User userNo){
+        List<JobCareer> jobList = userService.jobList(userNo);
+
+        List<JobDto> jobDtoList = new ArrayList<>();
+
+        for (JobCareer ec : jobList){
+            JobDto jobDto = new JobDto();
+
+           jobDto.setJobCareerNo(ec.getJobCareerNo());
+           jobDto.setCompanyName(ec.getCompanyName());
+           jobDto.setDepartName(ec.getDepartName());
+           jobDto.setHireStartDate(ec.getHireStartDate());
+           jobDto.setHireEndDate(ec.getHireEndDate());
+
+           jobDtoList.add(jobDto);
+
+        }
+
+        return jobDtoList;
     }
 
     // 강사 학력 수정
