@@ -8,6 +8,7 @@ class LearnersHighApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("As");
 	}
 
 }
