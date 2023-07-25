@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useEffect} from "react";
 import axios from 'axios'
 import { url } from "../../api/APIPath";
 
@@ -146,18 +146,21 @@ const UserJoin = () => {
   const [userTelMSG, setUserTelMSG ] = useState('')
   const [userTelValidCheck, setUserTelValidCheck] = useState(false)
   const userTelFormCheck = (e) => {
+    console.log(userTel, userTelValidCheck)
     const pattern1 = /[0-9]/;
     if (!pattern1.test(userTel)) {
       setUserTelMSG("숫자만 입력해 주세요.")
       setUserTelValidCheck(false)
-      setUserTel("")
+      // setUserTel("")
       return
     } else if (userTel.length !== 11){
       setUserTelMSG("전화번호를 입력해주세요.")
       setUserTelValidCheck(false)
-      setUserTel("")
+      // setUserTel("")
       return
-    } 
+    }
+    // 일단 빼놓기. 전화번호 형식 입력했어. 근데 다시 돌아올땐 이녀석이 false로
+    setUserTel(userTel.replace('/-/g','').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'))
     setUserTelMSG("")
     setUserTelValidCheck(true)
   }
@@ -208,7 +211,7 @@ const UserJoin = () => {
 
 
   const signUp = () => {
-    if (passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
+    if (idValidCheck && passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
       userInfoValidCheck && userNameValidCheck ) {
         alert("성공!")
         const data = JSON.stringify( {
@@ -334,6 +337,7 @@ const UserJoin = () => {
           type="text" 
           name="userTel"
           id="userTel"
+          value={userTel}
           placeholder="숫자만 입력해 주세요(01012345678)"
           onChange={(e)=> setUserTel( removeAllEmpty(e.currentTarget.value))}
           onBlur={userTelFormCheck}
