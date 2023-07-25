@@ -108,10 +108,43 @@ public class UserService {
        User user = userRepository.findByUserNo(userNo);
 
         // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+
         user.userDelete(false);
 
         return userRepository.findByUserNo(userNo).isActive();
 
+    }
+
+    // 비밀번호 변경 시 비밀번호 확인
+    public Boolean pwdCheck(Long userNo, String passWord) {
+        User user = userRepository.findByUserNo(userNo);
+
+        if (!passwordEncoder.matches(passWord, user.getUserPassword())) {
+            throw new IllegalStateException("잘못된 비밀번호입니다.");
+        }
+
+        return true;
+    }
+
+    // 비밀번호 변경
+    @Transactional
+    public Boolean pwdChange(Long userNo, String passWord) {
+        User user = userRepository.findByUserNo(userNo);
+
+        // 비밀번호 유효성 검사
+        if (!Pattern.matches("^.*(?=^.{9,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$", passWord)) {
+            throw new IllegalStateException("비밀번호 형식이 맞지않습니다.");
+        }
+
+
+        // 해시값으로 DB에 넣음.
+        String encodePassword = passwordEncoder.encode(passWord);
+        user.setUserPassword(encodePassword);
+//        user.pwdChange(encodePassword);
+
+
+
+        return true;
     }
 
     @Transactional

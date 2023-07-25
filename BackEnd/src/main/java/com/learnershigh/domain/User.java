@@ -103,4 +103,5 @@ public class User {
     public void userDelete(Boolean isActive){
         this.isActive = isActive;
     }
+
 }
