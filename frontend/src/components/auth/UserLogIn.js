@@ -6,13 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 const UserLogIn = () => {
     const user = useSelector((state)=> state.user)
-    // console.log(useSelector())
-    console.log(user, "ss")
+    console.log(user)
     const [logInForm, setLogInForm] = useState({
         userId: '',
         userPassword: ''
     })
-    console.log(logInForm)
     const dispatch = useDispatch()
     const onChange = (e) => {
         const {name, value} = e.currentTarget
@@ -23,20 +21,19 @@ const UserLogIn = () => {
     }
     
     const userLogIn = () => {
-        alert("띠용")
-        console.log(logInForm)
-        axios.post(`${url}/user/local-login`, 
+        axios.post(`${url}/user/login`, 
         logInForm,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res=> {
-            console.log(res.data)
-            if (res.data.code === 0) {
+            console.log(res.data, "나는 로그인데이터!")
+            console.log(res)
+            if (res.data.resultCode === 0) {
                 // 로그인 성공
                 alert("로그인!")
                 dispatch(logInUser(res.data.userInfo))
             } else {
-                // 로그인 실패 (비밀번호 틀림, 아이디 없음, 탈퇴회원)
+                alert("로그인 실패!")
             }
         })
     }
