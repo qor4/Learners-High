@@ -99,4 +99,8 @@ public class User {
         this.userTel = userTel;
         this.userInfo = userInfo;
     }
+
+    public void userDelete(Boolean isActive){
+        this.isActive = isActive;
+    }
 }

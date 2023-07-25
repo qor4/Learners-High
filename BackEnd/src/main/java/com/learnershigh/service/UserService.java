@@ -102,6 +102,19 @@ public class UserService {
     }
 
     @Transactional
+    // 회원 탈퇴 (isactive = false)
+    public Boolean userDelete(Long userNo) {
+
+       User user = userRepository.findByUserNo(userNo);
+
+        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+        user.userDelete(false);
+
+        return userRepository.findByUserNo(userNo).isActive();
+
+    }
+
+    @Transactional
     public User kakaoUserJoin(String code) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 

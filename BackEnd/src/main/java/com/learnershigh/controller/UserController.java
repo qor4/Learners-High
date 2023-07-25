@@ -44,6 +44,12 @@ public class UserController {
         // false 면 가입 한 적 있음.
     }
 
+     // 회원탈퇴
+    @PutMapping("delete/{userNo}")
+    public Boolean deleteUser(@PathVariable("userNo") Long userNo){
+        return userService.userDelete(userNo);
+    }
+
     // 아이디 중복
     @GetMapping("/duplicate/id/{id}")
     public ResponseEntity<BaseResponseBody> duplicateId(@PathVariable("id") String userId) {
