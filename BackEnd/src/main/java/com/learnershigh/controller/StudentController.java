@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 
 @RestController
 @RequestMapping("/student")
@@ -16,12 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class StudentController {
     private final StudentService studentService;
+
     // 강의 찜
     @PostMapping("/wish")
-    public ResponseEntity<BaseResponseBody> wish(@RequestBody WishDto wishDto) {
+    public ResponseEntity<BaseResponseBody> wish(@RequestBody StudentClassActionDto studentClassActionDto) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 위시 성공");
         try {
-            studentService.wish(wishDto);
+            studentService.wish(studentClassActionDto);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -52,4 +55,11 @@ public class StudentController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @GetMapping("/class/main/{userNo}")
+    public ResponseEntity<CustomResponseBody> showWeeklyClassSchedule(@PathVariable Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("학생 메인 강의 조회 완료");
+        HashMap<Integer, Object> mainClassListDtoList = studentService.showWeeklyClassSchedule(userNo);
+        responseBody.getList().add(mainClassListDtoList);
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

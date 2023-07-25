@@ -25,6 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -359,6 +360,19 @@ public class UserService {
         user.mypageModify(joinDto.getUserName(), joinDto.getUserTel(), joinDto.getUserInfo());
 
     }
+
+    // 강사 경력 전체 출력
+    public List<EduCareer> eduList(User userNo){
+        return eduRepository.findAllByUserNo(userNo);
+    }
+
+    // 강사 학위 전체 출력
+    public List<JobCareer> jobList(User userNo){
+        return jobCareerRepository.findAllByUserNo(userNo);
+    }
+
+
+
 
     // 수정 버튼에 job_career_no가 있어야 함.
     // 강사 경력 수정
