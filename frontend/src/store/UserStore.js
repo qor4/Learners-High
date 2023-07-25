@@ -5,7 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const UserStore = createSlice({
     name: 'user',
     initialState: {
-        userNo: "",
+        userNo: "4",
         userId: "",
         isLogin: null,
     },
