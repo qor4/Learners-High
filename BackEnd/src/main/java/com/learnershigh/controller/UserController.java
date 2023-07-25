@@ -1,6 +1,7 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
@@ -10,7 +11,6 @@ import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -45,12 +45,44 @@ public class UserController {
     }
 
      // 회원탈퇴
-    @PutMapping("delete/{userNo}")
+    @PutMapping("/delete/{userNo}")
     public Boolean deleteUser(@PathVariable("userNo") Long userNo){
         return userService.userDelete(userNo);
     }
 
-    // 아이디 중복
+    // 비밀번호 변경 시 비밀번호 검사
+    @GetMapping("/pwd-check/{userNo}")
+    public ResponseEntity<BaseResponseBody> pwdCheck(@PathVariable("userNo") Long userNo, @RequestParam("pwd") String pwd)
+    {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 맞습니다.");
+        try {
+            userService.pwdCheck(userNo, pwd);
+        }
+        catch (IllegalStateException e){
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
+    }
+
+    // 비밀번호 변경하기
+    @PutMapping("/update/pwd/{userNo}")
+    public ResponseEntity<BaseResponseBody> pwdChange(@PathVariable("userNo") Long userNo, @RequestParam("pwd") String pwd) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
+        try {
+            userService.pwdChange(userNo, pwd);
+        } catch (IllegalStateException e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
+
+    }
+        // 아이디 중복
     @GetMapping("/duplicate/id/{id}")
     public ResponseEntity<BaseResponseBody> duplicateId(@PathVariable("id") String userId) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
