@@ -1,13 +1,16 @@
 package com.learnershigh.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class StudentClassList {
 
     // 수강 목록 no
@@ -17,12 +20,12 @@ public class StudentClassList {
     private Long whshlistNo;
 
     // 학생 no (FK,NN)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
     private User userNo;
 
     // 수업 no (FK,NN)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_no")
     private Class classNo;
 
