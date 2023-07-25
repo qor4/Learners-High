@@ -1,14 +1,16 @@
 import React, {useState, useRef} from "react";
+import {useSelector, userSelector} from "react-redux"
 import axios from 'axios'
 import { url } from "../../api/APIPath";
 
 const UserJoinTeacherJob = () => {
     const nextId = useRef(1)
+    const userNo = useSelector(state => state.user.userNo)
     const [jobInputList, setJobInputList] = useState(
         [
             {
                 id: 0,
-                userNo: "1",
+                userNo: userNo,
                 companyName: '',
                 departName: '',
                 hireStartDate: '',
@@ -20,7 +22,7 @@ const UserJoinTeacherJob = () => {
     const addJobInputItem = () => {
         const input = {
             id: nextId.current,
-            userNo: "1",
+            userNo: userNo,
             companyName: '',
             departName: '',
             hireStartDate: '',
