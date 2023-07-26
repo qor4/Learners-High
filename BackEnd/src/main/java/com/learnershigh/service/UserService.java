@@ -25,6 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -417,14 +418,55 @@ public class UserService {
 
     }
 
-    // 강사 경력 전체 출력
-    public List<EduCareer> eduList(User userNo){
-        return eduRepository.findAllByUserNo(userNo);
+    // 강사 학위 전체 출력
+    public List<EduDto> eduList(User userNo){
+
+        List<EduCareer> eduList = eduRepository.findAllByUserNo(userNo);
+
+        List<EduDto> eduDtoList = new ArrayList<>();
+
+        for (EduCareer ec : eduList) {
+            EduDto eduDto = new EduDto();
+
+            eduDto.setEduCareerNo(ec.getEduCareerNo());
+            eduDto.setUniversityName(ec.getUniversityName());
+            eduDto.setMajorName(ec.getMajorName());
+            eduDto.setDegree(ec.getDegree());
+            eduDto.setEduStartDate(ec.getEduStartDate());
+            eduDto.setEduEndDate(ec.getEduEndDate());
+
+            eduDtoList.add(eduDto);
+
+
+        }
+
+        return eduDtoList;
+
+
     }
 
-    // 강사 학위 전체 출력
-    public List<JobCareer> jobList(User userNo){
-        return jobCareerRepository.findAllByUserNo(userNo);
+    // 강사 경력 전체 출력
+    public List<JobDto> jobList(User userNo){
+
+        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNo(userNo);
+
+
+        List<JobDto> jobDtoList = new ArrayList<>();
+
+        for (JobCareer ec : jobCareers) {
+            JobDto jobDto = new JobDto();
+
+            jobDto.setJobCareerNo(ec.getJobCareerNo());
+            jobDto.setCompanyName(ec.getCompanyName());
+            jobDto.setDepartName(ec.getDepartName());
+            jobDto.setHireStartDate(ec.getHireStartDate());
+            jobDto.setHireEndDate(ec.getHireEndDate());
+
+            jobDtoList.add(jobDto);
+
+
+        }
+        return jobDtoList;
     }
 
 
