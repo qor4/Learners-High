@@ -1,9 +1,9 @@
 // 공통 Header 컴포넌트
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-    const [userType, setUserType] = useState("guest");
+    const userType = useSelector(state => state.user.userType)
 
     return (
         <header>
@@ -15,7 +15,7 @@ const Header = () => {
                 </h1>
 
                 {/* 로그인이 안 되어있을 경우 */}
-                {userType === "guest" && (
+                {!userType && (
                     <>
                         <li>전체 강의</li>
                         <li>회원가입</li>
