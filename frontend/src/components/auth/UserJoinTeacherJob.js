@@ -113,7 +113,7 @@ const UserJoinTeacherJob = (props) => {
                 }
             </form>
             <button onClick={addJobInputItem}>+</button>
-
+            <br/>
             <button onClick={postTeacherJob}>이력 등록</button>
         </>
     )

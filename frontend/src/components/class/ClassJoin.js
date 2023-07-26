@@ -1,23 +1,43 @@
 // 강의 개설 첫 번째 페이지 (기본 정보 입력)
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useSelector } from "react-redux";
 
-const CreateClass = () => {
+import { url } from "../../api/APIPath";
+
+import axios from "axios";
+
+const ClassJoin = () => {
     const [classCode, setclassCode] = useState("");
     const [subjectName, setSubjectName] = useState("");
+    const [classThumbnailImg, setThumbnail] = useState(null);
+    const [classThumbnailInfo, setClassIntro] = useState("");
+    const [classInfo, setClassInfo] = useState("");
+
+    // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
+
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
-
-    const [thumbnail, setThumbnail] = useState(null);
-    const [classIntro, setClassIntro] = useState("");
-    const [classInfoContents, setClassInfoContents] = useState("");
-
+    
     const [maxStudent, setMaxStudent] = useState(0);
     const [classPrice, setClassPrice] = useState(0);
 
-    const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"];
+    const userNo = useSelector(state=>state.user.userNo)
+    
+    // API가 완료되면 밑에 것들로 바꿀 것.
+    const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
+    //classTypeList 요청해서 담았다.
+    const [classTypeList, setClassTypeList] = useState([])
+    useEffect( () => {
+        axios.get(`${url}/class/type/`)
+        .then(res=> {
+            console.log(res.data)
+            setClassTypeList(res.data)
+        })
+    }, [])
+
 
     // 강의 이름(classCode) input 박스에 입력했을 때
     const handleClassChange = (event) => {
@@ -53,7 +73,7 @@ const CreateClass = () => {
 
     // 수업 내용을 입력했을 때
     const handleIntroChange = (event) => {
-        if (classIntro.length >= 100) {
+        if (classThumbnailInfo.length >= 100) {
             return;
         }
         setClassIntro(event.target.value);
@@ -62,12 +82,12 @@ const CreateClass = () => {
     // html 에디터에 내용을 입력하고, 에디터에서 포커스가 빠져나왔을 때 (Blur)
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
-        setClassInfoContents(data);
+        setClassInfo(data);
     };
 
     // 최대 학생 수를 입력했을 때 (최대 50명까지 가능)
     const handleMaxStudentChange = (event) => {
-        const numericValue = parseInt(event.target.value, 10);
+        const numericValue = parseInt(event.target.value, 10); // 10진수
         if (!isNaN(numericValue) && numericValue >= 0) {
             // 50명 제한
             setMaxStudent(Math.min(numericValue, 50));
@@ -88,19 +108,19 @@ const CreateClass = () => {
     const handleFocusChange = (setStateFunc, value) => {
         setStateFunc(value === 0 ? "" : value);
     };
-
+    
     // 데이터 전송 함수 (임시저장 눌렀을 때)
     const sendDataToServer = () => {
         const data = {
-            classInfo: classInfoContents,
+            classInfo: classInfo,
             className: classCode,
             classPrice: classPrice,
             classStatus: "작성 중",
-            classThumbnailImg: thumbnail,
-            classThumbnailInfo: classIntro,
-            classTypeNo: 0,
+            classThumbnailImg: classThumbnailImg,
+            classThumbnailInfo: classThumbnailInfo,
+            classTypeNo: 0, // 미정
             maxStudent: maxStudent,
-            userNo: 0
+            userNo: userNo //
         }
     }
 
@@ -147,18 +167,18 @@ const CreateClass = () => {
             </div>
 
             <div>
-                <label htmlFor="thumbnail">강의 썸네일</label>
+                <label htmlFor="classThumbnailImg">강의 썸네일</label>
                 <div>
-                    {thumbnail ? (
+                    {classThumbnailImg ? (
                         <img
-                            src={thumbnail && URL.createObjectURL(thumbnail)}
+                            src={classThumbnailImg && URL.createObjectURL(classThumbnailImg)}
                             alt="Thumbnail"
                         />
                     ) : null}
                 </div>
                 <input
                     type="file"
-                    id="thumbnail"
+                    id="classThumbnailImg"
                     accept="image/*"
                     onChange={handleFileChange}
                 />
@@ -168,12 +188,12 @@ const CreateClass = () => {
                 <label htmlFor="classIntroduce">수업 소개</label>
                 <textarea
                     id="classIntroduce"
-                    value={classIntro}
+                    value={classThumbnailInfo}
                     placeholder="수업 소개를 100자 이내로 작성해 주세요."
                     onChange={handleIntroChange}
                     maxLength={100}
                 ></textarea>
-                <span>{classIntro.length}/100</span>
+                <span>{classThumbnailInfo.length}/100</span>
             </div>
 
             <div>
@@ -191,7 +211,7 @@ const CreateClass = () => {
                 {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
                 <CKEditor
                     editor={ClassicEditor}
-                    value={classInfoContents}
+                    value={classInfo}
                     // toolbar 설정
                     config={{
                         toolbar: {
@@ -254,8 +274,9 @@ const CreateClass = () => {
                 <button onClick={sendDataToServer}>임시 저장</button>
                 <button>다음</button>
             </div>
+            <hr/>
         </>
     );
 };
 
-export default CreateClass;
+export default ClassJoin;

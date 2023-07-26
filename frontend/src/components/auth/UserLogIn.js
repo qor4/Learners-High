@@ -30,7 +30,7 @@ const UserLogIn = () => {
             console.log(res)
             if (res.data.resultCode === 0) {
                 // 로그인 성공
-                alert("로그인!")
+                alert("로그인!")// 여기 꼭 확인하기!!
                 dispatch(logInUser(res.data.userInfo))
             } else {
                 alert("로그인 실패!")
