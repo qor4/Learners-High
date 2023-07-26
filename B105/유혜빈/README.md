@@ -43,3 +43,20 @@ public class S3Service {
 ```
 
 ### 파일을 업로드 함.
+
+![image.png](./image.png)
+
+### 성공은 됨. 하지만 intellij에서 region 오류가 남.
+![image-1.png](./image-1.png)
+
+-- 잘 읽어보면 설정된 버킷의 region은 "ap-northeast-2"인데 왜 안 맞추냐는 것 같다.
+
+### properties 와 동일하게 맞췄음에도 계속 오류가 나서 5시간째 헤매고 있다.
+
+#### 내가 설정한 region 
+![image-2.png](./image-2.png)
+
+#### 현재 버킷의 region 
+![image-3.png](./image-3.png)
+
+-- 내일 코치님께 여쭤볼 생각...
