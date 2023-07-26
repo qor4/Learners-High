@@ -1,32 +1,78 @@
-import React from 'react'
-import styled, {css} from 'styled-components'
+// 공통 Button 컴포넌트
+import styled, { css } from "styled-components";
+
+// 버튼 사이즈
+const SIZES = {
+    sm: css`
+        height: 40px;
+        font-size: 16px;
+    `,
+    md: css`
+        height: 44px;
+    `,
+    lg: css`
+        height: 52px;
+    `,
+    xl: css`
+        height: 56px;
+        font-size: 20px;
+    `,
+};
 
 const StyledButton = styled.button`
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0.25rem 1rem;
-    color: white;
-    outline: none;
+    width: auto;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 12px;
+    box-sizing: border-box;
+    padding: 4px 20px;
     cursor: pointer;
-    
-    background: gray;
-    &:hover {
-        background: wheat;
+
+    // disabled 아닐 때, hover 시
+    &:not(:disabled):hover {
+        background: #000;
+        color: #fff;
     }
 
-    ${ props =>
+    // 지정해주지 않으면 기본 md 사이즈
+    ${(props) => SIZES[props.size] || SIZES.md}
+
+    // 비활성화
+    &:disabled {
+        cursor: default;
+        font-weight: bold;
+        opacity: 0.7;
+    }
+
+    // width 100%
+    ${(props) =>
         props.fullWidth &&
         css`
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
             width: 100%;
-            font-size: 1.125rem;
-        `
-    } 
-`
+        `}
 
-const Button = props => <StyledButton {...props} />;
+    // 포인트 버튼 (반전)
+    ${(props) =>
+        props.point &&
+        css`
+            background-color: #000;
+            color: #fff;
+            &:not(:disabled):hover {
+                background: #fff;
+                color: #000;
+            }
+        `}
+    
+    // 폰트 강조 (bold)
+    ${(props) =>
+        props.active &&
+        css`
+            font-weight: bold;
+        `}
+`;
+
+const Button = (props) => {
+    return <StyledButton {...props}>{props.children}</StyledButton>;
+};
 
 export default Button;
