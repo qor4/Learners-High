@@ -69,4 +69,14 @@ public class StudentController {
         responseBody.getList().add(mainClassListDtoList);
         return ResponseEntity.ok().body(responseBody);
     }
+
+    // 학생 강의 찜 목록 전체 출력
+
+    @GetMapping("/wish/list")
+    public List<ClassListDto> wishListAll(@RequestParam("userNo") Long userNo)
+    {
+        return studentService.wishListAll(userNo);
+    }
+
+
 }

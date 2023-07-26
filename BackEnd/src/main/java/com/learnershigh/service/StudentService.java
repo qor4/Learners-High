@@ -1,7 +1,9 @@
 package com.learnershigh.service;
 
+import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import com.learnershigh.domain.StudentWishlist;
+import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.MainClassListDto;
 import com.learnershigh.dto.StudentClassActionDto;
 import com.learnershigh.repository.ClassRepository;
@@ -72,5 +74,39 @@ public class StudentService {
             data.put(i, mainClassListDtoList);
         }
         return data;
+    }
+
+    // 학생 찜 목록 전체 출력
+    public List<ClassListDto> wishListAll(Long userNo) {
+
+        List<StudentWishlist> studentWishlist = studentWishlistRepository.findByUserNo(userNo);
+
+        List<ClassListDto> wishClassList = new ArrayList<>();
+
+
+        for (StudentWishlist sw : studentWishlist) {
+
+            ClassListDto classListDto = new ClassListDto();
+
+            Class wishClass = classRepository.findByClassNo(sw.getClassNo());
+
+
+            // 리스트 넣기
+            classListDto.setClassTypeName(wishClass.getClassTypeNo().getClassTypeName());
+            classListDto.setClassName(wishClass.getClassName());
+            classListDto.setClassPrice(wishClass.getClassPrice());
+            classListDto.setUserName(wishClass.getUserNo().getUserName());
+            classListDto.setClassStartDate(wishClass.getClassStartDate());
+            classListDto.setClassEndDate(wishClass.getClassEndDate());
+            classListDto.setClassThumbnailImg(wishClass.getClassThumbnailImg());
+            classListDto.setMaxStudent(wishClass.getMaxStudent());
+            classListDto.setTotalStudent(wishClass.getTotalStudent());
+
+            wishClassList.add(classListDto);
+
+        }
+
+    return wishClassList;
+
     }
 }
