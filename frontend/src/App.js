@@ -6,9 +6,11 @@ import Main from './Main';
 import UserJoin from './components/auth/UserJoin'
 import UserJoinTeacherJob from './components/auth/UserJoinTeacherJob';
 import UserJoinTeacherEdu from './components/auth/UserJoinTeacherEdu';
-
 import UserLogIn from './components/auth/UserLogIn';
+
 import FormStructor from './pages/LogInSignUpPage';
+
+import ClassJoinPage from './pages/ClassJoinPage'
 
 
 // test용
@@ -18,17 +20,16 @@ function App() {
   return (
     <div className="App">
     
-
-    <UserJoin/>
     {/* <FormStructor/> */}
-
+    <UserJoin/>
     {/* <TeacherJobItem/> */}
-    <UserJoinTeacherJob/>
-    <UserJoinTeacherEdu/>
+    {/* <UserJoinTeacherJob/>
+    <UserJoinTeacherEdu/> */}
 
     <Routes>
       <Route path="/" element={<Main/>}></Route>
       <Route path="/join" element={<UserJoin/>}></Route>
+      <Route path="/class/join" element={<ClassJoinPage/>}></Route>
     </Routes>
 
 

@@ -124,8 +124,8 @@ const UserJoinTeacherEdu = (props) => {
                 }
             </form>
             <button onClick={addEduInputItem}>+</button>
-
-            <button onClick={postTeacherEdu}>이력 등록</button>
+            <br/>
+            <button onClick={postTeacherEdu}>학력 등록</button>
         </>
     )
 }

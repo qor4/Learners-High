@@ -24,7 +24,10 @@ const ClassDetails = () => {
         const numericValue = parseInt(event.target.value, 10);
         if (!isNaN(numericValue) && numericValue >= 0) {
             setClassTotal(numericValue);
+            console.log(numericValue, "들어옴")
+            return
         }
+        setClassTotal(0)
     };
 
     // 시작일 캘린더에서 선택했을 때 => 이후 수정@@@
@@ -79,7 +82,7 @@ const ClassDetails = () => {
 
     return (
         <>
-            <h3>세부 회차 입력</h3>
+            <h1>세부 회차 입력</h1>
             <div>
                 <label htmlFor="totalTime">총 회차</label>
                 <input
