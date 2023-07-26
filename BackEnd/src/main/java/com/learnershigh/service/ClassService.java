@@ -1,6 +1,7 @@
 package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
+import com.learnershigh.domain.ClassType;
 import com.learnershigh.domain.StudentClassList;
 import com.learnershigh.dto.*;
 import com.learnershigh.repository.*;
@@ -130,5 +131,16 @@ public class ClassService {
         classInfo.setClassStatus(classDomain.getClassStatus());
         classInfo.setClassTotalRound(classDomain.getClassTotalRound());
         return classInfo;
+    }
+    public List<ClassTypeDto> getClassType() {
+        List<ClassType> classTypeList = classTypeRepository.findAll();
+        List<ClassTypeDto> classTypeDtoList = new ArrayList<>();
+        for(ClassType classType : classTypeList){
+            ClassTypeDto classTypeDto = new ClassTypeDto();
+            classTypeDto.setClassTypeNo(classType.getClassTypeNo());
+            classTypeDto.setClassTypeName(classType.getClassTypeName());
+            classTypeDtoList.add(classTypeDto);
+        }
+        return classTypeDtoList;
     }
 }
