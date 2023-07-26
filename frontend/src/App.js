@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import Main from './Main';
 import UserJoin from './components/auth/UserJoin'
 import UserJoinTeacherJob from './components/auth/UserJoinTeacherJob';
-import UserJoinTeacherEdu from './components/auth/UserJoinTeacherJEdu';
+import UserJoinTeacherEdu from './components/auth/UserJoinTeacherEdu';
 
 import UserLogIn from './components/auth/UserLogIn';
 import FormStructor from './pages/LogInSignUpPage';
@@ -19,8 +19,7 @@ function App() {
     <div className="App">
     
 
-    {/* <UserJoin/> */}
-    <UserLogIn/>
+    <UserJoin/>
     {/* <FormStructor/> */}
 
     {/* <TeacherJobItem/> */}
