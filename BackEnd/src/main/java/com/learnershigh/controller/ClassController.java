@@ -164,4 +164,11 @@ public class ClassController {
         }
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @GetMapping("/type")
+    public ResponseEntity<CustomResponseBody> getClassType() {
+        CustomResponseBody responseBody = new CustomResponseBody("수업 분류 정보 조회 완료");
+        responseBody.getList().add(classService.getClassType());
+        return ResponseEntity.ok().body(responseBody);
+    }
 }
