@@ -5,17 +5,26 @@ import { Route, Routes } from 'react-router-dom';
 import Main from './Main';
 import UserJoin from './components/auth/UserJoin'
 import UserJoinTeacherJob from './components/auth/UserJoinTeacherJob';
+import UserJoinTeacherEdu from './components/auth/UserJoinTeacherEdu';
+
 import UserLogIn from './components/auth/UserLogIn';
 import FormStructor from './pages/LogInSignUpPage';
+
+
+// test용
+
 
 function App() {
   return (
     <div className="App">
-    {/* <UserJoin/> */}
-    <UserLogIn/>
-    <FormStructor/>
+    
 
+    <UserJoin/>
+    {/* <FormStructor/> */}
+
+    {/* <TeacherJobItem/> */}
     <UserJoinTeacherJob/>
+    <UserJoinTeacherEdu/>
 
     <Routes>
       <Route path="/" element={<Main/>}></Route>

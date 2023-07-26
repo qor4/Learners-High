@@ -3,6 +3,7 @@ package com.learnershigh.service;
 import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import com.learnershigh.dto.ClassJoinDto;
+import com.learnershigh.dto.ClassRoundDetailDto;
 import com.learnershigh.dto.ClassRoundJoinDto;
 import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassRoundRepository;
@@ -25,7 +26,7 @@ public class ClassRoundService {
     @Transactional
     public void classRoundJoin(List<ClassRoundJoinDto> classRoundJoinDtoList) {
         List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classRoundJoinDtoList.get(0).getClassNo());
-        for(ClassRound classRound : classRoundList){
+        for (ClassRound classRound : classRoundList) {
             classRoundRepository.delete(classRound);
         }
         for (ClassRoundJoinDto classRoundJoinDto : classRoundJoinDtoList) {
@@ -63,10 +64,11 @@ public class ClassRoundService {
         classEntity.setClassEndDate(classRoundJoinDtoList.get(classRoundJoinDtoList.size() - 1).getClassRoundStartDatetime().toLocalDate());
         classRepository.save(classEntity);
     }
-    public List<ClassRoundJoinDto> getRoundByClassNo(Long classNo) {
+
+    public List<ClassRoundJoinDto> getWritingClassRoundByClassNo(Long classNo) {
         List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classNo);
         List<ClassRoundJoinDto> classRoundJoinDtoList = new ArrayList<>();
-        for(ClassRound classRound:classRoundList){
+        for (ClassRound classRound : classRoundList) {
             ClassRoundJoinDto classRoundJoinDto = new ClassRoundJoinDto();
             classRoundJoinDto.setClassNo(classRound.getClassNo().getClassNo());
             classRoundJoinDto.setClassRoundNumber(classRound.getClassRoundNumber());
@@ -79,5 +81,20 @@ public class ClassRoundService {
             classRoundJoinDtoList.add(classRoundJoinDto);
         }
         return classRoundJoinDtoList;
+    }
+
+    public List<ClassRoundDetailDto> getClassRoundDetailByClassNo(Long classNo) {
+        List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classNo);
+        List<ClassRoundDetailDto> classRoundDetailDtoList = new ArrayList<>();
+        for (ClassRound classRound : classRoundList) {
+            ClassRoundDetailDto classRoundDetail = new ClassRoundDetailDto();
+            classRoundDetail.setClassRoundNo(classRound.getClassRoundNo());
+            classRoundDetail.setClassRoundNumber(classRound.getClassRoundNumber());
+            classRoundDetail.setClassRoundTitle(classRound.getClassRoundTitle());
+            classRoundDetail.setClassRoundStartDatetime(classRound.getClassRoundStartDatetime());
+            classRoundDetail.setClassRoundEndDatetime(classRound.getClassRoundEndDatetime());
+            classRoundDetailDtoList.add(classRoundDetail);
+        }
+        return classRoundDetailDtoList;
     }
 }

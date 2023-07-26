@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 @RestController
@@ -19,6 +18,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class StudentController {
     private final StudentService studentService;
+
     // 강의 찜
     @PostMapping("/wish")
     public ResponseEntity<BaseResponseBody> wish(@RequestBody StudentClassActionDto studentClassActionDto) {
@@ -59,13 +59,6 @@ public class StudentController {
     public ResponseEntity<CustomResponseBody> showWeeklyClassSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("학생 메인 강의 조회 완료");
         HashMap<Integer, Object> mainClassListDtoList = studentService.showWeeklyClassSchedule(userNo);
-
-//        if (classDomain != null) {
-//            isWriting.put("isWriging", Boolean.TRUE);
-//            isWriting.put("classNo", classDomain.getClassNo());
-//        } else {
-//            isWriting.put("isWriging", Boolean.FALSE);
-//        }
         responseBody.getList().add(mainClassListDtoList);
         return ResponseEntity.ok().body(responseBody);
     }

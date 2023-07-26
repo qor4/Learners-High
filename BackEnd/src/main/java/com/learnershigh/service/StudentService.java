@@ -11,7 +11,6 @@ import com.learnershigh.repository.ClassRoundRepository;
 import com.learnershigh.repository.StudentWishlistRepository;
 import com.learnershigh.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.jboss.jandex.Main;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +51,7 @@ public class StudentService {
     public HashMap<Integer, Object> showWeeklyClassSchedule(Long userNo) {
         HashMap<Integer, Object> data = new HashMap<>();
         for (int i = 1; i <= 7; i++) {
-            List<ClassRound> classRoundList = classRoundRepository.getWeeklyClassRoundByUserNo(userNo, Integer.toString(i));
+            List<ClassRound> classRoundList = classRoundRepository.getWeeklyClassRoundByStudent(userNo, Integer.toString(i));
             List<MainClassListDto> mainClassListDtoList = new ArrayList<>();
             for (ClassRound classRound : classRoundList) {
                 MainClassListDto mainClassListDto = new MainClassListDto();
