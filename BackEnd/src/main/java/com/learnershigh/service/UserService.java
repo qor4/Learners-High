@@ -399,6 +399,16 @@ public class UserService {
     @Transactional
     public void mypageModify(Long userNo, JoinDto joinDto) {
 
+
+        // 전화번호 유효성 검사
+        if (!Pattern.matches("^\\d{11}$", joinDto.getUserTel())) {
+            throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
+        }
+        // 한마디 글자수 유효성 검사
+        if (!checkInfo(joinDto.getUserInfo())) {
+            throw new IllegalStateException("글자수가 50개를 넘었습니다.");
+        }
+
         User user = userRepository.findByUserNo(userNo);
 
 

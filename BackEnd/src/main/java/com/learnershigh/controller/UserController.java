@@ -1,7 +1,6 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.learnershigh.domain.EduCareer;
 import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
@@ -111,10 +110,11 @@ public class UserController {
     // 이메일 인증 번호
     @PostMapping("/cert/email")
     @ResponseBody
-    public String mainSend(@RequestParam String email) throws Exception{
+    public String mailSend(@RequestParam String email) throws Exception{
         String code = emailService.sendSimpleMessage(email);
         System.out.println("인증코드 : " + code);
         return code;
+
     }
 
 
@@ -172,11 +172,21 @@ public class UserController {
 
     // 마이페이지 정보 수정하기
     @PutMapping("mypage/modify/{userNo}")
-    public void mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto){
-         userService.mypageModify(userNo, joinDto);
+    public ResponseEntity<BaseResponseBody> pwdChange(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("정보가 변경되었습니다.");
+        try {
+            userService.mypageModify(userNo, joinDto);
+        } catch (IllegalStateException e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
     }
 
-    // 강사 학위 all 출력
+
+        // 강사 학위 all 출력
     @GetMapping("edu-all-list/{userNo}")
     public List<EduDto> eduList(@PathVariable("userNo") User userNo){
         List<EduCareer> eduList = userService.eduList(userNo);
@@ -227,15 +237,33 @@ public class UserController {
 
     // 강사 학력 수정
     @PutMapping("/modify/edu/{eduCareerNo}")
-    public void eduModify(@PathVariable("eduCareerNo") Long eduCareerNo, @RequestBody EduDto eduDto){
+    public ResponseEntity<BaseResponseBody> eduModify(@PathVariable("eduCareerNo") Long eduCareerNo, @RequestBody EduDto eduDto){
+        BaseResponseBody baseResponseBody = new BaseResponseBody("수정되었습니다.");
 
-        userService.eduModify(eduCareerNo,eduDto);
+        try {
+            userService.eduModify(eduCareerNo,eduDto);
+        } catch (Exception e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
     }
 
     // 강사 학력 삭제
     @DeleteMapping("/edu/delete/{eduCareerNo}")
-    public void eduDelete(@PathVariable("eduCareerNo") Long eduCareerNo){
-         userService.eduDelete(eduCareerNo);
+    public ResponseEntity<BaseResponseBody> eduDelete(@PathVariable("eduCareerNo") Long eduCareerNo){
+        BaseResponseBody baseResponseBody = new BaseResponseBody("삭제되었습니다.");
+
+        try {
+            userService.eduDelete(eduCareerNo);
+        } catch (Exception e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
     }
 
     // 강사 경력 수정
@@ -246,7 +274,18 @@ public class UserController {
     }
     // 강사 경력 삭제
     @DeleteMapping("/job/delete/{jobCareerNo}")
-    public void jobDelete(@PathVariable("jobCareerNo") Long jobCareerNo){
-        userService.jobDelete(jobCareerNo);
+    public ResponseEntity<BaseResponseBody> jobDelete(@PathVariable("jobCareerNo") Long jobCareerNo){
+        BaseResponseBody baseResponseBody = new BaseResponseBody("삭제되었습니다.");
+
+        try {
+            userService.jobDelete(jobCareerNo);
+        } catch (Exception e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
     }
+
+
 }
