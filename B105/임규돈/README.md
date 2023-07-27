@@ -57,3 +57,22 @@
 - Jenkins로 활용한 CI/CD 구축
 - openvidu 공부
 - SpringBoot로 API 생성
+
+## 0727
+
+### 1. 오늘 한 일
+- jenkins를 활용한 CI/CD
+  - GitLab push 시 자동으로 서버 재실행 성공
+  - 자동 배포 완료
+
+### 2. 이슈 및 보완 방향
+- Nginx로 https 통신 시도
+  - Nginx 시작
+- openvidu를 위한 ngix와 FrontEnd, BackEnd의 nginx의 포트 충돌로 인한 에러 발생
+  - openvidu port 설정 예정
+
+### 3. 금주 할 일
+- react에 openvidu + seeso 적용하기
+- Jenkins로 활용한 CI/CD 구축
+- openvidu 공부
+- SpringBoot로 API 생성
