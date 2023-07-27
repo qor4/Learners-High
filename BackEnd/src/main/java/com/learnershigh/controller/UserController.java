@@ -95,9 +95,8 @@ public class UserController {
     public ResponseEntity<BaseResponseBody> duplicateId(@PathVariable("id") String userId) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
         if (userService.duplicateId(userId)) {
-            baseResponseBody.setResultMsg("사용 할 수 있는 아이디 입니다.");
+            baseResponseBody.setResultMsg("사용 할 수 있는 아이디");
         } else {
-
             baseResponseBody.setResultMsg("사용 할 수 없는 아이디 입니다.(중복된 아이디)");
         }
         return ResponseEntity.ok().body(baseResponseBody);
