@@ -26,6 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -361,7 +362,8 @@ public class UserService {
     }
 
     // 로그인
-    public TokenDto userLogin(LoginDto loginDto) {
+    public HashMap<String, Object> userLogin(LoginDto loginDto) {
+        HashMap<String, Object> userInfo = new HashMap<>();
         User user = userRepository.findByUserId(loginDto.getUserId());
         if (user == null) {
             throw new BadCredentialsException("잘못된 계정정보입니다.");
@@ -372,9 +374,13 @@ public class UserService {
         TokenDto token = new TokenDto();
 
         token.setAccessToken(tokenProvider.createToken(user.getUserId()));
-
-
-        return token;
+        userInfo.put("token", token);
+        userInfo.put("userNo", user.getUserNo());
+        userInfo.put("userName", user.getUserName());
+        userInfo.put("userType", user.getUserType());
+        userInfo.put("userId", user.getUserId());
+        userInfo.put("userInfo", user.getUserInfo());
+        return userInfo;
     }
 
 

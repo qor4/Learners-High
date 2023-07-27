@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -164,9 +165,8 @@ public class UserController {
 //    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto) {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
-        TokenDto token = userService.userLogin(loginDto);
-        responseBody.getList().add(token);
-//        return new ResponseEntity<>(userService.userLogin(loginDto), HttpStatus.OK);
+        HashMap<String, Object> userInfo = userService.userLogin(loginDto);
+        responseBody.getList().add(userInfo);
         return ResponseEntity.ok().body(responseBody);
     }
 
