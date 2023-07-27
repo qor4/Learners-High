@@ -1,4 +1,4 @@
-export const url = "http://192.168.31.200:8080"
+export const url = "http://i9b105.p.ssafy.io:7777"
 
 // const AUTH = "auth/"
 // const USER 

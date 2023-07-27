@@ -25,7 +25,7 @@ function App() {
     {/* <TeacherJobItem/> */}
     {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
-
+    <UserLogIn/>
     <Routes>
       <Route path="/" element={<Main/>}></Route>
       <Route path="/join" element={<UserJoin/>}></Route>
