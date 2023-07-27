@@ -8,7 +8,7 @@ const SIZES = {
         font-size: 16px;
     `,
     md: css`
-        height: 44px;
+        height: 48px;
     `,
     lg: css`
         height: 52px;
