@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.StudentService;
 import io.swagger.annotations.Api;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 @RestController
@@ -16,7 +18,9 @@ import java.util.HashMap;
 @Api(tags = {"학생에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")
+
 public class StudentController {
+
     private final StudentService studentService;
 
     // 강의 찜
@@ -66,7 +70,7 @@ public class StudentController {
     // 학생 강의 찜 목록 전체 출력
 
     @GetMapping("/wish/list")
-    public List<ClassListDto> wishListAll(@RequestParam("userNo") Long userNo)
+    public List<ClassListDto> wishListAll(@RequestParam("userNo") User userNo)
     {
         return studentService.wishListAll(userNo);
     }

@@ -518,6 +518,8 @@ public class UserService {
         jobCareerRepository.delete(jobCareer);
 
 
+
+
     }
 
 }
