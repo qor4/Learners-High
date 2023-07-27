@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const ClassRoundDetailItem = (props) => {
+const ClassRoundItem = (props) => {
     const [classRoundTitle, setClassRoundTitle] = useState("");
     const [classRoundFile, setClassRoundFile] = useState("");
 
@@ -43,4 +43,4 @@ const ClassRoundDetailItem = (props) => {
     );
 };
 
-export default ClassRoundDetailItem;
+export default ClassRoundItem;

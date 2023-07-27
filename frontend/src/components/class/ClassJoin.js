@@ -10,21 +10,21 @@ import { url } from "../../api/APIPath";
 import axios from "axios";
 
 const ClassJoin = () => {
+    const userNo = useSelector(state=>state.user.userNo)
     const [classCode, setclassCode] = useState("");
-    const [subjectName, setSubjectName] = useState("");
     const [classThumbnailImg, setThumbnail] = useState(null);
     const [classThumbnailInfo, setClassIntro] = useState("");
     const [classInfo, setClassInfo] = useState("");
-
+    
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
-
+    
+    const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
     
     const [maxStudent, setMaxStudent] = useState(0);
     const [classPrice, setClassPrice] = useState(0);
 
-    const userNo = useSelector(state=>state.user.userNo)
     
     // API가 완료되면 밑에 것들로 바꿀 것.
     const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.

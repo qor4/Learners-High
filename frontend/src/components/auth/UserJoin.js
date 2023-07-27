@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from "react";
+
 import axios from 'axios'
 import { url } from "../../api/APIPath";
+import { useNavigate } from 'react-router-dom';
+
+import UserJoinTeacherJob from "./UserJoinTeacherJob"
+import UserJoinTeacherEdu from "./UserJoinTeacherEdu"
+
 
 const UserJoin = () => {
   const [userType,setUserType] = useState('S')
@@ -226,6 +232,7 @@ const UserJoin = () => {
         .then(res=> {
           if(res.data.resultCode === 0) {
             alert("회원가입 성공")
+            
           }
         }) 
       } else {
@@ -234,46 +241,27 @@ const UserJoin = () => {
   }
   
   const userTypeChangeS = (e) => {
-    if (userType === 'T') {
-      setUserType(e.currentTarget.value)
+    if (userType !== 'S') {
+      setUserType("S")
     }
   }
   const userTypeChangeT = (e) => {
-    if (userType === 'S') {
-      setUserType(e.currentTarget.value)
+    if (userType !== 'T') {
+      setUserType("T")
     }
   }
-
   return (
+    <>
     <form onSubmit={e => e.preventDefault()}> 
       <div>
         <button className="student" onClick={userTypeChangeS} value="S">
-          학생2
+          학생
         </button>
-        <button className="teacher" onClick={userTypeChangeT}>
+        <button className="teacher" onClick={userTypeChangeT} value="T">
           선생님
         </button>
-
       </div>
       
-      {/* <div>
-        <label htmlFor="student">학생</label>
-        <input type="radio"
-        id="student"
-        name="student"
-        value="S"
-        checked={userType.current==="S"}
-        onChange={userTypeChange}
-        />
-        <label htmlFor="teacher">선생님</label>
-        <input type="radio"
-        id="teacher"
-        name="teacher"
-        value="T"
-        checked={userType.current==="T"}
-        onChange={userTypeChange}
-        />
-      </div> */}
       <div>
         <div>
           <label htmlFor="userId">아이디: </label>
@@ -360,8 +348,14 @@ const UserJoin = () => {
       <button onClick={signUp}>회원가입</button>
     </form>
 
-    // 여기서 userType이 "T"면, 
+    {/* 여기서 userType이 "T"면,  */}
+    {
+      userType==='T' ? (
+        [<UserJoinTeacherJob key="0"></UserJoinTeacherJob>,
+        <UserJoinTeacherEdu key="1"></UserJoinTeacherEdu>]
+      ) : null
+    }
+    </>
   )
-  
 }
 export default UserJoin;

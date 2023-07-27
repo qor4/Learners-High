@@ -1,7 +1,7 @@
 // 강의 개설 페이지
-import ClassJoin from "../components/class/ClassJoin";
-import ClassDetails from "../components/class/ClassDetails";
-import { useState } from "react";
+import ClassJoin from "../../components/class/ClassJoin";
+import ClassJoinRound from "../../components/class/ClassJoinRoundList";
+// import { useState } from "react";
 
 const ClassJoinPage = () => {
     return (
@@ -10,7 +10,7 @@ const ClassJoinPage = () => {
             <ClassJoin />
 
             <hr />
-            <ClassDetails />
+            <ClassJoinRound />
         </div>
     );
 };

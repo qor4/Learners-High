@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const UserLogIn = () => {
     const user = useSelector((state)=> state.user)
-    console.log(user)
     const [logInForm, setLogInForm] = useState({
         userId: '',
         userPassword: ''

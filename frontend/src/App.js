@@ -10,7 +10,7 @@ import UserLogIn from './components/auth/UserLogIn';
 
 import FormStructor from './pages/LogInSignUpPage';
 
-import ClassJoinPage from './pages/ClassJoinPage'
+import ClassJoinPage from './pages/class/ClassJoinPage'
 
 
 // test용
@@ -21,7 +21,6 @@ function App() {
     <div className="App">
     
     {/* <FormStructor/> */}
-    <UserJoin/>
     {/* <TeacherJobItem/> */}
     {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
