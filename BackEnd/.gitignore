@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/resources/application.properties
 
 ### STS ###
 .apt_generated
@@ -16,7 +17,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-**/resources/application.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -35,3 +36,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### S3 ###
+src/main/resources/application-s3.properties
+
+

@@ -1,9 +1,11 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.domain.Class;
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.ClassService;
+import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ public class ClassController {
 
     private final ClassService classService;
     private final ClassRoundService classRoundService;
+    private final UserService userService;
 
     // 강의 개설
     @PostMapping("/join")
@@ -45,6 +48,7 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 회차 개설
     @PostMapping("/join/round")
     public ResponseEntity<BaseResponseBody> classRoundJoin(@RequestBody List<ClassRoundJoinDto> classRoundJoinDtoList) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
@@ -62,6 +66,7 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 강의 전 목록 출력(수강신청 목록에서 사용)
     @GetMapping("/list/upcoming")
     public ResponseEntity<CustomResponseBody> upcomingClassList() {
         CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
@@ -81,6 +86,7 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 작성 중인 강의가 존재하는지
     @GetMapping("/writing/{userNo}")
     public ResponseEntity<CustomResponseBody> isWritingByUserNo(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 조회 완료");
@@ -96,16 +102,19 @@ public class ClassController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 수업 정보 작성 페이지 조회
     @GetMapping("/writing/info/{classNo}")
-    public ResponseEntity<CustomResponseBody> getInfoByClassNo(@PathVariable Long classNo) {
+    public ResponseEntity<CustomResponseBody> getWritingClassByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
-        responseBody.getList().add(classService.getInfoByClassNo(classNo));
+        responseBody.getList().add(classService.getWritingClassByClassNo(classNo));
         return ResponseEntity.ok().body(responseBody);
     }
+
+    // 회차 정보 작성 페이지 조회
     @GetMapping("/writing/round/{classNo}")
-    public ResponseEntity<CustomResponseBody> getRoundByClassNo(@PathVariable Long classNo) {
+    public ResponseEntity<CustomResponseBody> getWritingClassRoundByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 회차 정보 조회 완료");
-        responseBody.getList().add(classRoundService.getRoundByClassNo(classNo));
+        responseBody.getList().add(classRoundService.getWritingClassRoundByClassNo(classNo));
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -124,6 +133,42 @@ public class ClassController {
             responseBody.setResultMsg(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 강의 상세 정보
+    @GetMapping("/{classNo}")
+    public ResponseEntity<CustomResponseBody> getClassDetailByClassNo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강의 상세 정보 조회 완료");
+        try {
+            ClassDetailDto classDetailDto = new ClassDetailDto();
+            ClassInfoDto classInfoDto = classService.getClassDetailByClassNo(classNo);
+            List<ClassRoundDetailDto> classRoundDetailDtoList = classRoundService.getClassRoundDetailByClassNo(classNo);
+            User user = new User();
+            user.setUserNo(classInfoDto.getUserNo());
+            List<EduDto> eduDtoList = userService.eduList(user);
+            List<JobDto> jobDtoList = userService.jobList(user);
+            classDetailDto.setClassInfo(classInfoDto);
+            classDetailDto.setClassRoundInfo(classRoundDetailDtoList);
+            classDetailDto.setEduInfos(eduDtoList);
+            classDetailDto.setJobInfos(jobDtoList);
+            responseBody.getList().add(classDetailDto);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity<CustomResponseBody> getClassType() {
+        CustomResponseBody responseBody = new CustomResponseBody("수업 분류 정보 조회 완료");
+        responseBody.getList().add(classService.getClassType());
         return ResponseEntity.ok().body(responseBody);
     }
 }

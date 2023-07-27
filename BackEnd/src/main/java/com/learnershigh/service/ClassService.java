@@ -1,12 +1,9 @@
 package com.learnershigh.service;
 
 import com.learnershigh.domain.Class;
+import com.learnershigh.domain.ClassType;
 import com.learnershigh.domain.StudentClassList;
-import com.learnershigh.domain.StudentWishlist;
-import com.learnershigh.dto.ClassJoinDto;
-import com.learnershigh.dto.ClassListDto;
-import com.learnershigh.dto.ClassListProjectionInterface;
-import com.learnershigh.dto.StudentClassActionDto;
+import com.learnershigh.dto.*;
 import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -86,7 +83,7 @@ public class ClassService {
         return classRepository.isWritingByUserNo(userNo);
     }
 
-    public ClassJoinDto getInfoByClassNo(Long classNo) {
+    public ClassJoinDto getWritingClassByClassNo(Long classNo) {
         Class classDomain = classRepository.findByClassNo(classNo);
         ClassJoinDto classJoin = new ClassJoinDto();
         classJoin.setUserNo(classDomain.getUserNo().getUserNo());
@@ -109,5 +106,41 @@ public class ClassService {
         studentClassList.setClassNo(classRepository.findByClassNo(studentClassActionDto.getClassNo()));
 
         studentClassListRepository.save(studentClassList);
+    }
+
+    public ClassInfoDto getClassDetailByClassNo(Long classNo) {
+        Class classDomain = classRepository.findByClassNo(classNo);
+        if (classDomain == null) {
+            throw new IllegalStateException("유효한 수업이 아닙니다.");
+        }
+        ClassInfoDto classInfo = new ClassInfoDto();
+        classInfo.setClassNo(classDomain.getClassNo());
+        classInfo.setUserNo(classDomain.getUserNo().getUserNo());
+        classInfo.setUserName(classDomain.getUserNo().getUserName());
+        classInfo.setClassTypeNo(classDomain.getClassTypeNo().getClassTypeNo());
+        classInfo.setClassTypeName(classDomain.getClassTypeNo().getClassTypeName());
+        classInfo.setClassName(classDomain.getClassName());
+        classInfo.setClassStartDate(classDomain.getClassStartDate());
+        classInfo.setClassEndDate(classDomain.getClassEndDate());
+        classInfo.setClassInfo(classDomain.getClassInfo());
+        classInfo.setMaxStudent(classDomain.getMaxStudent());
+        classInfo.setTotalStudent(classDomain.getTotalStudent());
+        classInfo.setClassPrice(classDomain.getClassPrice());
+        classInfo.setClassThumbnailImg(classDomain.getClassThumbnailImg());
+        classInfo.setClassThumbnailInfo(classDomain.getClassThumbnailInfo());
+        classInfo.setClassStatus(classDomain.getClassStatus());
+        classInfo.setClassTotalRound(classDomain.getClassTotalRound());
+        return classInfo;
+    }
+    public List<ClassTypeDto> getClassType() {
+        List<ClassType> classTypeList = classTypeRepository.findAll();
+        List<ClassTypeDto> classTypeDtoList = new ArrayList<>();
+        for(ClassType classType : classTypeList){
+            ClassTypeDto classTypeDto = new ClassTypeDto();
+            classTypeDto.setClassTypeNo(classType.getClassTypeNo());
+            classTypeDto.setClassTypeName(classType.getClassTypeName());
+            classTypeDtoList.add(classTypeDto);
+        }
+        return classTypeDtoList;
     }
 }

@@ -25,6 +25,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -99,6 +101,52 @@ public class UserService {
 
         return userRepository.save(user); // 저장한 객체를 반환함.
 
+    }
+
+    @Transactional
+    // 회원 탈퇴 (isactive = false)
+    public Boolean userDelete(Long userNo) {
+
+       User user = userRepository.findByUserNo(userNo);
+
+        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+
+        user.userDelete(false);
+
+        return userRepository.findByUserNo(userNo).isActive();
+
+    }
+
+    // 비밀번호 변경 시 비밀번호 확인
+    public Boolean pwdCheck(Long userNo, String passWord) {
+        User user = userRepository.findByUserNo(userNo);
+
+        if (!passwordEncoder.matches(passWord, user.getUserPassword())) {
+            throw new IllegalStateException("잘못된 비밀번호입니다.");
+        }
+
+        return true;
+    }
+
+    // 비밀번호 변경
+    @Transactional
+    public Boolean pwdChange(Long userNo, String passWord) {
+        User user = userRepository.findByUserNo(userNo);
+
+        // 비밀번호 유효성 검사
+        if (!Pattern.matches("^.*(?=^.{9,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$", passWord)) {
+            throw new IllegalStateException("비밀번호 형식이 맞지않습니다.");
+        }
+
+
+        // 해시값으로 DB에 넣음.
+        String encodePassword = passwordEncoder.encode(passWord);
+        user.setUserPassword(encodePassword);
+//        user.pwdChange(encodePassword);
+
+
+
+        return true;
     }
 
     @Transactional
@@ -314,7 +362,8 @@ public class UserService {
     }
 
     // 로그인
-    public TokenDto userLogin(LoginDto loginDto) {
+    public HashMap<String, Object> userLogin(LoginDto loginDto) {
+        HashMap<String, Object> userInfo = new HashMap<>();
         User user = userRepository.findByUserId(loginDto.getUserId());
         if (user == null) {
             throw new BadCredentialsException("잘못된 계정정보입니다.");
@@ -325,9 +374,13 @@ public class UserService {
         TokenDto token = new TokenDto();
 
         token.setAccessToken(tokenProvider.createToken(user.getUserId()));
-
-
-        return token;
+        userInfo.put("token", token);
+        userInfo.put("userNo", user.getUserNo());
+        userInfo.put("userName", user.getUserName());
+        userInfo.put("userType", user.getUserType());
+        userInfo.put("userId", user.getUserId());
+        userInfo.put("userInfo", user.getUserInfo());
+        return userInfo;
     }
 
 
@@ -353,6 +406,16 @@ public class UserService {
     @Transactional
     public void mypageModify(Long userNo, JoinDto joinDto) {
 
+
+        // 전화번호 유효성 검사
+        if (!Pattern.matches("^\\d{11}$", joinDto.getUserTel())) {
+            throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
+        }
+        // 한마디 글자수 유효성 검사
+        if (!checkInfo(joinDto.getUserInfo())) {
+            throw new IllegalStateException("글자수가 50개를 넘었습니다.");
+        }
+
         User user = userRepository.findByUserNo(userNo);
 
 
@@ -361,14 +424,55 @@ public class UserService {
 
     }
 
-    // 강사 경력 전체 출력
-    public List<EduCareer> eduList(User userNo){
-        return eduRepository.findAllByUserNo(userNo);
+    // 강사 학위 전체 출력
+    public List<EduDto> eduList(User userNo){
+
+        List<EduCareer> eduList = eduRepository.findAllByUserNo(userNo);
+
+        List<EduDto> eduDtoList = new ArrayList<>();
+
+        for (EduCareer ec : eduList) {
+            EduDto eduDto = new EduDto();
+
+            eduDto.setEduCareerNo(ec.getEduCareerNo());
+            eduDto.setUniversityName(ec.getUniversityName());
+            eduDto.setMajorName(ec.getMajorName());
+            eduDto.setDegree(ec.getDegree());
+            eduDto.setEduStartDate(ec.getEduStartDate());
+            eduDto.setEduEndDate(ec.getEduEndDate());
+
+            eduDtoList.add(eduDto);
+
+
+        }
+
+        return eduDtoList;
+
+
     }
 
-    // 강사 학위 전체 출력
-    public List<JobCareer> jobList(User userNo){
-        return jobCareerRepository.findAllByUserNo(userNo);
+    // 강사 경력 전체 출력
+    public List<JobDto> jobList(User userNo){
+
+        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNo(userNo);
+
+
+        List<JobDto> jobDtoList = new ArrayList<>();
+
+        for (JobCareer ec : jobCareers) {
+            JobDto jobDto = new JobDto();
+
+            jobDto.setJobCareerNo(ec.getJobCareerNo());
+            jobDto.setCompanyName(ec.getCompanyName());
+            jobDto.setDepartName(ec.getDepartName());
+            jobDto.setHireStartDate(ec.getHireStartDate());
+            jobDto.setHireEndDate(ec.getHireEndDate());
+
+            jobDtoList.add(jobDto);
+
+
+        }
+        return jobDtoList;
     }
 
 
@@ -418,6 +522,8 @@ public class UserService {
         JobCareer jobCareer = jobCareerRepository.findByJobCareerNo(jobCareerNo);
 
         jobCareerRepository.delete(jobCareer);
+
+
 
 
     }

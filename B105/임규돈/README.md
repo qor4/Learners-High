@@ -17,3 +17,43 @@
 - openvidu 공부
 - SpringBoot로 API 생성
  
+
+
+## 0725
+
+### 1. 오늘 한 일
+- openvidu + seeso 구현
+  - 월요일에 발생한 에러 해결
+- jenkins를 활용한 CI/CD
+
+### 2. 이슈 및 보완 방향
+- jenkins를 활용한 빌드 성공/ 무중단 배포 구현 중
+  - 배포 구현 중
+- mysql을 docker container로 실행하여 springboot와 연결 시도
+
+### 3. 금주 할 일
+- react에 openvidu + seeso 적용하기
+- Jenkins로 활용한 CI/CD 구축
+- openvidu 공부
+- SpringBoot로 API 생성
+
+
+## 0726
+
+### 1. 오늘 한 일
+- openvidu + seeso 구현
+  - 컴포넌트화하여 프로젝트에 적용하기 위한 작업
+- jenkins를 활용한 CI/CD
+  - mysql를 container에 띄워 사용
+
+### 2. 이슈 및 보완 방향
+- jenkins를 활용한 빌드 성공/ 무중단 배포 구현 중
+  - 배포 구현 중
+- mysql을 docker container로 실행하여 springboot와 연결 시도
+  - 연결성공
+
+### 3. 금주 할 일
+- react에 openvidu + seeso 적용하기
+- Jenkins로 활용한 CI/CD 구축
+- openvidu 공부
+- SpringBoot로 API 생성

@@ -1,23 +1,23 @@
 import React, {useState, useRef} from "react";
-import {useSelector, userSelector} from "react-redux"
+import {useSelector} from "react-redux"
 import axios from 'axios'
 import { url } from "../../api/APIPath";
 
-const UserJoinTeacherJob = () => {
+const UserJoinTeacherJob = (props) => {
     const nextId = useRef(1)
     const userNo = useSelector(state => state.user.userNo)
-    const [jobInputList, setJobInputList] = useState(
-        [
-            {
-                id: 0,
-                userNo: userNo,
-                companyName: '',
-                departName: '',
-                hireStartDate: '',
-                hireEndDate: ''
-            }
-        ]
-    )
+    const initialState = [
+        {
+            id: nextId-1,
+            userNo: userNo,
+            companyName: '',
+            departName: '',
+            hireStartDate: '',
+            hireEndDate: ''
+        }
+    ]
+
+    const [jobInputList, setJobInputList] = useState(initialState)
     // input 객체 추가 이벤트
     const addJobInputItem = () => {
         const input = {
@@ -113,7 +113,7 @@ const UserJoinTeacherJob = () => {
                 }
             </form>
             <button onClick={addJobInputItem}>+</button>
-
+            <br/>
             <button onClick={postTeacherJob}>이력 등록</button>
         </>
     )
