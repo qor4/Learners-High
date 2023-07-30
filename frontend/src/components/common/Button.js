@@ -46,14 +46,14 @@ const StyledButton = styled.button`
 
     // width 100%
     ${(props) =>
-        props.fullWidth &&
+        props.$fullWidth &&
         css`
             width: 100%;
         `}
 
     // 포인트 버튼 (반전)
     ${(props) =>
-        props.point &&
+        props.$point &&
         css`
             background-color: #000;
             color: #fff;
@@ -65,7 +65,7 @@ const StyledButton = styled.button`
     
     // 폰트 강조 (bold)
     ${(props) =>
-        props.active &&
+        props.$active &&
         css`
             font-weight: bold;
         `}

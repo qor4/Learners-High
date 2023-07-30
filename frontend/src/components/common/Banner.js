@@ -27,7 +27,7 @@ const PointBanner = styled.div`
     justify-content: center;
 
     ${(props) =>
-        props.point &&
+        props.$point &&
         css`
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;

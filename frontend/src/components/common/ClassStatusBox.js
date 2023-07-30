@@ -31,7 +31,7 @@ const StyledBox = styled.span`
 
     // 포인트 박스 (색상 반전)
     ${(props) =>
-        props.point &&
+        props.$point &&
         css`
             background-color: #293c81;
             color: #fff;
@@ -39,7 +39,7 @@ const StyledBox = styled.span`
 
     // 회차 담아줄 박스 (강사 학생 메인, 탭바에 들어갈 것)
     ${(props) =>
-        props.round &&
+        props.$round &&
         css`
             width: 80px;
             text-align: center;
