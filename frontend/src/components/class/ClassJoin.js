@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 import { url } from "../../api/APIPath";
 
@@ -11,6 +12,8 @@ import axios from "axios";
 
 const ClassJoin = () => {
     const userNo = useSelector(state=>state.user.userNo)
+    const [classNo, setClassNo] = useState("")
+
     const [classCode, setclassCode] = useState("");
     const [classThumbnailImg, setThumbnail] = useState(null);
     const [classThumbnailInfo, setClassIntro] = useState("");
@@ -64,6 +67,7 @@ const ClassJoin = () => {
     // 검색을 통해 나온 과목 li를 클릭했을 때
     const selectedResult = (event) => {
         setSubjectName(event.target.textContent);
+        console.log(subjectName)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
@@ -122,6 +126,20 @@ const ClassJoin = () => {
             maxStudent: maxStudent,
             userNo: userNo //
         }
+        axios.post(`${url}/class/join`,
+        data,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res=> {
+            const {classNo} = res.data
+            setClassNo(classNo)
+            console.log(res.data, res)
+        })
+        .catch(err=> console.log(err))
+    }
+    const nextPage = () => {
+        sendDataToServer()
+        // navigate('/class/round/join') // 언급 필요. classRoundJoin url 생성
     }
 
     return (
@@ -269,10 +287,16 @@ const ClassJoin = () => {
                 <span>원</span>
             </div>
 
+
+
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <button>다음</button>
+                <Link to="/class/round/join" state={{classNo: classNo}}> 
+                <button onClick={nextPage}>
+                    다음
+                </button>
+                </Link>
             </div>
             <hr/>
         </>
