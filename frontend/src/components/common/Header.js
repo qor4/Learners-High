@@ -1,5 +1,5 @@
 // 공통 Header 컴포넌트
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Header = () => {
@@ -9,16 +9,16 @@ const Header = () => {
         <header>
             <nav>
                 <h1>
-                    <Link to="/">
+                    <NavLink to="/">
                         <img src="#" alt="logo" />
-                    </Link>
+                    </NavLink>
                 </h1>
 
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <Link to="/class">전체 강의</Link>
-                        <Link to="/join">회원가입</Link>
+                        <NavLink to="/class">전체 강의</NavLink>
+                        <NavLink to="/join">회원가입</NavLink>
                         <li>로그인</li>
                     </>
                 )}

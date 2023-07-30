@@ -27,6 +27,8 @@ const StyledButton = styled.button`
     box-sizing: border-box;
     padding: 4px 20px;
     cursor: pointer;
+    color: #000;
+    font-size: 16px;
 
     // disabled 아닐 때, hover 시
     &:not(:disabled):hover {

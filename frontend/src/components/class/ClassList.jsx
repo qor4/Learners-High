@@ -47,27 +47,57 @@ const ClassList = () => {
             totalStudent: 0,
             classTypeName: "국어",
         },
+        {
+            className: "수업 이름",
+            userName: "유혜빈",
+            classThumbnailImg: "string",
+            classNo: 2,
+            classTypeNo: 1,
+            userNo: 1,
+            classStartDate: "2023-01-01",
+            maxStudent: 20,
+            classPrice: 11110,
+            classEndDate: "2023-01-01",
+            classStatus: "진행",
+            totalStudent: 0,
+            classTypeName: "국어",
+        },
+        {
+            className: "수업 이름",
+            userName: "유혜빈",
+            classThumbnailImg: "string",
+            classNo: 2,
+            classTypeNo: 1,
+            userNo: 1,
+            classStartDate: "2023-01-01",
+            maxStudent: 20,
+            classPrice: 11110,
+            classEndDate: "2023-01-01",
+            classStatus: "진행",
+            totalStudent: 0,
+            classTypeName: "국어",
+        },
     ];
     return (
-        <div>
+        <div className="flex flex-row">
             {classListDataSet.map((data, index) => (
-                <div key={index}>
-                    <ClassItem
-                        className={data.className}
-                        userName={data.userName}
-                        classThumbnailImg={data.classThumbnailImg}
-                        classNo={data.classNo}
-                        classTypeNo={data.classTypeNo}
-                        userNo={data.userNo}
-                        classStartDate={data.classStartDate}
-                        maxStudent={data.maxStudent}
-                        classPrice={data.classPrice}
-                        classEndDate={data.classEndDate}
-                        classStatus={data.classStatus}
-                        totalStudent={data.totalStudent}
-                        classTypeName={data.classTypeName}
-                    />
-                </div>
+                <ClassItem
+                    className="basis-1/4"
+                    key={index}
+                    $className={data.className}
+                    userName={data.userName}
+                    classThumbnailImg={data.classThumbnailImg}
+                    classNo={data.classNo}
+                    classTypeNo={data.classTypeNo}
+                    userNo={data.userNo}
+                    classStartDate={data.classStartDate}
+                    maxStudent={data.maxStudent}
+                    classPrice={data.classPrice}
+                    classEndDate={data.classEndDate}
+                    classStatus={data.classStatus}
+                    totalStudent={data.totalStudent}
+                    classTypeName={data.classTypeName}
+                />
             ))}
         </div>
     );
