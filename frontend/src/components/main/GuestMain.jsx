@@ -16,7 +16,7 @@ const GuestMain = () => {
                     <br />
                     서비스를 경험해 보고 싶다면,
                 </div>
-                <Link to="/join"><Button size="lg">가입하기</Button></Link>
+                <Link to="/join"><Button active size="lg">가입하기</Button></Link>
             </Banner>
 
             {/* 인기 강의 공간 */}
@@ -32,7 +32,7 @@ const GuestMain = () => {
             <div>서비스의 장점들이 들어갈 어쩌고저쩌고...
 
                 <div>LEARNERS HIGH의 <strong>다양한 서비스를 경험해 보세요!</strong></div>
-                <Link to="/join"><Button size="lg">회원가입</Button></Link>
+                <Link to="/join"><Button active point size="lg">회원가입</Button></Link>
             </div>
         </>
     );

@@ -43,7 +43,7 @@ const ClassList = () => {
             maxStudent: 20,
             classPrice: 11110,
             classEndDate: "2023-01-01",
-            classStatus: "string",
+            classStatus: "진행",
             totalStudent: 0,
             classTypeName: "국어",
         },
