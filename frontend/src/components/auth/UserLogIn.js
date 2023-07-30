@@ -43,14 +43,14 @@ const UserLogIn = () => {
             <input
             type="text"
             name="userId"
-            value={logInForm.userId}
+            // value={logInForm.userId}
             onChange={onChange}
             />
             <span>비밀번호:</span>
             <input
             type="password"
             name="userPassword"
-            value={logInForm.userPassword}
+            // value={logInForm.userPassword}
             onChange={onChange}
             />
             <button onClick={userLogIn}>로그인</button>
