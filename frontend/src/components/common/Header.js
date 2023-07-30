@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-    const userType = useSelector(state => state.user.userType)
+    const userType = useSelector((state) => state.user.userType);
 
     return (
         <header>
@@ -17,8 +17,8 @@ const Header = () => {
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <li>전체 강의</li>
-                        <li>회원가입</li>
+                        <Link to="/class">전체 강의</Link>
+                        <Link to="/join">회원가입</Link>
                         <li>로그인</li>
                     </>
                 )}

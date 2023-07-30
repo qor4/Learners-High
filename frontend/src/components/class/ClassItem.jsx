@@ -1,3 +1,5 @@
+// 강의 아이템 컴포넌트
+
 const ClassItem = (props) => {
     return (
         <div>
