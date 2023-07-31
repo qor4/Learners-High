@@ -27,6 +27,8 @@ const StyledButton = styled.button`
     box-sizing: border-box;
     padding: 4px 20px;
     cursor: pointer;
+    color: #000;
+    font-size: 16px;
 
     // disabled 아닐 때, hover 시
     &:not(:disabled):hover {
@@ -46,14 +48,14 @@ const StyledButton = styled.button`
 
     // width 100%
     ${(props) =>
-        props.fullWidth &&
+        props.$fullWidth &&
         css`
             width: 100%;
         `}
 
     // 포인트 버튼 (반전)
     ${(props) =>
-        props.point &&
+        props.$point &&
         css`
             background-color: #000;
             color: #fff;
@@ -65,7 +67,7 @@ const StyledButton = styled.button`
     
     // 폰트 강조 (bold)
     ${(props) =>
-        props.active &&
+        props.$active &&
         css`
             font-weight: bold;
         `}
