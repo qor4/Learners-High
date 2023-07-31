@@ -10,5 +10,8 @@ import java.util.List;
 public interface StudentClassListRepository extends JpaRepository<StudentClassList, Long> {
     @Query(value = "SELECT studentClass FROM StudentClassList studentClass WHERE studentClass.classNo.classNo = :classNo")
     List<StudentClassList> findByClassNo(@Param("classNo") Long classNo);
+
+
+    List<StudentClassList> findAllByUserNo(User userNo);
 }
 

@@ -1,8 +1,6 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.learnershigh.domain.EduCareer;
-import com.learnershigh.domain.JobCareer;
 import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.EmailService;
@@ -12,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,7 +100,7 @@ public class UserController {
         return ResponseEntity.ok().body(baseResponseBody);
     }
 
-    // 이메일 중복
+    // 이메일 중복 (이메일로 아이디 찾을때도 사용해야함.)
     @GetMapping("/duplicate/email/{email}")
     public ResponseEntity<BaseResponseBody> duplicateEmail(@PathVariable("email") String userEmail) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
@@ -116,7 +113,7 @@ public class UserController {
         return ResponseEntity.ok().body(baseResponseBody);
     }
 
-    // 이메일 인증 번호
+    // 이메일 인증 번호 (아이디 찾기때 이메일 중복API 이용해서 성공시 사용해야함.)
     @PostMapping("/cert/email")
     @ResponseBody
     public String mailSend(@RequestParam String email) throws Exception {
@@ -126,6 +123,33 @@ public class UserController {
 
     }
 
+    // 이메일로 아이디 찾기
+    @PostMapping("/find/id")
+    public String searchId(@RequestParam String email){
+       return userService.SearchId(email);
+
+    }
+
+    // 이메일, 아이디로 비밀번호 찾기  --> 아이디와 이메일을 가진 사용자가 있는지 확인만 해주는 기능
+    @PostMapping("/find/pwd")
+    public Boolean searchPwd(@RequestParam String id, @RequestParam String email){
+        return userService.searchPwd(id,email);
+    }
+
+//    // 비밀번호 변경하기
+//        @PutMapping("/change/pwd")
+//        public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("String pwd") String pwd, @RequestParam Long userNo) {
+//            BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
+//            try {
+//                userService.pwdChange(pwd, userNo);
+//            } catch (IllegalStateException e) {
+//                baseResponseBody.setResultCode(-1);
+//                baseResponseBody.setResultMsg(e.getMessage());
+//                return ResponseEntity.ok().body(baseResponseBody);
+//            }
+//            return ResponseEntity.ok().body(baseResponseBody);
+//
+//        }
 
     // 카카오 로그인
 
@@ -180,7 +204,7 @@ public class UserController {
 
     // 마이페이지 정보 수정하기
     @PutMapping("mypage/modify/{userNo}")
-    public ResponseEntity<BaseResponseBody> pwdChange(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto) {
+    public ResponseEntity<BaseResponseBody> mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto) {
         BaseResponseBody baseResponseBody = new BaseResponseBody("정보가 변경되었습니다.");
         try {
             userService.mypageModify(userNo, joinDto);

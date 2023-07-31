@@ -1,25 +1,46 @@
 // 공통 Header 컴포넌트
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+
+import Modal from "./Modal";
+import UserLogin from "../auth/UserLogIn";
 
 const Header = () => {
-    const userType = useSelector(state => state.user.userType)
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const userType = useSelector((state) => state.user.userType);
+
+    // 로그인 버튼 클릭 했을 때, 로그인 모달 창
+    const handleLoginButtonClick = () => {
+        setShowLoginModal(true);
+        document.body.classList.add("overflow-hidden");
+    };
+
+    // 모달을 닫을 때
+    const handleCloseModal = () => {
+        setShowLoginModal(false);
+        document.body.classList.remove("overflow-hidden");
+    };
 
     return (
         <header>
             <nav>
                 <h1>
-                    <Link to="/">
+                    <NavLink to="/">
                         <img src="#" alt="logo" />
-                    </Link>
+                    </NavLink>
                 </h1>
 
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <li>전체 강의</li>
-                        <li>회원가입</li>
-                        <li>로그인</li>
+                        <NavLink to="/class">전체 강의</NavLink>
+                        <NavLink to="/join">회원가입</NavLink>
+                        <Link onClick={handleLoginButtonClick}>로그인</Link>
+
+                        <Modal show={showLoginModal} onClose={handleCloseModal}>
+                            <UserLogin />
+                        </Modal>
                     </>
                 )}
 

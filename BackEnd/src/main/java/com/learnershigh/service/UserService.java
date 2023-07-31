@@ -13,6 +13,7 @@ import com.learnershigh.repository.JobRepository;
 import com.learnershigh.repository.UserRepository;
 import com.learnershigh.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.mapping.Join;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -107,7 +108,7 @@ public class UserService {
     // 회원 탈퇴 (isactive = false)
     public Boolean userDelete(Long userNo) {
 
-       User user = userRepository.findByUserNo(userNo);
+        User user = userRepository.findByUserNo(userNo);
 
         // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
 
@@ -143,7 +144,6 @@ public class UserService {
         String encodePassword = passwordEncoder.encode(passWord);
         user.setUserPassword(encodePassword);
 //        user.pwdChange(encodePassword);
-
 
 
         return true;
@@ -298,6 +298,48 @@ public class UserService {
 
     }
 
+    // 이메일로 아이디 찾기
+    public String SearchId(String userEmail) {
+
+        User user = userRepository.findByUserEmail(userEmail);
+        JoinDto joinDto = new JoinDto();
+
+        joinDto.setUserId(user.getUserId());
+
+        return joinDto.getUserId();
+
+
+    }
+
+    // 받아온 이메일과 아이디가 일치하는 사용자가 있는지 확인
+    public Boolean searchPwd(String id, String email){
+        User user = userRepository.findByIdAndEmail(id,email);
+
+        if(user != null){
+            return true;
+        }
+        return false;
+    }
+
+
+//    // 비밀번호 변경
+//    @Transactional
+//    public void pwdChange(String pwd, Long userNo) {
+//
+//        // 전화번호 유효성 검사
+//        if (!Pattern.matches("^\\d{11}$", pwd)) {
+//            throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
+//        }
+//
+//        User user = userRepository.findByUserNo(userNo);
+//
+//
+//        // 이미 컨텍스트에 올라와 있어서 내용이 다르면 알아서 update 됨.
+//        user.pwdChange(pwd);
+//
+//    }
+
+
 
     // 이름 글자수 제한 검사 (length = 10 제한)
     public boolean checkName(String userName) {
@@ -343,7 +385,7 @@ public class UserService {
         jobCareer.setUserNo(userRepository.findByUserNo(userNo));
 
 
-         jobCareerRepository.save(jobCareer);
+        jobCareerRepository.save(jobCareer);
     }
 
     // 강사 학위 정보 insert
@@ -358,7 +400,7 @@ public class UserService {
         eduCareer.setEduEndDate(eduDto.getEduEndDate());
         eduCareer.setUserNo(userRepository.findByUserNo(userNo));
 
-         eduRepository.save(eduCareer);
+        eduRepository.save(eduCareer);
     }
 
     // 로그인
@@ -425,7 +467,7 @@ public class UserService {
     }
 
     // 강사 학위 전체 출력
-    public List<EduDto> eduList(User userNo){
+    public List<EduDto> eduList(User userNo) {
 
         List<EduCareer> eduList = eduRepository.findAllByUserNo(userNo);
 
@@ -452,7 +494,7 @@ public class UserService {
     }
 
     // 강사 경력 전체 출력
-    public List<JobDto> jobList(User userNo){
+    public List<JobDto> jobList(User userNo) {
 
         List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNo(userNo);
 
@@ -474,8 +516,6 @@ public class UserService {
         }
         return jobDtoList;
     }
-
-
 
 
     // 수정 버튼에 job_career_no가 있어야 함.
@@ -508,7 +548,7 @@ public class UserService {
     @Transactional
     public void eduDelete(Long eduCareerNo) {
         EduCareer eduCareer = eduRepository.findByeduCareerNo(eduCareerNo);
-       // System.out.println(eduCareer);
+        // System.out.println(eduCareer);
 
 
         eduRepository.delete(eduCareer);
@@ -522,8 +562,6 @@ public class UserService {
         JobCareer jobCareer = jobCareerRepository.findByJobCareerNo(jobCareerNo);
 
         jobCareerRepository.delete(jobCareer);
-
-
 
 
     }
