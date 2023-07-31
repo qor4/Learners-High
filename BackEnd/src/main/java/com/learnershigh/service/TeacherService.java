@@ -1,11 +1,18 @@
 package com.learnershigh.service;
 
+import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
+import com.learnershigh.domain.User;
+import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.MainClassListDto;
+import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassRoundRepository;
+import com.learnershigh.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeacherService {
     private final ClassRoundRepository classRoundRepository;
+    private final ClassRepository classRepository;
+    private final UserRepository userRepository;
 
     public HashMap<Integer, Object> showWeeklyClassSchedule(Long userNo) {
         HashMap<Integer, Object> data = new HashMap<>();
@@ -43,5 +52,39 @@ public class TeacherService {
             data.put(i, mainClassListDtoList);
         }
         return data;
+    }
+
+    public List<ClassListDto> teacherClassList(Long userNo, String status) {
+        List<Class> classList = new ArrayList<>();
+        List<ClassListDto> classListDtoList = new ArrayList<>();
+        if (status.equals("전체")) { // 상태를 선택하지 않았을 경우
+            User user = userRepository.findByUserNo(userNo);
+            if(user == null){
+                throw new IllegalStateException("유효하지 않은 사용자입니다.");
+            }
+            classList = classRepository.findByUserNo(user);
+
+        } else if (status.equals("강의 종료")) { // 상태가 강의 종료일 경우
+            // 별점 포함 목록 출력
+        } else if(status.equals("강의 중") || status.equals("강의 전")){ // 상태가 강의 전, 강의 중일경우
+            classList = classRepository.teacherClassList(userNo, status);
+        }
+
+        for (Class classDomain : classList) {
+            ClassListDto classListDto = new ClassListDto();
+            classListDto.setClassNo(classDomain.getClassNo());
+            classListDto.setUserNo(classDomain.getUserNo().getUserNo());
+            classListDto.setUserName(classDomain.getUserNo().getUserName());
+            classListDto.setClassTypeNo(classDomain.getClassTypeNo().getClassTypeNo());
+            classListDto.setClassTypeName(classDomain.getClassTypeNo().getClassTypeName());
+            classListDto.setClassName(classDomain.getClassName());
+            classListDto.setClassStartDate(classDomain.getClassStartDate());
+            classListDto.setClassEndDate(classDomain.getClassEndDate());
+            classListDto.setMaxStudent(classDomain.getMaxStudent());
+            classListDto.setClassPrice(classDomain.getClassPrice());
+            classListDto.setClassThumbnailImg(classDomain.getClassThumbnailImg());
+            classListDtoList.add(classListDto);
+        }
+        return classListDtoList;
     }
 }

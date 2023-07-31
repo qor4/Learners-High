@@ -3,6 +3,7 @@ package com.learnershigh.service;
 import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import com.learnershigh.domain.StudentWishlist;
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.MainClassListDto;
 import com.learnershigh.dto.StudentClassActionDto;
@@ -76,9 +77,14 @@ public class StudentService {
     }
 
     // 학생 찜 목록 전체 출력
-    public List<ClassListDto> wishListAll(Long userNo) {
+    public List<ClassListDto> wishListAll(User userNo) {
 
-        List<StudentWishlist> studentWishlist = studentWishlistRepository.findByUserNo(userNo);
+
+        System.out.println(userNo);
+
+        List<StudentWishlist> studentWishlist = studentWishlistRepository.findAllByUserNo(userNo);
+
+        System.out.println(studentWishlist.toString());
 
         List<ClassListDto> wishClassList = new ArrayList<>();
 
@@ -87,7 +93,7 @@ public class StudentService {
 
             ClassListDto classListDto = new ClassListDto();
 
-            Class wishClass = classRepository.findByClassNo(sw.getClassNo());
+            Class wishClass = classRepository.findByClassNo(sw.getClassNo().getClassNo());
 
 
             // 리스트 넣기
