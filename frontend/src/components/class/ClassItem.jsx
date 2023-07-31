@@ -7,7 +7,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 
 const ClassItem = (props) => {
     return (
-        <div className="mx-2">
+        <div>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
             <div>
                 <img src={props.classThumbnailImg} alt="Thumbnail" />
@@ -20,9 +20,15 @@ const ClassItem = (props) => {
             <ClassStatusBox>{props.classTypeName}</ClassStatusBox>
 
             <span>아이콘{`${props.totalStudent} / ${props.maxStudent}`}</span>
+            <br />
+
             <span>{props.$className}</span>
             <span>{props.userName}</span>
+            <br />
+
             <span>{props.classPrice}원</span>
+            <br />
+            
             <span>
                 {props.classStartDate} ~ {props.classEndDate}
             </span>

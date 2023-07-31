@@ -8,7 +8,6 @@ import Button from "../common/Button";
 const GuestMain = () => {
     return (
         <>
-            <h1>비로그인 메인페이지</h1>
             {/* 배너 공간 */}
             <Banner $point>
                 <div>

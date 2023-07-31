@@ -79,10 +79,9 @@ const ClassList = () => {
         },
     ];
     return (
-        <div className="flex flex-row">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {classListDataSet.map((data, index) => (
                 <ClassItem
-                    className="basis-1/4"
                     key={index}
                     $className={data.className}
                     userName={data.userName}
