@@ -1,18 +1,14 @@
 package com.learnershigh.service;
 
+import com.learnershigh.domain.*;
 import com.learnershigh.domain.Class;
-import com.learnershigh.domain.ClassRound;
-import com.learnershigh.domain.User;
 import com.learnershigh.dto.ClassListDto;
+import com.learnershigh.dto.HomeworkNoticeJoinDto;
 import com.learnershigh.dto.MainClassListDto;
-import com.learnershigh.repository.ClassRepository;
-import com.learnershigh.repository.ClassRoundRepository;
-import com.learnershigh.repository.UserRepository;
+import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +22,9 @@ public class TeacherService {
     private final ClassRoundRepository classRoundRepository;
     private final ClassRepository classRepository;
     private final UserRepository userRepository;
+    private final ClassHomeworkNoticeRepository classHomeworkNoticeRepository;
+    private final StudentClassListRepository studentClassListRepository;
+    private final ClassHomeworkRepository classHomeworkRepository;
 
     public HashMap<Integer, Object> showWeeklyClassSchedule(Long userNo) {
         HashMap<Integer, Object> data = new HashMap<>();
@@ -59,14 +58,14 @@ public class TeacherService {
         List<ClassListDto> classListDtoList = new ArrayList<>();
         if (status.equals("전체")) { // 상태를 선택하지 않았을 경우
             User user = userRepository.findByUserNo(userNo);
-            if(user == null){
+            if (user == null) {
                 throw new IllegalStateException("유효하지 않은 사용자입니다.");
             }
             classList = classRepository.findByUserNo(user);
 
         } else if (status.equals("강의 종료")) { // 상태가 강의 종료일 경우
             // 별점 포함 목록 출력
-        } else if(status.equals("강의 중") || status.equals("강의 전")){ // 상태가 강의 전, 강의 중일경우
+        } else if (status.equals("강의 중") || status.equals("강의 전")) { // 상태가 강의 전, 강의 중일경우
             classList = classRepository.teacherClassList(userNo, status);
         }
 
@@ -86,5 +85,32 @@ public class TeacherService {
             classListDtoList.add(classListDto);
         }
         return classListDtoList;
+    }
+
+    @Transactional
+    public void joinHomeworkNotice(HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
+        Class classDomain = classRepository.findByClassNoAndUserNo(homeworkNoticeJoinDto.getClassNo(), userRepository.findByUserNo(homeworkNoticeJoinDto.getUserNo()));
+        ClassRound classRound = classRoundRepository.findByClassRoundNo(homeworkNoticeJoinDto.getClassRoundNo());
+        if (classDomain == null) {
+            throw new IllegalStateException("수업 정보와 사용자 정보가 일치하지 않습니다.");
+        }
+        // 과제 정보 등록
+        ClassHomeworkNotice classHomeworkNotice = new ClassHomeworkNotice();
+        classHomeworkNotice.setHomeworkNoticeTitle(homeworkNoticeJoinDto.getHomeworkNoticeTitle());
+        classHomeworkNotice.setHomeworkNoticeContent(homeworkNoticeJoinDto.getHomeworkNoticeContent());
+        classHomeworkNotice.setClassRoundNo(classRound);
+        ClassHomeworkNotice saveHomeworkNotice = classHomeworkNoticeRepository.save(classHomeworkNotice);
+        // 학생들을 과제 등록
+        List<StudentClassList> studentClassLists = studentClassListRepository.findByClassNo(homeworkNoticeJoinDto.getClassNo());
+        for (StudentClassList studentClassList : studentClassLists) {
+            ClassHomework classHomework = new ClassHomework();
+            User user = userRepository.findByUserNo(studentClassList.getUserNo().getUserNo());
+            classHomework.setClassNo(classDomain);
+            classHomework.setClassRoundNo(classRound);
+            classHomework.setUserNo(user);
+            classHomework.setClassHomeworkNoticeNo(saveHomeworkNotice);
+            classHomework.setHomeworkStatus("미제출");
+            classHomeworkRepository.save(classHomework);
+        }
     }
 }
