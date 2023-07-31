@@ -11,6 +11,8 @@ public interface ClassRoundRepository extends JpaRepository<ClassRound, Long> {
     @Query(value = "SELECT CR FROM ClassRound CR WHERE CR.classNo.classNo = :classNo")
     List<ClassRound> findByClassNo(@Param("classNo") Long classNo);
 
+    ClassRound findByClassRoundNo(Long classRoundNo);
+
     @Query(value = "SELECT cr FROM ClassRound cr JOIN StudentClassList scl ON scl.classNo.classNo = cr.classNo.classNo WHERE scl.userNo.userNo = :userNo " +
             "AND date(cr.classRoundStartDatetime) = subdate(curdate(),date_format(curdate(),'%w')- :n)")
     List<ClassRound> getWeeklyClassRoundByStudent(@Param("userNo") Long userNo, @Param("n") String n);

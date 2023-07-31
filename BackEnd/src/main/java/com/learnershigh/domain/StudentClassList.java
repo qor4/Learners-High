@@ -1,6 +1,5 @@
 package com.learnershigh.domain;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,7 +16,7 @@ public class StudentClassList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_class_list_no")
-    private Long whshlistNo;
+    private Long studentClassListNo;
 
     // 학생 no (FK,NN)
     @ManyToOne(fetch = FetchType.LAZY)
