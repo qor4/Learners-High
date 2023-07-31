@@ -207,13 +207,13 @@ const ClassRoundJoin = () => {
 
             <div>
                 {classRoundDataSet.map((item, idx)=> {
-                    return <DatePickerComponent getData={getData}/>
+                    return <DatePickerComponent getData={getData} initial={false}/>
                 })}
             </div>
             
 
             {/* 캘린더 */}
-            <div>수업 일자 확인 및 추가 일정 수정</div>
+            <div>회차 제목 등록</div>
 
             {classRoundDataSet.map((item, idx)=> {
                     return <ClassRoundItem/>

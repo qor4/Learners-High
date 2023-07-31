@@ -113,6 +113,7 @@ const ClassRoundJoin = () => {
             } : day
             )
         setDays(updateData)
+        console.log(days)
     }
 
     // 총 회차 수 입력했을 때
@@ -150,17 +151,18 @@ const ClassRoundJoin = () => {
 
     const handleInsertClassRoundTime = () => {
         const classRoundDataSetCopy = JSON.parse(JSON.stringify(classRoundDataSet))
-        classRoundDataSetCopy[0].startDate = startDate
+        classRoundDataSetCopy[0].startDate = startDate // 시작일을 반드시 받아야 한다!
 
         // addDay가 startDate가 아니라, days의 startDate여야 함.
         const standDay = new Date(startDate)
         let standardDate = []
         for (let i=0;i<7;i++) {
             standDay.setDate(standDay.getDate()+1)
-
-            days.map(day=> {
+            console.log(standDay, "기준일")
+            days.map(day => {
                 if (day.isSelected && Number(standDay.getDay()) === Number(day.code) ) {
                     standardDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
+
                     return
                 }
             }) // 완료!
@@ -171,20 +173,15 @@ const ClassRoundJoin = () => {
             console.log(standardDate.length, "길이" )
             if (i-1<standardDate.length) {
                 standardDate[(i-1)%standardDate.length].setDate(standardDate[(i-1)%standardDate.length].getDate())
-                classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%standardDate.length] )
+                classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%standardDate.length] )
             } else {
                 // classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%standardDate.length].getDate()+7*parseInt((i-1)/standardDate.length) )
                 standardDate[(i-1)%standardDate.length].setDate(standardDate[(i-1)%standardDate.length].getDate()+7)
-                classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%standardDate.length] )
+                classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%standardDate.length] )
             }
         }
 
-        console.log(classRoundDataSetCopy)
-
-
-
-
-
+        setClassRoundDataSet(classRoundDataSetCopy)
     }
 
 
@@ -261,13 +258,14 @@ const ClassRoundJoin = () => {
 
             <div>
                 <h1>수업 일자 확인</h1>
-                {classRoundDataSet.map((day, idx)=> {
-                    return <DatePickerComponent getData={getData} 
+                {classRoundDataSet.map((item, idx)=> {
+                    console.log(item, "item!!")
+                    return (<DatePickerComponent
                     key={idx}
-                    startHour={day.startHour}
-                    startMinute={day.startMinute}
-                    classRunningTime={day.classRunningTime}
-                    />
+                    initial={false}
+                    initialDate={item.classRoundStartDatetime}
+                    onDataChange={getData}
+                    />)
                 })}
             </div>
             

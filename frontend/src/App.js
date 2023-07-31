@@ -21,7 +21,6 @@ import DatePickerComponent from "./components/class/DatePickerComponent"
 function App() {
   return (
     <div className="App">
-    <DatePickerComponent/>
     {/* <FormStructor/> */}
     {/* <TeacherJobItem/> */}
     {/* <UserJoinTeacherJob/>
