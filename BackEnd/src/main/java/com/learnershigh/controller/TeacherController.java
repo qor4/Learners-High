@@ -1,7 +1,7 @@
 package com.learnershigh.controller;
 
-import com.learnershigh.dto.ClassListDto;
-import com.learnershigh.dto.CustomResponseBody;
+import com.learnershigh.domain.Class;
+import com.learnershigh.dto.*;
 import com.learnershigh.service.TeacherService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +47,14 @@ public class TeacherController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
 
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 과제 등록
+    @PostMapping("/class/homework/join")
+    public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
+        BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
+        teacherService.joinHomeworkNotice(homeworkNoticeJoinDto);
         return ResponseEntity.ok().body(responseBody);
     }
 }
