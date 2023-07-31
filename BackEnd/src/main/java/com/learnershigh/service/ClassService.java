@@ -143,4 +143,45 @@ public class ClassService {
         }
         return classTypeDtoList;
     }
+
+    // 조회수 증가
+    @Transactional
+    public void viewCount(Long classNo)
+    {
+        Class cla = classRepository.findByClassNo(classNo);
+
+        int currentCount = cla.getClassViewCount();
+
+        currentCount += 1;
+
+        cla.setClassViewCount(currentCount);
+
+    }
+
+    // 메인페이지 TOP5 출력
+    public List<ClassListDto> mainTop5(){
+        List<Class> classlist = classRepository.findTop5ByOrderByClassViewCount();
+
+        List<ClassListDto> returnlist = new ArrayList<>();
+
+        for(Class cla : classlist)
+        {
+            ClassListDto clas = new ClassListDto();
+
+            clas.setClassNo(cla.getClassNo());
+            clas.setUserName(cla.getUserNo().getUserName());
+            clas.setClassName(cla.getClassName());
+            clas.setClassPrice(cla.getClassPrice());
+            clas.setClassStartDate(cla.getClassStartDate());
+            clas.setClassEndDate(cla.getClassEndDate());
+            clas.setMaxStudent(cla.getMaxStudent());
+            clas.setTotalStudent(cla.getTotalStudent());
+            clas.setClassTypeName(cla.getClassTypeNo().getClassTypeName());
+            clas.setViewCount(cla.getClassViewCount());
+
+            returnlist.add(clas);
+
+        }
+        return returnlist;
+    }
 }

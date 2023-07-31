@@ -43,4 +43,6 @@ public class ClassInfoDto {
     private String classStatus;
     // 수업 총 회차
     private int classTotalRound;
+    // 조회수
+    private int class_view_count;
 }
