@@ -7,6 +7,17 @@ import styled from "styled-components";
 import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
 
+const NavStyle = styled(NavLink)`
+    &:hover {
+        font-weight: bold;
+        color: #293c81;
+    }
+    &.active {
+        font-weight: bold;
+        color: #293c81;
+    }
+`;
+
 const Header = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const userType = useSelector((state) => state.user.userType);
@@ -24,17 +35,6 @@ const Header = () => {
         document.body.classList.remove("overflow-hidden");
     };
 
-    const NavStyle = styled(NavLink)`
-        &:hover {
-            font-weight: bold;
-            color: #293c81;
-        }
-        &.active {
-            font-weight: bold;
-            color: #293c81;
-        }
-    `;
-
     return (
         <header>
             <nav>
@@ -47,9 +47,7 @@ const Header = () => {
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <NavStyle to="/class" activeClassName="font-bold">
-                            전체 강의
-                        </NavStyle>
+                        <NavStyle to="/class">전체 강의</NavStyle>
                         <NavStyle to="/join">회원가입</NavStyle>
                         <NavLink onClick={handleLoginButtonClick}>
                             로그인

@@ -13,7 +13,7 @@ const AlertScheduleBox = (props) => {
     return (
         <Card>
             <StyledImg src="assets/watch.png" alt="watch-img" />
-            <div></div>{props.children}
+            {props.children}
         </Card>
     );
 };

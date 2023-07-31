@@ -6,9 +6,9 @@ const StyledCard = styled.div`
     position: relative;
     width: auto;
     background-color: #fff;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     padding: 1.25rem;
-    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.25rem 0.25rem 0px rgba(0, 0, 0, 0.2);
 `;
 
 const Card = (props) => {

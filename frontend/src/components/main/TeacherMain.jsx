@@ -3,9 +3,13 @@ import { useSelector } from "react-redux";
 
 import AlertScheduleBox from "../class/AlertScheduleBox";
 import ClassRoundItemBox from "../class/ClassRoundItemBox";
+import { useState } from "react";
 
 const TeacherMain = () => {
     const userName = useSelector((state) => state.user.userName);
+    const [selectedDay, setSelectedDay] = useState();
+
+    const days = ["월", "화", "수", "목", "금", "토", "일"];
 
     return (
         <div className="w-4/5 mx-auto">

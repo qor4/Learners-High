@@ -21,14 +21,14 @@ const ClassRoundItemBox = (props) => {
             {/* 강사일 때 보일 버튼 */}
             <div>
                 <Button>과제 일괄 다운</Button>
-                <Button>강의룸 만들기</Button>
+                <Button $point>강의룸 만들기</Button>
             </div>
 
             {/* 학생일 때 보일 버튼 */}
             <div>
                 <Button>학습 자료 다운</Button>
                 <Button>과제 제출</Button>
-                <Button>강의 입장</Button>
+                <Button $point>강의 입장</Button>
             </div>
         </Card>
     );
