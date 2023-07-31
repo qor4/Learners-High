@@ -18,7 +18,6 @@ import ClassJoinPage from './pages/class/ClassJoinPage'
 function App() {
   return (
     <div className="App">
-    <DatePickerComponent/>
     {/* <FormStructor/> */}
     <UserJoin/>
     {/* <TeacherJobItem/> */}
