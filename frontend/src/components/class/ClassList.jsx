@@ -1,4 +1,4 @@
-// 강의 목록의 강의 아이템 담아줄 List
+// 강의 목록의 강의 아이템 (카드) 담아줄 List
 // axios로 데이터를 가져와서 ClassItem에게 보내줄 곳
 
 import React from "react";
@@ -14,7 +14,7 @@ const ClassList = () => {
     //     .then((response) => {
     //         setClassListDataSet(response.data);
     //     });
-    // });
+    // }, []);
 
     const classListDataSet = [
         {
@@ -78,6 +78,7 @@ const ClassList = () => {
             classTypeName: "국어",
         },
     ];
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {classListDataSet.map((data, index) => (

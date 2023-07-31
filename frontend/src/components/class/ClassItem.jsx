@@ -1,9 +1,9 @@
-// 강의 아이템 컴포넌트
+// 강의 아이템 컴포넌트 (카드)
 
 import ClassStatusBox from "../common/ClassStatusBox";
 
 // react-icon import
-import { AiOutlineHeart } from "react-icons/ai";
+import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
 
 const ClassItem = (props) => {
     return (
@@ -13,13 +13,13 @@ const ClassItem = (props) => {
                 <img src={props.classThumbnailImg} alt="Thumbnail" />
                 <ClassStatusBox $point>{props.classStatus}</ClassStatusBox>
                 <span>
-                    <AiOutlineHeart />
+                    <HiOutlineHeart />
                 </span>
             </div>
 
             <ClassStatusBox>{props.classTypeName}</ClassStatusBox>
 
-            <span>아이콘{`${props.totalStudent} / ${props.maxStudent}`}</span>
+            <span><HiOutlineUserCircle />{`${props.totalStudent} / ${props.maxStudent}`}</span>
             <br />
 
             <span>{props.$className}</span>
