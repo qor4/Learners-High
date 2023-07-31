@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.domain.Class;
 import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.StudentService;
@@ -73,6 +74,12 @@ public class StudentController {
     public List<ClassListDto> wishListAll(@RequestParam("userNo") User userNo)
     {
         return studentService.wishListAll(userNo);
+    }
+
+    @GetMapping("/class/list/{userNo}")
+    public List<ClassListDto> userClassAll(@PathVariable("userNo") Long userNo)
+    {
+        return studentService.userClassAll(userNo);
     }
 
 

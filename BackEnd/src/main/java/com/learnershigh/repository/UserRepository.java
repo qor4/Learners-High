@@ -4,6 +4,8 @@ package com.learnershigh.repository;
 import com.learnershigh.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 // @Repository // jparepository를 확장받으면 repository 작성하지 않아도 됨.
 // mybatis할 때 dao역할임. DB랑 대화하는 애
 
@@ -29,6 +31,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserNo(Long userNo);
 
     User findByUserEmail(String userEmail);
+
+    List<User> findAllByUserNo(Long userNo);
+
+    User findByIdAndEmail(String id, String email);
 }
 
 
