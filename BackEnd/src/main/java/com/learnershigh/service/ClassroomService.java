@@ -2,17 +2,11 @@ package com.learnershigh.service;
 
 import com.learnershigh.domain.*;
 import com.learnershigh.domain.Class;
-import com.learnershigh.dto.AttendHomeworkDto;
-import com.learnershigh.dto.ClassListDto;
-import com.learnershigh.dto.MainClassListDto;
-import com.learnershigh.dto.StudentAttendHomeworkDto;
 import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
