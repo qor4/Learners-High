@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.dto.BaseResponseBody;
 import com.learnershigh.dto.CustomResponseBody;
 import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.ClassroomService;
@@ -19,9 +20,17 @@ public class ClassroomController {
 
     // 수업 생성 및 출석
     @GetMapping("/teacher/{classNo}/{classRoundNo}")
-    public ResponseEntity<CustomResponseBody> createClassroom(@PathVariable Long classNo, @PathVariable Long classRoundNo) {
-        CustomResponseBody responseBody = new CustomResponseBody("수업 생성 완료");
+    public ResponseEntity<BaseResponseBody> createClassroom(@PathVariable Long classNo, @PathVariable Long classRoundNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("수업 생성 완료");
         classroomService.createClassroom(classNo, classRoundNo);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 수업 입장 및 출석
+    @GetMapping("/student/{classNo}/{classRoundNo}/{userNo}")
+    public ResponseEntity<BaseResponseBody> enterClassroom(@PathVariable Long classNo, @PathVariable Long classRoundNo, @PathVariable Long userNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("수업 입장 및 출석 완료");
+        classroomService.enterClassroom(classNo, classRoundNo, userNo);
         return ResponseEntity.ok().body(responseBody);
     }
 }

@@ -1,5 +1,6 @@
 package com.learnershigh.repository;
 
+import com.learnershigh.domain.Class;
 import com.learnershigh.domain.StudentClassList;
 import com.learnershigh.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,7 @@ public interface StudentClassListRepository extends JpaRepository<StudentClassLi
     @Query(value = "SELECT studentClass FROM StudentClassList studentClass WHERE studentClass.classNo.classNo = :classNo")
     List<StudentClassList> findByClassNo(@Param("classNo") Long classNo);
 
+    StudentClassList findByClassNoAndUserNo(Class classNo, User userNo);
 
     List<StudentClassList> findAllByUserNo(User userNo);
 }
