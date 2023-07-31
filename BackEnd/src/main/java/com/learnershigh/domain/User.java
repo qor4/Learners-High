@@ -100,6 +100,12 @@ public class User {
         this.userInfo = userInfo;
     }
 
+    public void pwdChange(String pwd) // 프로필??
+    {
+       this.userPassword = pwd;
+    }
+
+
     public void userDelete(Boolean isActive){
         this.isActive = isActive;
     }

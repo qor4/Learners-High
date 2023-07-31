@@ -1,16 +1,11 @@
 package com.learnershigh.service;
 
+import com.learnershigh.domain.*;
 import com.learnershigh.domain.Class;
-import com.learnershigh.domain.ClassRound;
-import com.learnershigh.domain.StudentWishlist;
-import com.learnershigh.domain.User;
 import com.learnershigh.dto.ClassListDto;
 import com.learnershigh.dto.MainClassListDto;
 import com.learnershigh.dto.StudentClassActionDto;
-import com.learnershigh.repository.ClassRepository;
-import com.learnershigh.repository.ClassRoundRepository;
-import com.learnershigh.repository.StudentWishlistRepository;
-import com.learnershigh.repository.UserRepository;
+import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -30,6 +25,7 @@ public class StudentService {
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
     private final ClassRoundRepository classRoundRepository;
+    private final StudentClassListRepository studentClassListRepository;
 
     @Transactional
     public void wish(StudentClassActionDto studentClassActionDto) {
@@ -111,7 +107,28 @@ public class StudentService {
 
         }
 
-    return wishClassList;
+        return wishClassList;
 
+    }
+
+    // 학생 수강 목록 전체 출력
+    public List<ClassListDto> userClassAll(Long userNo) {
+        User user = userRepository.findByUserNo(userNo);
+
+        List<StudentClassList> userclasslist = studentClassListRepository.findAllByUserNo(user);
+
+        List<ClassListDto> clalist = new ArrayList<>();
+
+        for (StudentClassList classAll : userclasslist) {
+            ClassListDto cla = new ClassListDto();
+
+            cla.setClassStartDate(classAll.getClassNo().getClassStartDate());
+            cla.setClassEndDate(classAll.getClassNo().getClassEndDate());
+            cla.setUserName(classAll.getClassNo().getClassName());
+
+            clalist.add(cla);
+        }
+
+        return clalist;
     }
 }

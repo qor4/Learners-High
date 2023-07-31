@@ -160,7 +160,7 @@ const UserJoin = () => {
       return
     }
     // 일단 빼놓기. 전화번호 형식 입력했어. 근데 다시 돌아올땐 이녀석이 false로
-    setUserTel(userTel.replace('/-/g','').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'))
+    // setUserTel(userTel.replace('/-/g','').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'))
     setUserTelMSG("")
     setUserTelValidCheck(true)
   }
@@ -178,6 +178,7 @@ const UserJoin = () => {
     // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
     axios.get(`${url}/user/duplicate/email/${userEmail}`)
       .then((response) => {
+          console.log(response.data)
           if (response.data.resultCode !== 0) {
             setUserEmailMSG('중복된 이메일입니다.')
             setUserEmailVailidCheck(false)
@@ -211,7 +212,7 @@ const UserJoin = () => {
 
 
   const signUp = () => {
-    if (idValidCheck && passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
+    if (userType && idValidCheck && passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
       userInfoValidCheck && userNameValidCheck ) {
         alert("성공!")
         const data = JSON.stringify( {
