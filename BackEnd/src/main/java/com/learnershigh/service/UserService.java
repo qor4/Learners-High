@@ -312,8 +312,8 @@ public class UserService {
     }
 
     // 받아온 이메일과 아이디가 일치하는 사용자가 있는지 확인
-    public Boolean searchPwd(String id, String email){
-        User user = userRepository.findByIdAndEmail(id,email);
+    public Boolean searchPwd(String userId, String userEmail){
+        User user = userRepository.findByUserIdAndUserEmail(userId,userEmail);
 
         if(user != null){
             return true;

@@ -132,24 +132,9 @@ public class UserController {
 
     // 이메일, 아이디로 비밀번호 찾기  --> 아이디와 이메일을 가진 사용자가 있는지 확인만 해주는 기능
     @PostMapping("/find/pwd")
-    public Boolean searchPwd(@RequestParam String id, @RequestParam String email){
-        return userService.searchPwd(id,email);
+    public Boolean searchPwd(@RequestParam String userId, @RequestParam String userEmail){
+        return userService.searchPwd(userId,userEmail);
     }
-
-//    // 비밀번호 변경하기
-//        @PutMapping("/change/pwd")
-//        public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("String pwd") String pwd, @RequestParam Long userNo) {
-//            BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
-//            try {
-//                userService.pwdChange(pwd, userNo);
-//            } catch (IllegalStateException e) {
-//                baseResponseBody.setResultCode(-1);
-//                baseResponseBody.setResultMsg(e.getMessage());
-//                return ResponseEntity.ok().body(baseResponseBody);
-//            }
-//            return ResponseEntity.ok().body(baseResponseBody);
-//
-//        }
 
     // 카카오 로그인
 

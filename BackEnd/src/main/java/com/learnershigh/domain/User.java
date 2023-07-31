@@ -50,7 +50,6 @@ public class User {
     private String userTel;
 
     // user info
-
     @Column(name = "user_info", length = 30)
     private String userInfo;
 
@@ -100,10 +99,6 @@ public class User {
         this.userInfo = userInfo;
     }
 
-    public void pwdChange(String pwd) // 프로필??
-    {
-       this.userPassword = pwd;
-    }
 
 
     public void userDelete(Boolean isActive){
