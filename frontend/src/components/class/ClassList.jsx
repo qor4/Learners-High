@@ -1,9 +1,8 @@
 // 강의 목록의 강의 아이템 (카드) 담아줄 List
 // axios로 데이터를 가져와서 ClassItem에게 보내줄 곳
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { url } from "../../api/APIPath";
 import ClassItem from "./ClassItem";
 

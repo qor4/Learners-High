@@ -5,18 +5,18 @@ import Button from "../common/Button";
 import Card from "../common/Card";
 import ClassStatusBox from "../common/ClassStatusBox";
 
-const ClassRoundItemBox = (props) => {
+const ClassRoundItemBox = ({classInfo}) => {
     return (
         <Card>
             <ClassStatusBox size="lg" $point $round>
-                {props.classRoundNumber}회차
+                {classInfo.classRoundNumber}회차
             </ClassStatusBox>
             <span>
-                {props.classRoundStartDatetime} ~ {props.classRoundEndDatetime}
+                {classInfo.classRoundStartDatetime} ~ {classInfo.classRoundEndDatetime}
             </span>
-            <span>{props.$className}</span>
-            <span>{props.classRoundTitle}</span>
-            <span>{props.userName} 강사님</span>
+            <span>{classInfo.$className}</span>
+            <span>{classInfo.classRoundTitle}</span>
+            <span>{classInfo.userName} 강사님</span>
 
             {/* 강사일 때 보일 버튼 */}
             <div>
