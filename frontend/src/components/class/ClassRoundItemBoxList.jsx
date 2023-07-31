@@ -92,7 +92,7 @@ const ClassRoundItemBoxList = (props) => {
 
     // prop 받은 (선택된) 요일에 맞는 수업들을 담아둔 곳
     const selectedDayClasses = dayClassListDataSet[props.selectedDay];
-
+    
     return (
         <>
             {selectedDayClasses.map((classItem, index) => (

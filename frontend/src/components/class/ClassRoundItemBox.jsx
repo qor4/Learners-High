@@ -9,12 +9,12 @@ const ClassRoundItemBox = ({classInfo}) => {
     return (
         <Card>
             <ClassStatusBox size="lg" $point $round>
-                {classInfo.classRoundNumber}회차
+                {classInfo.classRoundNo}회차
             </ClassStatusBox>
             <span>
                 {classInfo.classRoundStartDatetime} ~ {classInfo.classRoundEndDatetime}
             </span>
-            <span>{classInfo.$className}</span>
+            <span>{classInfo.className}</span>
             <span>{classInfo.classRoundTitle}</span>
             <span>{classInfo.userName} 강사님</span>
 
