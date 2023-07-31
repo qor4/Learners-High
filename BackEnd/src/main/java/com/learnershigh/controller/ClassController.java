@@ -171,4 +171,26 @@ public class ClassController {
         responseBody.getList().add(classService.getClassType());
         return ResponseEntity.ok().body(responseBody);
     }
+
+    // 강의 조회수 증가
+    @PutMapping("/view-count")
+    public ResponseEntity<BaseResponseBody> viewCount(@RequestParam Long classNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("조회수 증가 성공");
+        try {
+            classService.viewCount(classNo);
+        } catch (Exception e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 메인페이지 강의 TOP5 출력
+    @GetMapping("/list/main")
+    public ResponseEntity<CustomResponseBody> mainTop5() {
+        CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
+        responseBody.getList().add(classService.mainTop5());
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

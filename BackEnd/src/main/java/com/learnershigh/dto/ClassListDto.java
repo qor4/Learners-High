@@ -46,4 +46,7 @@ public class ClassListDto {
 
     // 현재 진행 상태
     private String classStatus;
+
+    // 조회수
+    private int viewCount;
 }

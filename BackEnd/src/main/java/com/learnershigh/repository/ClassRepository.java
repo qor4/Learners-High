@@ -31,6 +31,8 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 
     @Query(value = "SELECT C FROM Class C WHERE C.classStatus = '작성 중' AND C.userNo.userNo = :userNo")
     Class isWritingByUserNo(@Param("userNo") Long userNo);
+
+    List<Class> findTop5ByOrderByClassViewCount();
 }
 
 

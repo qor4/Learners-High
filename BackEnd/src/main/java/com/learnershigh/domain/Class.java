@@ -94,4 +94,10 @@ public class Class {
     // 수업 회차
     @OneToMany(mappedBy = "classNo")
     List<ClassRound> classRoundList = new ArrayList<>();
+
+    // 조회수
+    @Column(name = "class_view_count")
+    @ColumnDefault("0")
+    private int classViewCount;
+
 }
