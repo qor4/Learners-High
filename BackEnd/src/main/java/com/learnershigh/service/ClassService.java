@@ -160,7 +160,7 @@ public class ClassService {
 
     // 메인페이지 TOP5 출력
     public List<ClassListDto> mainTop5(){
-        List<Class> classlist = classRepository.findTop5ByOrderByClassViewCount();
+        List<Class> classlist = classRepository.findTop5ByOrderByClassViewCountDesc();
 
         List<ClassListDto> returnlist = new ArrayList<>();
 
