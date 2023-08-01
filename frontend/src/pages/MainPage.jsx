@@ -6,8 +6,8 @@ import TeacherMain from "../components/main/TeacherMain";
 import StudentMain from "../components/main/StudentMain";
 
 const MainPage = () => {
-    // const userType = useSelector((state) => state.user.userType);
-    const userType = "T";
+    const userType = useSelector((state) => state.user.userType);
+    // const userType = "T";
 
     return (
         <div>

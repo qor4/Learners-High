@@ -17,19 +17,21 @@ const StyledInput = styled.input`
 `;
 
 const Input = (props) => {
-    const { id, label, value, type, placeholder, onChange, disabled } = props;
+    const { id, name, label, value, type, placeholder, onChange, disabled } =
+        props;
     return (
-        <>
+        <div>
             <StyledLabel htmlFor={id}>{label}</StyledLabel>
             <StyledInput
                 id={id}
+                name={name}
                 value={value}
                 type={type}
                 placeholder={placeholder}
                 onChange={onChange}
                 disabled={disabled}
             />
-        </>
+        </div>
     );
 };
 

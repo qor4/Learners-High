@@ -9,6 +9,7 @@ import MainPage from "./pages/MainPage";
 import UserJoin from "./components/auth/UserJoin";
 import ClassPage from "./pages/ClassPage";
 import ClassJoinPage from "./pages/ClassJoinPage";
+import ClassInfoPage from "./pages/ClassInfoPage";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
 import UserLogIn from "./components/auth/UserLogIn";
@@ -31,9 +32,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/join" element={<UserJoin />}></Route>
-                <Route path="/login" element={<UserLogIn />}></Route>
                 <Route path="/class" element={<ClassPage />}></Route>
                 <Route path="/class/join" element={<ClassJoinPage />}></Route>
+                <Route path="/class/info/:classNo" element={<ClassInfoPage />}></Route>
             </Routes>
             
             <Footer />

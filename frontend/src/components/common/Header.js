@@ -59,7 +59,7 @@ const Header = () => {
                             show={showLoginModal}
                             onClose={handleCloseModal}
                         >
-                            <UserLogin />
+                            <UserLogin onClose={handleCloseModal} />
                         </Modal>
                     </>
                 )}
