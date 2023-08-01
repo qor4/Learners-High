@@ -7,6 +7,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -60,4 +62,8 @@ public class ClassRound {
     // 수업 회차별 수업룸 입장 키
     @Column(name = "class_round_classroom")
     private String classRoundClassroom;
+
+    // 회차당 만족도가 여러개일수도 있기 때문에 리스트 생성
+    @OneToMany(mappedBy = "classRoundNo",fetch = FetchType.LAZY)
+    List<Satisfaction> roundSatiList = new ArrayList<>();
 }

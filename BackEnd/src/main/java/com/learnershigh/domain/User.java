@@ -92,6 +92,14 @@ public class User {
     @OneToMany(mappedBy = "userNo", fetch = FetchType.LAZY)
     List<StudentWishlist> studentWishlist = new ArrayList<>();
 
+    // 학생 한명당 만족도가 여러개일수도 있기 때문에 리스트 생성
+    @OneToMany(mappedBy = "studentNo",fetch = FetchType.LAZY)
+    List<Satisfaction> studentSatiList = new ArrayList<>();
+
+    // 강사 한명당 만족도가 여러개일수도 있기 때문에 리스트 생성
+    @OneToMany(mappedBy = "teacherNo",fetch = FetchType.LAZY)
+    List<Satisfaction> teacherSatiList = new ArrayList<>();
+
     public void mypageModify(String userName, String userTel, String userInfo) // 프로필??
     {
         this.userName = userName;

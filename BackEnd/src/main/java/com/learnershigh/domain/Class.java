@@ -100,4 +100,8 @@ public class Class {
     @ColumnDefault("0")
     private int classViewCount;
 
+    // 수업 한개당 만족도가 여러개일수도 있기 때문에 리스트 생성
+    @OneToMany(mappedBy = "classNo",fetch = FetchType.LAZY)
+    List<Satisfaction> classSatiList = new ArrayList<>();
+
 }
