@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ClassRoundRepository extends JpaRepository<ClassRound, Long> {
-    @Query(value = "SELECT CR FROM ClassRound CR WHERE CR.classNo.classNo = :classNo")
+    @Query(value = "SELECT CR FROM ClassRound CR WHERE CR.classNo.classNo = :classNo ORDER BY CR.classRoundNumber ASC")
     List<ClassRound> findByClassNo(@Param("classNo") Long classNo);
 
     ClassRound findByClassRoundNo(Long classRoundNo);

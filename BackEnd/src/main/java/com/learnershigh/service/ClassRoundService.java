@@ -4,6 +4,7 @@ import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassRound;
 import com.learnershigh.dto.ClassJoinDto;
 import com.learnershigh.dto.ClassRoundDetailDto;
+import com.learnershigh.dto.ClassRoundHomeworkStatusDto;
 import com.learnershigh.dto.ClassRoundJoinDto;
 import com.learnershigh.repository.ClassRepository;
 import com.learnershigh.repository.ClassRoundRepository;
@@ -98,7 +99,4 @@ public class ClassRoundService {
         return classRoundDetailDtoList;
     }
 
-    public String getInfoTab(Long classNo) {
-        return classRepository.getInfoTab(classNo);
-    }
 }

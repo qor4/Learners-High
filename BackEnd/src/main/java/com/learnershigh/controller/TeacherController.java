@@ -89,10 +89,32 @@ public class TeacherController {
     public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
         try {
-            String classInfo = classRoundService.getInfoTab(classNo);
+            String classInfo = teacherService.getInfoTab(classNo);
             HashMap<String, Object> InfoTab = new HashMap<>();
             InfoTab.put("classInfo", classInfo);
             responseBody.getList().add(InfoTab);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 강사 수업 관리 과제 탭
+    @GetMapping("/class/{classNo}/homework")
+    public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
+        try {
+            List<ClassRoundHomeworkStatusDto> classHomeworkInfo = teacherService.getHomeworkTabInfo(classNo);
+            for(ClassRoundHomeworkStatusDto classRoundHomeworkStatusDto: classHomeworkInfo) {
+                responseBody.getList().add(classRoundHomeworkStatusDto);
+            }
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
