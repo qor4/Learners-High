@@ -27,6 +27,7 @@ public class StudentController {
 
     // 강의 찜
     @PostMapping("/wish")
+    @ApiOperation("강의 찜 (insert)")
     public ResponseEntity<BaseResponseBody> wish(@RequestBody StudentClassActionDto studentClassActionDto) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 위시 성공");
         try {
@@ -45,6 +46,7 @@ public class StudentController {
 
 
     @DeleteMapping("/wish/{userNo}/{classNo}")
+    @ApiOperation("강의 찜 취소")
     public ResponseEntity<BaseResponseBody> deleteWish(@PathVariable Long userNo, @PathVariable Long classNo) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 위시 취소");
         try {
@@ -62,6 +64,7 @@ public class StudentController {
     }
 
     @GetMapping("/class/main/{userNo}")
+    @ApiOperation("학생 강의 조회 완료(메인)")
     public ResponseEntity<CustomResponseBody> showWeeklyClassSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("학생 메인 강의 조회 완료");
         HashMap<Integer, Object> mainClassListDtoList = studentService.showWeeklyClassSchedule(userNo);
@@ -70,8 +73,8 @@ public class StudentController {
     }
 
     // 학생 강의 찜 목록 전체 출력
-
     @GetMapping("/wish/list")
+    @ApiOperation("학생 찜 목록 전체 출력")
     public List<ClassListDto> wishListAll(@RequestParam("userNo") User userNo)
     {
         return studentService.wishListAll(userNo);
