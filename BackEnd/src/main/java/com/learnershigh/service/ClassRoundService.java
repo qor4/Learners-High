@@ -63,6 +63,7 @@ public class ClassRoundService {
         Class classEntity = classRepository.findByClassNo(classRoundJoinDtoList.get(0).getClassNo());
         classEntity.setClassStartDate(classRoundJoinDtoList.get(0).getClassRoundStartDatetime().toLocalDate());
         classEntity.setClassEndDate(classRoundJoinDtoList.get(classRoundJoinDtoList.size() - 1).getClassRoundStartDatetime().toLocalDate());
+        classEntity.setClassTotalRound(classRoundJoinDtoList.size());
         classRepository.save(classEntity);
     }
 
