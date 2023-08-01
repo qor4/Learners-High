@@ -5,6 +5,7 @@ import com.learnershigh.dto.*;
 import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.TeacherService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class TeacherController {
 
     // 강사 메인 페이지 요일별 과목
     @GetMapping("/class/main/{userNo}")
+    @ApiOperation("강사 메인 페이지 요일별 과목 조회")
     public ResponseEntity<CustomResponseBody> showWeeklyClassSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 메인 강의 조회 완료");
         HashMap<Integer, Object> mainClassListDtoList = teacherService.showWeeklyClassSchedule(userNo);
@@ -34,6 +36,7 @@ public class TeacherController {
 
     // 강사 강의 목록
     @GetMapping("/class/{userNo}")
+    @ApiOperation("강사 강의 목록 조회")
     public ResponseEntity<CustomResponseBody> teacherClassList(@PathVariable Long userNo, @RequestParam String status) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 " + status + " 목록 조회 완료");
         try {
@@ -54,6 +57,7 @@ public class TeacherController {
 
     // 과제 등록
     @PostMapping("/class/homework/join")
+    @ApiOperation("과제 공지 등록")
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
         teacherService.joinHomeworkNotice(homeworkNoticeJoinDto);
@@ -62,6 +66,7 @@ public class TeacherController {
 
     // 강사 수업 관리 학생 탭
     @GetMapping("/class/{classNo}/student")
+    @ApiOperation("강사 수업 관리 학생 탭")
     public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 학생 탭 조회 완료");
         try {
@@ -85,6 +90,7 @@ public class TeacherController {
     }
 
     // 강사 수업 관리 소개 탭
+    @ApiOperation("강사 수업 관리 소개 탭")
     @GetMapping("/class/{classNo}/info")
     public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
@@ -107,6 +113,7 @@ public class TeacherController {
     }
 
     // 강사 수업 관리 과제 탭
+    @ApiOperation("강사 수업 관리 과제 탭")
     @GetMapping("/class/{classNo}/homework")
     public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");

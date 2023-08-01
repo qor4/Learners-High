@@ -7,6 +7,7 @@ import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.ClassService;
 import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class ClassController {
 
     // 강의 개설
     @PostMapping("/join")
+    @ApiOperation("강의 개설")
     public ResponseEntity<CustomResponseBody> classJoin(@RequestBody ClassJoinDto classJoinDto) {
         CustomResponseBody responseBody = new CustomResponseBody("강의 개설 성공");
         try {
@@ -50,6 +52,7 @@ public class ClassController {
 
     // 회차 개설
     @PostMapping("/join/round")
+    @ApiOperation("회차 개설")
     public ResponseEntity<BaseResponseBody> classRoundJoin(@RequestBody List<ClassRoundJoinDto> classRoundJoinDtoList) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
         try {
@@ -68,6 +71,7 @@ public class ClassController {
 
     // 강의 전 목록 출력(수강신청 목록에서 사용)
     @GetMapping("/list/upcoming")
+    @ApiOperation("강의 모든 목록 출력 (수강신청 목록에서 사용)")
     public ResponseEntity<CustomResponseBody> upcomingClassList() {
         CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
         try {
@@ -88,6 +92,7 @@ public class ClassController {
 
     // 작성 중인 강의가 존재하는지
     @GetMapping("/writing/{userNo}")
+    @ApiOperation("작성 중인 강의가 존재하는 지 확인")
     public ResponseEntity<CustomResponseBody> isWritingByUserNo(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 조회 완료");
         HashMap<String, Object> isWriting = new HashMap<>();
@@ -104,6 +109,7 @@ public class ClassController {
 
     // 수업 정보 작성 페이지 조회
     @GetMapping("/writing/info/{classNo}")
+    @ApiOperation("수업 정보 작성 페이지 조회")
     public ResponseEntity<CustomResponseBody> getWritingClassByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
         responseBody.getList().add(classService.getWritingClassByClassNo(classNo));
@@ -112,6 +118,7 @@ public class ClassController {
 
     // 회차 정보 작성 페이지 조회
     @GetMapping("/writing/round/{classNo}")
+    @ApiOperation("회차 정보 작성 페이지 조회")
     public ResponseEntity<CustomResponseBody> getWritingClassRoundByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 회차 정보 조회 완료");
         responseBody.getList().add(classRoundService.getWritingClassRoundByClassNo(classNo));
@@ -120,6 +127,7 @@ public class ClassController {
 
     // 수강 신청 API
     @PostMapping("/apply")
+    @ApiOperation("수강 신청")
     public ResponseEntity<BaseResponseBody> apply(@RequestBody StudentClassActionDto studentClassActionDto) {
         BaseResponseBody responseBody = new BaseResponseBody("강의 수강 성공");
         try {
@@ -138,6 +146,7 @@ public class ClassController {
 
     // 강의 상세 정보
     @GetMapping("/{classNo}")
+    @ApiOperation("강의 상세 정보")
     public ResponseEntity<CustomResponseBody> getClassDetailByClassNo(@PathVariable Long classNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강의 상세 정보 조회 완료");
         try {
@@ -166,6 +175,7 @@ public class ClassController {
     }
 
     @GetMapping("/type")
+    @ApiOperation("수업 분류 정보 조회 (type)")
     public ResponseEntity<CustomResponseBody> getClassType() {
         CustomResponseBody responseBody = new CustomResponseBody("수업 분류 정보 조회 완료");
         responseBody.getList().add(classService.getClassType());
@@ -174,6 +184,7 @@ public class ClassController {
 
     // 강의 조회수 증가
     @PutMapping("/view-count")
+    @ApiOperation("클릭시 조회수 증가")
     public ResponseEntity<BaseResponseBody> viewCount(@RequestParam Long classNo) {
         BaseResponseBody responseBody = new BaseResponseBody("조회수 증가 성공");
         try {
@@ -187,6 +198,7 @@ public class ClassController {
     }
 
     // 메인페이지 강의 TOP5 출력
+    @ApiOperation("강의 Top5 출력")
     @GetMapping("/list/main")
     public ResponseEntity<CustomResponseBody> mainTop5() {
         CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
