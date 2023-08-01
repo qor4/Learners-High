@@ -7,6 +7,7 @@ import axios from "axios";
 import { url } from "../../api/APIPath";
 
 import ClassRoundItemBox from "./ClassRoundItemBox";
+import Card from "../common/Card";
 
 const ClassRoundItemBoxList = (props) => {
     const userNo = useSelector((state) => state.user.userName);
@@ -95,9 +96,9 @@ const ClassRoundItemBoxList = (props) => {
     
     return (
         <>
-            {selectedDayClasses.map((classItem, index) => (
+            {selectedDayClasses.length > 0 ? selectedDayClasses.map((classItem, index) => (
                 <ClassRoundItemBox classInfo={classItem} key={index} />
-            ))}
+            )) : <Card>{props.dayName}요일 수업 없음</Card>}
         </>
     );
 };

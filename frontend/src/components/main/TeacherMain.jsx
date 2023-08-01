@@ -52,7 +52,7 @@ const TeacherMain = () => {
             </Card>
 
             {/* 수업 아이템이 들어가는 공간 */}
-            <ClassRoundItemBoxList selectedDay={selectedDay} />
+            <ClassRoundItemBoxList selectedDay={selectedDay} dayName={days[selectedDay - 1]} />
         </div>
     );
 };
