@@ -35,7 +35,8 @@ const UserLogIn = (props) => {
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
-                    dispatch(logInUser(res.data.list[0].userInfo));
+                    dispatch(logInUser(res.data.list[0]));
+                    props.onClose()
                 } else {
                     alert("로그인 실패!");
                 }

@@ -3,7 +3,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const UserStore = createSlice({
-    name: 'user',
+    name: "user",
     initialState: {
         userNo: "",
         userType: "",
@@ -13,21 +13,22 @@ export const UserStore = createSlice({
     },
     reducers: {
         logInUser: (state, action) => {
-            state.userNo = action.payload.userNo
-            state.userType = action.payload.userType
-            state.userId = action.payload.userId
-            state.userName = action.payload.userName
-            state.isLogin = true
+            console.log(action, "action", action.payload);
+            state.userNo = action.payload.userNo;
+            state.userType = action.payload.userType;
+            state.userId = action.payload.userId;
+            state.userName = action.payload.userName;
+            state.isLogin = true;
         },
         logOutUser: (state) => {
-            state.userNo = ""
-            state.userType = ""
-            state.userId = ""
-            state.userName = ""
-            state.isLogin = false
-        }
-    }
-})
+            state.userNo = "";
+            state.userType = "";
+            state.userId = "";
+            state.userName = "";
+            state.isLogin = false;
+        },
+    },
+});
 
-export const {logInUser, logOutUser} = UserStore.actions
-export default UserStore.reducer
+export const { logInUser, logOutUser } = UserStore.actions;
+export default UserStore.reducer;
