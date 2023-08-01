@@ -7,6 +7,7 @@ import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,5 +127,32 @@ public class TeacherService {
             studentAttendHomeworkDtoList.add(studentAttendHomeworkDto);
         }
         return studentAttendHomeworkDtoList;
+    }
+
+    public String getInfoTab(Long classNo) {
+        return classRepository.getInfoTab(classNo);
+    }
+
+    public List<ClassRoundHomeworkStatusDto> getHomeworkTabInfo(Long classNo) {
+        List<ClassRoundHomeworkStatusDto> classRoundHomeworkStatusDtoList = new ArrayList<>();
+        // 수업의 강의 회차 정보
+        List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classNo);
+        // 수업 수강 학생 목록
+        List<StudentClassList> studentClassLists = studentClassListRepository.findByClassNo(classNo);
+        for (ClassRound classRound : classRoundList) {
+            ClassRoundHomeworkStatusDto classRoundHomeworkStatusDto = new ClassRoundHomeworkStatusDto();
+            HomeworkNoticeDto homeworkNoticeDto = classHomeworkNoticeRepository.getHomeworkNoticeByClassRoundNo(classRound.getClassRoundNo());
+            List<StudentHomeworkStatusDto> studentHomeworkStatusDtoList = new ArrayList<>();
+            for (StudentClassList studentClassList : studentClassLists) {
+                StudentHomeworkStatusDto studentHomeworkStatusDto = classHomeworkRepository.getStudentHomeworkStatusByHomeworkNoticeNo(homeworkNoticeDto.getClassHomeworkNoticeNo(), studentClassList.getUserNo());
+                studentHomeworkStatusDtoList.add(studentHomeworkStatusDto);
+            }
+            classRoundHomeworkStatusDto.setClassRoundNo(classRound.getClassRoundNo());
+            classRoundHomeworkStatusDto.setClassRoundNumber(classRound.getClassRoundNumber());
+            classRoundHomeworkStatusDto.setHomeworkNotice(homeworkNoticeDto);
+            classRoundHomeworkStatusDto.setStudentHomeworkStatusList(studentHomeworkStatusDtoList);
+            classRoundHomeworkStatusDtoList.add(classRoundHomeworkStatusDto);
+        }
+        return classRoundHomeworkStatusDtoList;
     }
 }

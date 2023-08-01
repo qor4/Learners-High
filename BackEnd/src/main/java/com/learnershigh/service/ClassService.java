@@ -47,7 +47,6 @@ public class ClassService {
         classDomain.setClassName(classJoinDto.getClassName());
         classDomain.setUserNo(userRepository.findByUserNo(classJoinDto.getUserNo()));
         classDomain.setClassTypeNo(classTypeRepository.findByClassTypeNo(classJoinDto.getClassTypeNo()));
-        classDomain.setClassName(classJoinDto.getClassName());
         classDomain.setClassInfo(classJoinDto.getClassInfo());
         classDomain.setMaxStudent(classJoinDto.getMaxStudent());
         classDomain.setClassPrice(classJoinDto.getClassPrice());

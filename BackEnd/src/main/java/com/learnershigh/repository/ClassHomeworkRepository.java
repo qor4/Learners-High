@@ -1,7 +1,9 @@
 package com.learnershigh.repository;
 
 import com.learnershigh.domain.ClassHomework;
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.AttendHomeworkProjectionInterface;
+import com.learnershigh.dto.StudentHomeworkStatusDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +22,10 @@ public interface ClassHomeworkRepository extends JpaRepository<ClassHomework, Lo
             "where a.class_no = :classNo and a.user_no = :userNo", nativeQuery = true)
     List<AttendHomeworkProjectionInterface> getAttendHomeworkByUserNo(@Param("userNo") Long userNo, @Param("classNo") Long classNo);
 
+    @Query(value = "SELECT new com.learnershigh.dto.StudentHomeworkStatusDto(homework.userNo.userNo, homework.userNo.userName, homework.homeworkStatus, homework.homeworkFileName, homework.homeworkFileOriginName) " +
+            "FROM ClassHomework homework " +
+            "WHERE homework.classHomeworkNoticeNo.classHomeworkNoticeNo = :classHomeworkNoticeNo " +
+            "AND homework.userNo = :userNo")
+    StudentHomeworkStatusDto getStudentHomeworkStatusByHomeworkNoticeNo(@Param("classHomeworkNoticeNo") Long classHomeworkNoticeNo, @Param("userNo") User userNo);
 }
 
