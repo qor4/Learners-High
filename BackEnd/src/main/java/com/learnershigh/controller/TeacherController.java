@@ -2,6 +2,7 @@ package com.learnershigh.controller;
 
 import com.learnershigh.domain.Class;
 import com.learnershigh.dto.*;
+import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.TeacherService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class TeacherController {
     private final TeacherService teacherService;
+    private final ClassRoundService classRoundService;
 
     // 강사 메인 페이지 요일별 과목
     @GetMapping("/class/main/{userNo}")
@@ -55,6 +57,30 @@ public class TeacherController {
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
         teacherService.joinHomeworkNotice(homeworkNoticeJoinDto);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 강사 수업 관리 학생 탭
+    @GetMapping("/class/{classNo}/student")
+    public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long classNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 학생 탭 조회 완료");
+        try {
+            List<ClassRoundDetailDto> classRoundDetailDtoList = classRoundService.getClassRoundDetailByClassNo(classNo);
+            List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = teacherService.getStudentTabInfo(classNo);
+            HashMap<String, Object> studentTabInfo = new HashMap<>();
+            studentTabInfo.put("classRoundInfo", classRoundDetailDtoList);
+            studentTabInfo.put("studentInfo", studentAttendHomeworkDtoList);
+            responseBody.getList().add(studentTabInfo);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
         return ResponseEntity.ok().body(responseBody);
     }
 }

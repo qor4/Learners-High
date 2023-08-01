@@ -2,14 +2,12 @@ package com.learnershigh.service;
 
 import com.learnershigh.domain.*;
 import com.learnershigh.domain.Class;
-import com.learnershigh.dto.ClassListDto;
-import com.learnershigh.dto.HomeworkNoticeJoinDto;
-import com.learnershigh.dto.MainClassListDto;
+import com.learnershigh.dto.*;
 import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+add
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,5 +110,22 @@ public class TeacherService {
             classHomework.setHomeworkStatus("미제출");
             classHomeworkRepository.save(classHomework);
         }
+    }
+
+    public List<StudentAttendHomeworkDto> getStudentTabInfo(Long classNo) {
+        // 강의를 수강하는 학생 List
+        List<StudentClassList> studentClassLists = studentClassListRepository.findByClassNo(classNo);
+        List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = new ArrayList<>();
+        for (StudentClassList studentClassList : studentClassLists) {
+            StudentAttendHomeworkDto studentAttendHomeworkDto = new StudentAttendHomeworkDto();
+            studentAttendHomeworkDto.setUserNo(studentClassList.getUserNo().getUserNo());
+            studentAttendHomeworkDto.setUserName(studentClassList.getUserNo().getUserName());
+            // userNo를 사용해 출석, 과제 정보 조회 후 set => for문, 그리고 정렬(수업 회차 기준)
+            List<AttendHomeworkProjectionInterface> attendHomeworkDtoList = classHomeworkRepository.getAttendHomeworkByUserNo(studentClassList.getUserNo().getUserNo(), classNo);
+            System.out.println(studentClassList.getUserNo().getUserNo() + " " + classNo);
+            studentAttendHomeworkDto.setAttendHomeworkList(attendHomeworkDtoList);
+            studentAttendHomeworkDtoList.add(studentAttendHomeworkDto);
+        }
+        return studentAttendHomeworkDtoList;
     }
 }
