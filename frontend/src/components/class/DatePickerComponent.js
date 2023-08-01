@@ -6,7 +6,7 @@ import {ko} from "date-fns/esm/locale"
 const DatePickerComponent = ({onDataChange, initial, initialDate, idx, miniDisabledDate, maxDisabledDate}) => {
   // const [startDate, setStartDate] = useState(new Date('2023-04-05 19:12'));
   const standDay = initial? new Date() :(initialDate? new Date( initialDate) : new Date()) 
-
+  
 
   const [classRoundDate, setClassRoundDate] = useState( standDay );
   const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate)
@@ -22,7 +22,7 @@ const DatePickerComponent = ({onDataChange, initial, initialDate, idx, miniDisab
   const handleButtonClick = () => {
     onDataChange(idx, classRoundDate)
   }
-  const miniLimitDay = new Date( miniDisabledDay ? new Date(miniDisabledDay) : new Date() )
+  const miniLimitDay = miniDisabledDay ? new Date(miniDisabledDay) : new Date()
   const maxLimitDay = maxDisabledDay ? new Date(maxDisabledDay) : null
   return (
     <>

@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 
-const ClassRoundItem = ({idx, onDataChange, title, classDate}) => {
+const ClassRoundItem = ({idx, onDataChange, title}) => {
     const [classRoundTitle, setClassRoundTitle] = useState(title ? title : "");
     const [classRoundFileOriginName, setClassRoundFileOriginName] = useState("");
-    console.log(classDate)
     // const classMiddleDate = new Date(classDate)
     // const classDay = classDate ? new Date(classMiddleDate.getFullYear(), classMiddleDate.getMonth()+1, classMiddleDate.getDate()) : null
 
@@ -13,19 +12,17 @@ const ClassRoundItem = ({idx, onDataChange, title, classDate}) => {
         if (classRoundTitle.length >= 30) {
             return;
         }
-        setClassRoundTitle(event.target.value);
+        setClassRoundTitle(event.currentTarget.value);
     };
 
-    // 강의 자료 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
+    // 강의 자료 업로드를 했을 때 (파일 선택을 했을 때) // 이름만 넣었다.
     const handleFileChange = (event) => {
-        setClassRoundFileOriginName(event.target.files[0]);
+        setClassRoundFileOriginName(event.currentTarget.files[0]?.name);
     };
-
-    console.log(classRoundTitle);
 
     const handleButtonClick = () => {
-        
-        onDataChange()
+        const data = {classRoundTitle, classRoundFileOriginName}
+        onDataChange(data, idx)
     }
 
     return (
