@@ -132,6 +132,8 @@ const ClassRoundJoin = () => {
         setClassRoundDataSet(classRoundDataSet)
     }, [classRoundDataSet])
 
+    // 기본 진행 요일 선택할 때 => 총 회차 수보다 많이 선택 불가능하게 수정@@@ // 나중에!!
+
     let hour, miniute  // 보류
     const handleRunningTimeChange = (e) => {
         setClassRunningTime(e.currentTarget.value)
@@ -152,7 +154,6 @@ const ClassRoundJoin = () => {
     const handleInsertClassRoundTime = () => {
         const classRoundDataSetCopy = JSON.parse(JSON.stringify(classRoundDataSet))
         classRoundDataSetCopy[0].classRoundStartDatetime = startDate
-        classRoundDataSetCopy[0].classRoundNumber = 1
 
         // addDay가 startDate가 아니라, days의 startDate여야 함.
         const standDay = new Date(startDate)
@@ -178,12 +179,10 @@ const ClassRoundJoin = () => {
             if (i-1<weekNum) {
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate())
                 classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
-                classRoundDataSetCopy[i].classRoundNumber = i+1
             } else {
                 // classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%weekNum].getDate()+7*parseInt((i-1)/weekNum))
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate()+7)
                 classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
-                classRoundDataSetCopy[i].classRoundNumber = i+1
             }
         }
         setClassRoundDataSet(classRoundDataSetCopy)
@@ -197,18 +196,8 @@ const ClassRoundJoin = () => {
         setClassRoundDataSet(classRoundDataSetCopy)
     }
 
-    const getClassData = (RoundData) => {
-        const {classRoundNumber, classRoundTitle, classRoundFileOriginName} = RoundData
-        
-        const classRoundDataSetCopy = [...classRoundDataSet]
+    const getClassData = () => {
 
-        const updatedItem = classRoundDataSetCopy.find((item)=> classRoundNumber === item.classRoundNumber)
-        
-        if (updatedItem) {
-            updatedItem.classRoundTitle = classRoundTitle
-            updatedItem.classRoundFileOriginName = classRoundFileOriginName
-        }
-        // 여기에 진행시간 나올 것.
     }
 
     console.log(classRoundDataSet, "데이터셋 바꼈니?!")
