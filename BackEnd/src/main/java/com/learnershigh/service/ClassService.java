@@ -3,6 +3,7 @@ package com.learnershigh.service;
 import com.learnershigh.domain.Class;
 import com.learnershigh.domain.ClassType;
 import com.learnershigh.domain.StudentClassList;
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -101,10 +102,26 @@ public class ClassService {
     @Transactional
     public void apply(StudentClassActionDto studentClassActionDto) {
         StudentClassList studentClassList = new StudentClassList();
-        studentClassList.setUserNo(userRepository.findByUserNo(studentClassActionDto.getUserNo()));
-        studentClassList.setClassNo(classRepository.findByClassNo(studentClassActionDto.getClassNo()));
-
+        User user = userRepository.findByUserNo(studentClassActionDto.getUserNo());
+        if(user == null){
+            throw new IllegalStateException("유효한 회원이 아닙니다.");
+        }
+        if (!user.getUserType().equals("S")) {
+            throw new IllegalStateException("수강신청은 학생만 가능합니다.");
+        }
+        Class classDomain = classRepository.findByClassNo(studentClassActionDto.getClassNo());
+        if (classDomain == null) {
+            throw new IllegalStateException("유효한 수업이 아닙니다.");
+        }
+        if (!classDomain.getClassStatus().equals("강의 전")) {
+            throw new IllegalStateException("수강이 가능한 날짜가 아닙니다.");
+        }
+        studentClassList.setUserNo(user);
+        studentClassList.setClassNo(classDomain);
         studentClassListRepository.save(studentClassList);
+        int totalStudent = classDomain.getTotalStudent() + 1;
+        classDomain.setTotalStudent(totalStudent);
+        classRepository.save(classDomain);
     }
 
     public ClassInfoDto getClassDetailByClassNo(Long classNo) {
@@ -131,10 +148,11 @@ public class ClassService {
         classInfo.setClassTotalRound(classDomain.getClassTotalRound());
         return classInfo;
     }
+
     public List<ClassTypeDto> getClassType() {
         List<ClassType> classTypeList = classTypeRepository.findAll();
         List<ClassTypeDto> classTypeDtoList = new ArrayList<>();
-        for(ClassType classType : classTypeList){
+        for (ClassType classType : classTypeList) {
             ClassTypeDto classTypeDto = new ClassTypeDto();
             classTypeDto.setClassTypeNo(classType.getClassTypeNo());
             classTypeDto.setClassTypeName(classType.getClassTypeName());
@@ -145,8 +163,7 @@ public class ClassService {
 
     // 조회수 증가
     @Transactional
-    public void viewCount(Long classNo)
-    {
+    public void viewCount(Long classNo) {
         Class cla = classRepository.findByClassNo(classNo);
 
         int currentCount = cla.getClassViewCount();
@@ -158,13 +175,12 @@ public class ClassService {
     }
 
     // 메인페이지 TOP5 출력
-    public List<ClassListDto> mainTop5(){
+    public List<ClassListDto> mainTop5() {
         List<Class> classlist = classRepository.findTop5ByOrderByClassViewCountDesc();
 
         List<ClassListDto> returnlist = new ArrayList<>();
 
-        for(Class cla : classlist)
-        {
+        for (Class cla : classlist) {
             ClassListDto clas = new ClassListDto();
 
             clas.setClassNo(cla.getClassNo());
