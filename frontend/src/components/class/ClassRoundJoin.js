@@ -128,16 +128,11 @@ const ClassRoundJoin = () => {
         setClassRoundDataSet(classRoundDataSetCopy) // 여기서 추가했다!!!!
     }
 
-    useEffect(()=> {
-        setClassRoundDataSet(classRoundDataSet)
-    }, [classRoundDataSet])
-
     let hour, miniute  // 보류
     const handleRunningTimeChange = (e) => {
         setClassRunningTime(e.currentTarget.value)
         hour = parseInt(e.currentTarget.value/60)
         miniute = e.currentTarget.value % 60
-
     }
 
     // 인풋박스에 포커스가 가면 빈 문자열로 바꿔주는 커스텀 함수
@@ -197,17 +192,19 @@ const ClassRoundJoin = () => {
         setClassRoundDataSet(classRoundDataSetCopy)
     }
 
-    const getClassData = (RoundData) => {
-        const {classRoundNumber, classRoundTitle, classRoundFileOriginName} = RoundData
+    const getClassData = (roundData, idx) => {
+        const {classRoundTitle, classRoundFileOriginName} = roundData
         
         const classRoundDataSetCopy = [...classRoundDataSet]
 
-        const updatedItem = classRoundDataSetCopy.find((item)=> classRoundNumber === item.classRoundNumber)
+        const updatedItem = classRoundDataSetCopy.find((item)=> idx === item.classRoundNumber-1)
         
         if (updatedItem) {
             updatedItem.classRoundTitle = classRoundTitle
-            updatedItem.classRoundFileOriginName = classRoundFileOriginName
+            updatedItem.classRoundFileOriginName = classRoundFileOriginName ? classRoundFileOriginName : null 
         }
+        setClassRoundDataSet(classRoundDataSetCopy)
+        console.log(classRoundDataSet)
         // 여기에 진행시간 나올 것.
     }
 
