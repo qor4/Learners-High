@@ -1,6 +1,9 @@
 
 FROM openjdk:11 as builder
 
+COPY /home/ubuntu/keys/ssl/keystore.p12 src/main/resources
+COPY /home/ubuntu/keys/ssl/application.properties src/main/resources
+COPY /home/ubuntu/keys/ssl/application-s3.properties src/main/resources
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
