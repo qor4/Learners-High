@@ -4,8 +4,7 @@ import styled, { css } from "styled-components";
 // 버튼 사이즈
 const SIZES = {
     sm: css`
-        height: 40px;
-        font-size: 16px;
+        height: 2.5rem;
     `,
     md: css`
         height: 48px;
@@ -28,7 +27,7 @@ const StyledButton = styled.button`
     padding: 4px 20px;
     cursor: pointer;
     color: #000;
-    font-size: 16px;
+    font-size: 1rem;
 
     // disabled 아닐 때, hover 시
     &:not(:disabled):hover {
