@@ -34,6 +34,8 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
     Class findByClassNoAndUserNo(Long classNo, User userNo);
 
 
+    @Query(value = "SELECT C.classInfo FROM Class C WHERE C.classNo = :classNo")
+    String getInfoTab(@Param("classNo") Long classNo);
 }
 
 

@@ -97,4 +97,8 @@ public class ClassRoundService {
         }
         return classRoundDetailDtoList;
     }
+
+    public String getInfoTab(Long classNo) {
+        return classRepository.getInfoTab(classNo);
+    }
 }
