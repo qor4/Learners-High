@@ -5,6 +5,7 @@ import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.StudentService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +78,7 @@ public class StudentController {
     }
 
     @GetMapping("/class/list/{userNo}")
+    @ApiOperation("학생 수강 목록")
     public List<ClassListDto> userClassAll(@PathVariable("userNo") Long userNo)
     {
         return studentService.userClassAll(userNo);

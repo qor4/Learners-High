@@ -117,9 +117,12 @@ public class StudentService {
 
         List<StudentClassList> userclasslist = studentClassListRepository.findAllByUserNo(user);
 
+        System.out.println(userclasslist.toString());
+
         List<ClassListDto> clalist = new ArrayList<>();
 
         for (StudentClassList classAll : userclasslist) {
+
             ClassListDto cla = new ClassListDto();
 
             cla.setClassStartDate(classAll.getClassNo().getClassStartDate());
