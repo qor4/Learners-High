@@ -33,13 +33,13 @@ const ClassJoin = () => {
     const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //classTypeList 요청해서 담았다.
     const [classTypeList, setClassTypeList] = useState([])
-    useEffect( () => {
-        axios.get(`${url}/class/type/`)
-        .then(res=> {
-            console.log(res.data)
-            setClassTypeList(res.data)
-        })
-    }, [])
+    // useEffect( () => {
+    //     axios.get(`${url}/class/type/`)
+    //     .then(res=> {
+    //         console.log(res.data)
+    //         setClassTypeList(res.data)
+    //     })
+    // }, [])
 
 
     // 강의 이름(classCode) input 박스에 입력했을 때
@@ -131,7 +131,7 @@ const ClassJoin = () => {
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res=> {
-            const {classNo} = res.data
+            const {classNo} = res.data.list[0]
             setClassNo(classNo)
             console.log(res.data, res)
         })
