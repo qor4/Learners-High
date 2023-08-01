@@ -104,3 +104,9 @@ public class S3Service {
 ##### ⭕ 경로까지 모두 적어주니 다운로드가 잘 됐다.
 ![image-12.png](./image-12.png)
 ![image-14.png](./image-14.png)
+
+🎞8월 1일
+
+#### 수업당 총 강사 만족도를 출력하다 오류를 만났다.
+![image-15.png](./image-15.png)
+---> 아마 User teacherno를 넣어야 하는데 Long을 넣어야 할 것 같음.
