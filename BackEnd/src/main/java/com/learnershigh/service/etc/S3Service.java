@@ -257,16 +257,18 @@ public class S3Service {
     // 학생이 올린 과제 다운로드
     public boolean homeworkDownload(Long lessonHomeworkNo, HttpServletRequest request, HttpServletResponse
             response) {
-        LessonHomework lessonHomework = lessonHomeworkRepository.findByLessonHomeworkNo(lessonHomeworkNo);
         System.out.println("서비스 다운로드");
+
+        LessonHomework lessonHomework = lessonHomeworkRepository.findByLessonHomeworkNo(lessonHomeworkNo);
+
 
         // origin name
         String originName = lessonHomework.getHomeworkFileOriginName();
-        System.out.println(lessonHomework.getHomeworkFileOriginName());
+        System.out.println(originName);
 
         // s3file name
         String s3FileName = lessonHomework.getHomeworkFileName();
-        System.out.println(lessonHomework.getHomeworkFileName());
+        System.out.println(s3FileName);
 
         if (s3FileName == null) {
             return false;
@@ -451,7 +453,7 @@ public class S3Service {
     public String thumbnailLoad(Long lessonNo) {
         Lesson cla = lessonRepository.findByLessonNo(lessonNo);
 
-        return "URL" + cla.getLessonThumbnailImg();
+        return URL + cla.getLessonThumbnailImg();
 
     }
 
@@ -459,7 +461,7 @@ public class S3Service {
     public String profileLoad(Long userNo) {
 
         User user = userRepository.findByUserNo(userNo);
-        return "URL" + user.getProfileImg();
+        return URL + user.getProfileImg();
 
     }
 }
