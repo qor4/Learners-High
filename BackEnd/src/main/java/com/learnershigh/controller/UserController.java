@@ -100,12 +100,17 @@ public class UserController {
     public ResponseEntity<BaseResponseBody> duplicateId(@PathVariable("id") String userId) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
         if (userService.duplicateId(userId)) {
-            baseResponseBody.setResultMsg("사용 할 수 있는 아이디");
+            baseResponseBody.setResultMsg("사용 할 수 있는 아이디 입니다.");
+            baseResponseBody.setResultCode(0);
         } else {
             baseResponseBody.setResultMsg("사용 할 수 없는 아이디 입니다.(중복된 아이디)");
+            baseResponseBody.setResultCode(-1);
+            return ResponseEntity.ok().body(baseResponseBody);
         }
         return ResponseEntity.ok().body(baseResponseBody);
     }
+
+
 
     // 이메일 중복 (이메일로 아이디 찾을때도 사용해야함.)
     @GetMapping("/duplicate/email/{email}")
@@ -114,9 +119,12 @@ public class UserController {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
         if (userService.duplicateId(userEmail)) {
             baseResponseBody.setResultMsg("사용 할 수 있는 이메일 입니다.");
+            baseResponseBody.setResultCode(0);
         } else {
 
             baseResponseBody.setResultMsg("이미 가입된 이메일입니다.");
+            baseResponseBody.setResultCode(-1);
+            return ResponseEntity.ok().body(baseResponseBody);
         }
         return ResponseEntity.ok().body(baseResponseBody);
     }
