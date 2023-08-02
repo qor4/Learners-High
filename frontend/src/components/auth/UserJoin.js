@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+=======
+import React, {useState, useEffect} from "react";
+
+import axios from 'axios'
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
 import { url } from "../../api/APIPath";
 import { useNavigate } from 'react-router-dom';
 
@@ -240,6 +246,7 @@ const UserJoin = () => {
         setUserTelValidCheck(true);
     };
 
+<<<<<<< HEAD
     const [userEmailMSG, setUserEmailMSG] = useState("");
     const [userEmailValidCheck, setUserEmailVailidCheck] = useState(false);
     const userEmailFormCheck = (e) => {
@@ -420,6 +427,67 @@ const UserJoin = () => {
                     onBlur={userEmailFormCheck}
                 />
                 <p> {userEmailMSG} </p>
+=======
+  const signUp = () => {
+    if (userType && idValidCheck && passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
+      userInfoValidCheck && userNameValidCheck ) {
+        alert("성공!")
+        const data = JSON.stringify( {
+          userType, userId, userPassword, userEmail, userName, userTel, userInfo
+        } )
+        console.log(data)
+        console.log(url)
+        axios.post(`${url}/user/join`,
+        data,
+        {headers: {"Content-Type": 'application/json'}})
+        .then(res=> {
+          if(res.data.resultCode === 0) {
+            alert("회원가입 성공")
+            
+          }
+        }) 
+      } else {
+        alert("유효하지 않은 형식이 있습니다.")
+      }
+  }
+  
+  const userTypeChangeS = (e) => {
+    if (userType !== 'S') {
+      setUserType("S")
+    }
+  }
+  const userTypeChangeT = (e) => {
+    if (userType !== 'T') {
+      setUserType("T")
+    }
+  }
+  return (
+    <>
+    <form onSubmit={e => e.preventDefault()}> 
+      <div>
+        <button className="student" onClick={userTypeChangeS} value="S">
+          학생
+        </button>
+        <button className="teacher" onClick={userTypeChangeT} value="T">
+          선생님
+        </button>
+      </div>
+      
+      <div>
+        <div>
+          <label htmlFor="userId">아이디: </label>
+          <input 
+          type="text"
+          value={userId}
+          name="userId" 
+          id="userId"
+          placeholder="아이디를 입력해 주세요."
+          onChange={(e)=>setUserId( removeAllEmpty(e.currentTarget.value))}
+          onBlur={idCheck}
+          />
+          {/* 첫 렌더링엔 idMSG none */}
+          { idMSG ? <p>{idMSG}</p> : ""} 
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
 
                 <label htmlFor="userName">이름: </label>
                 <input
@@ -462,6 +530,23 @@ const UserJoin = () => {
             <button onClick={signUp}>회원가입</button>
         </form>
 
+<<<<<<< HEAD
+=======
+          {/* <label htmlFor="userInfo">{userInfoLabel}: </label> */}
+          <textarea 
+          type="text" 
+          name="userInfo"
+          id="userInfo"
+          placeholder="소개" 
+          onChange={(e)=> setUserInfo(e.currentTarget.value)}
+          onBlur={userInfoFormCheck}
+          />
+          <p> {userInfoMSG} </p>
+      </div>
+      <button onClick={signUp}>회원가입</button>
+    </form>
+
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
     {/* 여기서 userType이 "T"면,  */}
     {
       userType==='T' ? (

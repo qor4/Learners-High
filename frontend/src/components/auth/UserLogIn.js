@@ -11,6 +11,7 @@ import Button from "../common/Button";
 const UserLogIn = (props) => {
     const user = useSelector((state) => state.user);
     console.log(user);
+
     const [logInForm, setLogInForm] = useState({
         userId: "",
         userPassword: "",
@@ -45,7 +46,6 @@ const UserLogIn = (props) => {
     };
     return (
         <>
-
             <form onSubmit={(e) => e.preventDefault()}>
                 <Input
                     label="아이디"
