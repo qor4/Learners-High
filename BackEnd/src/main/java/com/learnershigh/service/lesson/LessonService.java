@@ -123,6 +123,9 @@ public class LessonService {
         if (!lessonDomain.getLessonStatus().equals("강의 전")) {
             throw new IllegalStateException("수강이 가능한 날짜가 아닙니다.");
         }
+        if (lessonDomain.getTotalStudent() == lessonDomain.getMaxStudent()) {
+            throw new IllegalStateException("수강 인원이 모두 모집되었습니다.");
+        }
         studentLessonList.setUserNo(user);
         studentLessonList.setLessonNo(lessonDomain);
         studentLessonListRepository.save(studentLessonList);
