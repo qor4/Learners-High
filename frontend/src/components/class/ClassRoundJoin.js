@@ -1,15 +1,24 @@
 // 강의 개설 두 번째 페이지 (세부 회차 입력)
 
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ClassRoundItem from "./ClassRoundItem";
-
 import ClassRoundTime from "./ClassRoundTime"
 
 import DatePickerComponent from "./DatePickerComponent";
+import axios from "axios";
+
+import { url } from "../../api/APIPath";
 
 const ClassRoundJoin = () => {
     const [classTotalRound, setClassTotalRound] = useState(0);
+
+    const navigate = useNavigate()
+
+    // 여기서 Link로 보낸 데이터 받았다.
+    const location = useLocation()
+    const classData = location.state?.data || null
 
     const initialClassRoundItem = {
         classNo: "", // 임시
@@ -19,21 +28,13 @@ const ClassRoundJoin = () => {
         classRoundFileOriginName: "",
         classRoundStartDatetime: "",
         classRoundEndDateTime: "",
-        isHomework: false,        
+        isHomework: false,
+
+        classRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
     }
     const [classRoundDataSet, setClassRoundDataSet] = useState([initialClassRoundItem])
-    console.log(classRoundDataSet)
-    
     const [startDate, setStartDate] = useState("");
-    const [selectedDays, setSelectedDays] = useState([]);
-    const [daysTimes, setDaysTimes] = useState({});
-
     const [classRunningTime, setClassRunningTime] = useState("") // 오직 분 단위로.
-
-    // 캘린더에서 선택한 날짜들을 담아줄 배열
-    const [selectedDates, setSelectedDates] = useState([]);
-
-    // const days = ["월", "화", "수", "목", "금", "토", "일"];
 
     const initialDays = [
         {
@@ -123,8 +124,14 @@ const ClassRoundJoin = () => {
         }
         setClassTotalRound(0)
     };
+    // 강의 배열 길이 결정함. (이건 추후...)
     const handletotalTimeBlur = () => {
         const classRoundDataSetCopy = new Array(classTotalRound).fill(initialClassRoundItem)
+        const newDate = new Date(startDate)
+        newDate.setMinutes(startDate.getMinutes()+Number(classRunningTime))
+        classRoundDataSetCopy[0].classRoundEndDateTime = newDate
+        console.log(classRoundDataSetCopy[0].classRoundEndDateTime, "끝난 시간")
+        classRoundDataSetCopy[0].classRunningTimeForEnd = classRunningTime
         setClassRoundDataSet(classRoundDataSetCopy) // 여기서 추가했다!!!!
     }
 
@@ -143,6 +150,9 @@ const ClassRoundJoin = () => {
     const handleStartDateChange = (idx, newStartDate) => {
         setStartDate(newStartDate);
     };
+    useEffect(()=> {
+        console.log(classRoundDataSet, "실시간 반영")
+    }, [classRoundDataSet])
 
     const handleInsertClassRoundTime = () => {
         const classRoundDataSetCopy = JSON.parse(JSON.stringify(classRoundDataSet))
@@ -152,6 +162,7 @@ const ClassRoundJoin = () => {
         // addDay가 startDate가 아니라, days의 startDate여야 함.
         const standDay = new Date(startDate)
         let standardDate = []
+        // let standardEndDate = [] 끝나는 시간을 넣으려 했던 노력...
         for (let i=0;i<7;i++) {
             standDay.setDate(standDay.getDate()+1)
             
@@ -160,6 +171,7 @@ const ClassRoundJoin = () => {
             days.map(day=> {
                 if (day.isSelected && Number(standDay.getDay()) === Number(day.code) ) {
                     standardDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
+                    // standardEndDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
                     console.log(standardDate, "standardDate")
                     return
                 }
@@ -209,6 +221,65 @@ const ClassRoundJoin = () => {
     }
 
     console.log(classRoundDataSet, "데이터셋 바꼈니?!")
+
+    const plusRunnigTime = (date, runTime) => {
+        const startDate = new Date(date)
+        const endDate = new Date()
+
+    }
+
+    const handleClickTmpStore = () => {
+        classData.classTotalRound = classTotalRound
+        axios.post(`${url}/class/join`, // 강의 데이터 갑니다.
+        classData,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res=> {
+            console.log(res, "개별강의")
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+        // 개별 강의 갑니다.
+        axios.post(`${url}/class/join/round`,
+        classRoundDataSet,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res => {
+            console.log(res, "강의회차")
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        navigate("/")
+    }
+    const handleClickRegisterClass = () => {
+        classData.classStatus = "강의 전"
+        classData.classTotalRound = classTotalRound
+        axios.post(`${url}/class/join`, // 강의 데이터 갑니다.
+        classData,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res=> {
+            console.log(res, "개별강의 #### 등록!!")
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+        // 개별 강의 갑니다.
+        axios.post(`${url}/class/join/round`,
+        classRoundDataSet,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res => {
+            console.log(res, "강의회차")
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        navigate("/")
+    }
+
     return (
         <>
             <h1>세부 회차 입력</h1>
@@ -315,8 +386,8 @@ const ClassRoundJoin = () => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button>이전</button>
-                <button>임시 저장</button>
-                <button>강의 등록</button>
+                <button onClick={handleClickTmpStore}>임시 저장</button>
+                <button onClick={handleClickRegisterClass}>강의 등록</button>
             </div>
         </>
     );

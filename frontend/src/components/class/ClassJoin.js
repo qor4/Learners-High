@@ -141,7 +141,17 @@ const ClassJoin = () => {
         sendDataToServer()
         // navigate('/class/round/join') // 언급 필요. classRoundJoin url 생성
     }
-
+    const data = {
+        classInfo: classInfo,
+        className: classCode,
+        classPrice: classPrice,
+        classStatus: "작성 중",
+        classThumbnailImg: classThumbnailImg,
+        classThumbnailInfo: classThumbnailInfo,
+        classTypeNo: 0, // 미정
+        maxStudent: maxStudent,
+        userNo: userNo ? userNo : 1 //
+    }
     return (
         <>
             <h3>기본 정보 입력</h3>
@@ -292,7 +302,7 @@ const ClassJoin = () => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <Link to="/class/round/join" state={{classNo: classNo}}> 
+                <Link to="/class/round/join" state={data}> 
                 <button onClick={nextPage}>
                     다음
                 </button>

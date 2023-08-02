@@ -67,6 +67,7 @@ const UserJoin = () => {
 
         // idMSG = "아이디: 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.
 
+<<<<<<< HEAD
         let pattern3 = /[_-]/;
         // 아이디 글자 수
         if (tmpId.length === 0) {
@@ -85,6 +86,17 @@ const UserJoin = () => {
             setIdMSG("알파벳, 특수문자(_, -), 숫자로만 입력해 주세요");
             setIdValidCheck(false);
             return;
+=======
+    // 2. id 중복확인
+    // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
+    axios.get(`${url}/user/duplicate/id/${userId}`)
+      .then((response) => {
+        console.log(response)
+          if (response.data.resultCode === 0) {
+            setIdMSG('중복된 아이디입니다.')
+            setIdValidCheck(false)
+            return
+>>>>>>> e181308 ([FE] feat: axios 요청)
         }
 
         // 2. id 중복확인
@@ -111,6 +123,7 @@ const UserJoin = () => {
             setPasswordMSG("공백 제외하고 비밀번호를 입력해 주세요.");
             setPasswordVailidCheck(false);
 
+<<<<<<< HEAD
             return;
         } else if (
             !pattern1.test(userPassword) ||
@@ -124,6 +137,61 @@ const UserJoin = () => {
             );
             setPasswordVailidCheck(false);
             return;
+=======
+  const [userNameMSG, setUserNameMSG ] = useState('')
+  const [userNameValidCheck, setUserNameValidCheck] = useState(false)
+  const userNameFormCheck = (e) => {
+    // let userName = e.currentTarget.value
+    if (userName.length>10 || userName.length===0) {
+      setUserNameMSG("10자 이내로 입력해 주세요.")
+      setUserNameValidCheck(false)
+      return
+    }
+    setUserNameValidCheck(true)
+    setUserNameMSG("")
+  }
+
+  const [userTelMSG, setUserTelMSG ] = useState('')
+  const [userTelValidCheck, setUserTelValidCheck] = useState(false)
+  const userTelFormCheck = (e) => {
+    console.log(userTel, userTelValidCheck)
+    const pattern1 = /[0-9]/;
+    if (!pattern1.test(userTel)) {
+      setUserTelMSG("숫자만 입력해 주세요.")
+      setUserTelValidCheck(false)
+      // setUserTel("")
+      return
+    } else if (userTel.length !== 11){
+      setUserTelMSG("전화번호를 입력해주세요.")
+      setUserTelValidCheck(false)
+      // setUserTel("")
+      return
+    }
+    // 일단 빼놓기. 전화번호 형식 입력했어. 근데 다시 돌아올땐 이녀석이 false로
+    // setUserTel(userTel.replace('/-/g','').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'))
+    setUserTelMSG("")
+    setUserTelValidCheck(true)
+  }
+
+  const [userEmailMSG, setUserEmailMSG] = useState('')
+  const [userEmailValidCheck, setUserEmailVailidCheck] = useState(false)
+  const userEmailFormCheck = (e) => {
+    const pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    if (!pattern.test(userEmail)) {
+      setUserEmailMSG("형식이 맞지 않습니다.")
+      setUserEmailVailidCheck(false)
+      return
+    }
+    // 2. 이메일 중복확인
+    // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
+    axios.get(`${url}/user/duplicate/email/${userEmail}`)
+      .then((response) => {
+          console.log(response.data)
+          if (response.data.resultCode === 0) {
+            setUserEmailMSG('중복된 이메일입니다.')
+            setUserEmailVailidCheck(false)
+            return
+>>>>>>> e181308 ([FE] feat: axios 요청)
         }
         setPasswordMSG("");
     };

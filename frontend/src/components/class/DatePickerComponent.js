@@ -9,7 +9,7 @@ const DatePickerComponent = ({onDataChange, initial, initialDate, idx, miniDisab
   
 
   const [classRoundDate, setClassRoundDate] = useState( standDay );
-  const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate)
+  const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate) // 너야!!!!
   const [maxDisabledDay, setMaxDisibleDay] = useState(maxDisabledDate)
   // new Date()로 감싸면 반영이 안되고,.,. 안 감싸니까 즉각 반응됨
 
@@ -17,6 +17,7 @@ const DatePickerComponent = ({onDataChange, initial, initialDate, idx, miniDisab
     setClassRoundDate(initialDate)
     setMiniDisibleDay(miniDisabledDate)
     setMaxDisibleDay(maxDisabledDate)
+    console.log(initialDate, miniDisabledDate, maxDisabledDate)
   }, [initialDate, miniDisabledDay, maxDisabledDay])
   
   const handleButtonClick = () => {
