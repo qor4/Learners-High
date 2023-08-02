@@ -1,9 +1,11 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.domain.Class;
+import com.learnershigh.domain.User;
 import com.learnershigh.dto.*;
 import com.learnershigh.service.ClassRoundService;
 import com.learnershigh.service.TeacherService;
+import com.learnershigh.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.List;
 public class TeacherController {
     private final TeacherService teacherService;
     private final ClassRoundService classRoundService;
+    private final UserService userService;
 
     // 강사 메인 페이지 요일별 과목
     @GetMapping("/class/main/{userNo}")
@@ -42,6 +45,32 @@ public class TeacherController {
         try {
             List<ClassListDto> classList = teacherService.teacherClassList(userNo, status);
             responseBody.getList().add(classList);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/profile/{userNo}")
+    @ApiOperation("강사 프로필 조회")
+    public ResponseEntity<CustomResponseBody> getTeacherProfile(@PathVariable Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 프로필 조회 완료");
+        try {
+            TeacherProfileDto teacherProfile = teacherService.getTeacherProfile(userNo);
+            User user = new User();
+            user.setUserNo(userNo);
+            List<EduDto> eduDtoList = userService.eduList(user);
+            List<JobDto> jobDtoList = userService.jobList(user);
+            teacherProfile.setEduInfos(eduDtoList);
+            teacherProfile.setJobInfos(jobDtoList);
+            responseBody.getList().add(teacherProfile);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());

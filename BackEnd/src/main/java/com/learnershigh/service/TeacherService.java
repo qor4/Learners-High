@@ -154,4 +154,14 @@ public class TeacherService {
         }
         return classRoundHomeworkStatusDtoList;
     }
+
+    public TeacherProfileDto getTeacherProfile(Long userNo) {
+        User user = userRepository.findByUserNo(userNo);
+        TeacherProfileDto teacherProfile = new TeacherProfileDto();
+        teacherProfile.setUserNo(user.getUserNo());
+        teacherProfile.setUserName(user.getUserName());
+        teacherProfile.setUserInfo(user.getUserInfo());
+        teacherProfile.setProfileImg(user.getProfileImg());
+        return teacherProfile;
+    }
 }
