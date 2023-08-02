@@ -213,7 +213,7 @@ const UserJoin = () => {
 
     const [userNameMSG, setUserNameMSG] = useState("");
     const [userNameValidCheck, setUserNameValidCheck] = useState(false);
-    const userNameFormCheck = (e) => {
+    const uqserNameFormCheck = (e) => {
         // let userName = e.currentTarget.value
         if (userName.length > 10 || userName.length === 0) {
             setUserNameMSG("10자 이내로 입력해 주세요.");

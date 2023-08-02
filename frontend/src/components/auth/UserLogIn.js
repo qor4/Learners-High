@@ -33,7 +33,6 @@ const UserLogIn = (props) => {
             })
             .then((res) => {
                 console.log(res.data, "나는 로그인데이터!");
-                console.log(res);
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
