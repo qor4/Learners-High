@@ -153,14 +153,8 @@ public class ClassController {
             ClassDetailDto classDetailDto = new ClassDetailDto();
             ClassInfoDto classInfoDto = classService.getClassDetailByClassNo(classNo);
             List<ClassRoundDetailDto> classRoundDetailDtoList = classRoundService.getClassRoundDetailByClassNo(classNo);
-            User user = new User();
-            user.setUserNo(classInfoDto.getUserNo());
-            List<EduDto> eduDtoList = userService.eduList(user);
-            List<JobDto> jobDtoList = userService.jobList(user);
             classDetailDto.setClassInfo(classInfoDto);
             classDetailDto.setClassRoundInfo(classRoundDetailDtoList);
-            classDetailDto.setEduInfos(eduDtoList);
-            classDetailDto.setJobInfos(jobDtoList);
             responseBody.getList().add(classDetailDto);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
