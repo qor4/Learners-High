@@ -87,5 +87,29 @@ public class StudentController {
         return studentService.userClassAll(userNo);
     }
 
+    @GetMapping("/{userNo}/class/{classNo}")
+    @ApiOperation("학생 수강 관리 현황 탭")
+    public ResponseEntity<CustomResponseBody> getStudentClassDashboardInfo(@PathVariable("userNo") Long userNo, @PathVariable("classNo") Long classNo)
+    {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
+        try {
+            StudentAttendHomeworkDto attendHomeworkInfo = studentService.getStudentAttendHomeworkInfo(userNo, classNo);
+            List<HashMap<String, Object>> fileInfo = studentService.getClassRoundFileInfo(classNo);
+            HashMap<String, Object> dashboardTab = new HashMap<>();
+            dashboardTab.put("classNo", classNo);
+            dashboardTab.put("classAttendHomeworkInfo", attendHomeworkInfo);
+            dashboardTab.put("classRoundFileInfo", fileInfo);
+            responseBody.getList().add(dashboardTab);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
 
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

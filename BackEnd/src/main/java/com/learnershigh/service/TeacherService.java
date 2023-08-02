@@ -122,7 +122,6 @@ public class TeacherService {
             studentAttendHomeworkDto.setUserName(studentClassList.getUserNo().getUserName());
             // userNo를 사용해 출석, 과제 정보 조회 후 set => for문, 그리고 정렬(수업 회차 기준)
             List<AttendHomeworkProjectionInterface> attendHomeworkDtoList = classHomeworkRepository.getAttendHomeworkByUserNo(studentClassList.getUserNo().getUserNo(), classNo);
-            System.out.println(studentClassList.getUserNo().getUserNo() + " " + classNo);
             studentAttendHomeworkDto.setAttendHomeworkList(attendHomeworkDtoList);
             studentAttendHomeworkDtoList.add(studentAttendHomeworkDto);
         }
