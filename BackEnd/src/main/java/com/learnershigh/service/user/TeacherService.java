@@ -152,11 +152,13 @@ public class TeacherService {
         List<StudentLessonList> studentLessonLists = studentLessonListRepository.findByLessonNo(lessonNo);
         for (LessonRound lessonRound : lessonRoundList) {
             LessonRoundHomeworkStatusDto lessonRoundHomeworkStatusDto = new LessonRoundHomeworkStatusDto();
-            HomeworkNoticeDto homeworkNoticeDto = lessonHomeworkNoticeRepository.getHomeworkNoticeByLessonRoundNo(lessonRound.getLessonRoundNo());
             List<StudentHomeworkStatusDto> studentHomeworkStatusDtoList = new ArrayList<>();
-            for (StudentLessonList studentLessonList : studentLessonLists) {
-                StudentHomeworkStatusDto studentHomeworkStatusDto = lessonHomeworkRepository.getStudentHomeworkStatusByHomeworkNoticeNo(homeworkNoticeDto.getLessonHomeworkNoticeNo(), studentLessonList.getUserNo());
-                studentHomeworkStatusDtoList.add(studentHomeworkStatusDto);
+            HomeworkNoticeDto homeworkNoticeDto = lessonHomeworkNoticeRepository.getHomeworkNoticeByLessonRoundNo(lessonRound.getLessonRoundNo());
+            if (homeworkNoticeDto != null) {
+                for (StudentLessonList studentLessonList : studentLessonLists) {
+                    StudentHomeworkStatusDto studentHomeworkStatusDto = lessonHomeworkRepository.getStudentHomeworkStatusByHomeworkNoticeNo(homeworkNoticeDto.getLessonHomeworkNoticeNo(), studentLessonList.getUserNo());
+                    studentHomeworkStatusDtoList.add(studentHomeworkStatusDto);
+                }
             }
             lessonRoundHomeworkStatusDto.setLessonRoundNo(lessonRound.getLessonRoundNo());
             lessonRoundHomeworkStatusDto.setLessonRoundNumber(lessonRound.getLessonRoundNumber());
