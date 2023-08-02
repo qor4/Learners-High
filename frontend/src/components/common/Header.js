@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
+import { UserLogOut } from "../auth/UserLogOut";
 
 const NavStyle = styled(NavLink)`
     &:hover {
@@ -70,7 +71,7 @@ const Header = () => {
                         <NavStyle to="/class">전체 강의</NavStyle>
                         <li>수업 관리</li>
                         <NavStyle to="/class/join">강의 개설</NavStyle>
-                        <li>로그아웃</li>
+                        <UserLogOut />
                         <li>마이페이지</li>
                     </>
                 )}
@@ -80,7 +81,7 @@ const Header = () => {
                     <>
                         <NavStyle to="/class">전체 강의</NavStyle>
                         <li>수강 목록</li>
-                        <li>로그아웃</li>
+                        <UserLogOut />
                         <li>마이페이지</li>
                     </>
                 )}

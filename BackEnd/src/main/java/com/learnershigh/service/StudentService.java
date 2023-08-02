@@ -2,9 +2,7 @@ package com.learnershigh.service;
 
 import com.learnershigh.domain.*;
 import com.learnershigh.domain.Class;
-import com.learnershigh.dto.ClassListDto;
-import com.learnershigh.dto.MainClassListDto;
-import com.learnershigh.dto.StudentClassActionDto;
+import com.learnershigh.dto.*;
 import com.learnershigh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +24,7 @@ public class StudentService {
     private final ClassRepository classRepository;
     private final ClassRoundRepository classRoundRepository;
     private final StudentClassListRepository studentClassListRepository;
+    private final ClassHomeworkRepository classHomeworkRepository;
 
     @Transactional
     public void wish(StudentClassActionDto studentClassActionDto) {
@@ -133,5 +132,33 @@ public class StudentService {
         }
 
         return clalist;
+    }
+
+    public StudentAttendHomeworkDto getStudentAttendHomeworkInfo(Long userNo, Long classNo) throws IllegalAccessException {
+        User user = userRepository.findByUserNo(userNo);
+        if (user == null) {
+            throw new IllegalAccessException("유효하지 않은 사용자입니다.");
+        }
+        StudentAttendHomeworkDto studentAttendHomework = new StudentAttendHomeworkDto();
+        List<AttendHomeworkProjectionInterface> attendHomeworkList = classHomeworkRepository.getAttendHomeworkByUserNo(userNo, classNo);
+        studentAttendHomework.setUserNo(user.getUserNo());
+        studentAttendHomework.setUserName(user.getUserName());
+        studentAttendHomework.setAttendHomeworkList(attendHomeworkList);
+        return studentAttendHomework;
+    }
+
+    public List<HashMap<String, Object>> getClassRoundFileInfo(Long classNo) {
+        List<HashMap<String, Object>> classRoundfileInfo = new ArrayList<>();
+        List<ClassRound> classRoundList = classRoundRepository.findByClassNo(classNo);
+        for(ClassRound classRound:classRoundList){
+            HashMap<String, Object> fileInfo = new HashMap<>();
+            fileInfo.put("classRoundNo", classRound.getClassRoundNo());
+            fileInfo.put("classRoundNumber", classRound.getClassRoundNumber());
+            fileInfo.put("classRoundTitle", classRound.getClassRoundTitle());
+            fileInfo.put("classRoundFileName", classRound.getClassRoundFileName());
+            fileInfo.put("classRoundFileOriginName", classRound.getClassRoundFileOriginName());
+            classRoundfileInfo.add(fileInfo);
+        }
+        return classRoundfileInfo;
     }
 }

@@ -10,6 +10,7 @@ import UserJoin from "./components/auth/UserJoin";
 import ClassPage from "./pages/ClassPage";
 import ClassJoinPage from "./pages/ClassJoinPage";
 import ClassInfoPage from "./pages/ClassInfoPage";
+import TeacherProfilePage from "./pages/TeacherProfilePage";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
 import UserLogIn from "./components/auth/UserLogIn";
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/class" element={<ClassPage />}></Route>
                 <Route path="/class/join" element={<ClassJoinPage />}></Route>
                 <Route path="/class/info/:classNo" element={<ClassInfoPage />}></Route>
+                <Route path="/profile/:userNo" element={<TeacherProfilePage />}></Route>
             </Routes>
             
             <Footer />
