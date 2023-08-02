@@ -14,18 +14,19 @@ import TeacherProfilePage from "./pages/TeacherProfilePage";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
 
-import FormStructor from "./pages/LogInSignUpPage";
+import ClassJoinPage from './pages/ClassJoinPage'
+
 
 // test용
 
 function App() {
-    return (
-        <div className="App">
-            <Header />
-            {/* <FormStructor/> */}
-            {/* <UserJoin /> */}
-            {/* <TeacherJobItem/> */}
-            {/* <UserJoinTeacherJob/>
+  return (
+    <div className="App">
+    
+    {/* <FormStructor/> */}
+    <UserJoin/>
+    {/* <TeacherJobItem/> */}
+    {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
 
 

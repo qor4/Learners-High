@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { url } from "../../api/APIPath";
+import { useNavigate } from 'react-router-dom';
+
+import UserJoinTeacherJob from "./UserJoinTeacherJob"
+import UserJoinTeacherEdu from "./UserJoinTeacherEdu"
+
 
 const UserJoin = () => {
     const [userType, setUserType] = useState("S");
@@ -87,7 +92,7 @@ const UserJoin = () => {
         axios.get(`${url}/user/duplicate/id/${userId}`).then((response) => {
             if (response.data.resultCode !== 0) {
                 setIdMSG("중복된 아이디입니다.");
-                // setIdValidCheck(false)
+                setIdValidCheck(false)
                 return;
             }
         });
@@ -262,6 +267,7 @@ const UserJoin = () => {
     };
 
     return (
+        <>
         <form onSubmit={(e) => e.preventDefault()}>
             <div>
                 <button className="student" onClick={userTypeChangeS} value="S">
@@ -334,7 +340,6 @@ const UserJoin = () => {
                     onBlur={passwordDuplicateCheck}
                 />
                 <p> {passwordMSG} </p>
-
                 <label htmlFor="userEmail">이메일: </label>
                 <input
                     type="text"
@@ -389,7 +394,14 @@ const UserJoin = () => {
             <button onClick={signUp}>회원가입</button>
         </form>
 
-        // 여기서 userType이 "T"면,
-    );
-};
+    {/* 여기서 userType이 "T"면,  */}
+    {
+      userType==='T' ? (
+        [<UserJoinTeacherJob key="0"></UserJoinTeacherJob>,
+        <UserJoinTeacherEdu key="1"></UserJoinTeacherEdu>]
+      ) : null
+    }
+    </>
+  )
+}
 export default UserJoin;
