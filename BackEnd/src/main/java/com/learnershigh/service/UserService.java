@@ -56,10 +56,10 @@ public class UserService {
         User user = new User();
 
         // 아이디 글자수 제한 ???
-//        if (!duplicateId(joinDto.getUserId())) {
-//
-//            throw new IllegalStateException("아이디가 중복됩니다.");
-//        }
+        if (!duplicateId(joinDto.getUserId())) {
+
+            throw new IllegalStateException("아이디가 중복됩니다.");
+        }
 
         if (!checkName(joinDto.getUserName())) {
             throw new IllegalStateException("이름이 유효하지 않습니다.");

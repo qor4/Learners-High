@@ -27,5 +27,11 @@ public interface ClassHomeworkRepository extends JpaRepository<ClassHomework, Lo
             "WHERE homework.classHomeworkNoticeNo.classHomeworkNoticeNo = :classHomeworkNoticeNo " +
             "AND homework.userNo = :userNo")
     StudentHomeworkStatusDto getStudentHomeworkStatusByHomeworkNoticeNo(@Param("classHomeworkNoticeNo") Long classHomeworkNoticeNo, @Param("userNo") User userNo);
+
+    ClassHomework findByClassHomeworkNo(Long classHomeworkNo);
+
+//    ClassHomework findByUserNoAndAndClassRoundNo(Long userNo, Long classRoundNo);
+
+
 }
 

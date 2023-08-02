@@ -14,41 +14,87 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/file")
+@RequestMapping("/s3")
 @Api(tags = {"S3에 대한 API"})
 @CrossOrigin("*")
 
 public class AmazonS3Controller {
 
+
     private final S3Service s3Service;
 
-    //  업로드
-    @PostMapping(value = "/s3/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @ApiOperation("파일 업로드")
-    public String upload(@RequestParam("multipartFile") MultipartFile multipartFile) throws IOException {
+    //  업로드 (class/수업no/Thumbnail)
+    @PostMapping(value = "/thumbnailUpload/{classHomeworkNo}/{classNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation("파일 업로드 (class/수업no/Thumbnail)")
+    public String thumbnailUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("classNo") Long classNo) throws IOException {
         System.out.println("업로드");
-        return s3Service.uploadToAWS(multipartFile, "class/3/Thumbnail"); // class 가 class/로 들어감.
+        return s3Service.thumbnailUploadToAWS(multipartFile, "class/" + classNo + "/Thumbnail", classNo); // class 가 class/로 들어감.
 
     }
 
+    //  업로드 (class/수업no/수업회차no/data)
+    @PostMapping(value = "/dataUpload/{classHomeworkNo}/{classNo}/{classRoundNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation("파일 업로드 (class/수업no/수업회차no/data)")
+    public String dataUpload(@RequestParam("multipartFile") MultipartFile multipartFile,@PathVariable("classHomeworkNo") Long classHomeworkNo, @PathVariable("classNo") Long classNo, @PathVariable("classRoundNo") Long classRoundNo) throws IOException {
+        System.out.println("업로드");
+        return s3Service.dataUploadToAWS(multipartFile, "class/" + classNo + classRoundNo + "/data", classHomeworkNo); // class 가 class/로 들어감.
+
+    }
+
+
+    //  업로드 (class/수업no/수업회차no/homework)
+    @PostMapping(value = "/homeworkUpload/{classHomeworkNo}/{classNo}/{classRoundNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation("파일 업로드 (class/수업no/수업회차no/data)")
+    public String homeworkUpload(@RequestParam("multipartFile") MultipartFile multipartFile,@PathVariable("classHomeworkNo") Long classHomeworkNo, @PathVariable("classNo") Long classNo, @PathVariable("classRoundNo") Long classRoundNo) throws IOException {
+        System.out.println("업로드");
+        return s3Service.homeworkUploadToAWS(multipartFile, "class/" + classNo + classRoundNo + "/homework", classHomeworkNo); // class 가 class/로 들어감.
+
+    }
+
+    //  업로드 (user)
+    @PostMapping(value = "/profileUpload/{classHomeworkNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation("파일 업로드 (user)")
+    public String profileUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("classHomeworkNo") Long classHomeworkNo) throws IOException {
+        System.out.println("업로드");
+        return s3Service.profileUploadToAWS(multipartFile, "user", classHomeworkNo); // class 가 class/로 들어감.
+
+    }
+
+
+
+//    // 다운로드
+//    @PostMapping("/s3/download")
+//    @ApiOperation("파일 다운로드")
+//    public String download(@RequestParam(required = true) String originName, @RequestParam(required = false) String downloadFileName, HttpServletRequest request, HttpServletResponse response) {
+//        String result = originName;
+//        // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
+//        // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 class/수업no/thumbnail 이라면
+//        // class/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
+//        // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
+//        System.out.println("다운로드");
+//        s3Service.download(originName, downloadFileName, request, response);
+//        return result;
+//
+//    }
+
     // 다운로드
-    @PostMapping("/s3/download")
+    @PostMapping("/download")
     @ApiOperation("파일 다운로드")
-    public String download(@RequestParam(required = true) String fileName, @RequestParam(required = false) String downloadFileName, HttpServletRequest request, HttpServletResponse response) {
-        String result = fileName;
+    public void download(@RequestParam("classHomeworkNo") Long classHomeworkNo, HttpServletRequest request, HttpServletResponse response) {
+
         // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
         // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 class/수업no/thumbnail 이라면
         // class/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
         // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
         System.out.println("다운로드");
-        s3Service.download(fileName, downloadFileName, request, response);
-        return result;
+        s3Service.download(classHomeworkNo, request, response);
+
 
     }
 
     // 삭제
     @ApiOperation("파일 삭제")
-    @PostMapping("/s3/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam(required = false) String fileName) {
         // fileName 은 완전한 파일 네임 넣어야함 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
         // class/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
@@ -57,6 +103,22 @@ public class AmazonS3Controller {
         return fileName;
     }
 
+    // S3 thumbnail 불러오기
+    @ApiOperation("S3 thumbnail 불러오기")
+    @GetMapping("/thumbnail-load")
+    public String thumbnailLoad(@RequestParam Long classNo)
+    {
+        return s3Service.thumbnailLoad(classNo);
+    }
+
+
+    // S3 profile 불러오기
+    @ApiOperation("S3 profile 불러오기")
+    @GetMapping("/profile-load")
+    public String profileLoad(@RequestParam Long userNo)
+    {
+        return s3Service.profileLoad(userNo);
+    }
 
 
 }
