@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
@@ -60,32 +62,33 @@ public class AmazonS3Controller {
 
 
 
-////    강사가 올린 학습자료 다운로드
-//    @PostMapping("/s3/dataDownload")
-//    @ApiOperation("강사가 올린 학습자료 다운로드")
-//    public void dataDownload(@RequestParam Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) {
-//        // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
-//        // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 lesson/수업no/thumbnail 이라면
-//        // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
-//        // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
-//        System.out.println("다운로드");
-//        s3Service.dataDownload(lessonRoundNo, request, response);
-//
-//    }
-//
-//    // 학생이 올린 과제 다운로드
-//    @PostMapping("/homework-download")
-//    @ApiOperation("학생이 올린 과제 다운로드")
-//    public void homeworkDownload(@RequestParam("lessonHomeworkNo") Long lessonHomeworkNo, HttpServletRequest request, HttpServletResponse response) {
-//
-//        // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
-//        // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 lesson/수업no/thumbnail 이라면
-//        // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
-//        // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
-//        System.out.println("다운로드");
-//        s3Service.homeworkDownload(lessonHomeworkNo, request, response);
-//
-//    }
+//    강사가 올린 학습자료 다운로드,
+    @PostMapping("/s3/data-download")
+    @ApiOperation("강사가 올린 학습자료 다운로드")
+    public void dataDownload(@RequestParam("lessonRoundNo") Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) {
+        // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
+        // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 lesson/수업no/thumbnail 이라면
+        // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
+        // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
+        System.out.println("다운로드");
+        s3Service.dataDownload(lessonRoundNo, request, response);
+
+    }
+
+//// 학생이 올린 과제 다운로드
+
+    @PostMapping("/homework-download")
+    @ApiOperation("학생이 올린 과제 다운로드")
+    public void homeworkDownload(@RequestParam("lessonHomeworkNo") Long lessonHomeworkNo, HttpServletRequest request, HttpServletResponse response) {
+
+        // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
+        // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 lesson/수업no/thumbnail 이라면
+        // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
+        // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
+        System.out.println("다운로드");
+        s3Service.homeworkDownload(lessonHomeworkNo, request, response);
+
+    }
 
     // 삭제
     @ApiOperation("파일 삭제")
@@ -98,22 +101,22 @@ public class AmazonS3Controller {
         return fileName;
     }
 
-//    // S3 thumbnail 불러오기
-//    @ApiOperation("S3 thumbnail 불러오기")
-//    @GetMapping("/thumbnail-load")
-//    public String thumbnailLoad(@RequestParam Long lessonNo)
-//    {
-//        return s3Service.thumbnailLoad(lessonNo);
-//    }
-//
-//
-//    // S3 profile 불러오기
-//    @ApiOperation("S3 profile 불러오기")
-//    @GetMapping("/profile-load")
-//    public String profileLoad(@RequestParam Long userNo)
-//    {
-//        return s3Service.profileLoad(userNo);
-//    }
+    // S3 thumbnail 불러오기
+    @ApiOperation("S3 thumbnail 불러오기")
+    @GetMapping("/thumbnail-load")
+    public String thumbnailLoad(@RequestParam Long lessonNo)
+    {
+        return s3Service.thumbnailLoad(lessonNo);
+    }
+
+
+    // S3 profile 불러오기
+    @ApiOperation("S3 profile 불러오기")
+    @GetMapping("/profile-load")
+    public String profileLoad(@RequestParam Long userNo)
+    {
+        return s3Service.profileLoad(userNo);
+    }
 
 
 }
