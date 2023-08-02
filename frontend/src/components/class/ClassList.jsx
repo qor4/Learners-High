@@ -1,87 +1,12 @@
 // 강의 목록의 강의 아이템 (카드) 담아줄 List
 // axios로 데이터를 가져와서 ClassItem에게 보내줄 곳
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { url } from "../../api/APIPath";
 import ClassItem from "./ClassItem";
 
-const ClassList = () => {
-    const [classListDataSet, setClassListDataSet] = useState([]);
-    useEffect(() => {
-        axios.get(`${url}/class/list/upcoming`)
-        .then((response) => {
-            console.log(response)
-            setClassListDataSet(response.data.list[0]);
-        });
-    }, []);
-
-    // const classListDataSet = [
-    //     {
-    //         className: "수업 이름",
-    //         userName: "유혜빈",
-    //         classThumbnailImg: "",
-    //         classNo: 1,
-    //         classTypeNo: 1,
-    //         userNo: 1,
-    //         classStartDate: "2023-01-01",
-    //         maxStudent: 10,
-    //         classPrice: 11000,
-    //         classEndDate: "2023-01-01",
-    //         classStatus: "작성 중",
-    //         totalStudent: 0,
-    //         classTypeName: "국어",
-    //     },
-    //     {
-    //         className: "수업 이름",
-    //         userName: "유혜빈",
-    //         classThumbnailImg: "string",
-    //         classNo: 2,
-    //         classTypeNo: 1,
-    //         userNo: 1,
-    //         classStartDate: "2023-01-01",
-    //         maxStudent: 20,
-    //         classPrice: 11110,
-    //         classEndDate: "2023-01-01",
-    //         classStatus: "진행",
-    //         totalStudent: 0,
-    //         classTypeName: "국어",
-    //     },
-    //     {
-    //         className: "수업 이름",
-    //         userName: "유혜빈",
-    //         classThumbnailImg: "string",
-    //         classNo: 2,
-    //         classTypeNo: 1,
-    //         userNo: 1,
-    //         classStartDate: "2023-01-01",
-    //         maxStudent: 20,
-    //         classPrice: 11110,
-    //         classEndDate: "2023-01-01",
-    //         classStatus: "진행",
-    //         totalStudent: 0,
-    //         classTypeName: "국어",
-    //     },
-    //     {
-    //         className: "수업 이름",
-    //         userName: "유혜빈",
-    //         classThumbnailImg: "string",
-    //         classNo: 2,
-    //         classTypeNo: 1,
-    //         userNo: 1,
-    //         classStartDate: "2023-01-01",
-    //         maxStudent: 20,
-    //         classPrice: 11110,
-    //         classEndDate: "2023-01-01",
-    //         classStatus: "진행",
-    //         totalStudent: 0,
-    //         classTypeName: "국어",
-    //     },
-    // ];
-
+const ClassList = ({ items }) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {classListDataSet.map((data, index) => (
+            {items.map((data, index) => (
                 <ClassItem
                     key={index}
                     $className={data.className}
