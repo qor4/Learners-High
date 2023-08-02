@@ -48,7 +48,7 @@ const Header = () => {
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <NavStyle to="/class">전체 강의</NavStyle>
+                        <NavStyle to="/lesson">전체 강의</NavStyle>
                         <NavStyle to="/join">회원가입</NavStyle>
                         <NavLink onClick={handleLoginButtonClick}>
                             로그인
@@ -68,9 +68,9 @@ const Header = () => {
                 {/* 로그인이 되어있고 선생님일 경우 */}
                 {userType === "T" && (
                     <>
-                        <NavStyle to="/class">전체 강의</NavStyle>
+                        <NavStyle to="/lesson">전체 강의</NavStyle>
                         <li>수업 관리</li>
-                        <NavStyle to="/class/join">강의 개설</NavStyle>
+                        <NavStyle to="/lesson/join">강의 개설</NavStyle>
                         <UserLogOut />
                         <li>마이페이지</li>
                     </>
@@ -79,7 +79,7 @@ const Header = () => {
                 {/* 로그인이 되어있고 학생일 경우 */}
                 {userType === "S" && (
                     <>
-                        <NavStyle to="/class">전체 강의</NavStyle>
+                        <NavStyle to="/lesson">전체 강의</NavStyle>
                         <li>수강 목록</li>
                         <UserLogOut />
                         <li>마이페이지</li>
@@ -87,6 +87,8 @@ const Header = () => {
                 )}
             </nav>
         </header>
+
+        
     );
 };
 

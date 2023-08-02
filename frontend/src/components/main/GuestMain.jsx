@@ -13,7 +13,7 @@ const GuestMain = () => {
 
     // 인기 강의 데이터 get 요청
     useEffect(() => {
-        axios.get(`${url}/class/list/main`).then((response) => {
+        axios.get(`${url}/lesson/list/main`).then((response) => {
             console.log(response);
             setPopularClassDataSet(response.data.list[0]);
         });
@@ -40,25 +40,25 @@ const GuestMain = () => {
             {/* 인기 강의 공간 */}
             <div>
                 <span>인기 강의</span>
-                <Link to="/class">더보기</Link>
+                <Link to="/lesson">더보기</Link>
 
                 {/* 인기 강의 4개 데이터 가져와서 보여주면 됨 api: /class/list/main  */}
-                {popularClassDataSet.map((classItem, index) => (
+                {popularClassDataSet.map((lessonItem, index) => (
                     <ClassItem
                         key={index}
-                        $className={classItem.className}
-                        userName={classItem.userName}
-                        classThumbnailImg={classItem.classThumbnailImg}
-                        classNo={classItem.classNo}
-                        classTypeNo={classItem.classTypeNo}
-                        userNo={classItem.userNo}
-                        classStartDate={classItem.classStartDate}
-                        maxStudent={classItem.maxStudent}
-                        classPrice={classItem.classPrice}
-                        classEndDate={classItem.classEndDate}
-                        classStatus={classItem.classStatus}
-                        totalStudent={classItem.totalStudent}
-                        classTypeName={classItem.classTypeName}
+                        lessonName={lessonItem.lessonName}
+                        userName={lessonItem.userName}
+                        lessonThumbnailImg={lessonItem.lessonThumbnailImg}
+                        lessonNo={lessonItem.lessonNo}
+                        lessonTypeNo={lessonItem.lessonTypeNo}
+                        userNo={lessonItem.userNo}
+                        lessonStartDate={lessonItem.lessonStartDate}
+                        maxStudent={lessonItem.maxStudent}
+                        lessonPrice={lessonItem.lessonPrice}
+                        lessonEndDate={lessonItem.lessonEndDate}
+                        lessonStatus={lessonItem.lessonStatus}
+                        totalStudent={lessonItem.totalStudent}
+                        lessonTypeName={lessonItem.lessonTypeName}
                     />
                 ))}
             </div>

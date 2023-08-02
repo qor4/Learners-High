@@ -16,7 +16,7 @@ const ClassRoundItemBoxList = ({ selectedDay, dayName }) => {
     useEffect(() => {
         if (selectedDay) {
             axios
-                .get(`${url}/teacher/class/main/${userNo}`)
+                .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
                     setDayClassListDataSet(response.data.list);
@@ -30,8 +30,8 @@ const ClassRoundItemBoxList = ({ selectedDay, dayName }) => {
     return (
         <>
             {selectedDayClasses && selectedDayClasses.length > 0 ? (
-                selectedDayClasses.map((classItem, index) => (
-                    <ClassRoundItemBox classInfo={classItem} key={index} />
+                selectedDayClasses.map((lessonItem, index) => (
+                    <ClassRoundItemBox lessonInfo={lessonItem} key={index} />
                 ))
             ) : (
                 <Card>{dayName}요일 수업 없음</Card>

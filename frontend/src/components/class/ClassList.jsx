@@ -9,19 +9,19 @@ const ClassList = ({ items }) => {
             {items.map((data, index) => (
                 <ClassItem
                     key={index}
-                    $className={data.className}
+                    lessonName={data.lessonName}
                     userName={data.userName}
-                    classThumbnailImg={data.classThumbnailImg}
-                    classNo={data.classNo}
-                    classTypeNo={data.classTypeNo}
+                    lessonThumbnailImg={data.lessonThumbnailImg}
+                    lessonNo={data.lessonNo}
+                    lessonTypeNo={data.lessonTypeNo}
                     userNo={data.userNo}
-                    classStartDate={data.classStartDate}
+                    lessonStartDate={data.lessonStartDate}
                     maxStudent={data.maxStudent}
-                    classPrice={data.classPrice}
-                    classEndDate={data.classEndDate}
-                    classStatus={data.classStatus}
+                    lessonPrice={data.lessonPrice}
+                    lessonEndDate={data.lessonEndDate}
+                    lessonStatus={data.lessonStatus}
                     totalStudent={data.totalStudent}
-                    classTypeName={data.classTypeName}
+                    lessonTypeName={data.lessonTypeName}
                 />
             ))}
         </div>
