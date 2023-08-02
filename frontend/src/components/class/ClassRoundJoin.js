@@ -131,6 +131,7 @@ const ClassRoundJoin = () => {
         newDate.setMinutes(startDate.getMinutes()+Number(classRunningTime))
         classRoundDataSetCopy[0].classRoundEndDateTime = newDate
         console.log(classRoundDataSetCopy[0].classRoundEndDateTime, "끝난 시간")
+        console.log(classRoundDataSet, "여긴 바뀌는 곳")
         classRoundDataSetCopy[0].classRunningTimeForEnd = classRunningTime
         setClassRoundDataSet(classRoundDataSetCopy) // 여기서 추가했다!!!!
     }
@@ -162,17 +163,19 @@ const ClassRoundJoin = () => {
         // addDay가 startDate가 아니라, days의 startDate여야 함.
         const standDay = new Date(startDate)
         let standardDate = []
+        let standardRunningTime = []
         // let standardEndDate = [] 끝나는 시간을 넣으려 했던 노력...
+        console.log(days, "days")
         for (let i=0;i<7;i++) {
             standDay.setDate(standDay.getDate()+1)
-            
-            console.log(days, "days")
             console.log(standDay, "standDay")
             days.map(day=> {
                 if (day.isSelected && Number(standDay.getDay()) === Number(day.code) ) {
                     standardDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
+                    standardRunningTime.push(day.classRunningTime)
                     // standardEndDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
                     console.log(standardDate, "standardDate")
+                    console.log(standardRunningTime, "기준 진행시간")
                     return
                 }
             }) // 완료!
@@ -186,11 +189,13 @@ const ClassRoundJoin = () => {
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate())
                 classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
                 classRoundDataSetCopy[i].classRoundNumber = i+1
+                classRoundDataSetCopy[i].classRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
             } else {
                 // classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%weekNum].getDate()+7*parseInt((i-1)/weekNum))
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate()+7)
                 classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
                 classRoundDataSetCopy[i].classRoundNumber = i+1
+                classRoundDataSetCopy[i].classRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
             }
         }
         setClassRoundDataSet(classRoundDataSetCopy)
@@ -225,7 +230,6 @@ const ClassRoundJoin = () => {
     const plusRunnigTime = (date, runTime) => {
         const startDate = new Date(date)
         const endDate = new Date()
-
     }
 
     const handleClickTmpStore = () => {
@@ -363,7 +367,8 @@ const ClassRoundJoin = () => {
                     initialDate={item.classRoundStartDatetime}
                     miniDisabledDate={idx!==0 ? classRoundDataSet[idx-1]?.classRoundStartDatetime : new Date()}
                     maxDisabledDate={idx!==classTotalRound ? classRoundDataSet[idx+1]?.classRoundStartDatetime : false}
-                    onDataChange={getDateData} 
+                    onDataChange={getDateData}
+                    classRunningTime={item.classRunningTimeForEnd}
                     />
                     </>
                     )
