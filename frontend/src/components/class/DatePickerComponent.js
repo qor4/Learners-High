@@ -16,15 +16,26 @@ const DatePickerComponent = (
   // const [maxDisabledDay, setMaxDisibleDay] = useState(maxDisabledDate)
   // new Date()로 감싸면 반영이 안되고,.,. 안 감싸니까 즉각 반응됨
 
+  const [classRoundEndDateTime, setClassRoundEndDateTime] = useState(0)
+  const handleClassRunningTimeChange = (e) => {
+    setClassRunningTimeState(e.currentTarget.value)
+    // console.log(newDate, "newDate-끝시간")
+    // console.log(e.currentTarget.value)
+
+  }
+  
   useEffect(()=> {
     setClassRoundDate(initialDate)
-    // setMiniDisibleDay(miniDisabledDate)
-    // setMaxDisibleDay(maxDisabledDate)
-    // console.log(initialDate, miniDisabledDate, maxDisabledDate)
+    setClassRunningTimeState(classRunningTime)
+    const newDate = new Date(classRoundDate)
+    newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
+    setClassRoundEndDateTime(newDate)
   }, [initialDate, miniDisabledDate, maxDisabledDate, classRunningTime])
   
+
   const handleButtonClick = () => {
-    onDataChange(idx, classRoundDate, classRunningTimeState)
+    onDataChange(idx, classRoundDate, classRoundEndDateTime)
+    console.log(classRoundEndDateTime, "끝시간")
   }
   const miniLimitDay = miniDisabledDate ? new Date(miniDisabledDate) : new Date()
   const maxLimitDay = maxDisabledDate ? new Date(maxDisabledDate) : null
@@ -32,7 +43,6 @@ const DatePickerComponent = (
     <>
     <DatePicker
       selected={classRoundDate}
-      // filterDate={isPossibleDay}
       minDate={miniLimitDay}
       maxDate={maxLimitDay}
       closeOnScroll={true}
@@ -51,7 +61,7 @@ const DatePickerComponent = (
     type="number"
     name="classRunningTime"
     value={classRunningTimeState}
-    onChange={(e)=> setClassRunningTimeState(e.currentTarget.value)}
+    onChange={handleClassRunningTimeChange}
     />
     </> : null
     }
