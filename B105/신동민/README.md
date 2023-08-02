@@ -76,3 +76,35 @@ const { id } = useParams();
 - redux-persist로 새로고침해도 리덕스 스토어 유지하려했으나, <RTK non-serializable value> 에러 발생
 -> redux는 state와 action에 직렬화 불가능한 값 전달이 불가능함
 -> 액션에 toString() 메서드 전달해도 되지만, 미들웨어 설정 통해 해결
+
+---
+## 0801
+
+### 1. 오늘 한 일 (할 일)
+- 로그인, 로그아웃 완료
+- 로그인할 경우, 리덕스에 필요 정보 모두 담긴 것 확인 완료
+- 세션스토리지에 로그인 정보 담긴 것 확인
+
+### 2. 이슈 및 보완 방향
+- new Date()는 object라서 props로 넘길 때 불가능하거나, 값의 변경시 모든 데이터가 일괄로 바뀌는 문제 발생함
+-> 모두 new Date() 처리하여, 깊은 복사 처리함
+- 세션에 isLogIn만 담기는 문제 발생
+- userInfo만 리덕스에 저장되길래 확인했는데, dispatch 보낼 때 userInfo만 보내게 했음.
+- 404 등 지정하지 않는 경로로 갔을 때 Main으로 가는 라우터 필요
+- 날짜의 상한과 하한을 filterdDate로 했는데, MinDate, MaxDate 처리하면 끝나는 문제
+
+---
+## 0802
+
+### 1. 오늘 한 일 (할 일)
+- 
+
+### 2. 이슈 및 보완 방향
+- DatePicker에서 "날짜 입력"을 해야만, 끝나는 시간이 반영됨. (이거 해결 필요)
+- "날짜 입력" 버튼, "회차 등록" 버튼을 개별적으로 눌러야만 전체 데이터셋이 바뀜 -> UI 측면에서의 고민 필요 (onBlur로 처리할지 등)
+- CORS-ERROR
+```
+Access to XMLHttpRequest at 'https://i9b105.p.ssafy.io:7777/class/join' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+- 첫 시작일에 "입력"을 눌러야 "setDate" 에러가 발생하지 않음.
+-> 해결 필요
