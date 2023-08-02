@@ -5,26 +5,28 @@ import { HiOutlineHeart } from "react-icons/hi";
 import ClassStatusBox from "../common/ClassStatusBox";
 import Button from "../common/Button";
 
-const ClassInfoBox = ({ classInfo }) => {
-    if (!classInfo) {
+const ClassInfoBox = ({ lessonInfo }) => {
+    if (!lessonInfo) {
         return <div>Loading...</div>;
     }
     return (
         <>
-            <div>{classInfo.classThumbnailImg}</div>
-            <span>{classInfo.userName}</span>
-            <ClassStatusBox>{classInfo.classTypeName}</ClassStatusBox>
-            <ClassStatusBox>총{classInfo.classTotalRound}회차</ClassStatusBox>
+            <div>
+                <img src={lessonInfo.lessonThumbnailImg} alt="thumbnail-img" />
+            </div>
+            <span>{lessonInfo.userName}</span>
+            <ClassStatusBox>{lessonInfo.lessonTypeName}</ClassStatusBox>
+            <ClassStatusBox>총 {lessonInfo.lessonTotalRound}회차</ClassStatusBox>
             <span>
-                {classInfo.classStartDate} ~ {classInfo.classEndDate}
+                {lessonInfo.lessonStartDate} ~ {lessonInfo.lessonEndDate}
             </span>
-            <span>{classInfo.className}</span>
-            <span>{classInfo.classPrice}원</span>
-            <span>{classInfo.userName}</span>
-            <span>{classInfo.classThumbnailInfo}</span>
+            <span>{lessonInfo.lessonName}</span>
+            <span>{lessonInfo.lessonPrice}원</span>
+            <span>{lessonInfo.userName}</span>
+            <span>{lessonInfo.lessonThumbnailInfo}</span>
             <Button>
-                수강 신청 ( {classInfo.totalStudent} / {classInfo.maxStudent} 명
-                )
+                수강 신청 ( {lessonInfo.totalStudent} / {lessonInfo.maxStudent}{" "}
+                명 )
             </Button>
             <Button>
                 <HiOutlineHeart />

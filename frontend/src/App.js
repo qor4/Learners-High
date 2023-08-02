@@ -13,7 +13,6 @@ import ClassInfoPage from "./pages/ClassInfoPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
-import UserLogIn from "./components/auth/UserLogIn";
 
 import FormStructor from "./pages/LogInSignUpPage";
 
@@ -33,9 +32,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/join" element={<UserJoin />}></Route>
-                <Route path="/class" element={<ClassPage />}></Route>
-                <Route path="/class/join" element={<ClassJoinPage />}></Route>
-                <Route path="/class/info/:classNo" element={<ClassInfoPage />}></Route>
+                <Route path="/lesson" element={<ClassPage />}></Route>
+                <Route path="/lesson/join" element={<ClassJoinPage />}></Route>
+                <Route path="/lesson/info/:lessonNo" element={<ClassInfoPage />}></Route>
                 <Route path="/profile/:userNo" element={<TeacherProfilePage />}></Route>
             </Routes>
             
