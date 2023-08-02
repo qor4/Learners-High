@@ -11,6 +11,7 @@ import Button from "../common/Button";
 const UserLogIn = (props) => {
     const user = useSelector((state) => state.user);
     console.log(user);
+
     const [logInForm, setLogInForm] = useState({
         userId: "",
         userPassword: "",
@@ -26,8 +27,9 @@ const UserLogIn = (props) => {
 
     const userLogIn = () => {
         axios
-            .post(`${url}/user/login`, logInForm, {
-                headers: { "Content-Type": "application/json" },
+            .post(`${url}/user/login`, 
+            logInForm, 
+            {headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
                 console.log(res.data, "나는 로그인데이터!");

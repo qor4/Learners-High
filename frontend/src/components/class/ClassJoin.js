@@ -4,39 +4,42 @@ import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 import { url } from "../../api/APIPath";
 
 import axios from "axios";
 
 const ClassJoin = () => {
+    const userNo = useSelector(state=>state.user.userNo)
+    const [classNo, setClassNo] = useState("")
+
     const [classCode, setclassCode] = useState("");
-    const [subjectName, setSubjectName] = useState("");
     const [classThumbnailImg, setThumbnail] = useState(null);
     const [classThumbnailInfo, setClassIntro] = useState("");
     const [classInfo, setClassInfo] = useState("");
-
+    
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
-
+    
+    const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
     
     const [maxStudent, setMaxStudent] = useState(0);
     const [classPrice, setClassPrice] = useState(0);
 
-    const userNo = useSelector(state=>state.user.userNo)
     
     // API가 완료되면 밑에 것들로 바꿀 것.
     const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //classTypeList 요청해서 담았다.
     const [classTypeList, setClassTypeList] = useState([])
-    useEffect( () => {
-        axios.get(`${url}/class/type/`)
-        .then(res=> {
-            console.log(res.data)
-            setClassTypeList(res.data)
-        })
-    }, [])
+    // useEffect( () => {
+    //     axios.get(`${url}/class/type/`)
+    //     .then(res=> {
+    //         console.log(res.data)
+    //         setClassTypeList(res.data)
+    //     })
+    // }, [])
 
 
     // 강의 이름(classCode) input 박스에 입력했을 때
@@ -64,6 +67,7 @@ const ClassJoin = () => {
     // 검색을 통해 나온 과목 li를 클릭했을 때
     const selectedResult = (event) => {
         setSubjectName(event.target.textContent);
+        console.log(subjectName)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
@@ -122,8 +126,32 @@ const ClassJoin = () => {
             maxStudent: maxStudent,
             userNo: userNo //
         }
+        axios.post(`${url}/class/join`,
+        data,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then(res=> {
+            const {classNo} = res.data.list[0]
+            setClassNo(classNo)
+            console.log(res.data, res)
+        })
+        .catch(err=> console.log(err))
     }
-
+    const nextPage = () => {
+        sendDataToServer()
+        // navigate('/class/round/join') // 언급 필요. classRoundJoin url 생성
+    }
+    const data = {
+        classInfo: classInfo,
+        className: classCode,
+        classPrice: classPrice,
+        classStatus: "작성 중",
+        classThumbnailImg: classThumbnailImg,
+        classThumbnailInfo: classThumbnailInfo,
+        classTypeNo: 0, // 미정
+        maxStudent: maxStudent,
+        userNo: userNo ? userNo : 1 //
+    }
     return (
         <>
             <h3>기본 정보 입력</h3>
@@ -269,10 +297,16 @@ const ClassJoin = () => {
                 <span>원</span>
             </div>
 
+
+
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <button>다음</button>
+                <Link to="/class/round/join" state={data}> 
+                <button onClick={nextPage}>
+                    다음
+                </button>
+                </Link>
             </div>
             <hr/>
         </>

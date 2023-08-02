@@ -5,7 +5,7 @@ import { url } from "../../api/APIPath";
 
 const UserJoinTeacherEdu = (props) => {
     const nextId = useRef(1)
-    const userNo = useSelector(state => state.user.userNo)
+    const userNo = useSelector(state => state.user.userNo) || props.userNo
     const initialState = [
         {
             id: nextId-1,
@@ -60,7 +60,7 @@ const UserJoinTeacherEdu = (props) => {
     const postTeacherEdu = () => {
         // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
         eduInputList.map((item) => (    
-            axios.post(`${url}/user/join/du`, 
+            axios.post(`${url}/user/join/edu`, 
             item,
             {headers: {"Content-Type": 'application/json'}}
             )

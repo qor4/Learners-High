@@ -12,13 +12,18 @@ const TestList = () =>{
   ]
   const [test, setTest] = useState([...testArray])
 
+  const changeValue = (value) => {
+    setTest([...test, ])
+  }
+
   console.log(test)
+
 
   return (
     <>
       {
-        test.map(item => (
-          <TestItem testItem={item}></TestItem>
+        test.map((item,idx) => (
+          <TestItem testItem={item} idx={idx} changeValue={changeValue}></TestItem>
         ))
       }
     </>

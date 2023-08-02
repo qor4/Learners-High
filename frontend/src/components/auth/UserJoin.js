@@ -1,6 +1,17 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+=======
+import React, {useState, useEffect} from "react";
+
+import axios from 'axios'
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
 import { url } from "../../api/APIPath";
+import { useNavigate } from 'react-router-dom';
+
+import UserJoinTeacherJob from "./UserJoinTeacherJob"
+import UserJoinTeacherEdu from "./UserJoinTeacherEdu"
+
 
 const UserJoin = () => {
     const [userType, setUserType] = useState("S");
@@ -62,6 +73,7 @@ const UserJoin = () => {
 
         // idMSG = "아이디: 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.
 
+<<<<<<< HEAD
         let pattern3 = /[_-]/;
         // 아이디 글자 수
         if (tmpId.length === 0) {
@@ -80,6 +92,17 @@ const UserJoin = () => {
             setIdMSG("알파벳, 특수문자(_, -), 숫자로만 입력해 주세요");
             setIdValidCheck(false);
             return;
+=======
+    // 2. id 중복확인
+    // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
+    axios.get(`${url}/user/duplicate/id/${userId}`)
+      .then((response) => {
+        console.log(response)
+          if (response.data.resultCode === 0) {
+            setIdMSG('중복된 아이디입니다.')
+            setIdValidCheck(false)
+            return
+>>>>>>> e181308 ([FE] feat: axios 요청)
         }
 
         // 2. id 중복확인
@@ -87,7 +110,7 @@ const UserJoin = () => {
         axios.get(`${url}/user/duplicate/id/${userId}`).then((response) => {
             if (response.data.resultCode !== 0) {
                 setIdMSG("중복된 아이디입니다.");
-                // setIdValidCheck(false)
+                setIdValidCheck(false)
                 return;
             }
         });
@@ -106,6 +129,7 @@ const UserJoin = () => {
             setPasswordMSG("공백 제외하고 비밀번호를 입력해 주세요.");
             setPasswordVailidCheck(false);
 
+<<<<<<< HEAD
             return;
         } else if (
             !pattern1.test(userPassword) ||
@@ -119,6 +143,61 @@ const UserJoin = () => {
             );
             setPasswordVailidCheck(false);
             return;
+=======
+  const [userNameMSG, setUserNameMSG ] = useState('')
+  const [userNameValidCheck, setUserNameValidCheck] = useState(false)
+  const userNameFormCheck = (e) => {
+    // let userName = e.currentTarget.value
+    if (userName.length>10 || userName.length===0) {
+      setUserNameMSG("10자 이내로 입력해 주세요.")
+      setUserNameValidCheck(false)
+      return
+    }
+    setUserNameValidCheck(true)
+    setUserNameMSG("")
+  }
+
+  const [userTelMSG, setUserTelMSG ] = useState('')
+  const [userTelValidCheck, setUserTelValidCheck] = useState(false)
+  const userTelFormCheck = (e) => {
+    console.log(userTel, userTelValidCheck)
+    const pattern1 = /[0-9]/;
+    if (!pattern1.test(userTel)) {
+      setUserTelMSG("숫자만 입력해 주세요.")
+      setUserTelValidCheck(false)
+      // setUserTel("")
+      return
+    } else if (userTel.length !== 11){
+      setUserTelMSG("전화번호를 입력해주세요.")
+      setUserTelValidCheck(false)
+      // setUserTel("")
+      return
+    }
+    // 일단 빼놓기. 전화번호 형식 입력했어. 근데 다시 돌아올땐 이녀석이 false로
+    // setUserTel(userTel.replace('/-/g','').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'))
+    setUserTelMSG("")
+    setUserTelValidCheck(true)
+  }
+
+  const [userEmailMSG, setUserEmailMSG] = useState('')
+  const [userEmailValidCheck, setUserEmailVailidCheck] = useState(false)
+  const userEmailFormCheck = (e) => {
+    const pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    if (!pattern.test(userEmail)) {
+      setUserEmailMSG("형식이 맞지 않습니다.")
+      setUserEmailVailidCheck(false)
+      return
+    }
+    // 2. 이메일 중복확인
+    // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
+    axios.get(`${url}/user/duplicate/email/${userEmail}`)
+      .then((response) => {
+          console.log(response.data)
+          if (response.data.resultCode === 0) {
+            setUserEmailMSG('중복된 이메일입니다.')
+            setUserEmailVailidCheck(false)
+            return
+>>>>>>> e181308 ([FE] feat: axios 요청)
         }
         setPasswordMSG("");
     };
@@ -167,6 +246,7 @@ const UserJoin = () => {
         setUserTelValidCheck(true);
     };
 
+<<<<<<< HEAD
     const [userEmailMSG, setUserEmailMSG] = useState("");
     const [userEmailValidCheck, setUserEmailVailidCheck] = useState(false);
     const userEmailFormCheck = (e) => {
@@ -262,6 +342,7 @@ const UserJoin = () => {
     };
 
     return (
+        <>
         <form onSubmit={(e) => e.preventDefault()}>
             <div>
                 <button className="student" onClick={userTypeChangeS} value="S">
@@ -334,7 +415,6 @@ const UserJoin = () => {
                     onBlur={passwordDuplicateCheck}
                 />
                 <p> {passwordMSG} </p>
-
                 <label htmlFor="userEmail">이메일: </label>
                 <input
                     type="text"
@@ -347,6 +427,67 @@ const UserJoin = () => {
                     onBlur={userEmailFormCheck}
                 />
                 <p> {userEmailMSG} </p>
+=======
+  const signUp = () => {
+    if (userType && idValidCheck && passwordValidCheck && userTelValidCheck && userEmailValidCheck && userEmailValidCheck &&
+      userInfoValidCheck && userNameValidCheck ) {
+        alert("성공!")
+        const data = JSON.stringify( {
+          userType, userId, userPassword, userEmail, userName, userTel, userInfo
+        } )
+        console.log(data)
+        console.log(url)
+        axios.post(`${url}/user/join`,
+        data,
+        {headers: {"Content-Type": 'application/json'}})
+        .then(res=> {
+          if(res.data.resultCode === 0) {
+            alert("회원가입 성공")
+            
+          }
+        }) 
+      } else {
+        alert("유효하지 않은 형식이 있습니다.")
+      }
+  }
+  
+  const userTypeChangeS = (e) => {
+    if (userType !== 'S') {
+      setUserType("S")
+    }
+  }
+  const userTypeChangeT = (e) => {
+    if (userType !== 'T') {
+      setUserType("T")
+    }
+  }
+  return (
+    <>
+    <form onSubmit={e => e.preventDefault()}> 
+      <div>
+        <button className="student" onClick={userTypeChangeS} value="S">
+          학생
+        </button>
+        <button className="teacher" onClick={userTypeChangeT} value="T">
+          선생님
+        </button>
+      </div>
+      
+      <div>
+        <div>
+          <label htmlFor="userId">아이디: </label>
+          <input 
+          type="text"
+          value={userId}
+          name="userId" 
+          id="userId"
+          placeholder="아이디를 입력해 주세요."
+          onChange={(e)=>setUserId( removeAllEmpty(e.currentTarget.value))}
+          onBlur={idCheck}
+          />
+          {/* 첫 렌더링엔 idMSG none */}
+          { idMSG ? <p>{idMSG}</p> : ""} 
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
 
                 <label htmlFor="userName">이름: </label>
                 <input
@@ -389,7 +530,31 @@ const UserJoin = () => {
             <button onClick={signUp}>회원가입</button>
         </form>
 
-        // 여기서 userType이 "T"면,
-    );
-};
+<<<<<<< HEAD
+=======
+          {/* <label htmlFor="userInfo">{userInfoLabel}: </label> */}
+          <textarea 
+          type="text" 
+          name="userInfo"
+          id="userInfo"
+          placeholder="소개" 
+          onChange={(e)=> setUserInfo(e.currentTarget.value)}
+          onBlur={userInfoFormCheck}
+          />
+          <p> {userInfoMSG} </p>
+      </div>
+      <button onClick={signUp}>회원가입</button>
+    </form>
+
+>>>>>>> 267f4ce8d1721b51bafdbc4b5c2896c519b095a8
+    {/* 여기서 userType이 "T"면,  */}
+    {
+      userType==='T' ? (
+        [<UserJoinTeacherJob key="0"></UserJoinTeacherJob>,
+        <UserJoinTeacherEdu key="1"></UserJoinTeacherEdu>]
+      ) : null
+    }
+    </>
+  )
+}
 export default UserJoin;
