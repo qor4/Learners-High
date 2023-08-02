@@ -54,6 +54,7 @@ pipeline {
                     result=$( docker container ls -a --filter "name=learnershigh*" -q )
                     if [ -n "$result" ]
                     then
+                        docker stop $(docker container ls -a --filter "name=learnershigh*" -q)
                         docker rm $(docker container ls -a --filter "name=learnershigh*" -q)
                     else
                         echo "No such containers"
