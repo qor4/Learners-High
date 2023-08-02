@@ -1,11 +1,19 @@
 package com.learnershigh.controller;
 
-import com.learnershigh.domain.Class;
-import com.learnershigh.domain.User;
-import com.learnershigh.dto.*;
-import com.learnershigh.service.ClassRoundService;
-import com.learnershigh.service.TeacherService;
-import com.learnershigh.service.UserService;
+import com.learnershigh.domain.user.User;
+import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.dto.etc.CustomResponseBody;
+import com.learnershigh.dto.lesson.LessonListDto;
+import com.learnershigh.dto.lesson.LessonRoundDetailDto;
+import com.learnershigh.dto.lessonhub.LessonRoundHomeworkStatusDto;
+import com.learnershigh.dto.lessonhub.HomeworkNoticeJoinDto;
+import com.learnershigh.dto.lessonhub.StudentAttendHomeworkDto;
+import com.learnershigh.dto.user.EduDto;
+import com.learnershigh.dto.user.JobDto;
+import com.learnershigh.dto.user.TeacherProfileDto;
+import com.learnershigh.service.lesson.LessonRoundService;
+import com.learnershigh.service.user.TeacherService;
+import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,27 +32,27 @@ import java.util.List;
 @CrossOrigin("*")
 public class TeacherController {
     private final TeacherService teacherService;
-    private final ClassRoundService classRoundService;
+    private final LessonRoundService lessonRoundService;
     private final UserService userService;
 
     // 강사 메인 페이지 요일별 과목
-    @GetMapping("/class/main/{userNo}")
+    @GetMapping("/lesson/main/{userNo}")
     @ApiOperation("강사 메인 페이지 요일별 과목 조회")
-    public ResponseEntity<CustomResponseBody> showWeeklyClassSchedule(@PathVariable Long userNo) {
+    public ResponseEntity<CustomResponseBody> showWeeklyLessonSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 메인 강의 조회 완료");
-        HashMap<Integer, Object> mainClassListDtoList = teacherService.showWeeklyClassSchedule(userNo);
-        responseBody.getList().add(mainClassListDtoList);
+        HashMap<Integer, Object> mainLessonListDtoList = teacherService.showWeeklyLessonSchedule(userNo);
+        responseBody.getList().add(mainLessonListDtoList);
         return ResponseEntity.ok().body(responseBody);
     }
 
     // 강사 강의 목록
-    @GetMapping("/class/{userNo}")
+    @GetMapping("/lesson/{userNo}")
     @ApiOperation("강사 강의 목록 조회")
-    public ResponseEntity<CustomResponseBody> teacherClassList(@PathVariable Long userNo, @RequestParam String status) {
+    public ResponseEntity<CustomResponseBody> teacherLessonList(@PathVariable Long userNo, @RequestParam String status) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 " + status + " 목록 조회 완료");
         try {
-            List<ClassListDto> classList = teacherService.teacherClassList(userNo, status);
-            responseBody.getList().add(classList);
+            List<LessonListDto> lessonList = teacherService.teacherLessonList(userNo, status);
+            responseBody.getList().add(lessonList);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -85,7 +93,7 @@ public class TeacherController {
     }
 
     // 과제 등록
-    @PostMapping("/class/homework/join")
+    @PostMapping("/lesson/homework/join")
     @ApiOperation("과제 공지 등록")
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
@@ -94,15 +102,15 @@ public class TeacherController {
     }
 
     // 강사 수업 관리 학생 탭
-    @GetMapping("/class/{classNo}/student")
+    @GetMapping("/lesson/{lessonNo}/student")
     @ApiOperation("강사 수업 관리 학생 탭")
-    public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long classNo) {
+    public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 학생 탭 조회 완료");
         try {
-            List<ClassRoundDetailDto> classRoundDetailDtoList = classRoundService.getClassRoundDetailByClassNo(classNo);
-            List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = teacherService.getStudentTabInfo(classNo);
+            List<LessonRoundDetailDto> lessonRoundDetailDtoList = lessonRoundService.getLessonRoundDetailByLessonNo(lessonNo);
+            List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = teacherService.getStudentTabInfo(lessonNo);
             HashMap<String, Object> studentTabInfo = new HashMap<>();
-            studentTabInfo.put("classRoundInfo", classRoundDetailDtoList);
+            studentTabInfo.put("lessonRoundInfo", lessonRoundDetailDtoList);
             studentTabInfo.put("studentInfo", studentAttendHomeworkDtoList);
             responseBody.getList().add(studentTabInfo);
         } catch (IllegalStateException e) {
@@ -120,13 +128,13 @@ public class TeacherController {
 
     // 강사 수업 관리 소개 탭
     @ApiOperation("강사 수업 관리 소개 탭")
-    @GetMapping("/class/{classNo}/info")
-    public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long classNo) {
+    @GetMapping("/lesson/{lessonNo}/info")
+    public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
         try {
-            String classInfo = teacherService.getInfoTab(classNo);
+            String lessonInfo = teacherService.getInfoTab(lessonNo);
             HashMap<String, Object> InfoTab = new HashMap<>();
-            InfoTab.put("classInfo", classInfo);
+            InfoTab.put("lessonInfo", lessonInfo);
             responseBody.getList().add(InfoTab);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
@@ -143,13 +151,13 @@ public class TeacherController {
 
     // 강사 수업 관리 과제 탭
     @ApiOperation("강사 수업 관리 과제 탭")
-    @GetMapping("/class/{classNo}/homework")
-    public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long classNo) {
+    @GetMapping("/lesson/{lessonNo}/homework")
+    public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
         try {
-            List<ClassRoundHomeworkStatusDto> classHomeworkInfo = teacherService.getHomeworkTabInfo(classNo);
-            for(ClassRoundHomeworkStatusDto classRoundHomeworkStatusDto: classHomeworkInfo) {
-                responseBody.getList().add(classRoundHomeworkStatusDto);
+            List<LessonRoundHomeworkStatusDto> lessonHomeworkInfo = teacherService.getHomeworkTabInfo(lessonNo);
+            for(LessonRoundHomeworkStatusDto lessonRoundHomeworkStatusDto : lessonHomeworkInfo) {
+                responseBody.getList().add(lessonRoundHomeworkStatusDto);
             }
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
@@ -160,7 +168,6 @@ public class TeacherController {
             responseBody.setResultMsg(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
         return ResponseEntity.ok().body(responseBody);
     }
 }

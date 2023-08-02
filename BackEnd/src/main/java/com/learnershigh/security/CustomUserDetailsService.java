@@ -1,7 +1,7 @@
 package com.learnershigh.security;
 
-import com.learnershigh.domain.User;
-import com.learnershigh.repository.UserRepository;
+import com.learnershigh.domain.user.User;
+import com.learnershigh.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

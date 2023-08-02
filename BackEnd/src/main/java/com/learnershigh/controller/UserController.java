@@ -1,10 +1,15 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.learnershigh.domain.User;
-import com.learnershigh.dto.*;
-import com.learnershigh.service.EmailService;
-import com.learnershigh.service.UserService;
+import com.learnershigh.domain.user.User;
+import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.dto.etc.CustomResponseBody;
+import com.learnershigh.dto.user.EduDto;
+import com.learnershigh.dto.user.JobDto;
+import com.learnershigh.dto.user.JoinDto;
+import com.learnershigh.dto.user.LoginDto;
+import com.learnershigh.service.etc.EmailService;
+import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -77,22 +82,6 @@ public class UserController {
 
     }
 
-    // 비밀번호 변경하기
-    @PutMapping("/update/pwd/{userNo}")
-    @ApiOperation("비밀번호 변경하기")
-    public ResponseEntity<BaseResponseBody> pwdChange(@PathVariable("userNo") Long userNo, @RequestParam("pwd") String pwd) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
-        try {
-            userService.pwdChange(userNo, pwd);
-        } catch (IllegalStateException e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
-
-
-    }
 
     // 아이디 중복
     @GetMapping("/duplicate/id/{id}")
@@ -109,7 +98,6 @@ public class UserController {
         }
         return ResponseEntity.ok().body(baseResponseBody);
     }
-
 
 
     // 이메일 중복 (이메일로 아이디 찾을때도 사용해야함.)
@@ -143,16 +131,16 @@ public class UserController {
     // 이메일로 아이디 찾기
     @PostMapping("/find/id")
     @ApiOperation("이메일로 아이디 찾기")
-    public String searchId(@RequestParam String email){
-       return userService.SearchId(email);
+    public String searchId(@RequestParam String email) {
+        return userService.SearchId(email);
 
     }
 
     // 이메일, 아이디로 비밀번호 찾기  --> 아이디와 이메일을 가진 사용자가 있는지 확인만 해주는 기능
     @PostMapping("/find/pwd")
     @ApiOperation("이메일,아이디로 존재하는 사용자인지 확인")
-    public Boolean searchPwd(@RequestParam String userId, @RequestParam String userEmail){
-        return userService.searchPwd(userId,userEmail);
+    public Boolean searchPwd(@RequestParam String userId, @RequestParam String userEmail) {
+        return userService.searchPwd(userId, userEmail);
     }
 
     // 카카오 로그인
@@ -194,122 +182,12 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     @ApiOperation("일반 로그인")
-//    @ApiOperation(value = "로그인", response = BaseResponseBody.class)
+//    @ApiOperation(value = "로그인", response = BaseResponseBody.lesson)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto) {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
         HashMap<String, Object> userInfo = userService.userLogin(loginDto);
         responseBody.getList().add(userInfo);
         return ResponseEntity.ok().body(responseBody);
-    }
-
-    // 마이페이지에서 보일 사용자 정보 추출하기
-    @GetMapping("/mypage/{userNo}")
-    @ApiOperation("사용자 정보 추출하기 (마이페이지)")
-    public JoinDto mypageUser(@PathVariable("userNo") Long userNo) {
-
-        return userService.mypageUser(userNo);
-
-    }
-
-    // 마이페이지 정보 수정하기
-    @PutMapping("mypage/modify/{userNo}")
-    @ApiOperation("마이페이지 정보 수정")
-    public ResponseEntity<BaseResponseBody> mypageModify(@PathVariable("userNo") Long userNo, @RequestBody JoinDto joinDto) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("정보가 변경되었습니다.");
-        try {
-            userService.mypageModify(userNo, joinDto);
-        } catch (IllegalStateException e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
-
-    }
-
-
-    // 강사 학위 all 출력
-    @GetMapping("edu-all-list/{userNo}")
-    @ApiOperation("강사 학위 모두 출력")
-    public List<EduDto> eduList(@PathVariable("userNo") User userNo) {
-        return userService.eduList(userNo);
-    }
-
-
-    // 강사 경력 all 출력
-    @GetMapping("job-all-list/{userNo}")
-    @ApiOperation("강사 경력 모두 출력")
-    public List<JobDto> jobList(@PathVariable("userNo") User userNo) {
-
-       return userService.jobList(userNo);
-
-    }
-
-
-    // 강사 학력 수정
-    @PutMapping("/modify/edu/{eduCareerNo}")
-    @ApiOperation("강사 학력 수정")
-    public ResponseEntity<BaseResponseBody> eduModify(@PathVariable("eduCareerNo") Long eduCareerNo, @RequestBody EduDto eduDto) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("수정되었습니다.");
-
-        try {
-            userService.eduModify(eduCareerNo, eduDto);
-        } catch (Exception e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
-
-    }
-
-    // 강사 학력 삭제
-    @DeleteMapping("/edu/delete/{eduCareerNo}")
-    @ApiOperation("강사 학력 삭제")
-    public ResponseEntity<BaseResponseBody> eduDelete(@PathVariable("eduCareerNo") Long eduCareerNo) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("삭제되었습니다.");
-
-        try {
-            userService.eduDelete(eduCareerNo);
-        } catch (Exception e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
-    }
-
-    // 강사 경력 수정
-    @PutMapping("/modify/job/{jobCareerNo}")
-    @ApiOperation("강사 경력 수정")
-    public ResponseEntity<BaseResponseBody> eduModify(@PathVariable("jobCareerNo") Long jobCareerNo, @RequestBody JobDto jobDto) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("수정되었습니다.");
-
-        try {
-            userService.jobModify(jobCareerNo, jobDto);
-        } catch (Exception e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
-
-    }
-
-    // 강사 경력 삭제
-    @DeleteMapping("/job/delete/{jobCareerNo}")
-    @ApiOperation("강사 경력 삭제")
-    public ResponseEntity<BaseResponseBody> jobDelete(@PathVariable("jobCareerNo") Long jobCareerNo) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("삭제되었습니다.");
-
-        try {
-            userService.jobDelete(jobCareerNo);
-        } catch (Exception e) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
-        }
-        return ResponseEntity.ok().body(baseResponseBody);
     }
 
 

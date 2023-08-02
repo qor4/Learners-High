@@ -1,8 +1,8 @@
 package com.learnershigh.controller;
 
-import com.learnershigh.dto.BaseResponseBody;
-import com.learnershigh.dto.SatiDto;
-import com.learnershigh.service.SatisfactionService;
+import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.dto.lessonhub.SatiDto;
+import com.learnershigh.service.lessonhub.SatisfactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,34 +36,34 @@ public class CsatController {
 
 
     // 수업 총 만족도
-    @ApiOperation("수업 총 만족도 뽑기")
-    @GetMapping("/class-all-sati/{teacherNo}")
-    public double classSati(@PathVariable("teacherNo") Long teacherNo)
+    @ApiOperation("강사의 모든 수업 총 만족도 뽑기")
+    @GetMapping("/lesson/{teacherNo}")
+    public double lessonSati(@PathVariable("teacherNo") Long teacherNo)
     {
-        System.out.println(satisfactionService.classAllSati(teacherNo));
-        return satisfactionService.classAllSati(teacherNo);
+        System.out.println(satisfactionService.lessonAllSati(teacherNo));
+        return satisfactionService.lessonAllSati(teacherNo);
     }
 
     // 강사 총 만족도
-    @ApiOperation("강사 총 만족도 뽑기")
-    @GetMapping("/teacher-all-sati/{teacherNo}")
+    @ApiOperation("강사 모든 총 만족도 뽑기")
+    @GetMapping("/teacher/{teacherNo}")
     public double teacherSati(@PathVariable("teacherNo") Long teacherNo)
     {
-        System.out.println(satisfactionService.classAllSati(teacherNo));
-        return satisfactionService.classAllSati(teacherNo);
+        System.out.println(satisfactionService.lessonAllSati(teacherNo));
+        return satisfactionService.lessonAllSati(teacherNo);
     }
 
     // 수업 회차당 수업 만족도 보기
     @ApiOperation("수업 하나당 수업 만족도 보기")
-    @GetMapping("/class-one-sati/{classNo}")
-    public double oneClassLectureSati(@PathVariable("classNo") Long classNo){
-        return satisfactionService.oneClassLectureSati(classNo);
+    @GetMapping("/onelesson/{lessonNo}")
+    public double oneLessonLectureSati(@PathVariable("lessonNo") Long lessonNo){
+        return satisfactionService.oneLessonLectureSati(lessonNo);
     }
 
     // 수업 회차당 강사 만족도 보기
     @ApiOperation("수업 하나당 강사 만족도 보기")
-    @GetMapping("/teacher-one-all-sati/{classNo}")
-    public double oneClassTeacherSati(@PathVariable("classNo") Long classNo){
-        return satisfactionService.oneClassTeacherSati(classNo);
+    @GetMapping("/oneteacher/{lessonNo}")
+    public double oneLessonTeacherSati(@PathVariable("lessonNo") Long lessonNo){
+        return satisfactionService.oneLessonTeacherSati(lessonNo);
     }
 }
