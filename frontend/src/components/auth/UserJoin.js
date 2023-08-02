@@ -90,9 +90,10 @@ const UserJoin = () => {
     // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
     axios.get(`${url}/user/duplicate/id/${userId}`)
       .then((response) => {
-          if (response.data.resultCode !== 0) {
+        console.log(response)
+          if (response.data.resultCode === 0) {
             setIdMSG('중복된 아이디입니다.')
-            // setIdValidCheck(false)
+            setIdValidCheck(false)
             return
         }
       }
@@ -180,12 +181,12 @@ const UserJoin = () => {
       setUserEmailVailidCheck(false)
       return
     }
-    // 2. id 중복확인
+    // 2. 이메일 중복확인
     // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
     axios.get(`${url}/user/duplicate/email/${userEmail}`)
       .then((response) => {
           console.log(response.data)
-          if (response.data.resultCode !== 0) {
+          if (response.data.resultCode === 0) {
             setUserEmailMSG('중복된 이메일입니다.')
             setUserEmailVailidCheck(false)
             return

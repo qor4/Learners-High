@@ -30,7 +30,7 @@ function App() {
     {/* <ClassRoundJoinPage/> */}
     <Routes>
       <Route path="/" element={<Main/>}></Route>
-      <Route path="/join" element={<UserJoinPage/>}></Route>
+      <Route path="/join" element={<UserJoin/>}></Route>
       <Route path="/class/join" element={<ClassJoinPage/>}></Route>
       <Route path="/class/round/join" element={<ClassRoundJoinPage/>}></Route>
     </Routes>

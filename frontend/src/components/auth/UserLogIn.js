@@ -20,6 +20,7 @@ const UserLogIn = () => {
     }
     
     const userLogIn = () => {
+        console.log(logInForm, "로그인")
         axios.post(`${url}/user/login`, 
         logInForm,
         {headers: {"Content-Type": 'application/json'}}
