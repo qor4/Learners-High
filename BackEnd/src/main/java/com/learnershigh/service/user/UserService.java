@@ -377,6 +377,7 @@ public class UserService {
     public void jobJoin(JobDto jobDto, Long userNo) {
         JobCareer jobCareer = new JobCareer();
 
+
         jobCareer.setCompanyName(jobDto.getCompanyName());
         jobCareer.setDepartName(jobDto.getDepartName());
         jobCareer.setHireStartDate(jobDto.getHireStartDate());

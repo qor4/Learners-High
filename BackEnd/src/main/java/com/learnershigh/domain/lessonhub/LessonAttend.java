@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -33,6 +34,7 @@ public class LessonAttend {
     private User userNo;
 
     @NotNull
+    @NotBlank
     @Column(name = "lesson_attend_status")
     private String lessonAttendStatus;
 

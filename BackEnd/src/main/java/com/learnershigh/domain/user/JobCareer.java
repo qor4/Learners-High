@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -27,21 +28,25 @@ public class JobCareer {
 
     // 회사명
     @NotNull
+    @NotBlank
     @Column(name = "company_name", length = 20)
     private String companyName;
 
     // 회사 소속 부서
     @NotNull
+    @NotBlank
     @Column(name = "depart_name", length = 20)
     private String departName;
 
     // 입사일
     @NotNull
+    @NotBlank
     @Column(name = "hire_start_date", length = 7)
     private String hireStartDate;
 
     // 퇴사일
     @NotNull
+    @NotBlank
     @Column(name = "hire_end_date", length = 7)
     private String hireEndDate;
 
