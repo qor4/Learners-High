@@ -44,7 +44,7 @@ public class LessonroomController {
         try {
             lessonroomService.checkStudent(userNo,lessonNo);
             String token = openviduService.createConnection(lessonNo,lessonRoundNo);
-            lessonroomService.Attend(lessonRoundNo, userNo);
+//            lessonroomService.Attend(lessonRoundNo, userNo);
             responseBody.setResultMsg(token);
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
