@@ -104,6 +104,9 @@ public class TeacherService {
         if (lessonDomain == null) {
             throw new IllegalStateException("수업 정보와 사용자 정보가 일치하지 않습니다.");
         }
+        if (!lessonDomain.getLessonStatus().equals("강의 중")) {
+            throw new IllegalStateException("진행 중인 강의만 과제 공지를 등록할 수 있습니다.");
+        }
         // 과제 정보 등록
         LessonHomeworkNotice lessonHomeworkNotice = new LessonHomeworkNotice();
         lessonHomeworkNotice.setHomeworkNoticeTitle(homeworkNoticeJoinDto.getHomeworkNoticeTitle());

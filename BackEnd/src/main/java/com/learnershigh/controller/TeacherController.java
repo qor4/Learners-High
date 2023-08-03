@@ -93,7 +93,7 @@ public class TeacherController {
     }
 
     // 과제 등록
-    @PostMapping("/lesson/homework/join")
+    @PostMapping("/lesson/homeworknoti/join")
     @ApiOperation("과제 공지 등록")
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
