@@ -1,10 +1,6 @@
-package com.learnershigh.service;
+package com.learnershigh.service.etc;
 
-import com.learnershigh.controller.OpenViduController;
-import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
