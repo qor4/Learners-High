@@ -163,6 +163,35 @@ const UserJoin = () => {
         setUserEmailMSG("");
         setUserEmailVailidCheck(true);
     };
+    // 이메일 인증
+    const [certEmailCode, setCertEmailCode] = useState("")
+    const certEmail = () => {
+        const data = {userEmail}
+        axios.post(`${url}/user/cert/email?email=${userEmail}`,
+        data,
+        {headers: { "Content-Type": "application/json" }}
+        )
+        .then(res => {
+            console.log(res.data)
+            setCertEmailCode(res.data)
+        })
+        .catch(err => console.log(err))
+    }
+
+    const [certEmailCheck,setCertEmailCheck] = useState("")
+    const [certEmailValidCheck, setCertEmailValidCheck] = useState(false)
+    const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("")
+    const certEmailFormCheck = () => {
+        console.log(certEmailCheck, "이메일코드")
+        console.log(certEmailCheck, "내가 입력")
+        if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
+            setCertEmailValidCheck(true)
+            setCertEmailCheckMSG("인증 성공")
+        } else {
+            setCertEmailValidCheck(false)
+            setCertEmailCheckMSG("인증 요망")
+        }
+    }
     const [userInfoMSG, setUserInfoMSG] = useState("");
     const [userInfoValidCheck, setUserInfoValidCheck] = useState(false);
     const userInfoFormCheck = () => {
@@ -193,7 +222,7 @@ const UserJoin = () => {
             passwordValidCheck &&
             userTelValidCheck &&
             userEmailValidCheck &&
-            userEmailValidCheck &&
+            certEmailValidCheck &&
             userInfoValidCheck &&
             userNameValidCheck
         ) {
@@ -224,6 +253,7 @@ const UserJoin = () => {
                 })
                 .then((userNo)=> {
                     console.log(userNo, "갔어요?!")
+                    setUserNo(userNo)
                     
                     console.log(profileImg, "프로필이미지- 회원가입중")
                     // console.log(formData)
@@ -320,6 +350,21 @@ const UserJoin = () => {
                     onBlur={userEmailFormCheck}
                 />
                 <p> {userEmailMSG} </p>
+
+                <button onClick={certEmail}>인증번호 전송</button>
+                <br/>
+                <span>인증코드</span>
+                <input
+                    type="text"
+                    name="certEmailCheck"
+                    placeholder="인증코드"
+                    id="certEmailCheck"
+                    onChange={e=> setCertEmailCheck(removeAllEmpty(e.currentTarget.value))}
+                    onBlur={certEmailFormCheck}
+                />
+                <br/>
+                <span> {certEmailCheckMSG} </span>
+                <br/>
                 <label htmlFor="userName">이름: </label>
                 <input
                     type="text"
@@ -358,20 +403,28 @@ const UserJoin = () => {
                 />
                 <p> {userInfoMSG} </p>
             </div>
+
+            {
+                userType==='T' ? (
+                <>
+                <span>프로필사진</span>
+                {
+                    profileImg ? (    
+                    <img src={profileImgURL} alt="프로필 사진" /> ) : (
+                    <img src="#" alt="프로필 없을 떄 보이는 사진" />
+                    )
+                } 
+                <input type="file" accept="image/*" onChange={handleUploadProfileIMG}/>
+                </>
+                ) : null
+            }
+            <br/>
             <button onClick={signUp}>회원가입</button>
         </form>
     {/* 여기서 userType이 "T"면,  */}
     {
       userType==='T' ? (
         <>
-        <span>프로필사진</span>
-        {
-            profileImg ? (    
-            <img src={profileImgURL} alt="프로필 사진" /> ) : (
-            <img src="#" alt="프로필 없을 떄 보이는 사진" />
-            )
-        }
-        <input type="file" accept="image/*" onChange={handleUploadProfileIMG}/>
         <UserJoinTeacherJob userNo={userNo}></UserJoinTeacherJob>
         <UserJoinTeacherEdu userNo={userNo}></UserJoinTeacherEdu>
         </>

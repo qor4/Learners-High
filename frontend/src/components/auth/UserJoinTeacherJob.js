@@ -58,10 +58,11 @@ const UserJoinTeacherJob = (props) => {
     const postTeacherJob = () => {
         // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
         jobInputList.map((item) => (    
-            axios.post(`${url}/user/join/job`, 
+            axios.post(`${url}/user/join/job/${userNo}`, 
             item,
             {headers: {"Content-Type": 'application/json'}}
             )
+            .then(res=> console.log(res))
         ))
     }
 
