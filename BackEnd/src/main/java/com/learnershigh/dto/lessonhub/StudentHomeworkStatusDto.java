@@ -13,15 +13,12 @@ public class StudentHomeworkStatusDto {
     // 수업 회차 과제 상태
     private String homeworkStatus;
     // 수업 회차 과제 파일 명
-    private String homeworkFileName;
-    // 수업 회차 과제 원본파일 명
-    private String homeworkFileOriginName;
+    private Long homeworkNo;
 
-    public StudentHomeworkStatusDto(Long userNo, String userName, String homeworkStatus, String homeworkFileName, String homeworkFileOriginName) {
+    public StudentHomeworkStatusDto(Long userNo, String userName, String homeworkStatus, Long homeworkNo) {
         this.userNo = userNo;
         this.userName = userName;
         this.homeworkStatus = homeworkStatus;
-        this.homeworkFileName = homeworkFileName;
-        this.homeworkFileOriginName = homeworkFileOriginName;
+        this.homeworkNo = homeworkNo;
     }
 }

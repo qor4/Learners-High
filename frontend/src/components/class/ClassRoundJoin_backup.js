@@ -4,14 +4,15 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import ClassRoundDetailItem from "./ClassRoundDetailItem";
+import ClassRoundItem from "./ClassRoundItem";
 import ClassDaysTimes from "./ClassDaysTimes";
 
-const ClassDetails = () => {
-    const [classTotal, setClassTotal] = useState(0);
+const ClassRoundJoin = () => {
+    const [classTotalRound, setClassTotalRound] = useState(0);
     const [startDate, setStartDate] = useState("");
     const [selectedDays, setSelectedDays] = useState([]);
     const [daysTimes, setDaysTimes] = useState({});
+    console.log(startDate)
 
     // 캘린더에서 선택한 날짜들을 담아줄 배열
     const [selectedDates, setSelectedDates] = useState([]);
@@ -19,15 +20,25 @@ const ClassDetails = () => {
 
     const days = ["월", "화", "수", "목", "금", "토", "일"];
 
+    // const [days, setDays] = useState({
+    //     "월": false,
+    //     "화": false, 
+    //     "수": false, 
+    //     "목": false, 
+    //     "금": false, 
+    //     "토": false, 
+    //     "일": false
+    // })
+
     // 총 회차 수 입력했을 때
     const handleTotalTimeChange = (event) => {
         const numericValue = parseInt(event.target.value, 10);
         if (!isNaN(numericValue) && numericValue >= 0) {
-            setClassTotal(numericValue);
+            setClassTotalRound(numericValue);
             console.log(numericValue, "들어옴")
             return
         }
-        setClassTotal(0)
+        setClassTotalRound(0)
     };
 
     // 시작일 캘린더에서 선택했을 때 => 이후 수정@@@
@@ -37,7 +48,7 @@ const ClassDetails = () => {
 
     // 기본 진행 요일 선택할 때 => 총 회차 수보다 많이 선택 불가능하게 수정@@@
     const handleDaysChange = (event) => {
-        // if (selectedDays.length >= classTotal) {
+        // if (selectedDays.length >= classTotalRound) {
         //     alert("더 많은 요일을 선택할 수 없습니다~!");
         //     event.target.checked = false
         //     return
@@ -49,9 +60,11 @@ const ClassDetails = () => {
             const filteredDays = selectedDays.filter(
                 (day) => day !== event.target.id
             );
+            console.log(selectedDays, "선택임")
             setSelectedDays(filteredDays);
         }
     };
+    console.log(selectedDays,"선택임22")
 
     // 요일별 시작 시간과 종료 시간 입력 함수 (시와 분을 각각 저장) => 체크박스 해제했을 때 이 배열에서 사라지게 수정@@@
     const handleDayTimeChange = (
@@ -66,9 +79,7 @@ const ClassDetails = () => {
             [day]: { startHour, startMinute, endHour, endMinute },
         }));
     };
-    console.log(selectedDays);
-    console.log(daysTimes);
-
+    console.log(daysTimes, "데이스타임스")
     // 해당 요일의 인덱스를 반환하는 함수
 
     // 시작일을 기준으로 선택한 요일에 해당하는 일자를 뽑아내는 함수
@@ -89,8 +100,8 @@ const ClassDetails = () => {
                     type="number"
                     id="totalTime"
                     min={0}
-                    onFocus={() => handleFocusChange(setClassTotal, classTotal)}
-                    value={classTotal}
+                    onFocus={() => handleFocusChange(setClassTotalRound, classTotalRound)}
+                    value={classTotalRound}
                     onChange={handleTotalTimeChange}
                 />
                 <span>회</span>
@@ -138,9 +149,15 @@ const ClassDetails = () => {
 
             {/* 캘린더 */}
             <div>수업 일자 확인 및 추가 일정 수정</div>
-            <Calendar onChange={onChange} value={value} />
+            <Calendar 
+            onChange={onChange} 
+            value={value} 
+            locale="ko-KO"// 한글
 
-            <ClassRoundDetailItem />
+            />
+
+
+            <ClassRoundItem />
 
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
@@ -152,4 +169,4 @@ const ClassDetails = () => {
     );
 };
 
-export default ClassDetails;
+export default ClassRoundJoin;

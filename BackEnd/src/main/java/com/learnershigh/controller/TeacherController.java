@@ -93,7 +93,7 @@ public class TeacherController {
     }
 
     // 과제 등록
-    @PostMapping("/lesson/homework/join")
+    @PostMapping("/lesson/homeworknoti/join")
     @ApiOperation("과제 공지 등록")
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
@@ -153,12 +153,10 @@ public class TeacherController {
     @ApiOperation("강사 수업 관리 과제 탭")
     @GetMapping("/lesson/{lessonNo}/homework")
     public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long lessonNo) {
-        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
+        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 과제 탭 조회 완료");
         try {
             List<LessonRoundHomeworkStatusDto> lessonHomeworkInfo = teacherService.getHomeworkTabInfo(lessonNo);
-            for(LessonRoundHomeworkStatusDto lessonRoundHomeworkStatusDto : lessonHomeworkInfo) {
-                responseBody.getList().add(lessonRoundHomeworkStatusDto);
-            }
+            responseBody.setList(lessonHomeworkInfo);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());

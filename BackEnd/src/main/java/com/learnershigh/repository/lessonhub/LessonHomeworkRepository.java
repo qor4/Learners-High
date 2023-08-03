@@ -17,12 +17,12 @@ public interface LessonHomeworkRepository extends JpaRepository<LessonHomework, 
 //            "WHERE attend.lessonNo.lessonNo = :lessonNo AND attend.userNo.userNo = :userNo")
     @Query(value = "SELECT a.lesson_round_no AS lessonRoundNo, " +
             "a.lesson_attend_status AS lessonAttendStatus, h.homework_status AS homeworkStatus, " +
-            "h.homework_file_name AS homeworkFileName, h.homework_file_origin_name AS homeworkFileOriginName " +
+            "h.lesson_homework_no AS homeworkNo " +
             "FROM lesson_homework h RIGHT JOIN lesson_attend a ON h.lesson_round_no = a.lesson_round_no " +
             "where a.lesson_no = :lessonNo and a.user_no = :userNo", nativeQuery = true)
     List<AttendHomeworkProjectionInterface> getAttendHomeworkByUserNo(@Param("userNo") Long userNo, @Param("lessonNo") Long lessonNo);
 
-    @Query(value = "SELECT new com.learnershigh.dto.lessonhub.StudentHomeworkStatusDto(homework.userNo.userNo, homework.userNo.userName, homework.homeworkStatus, homework.homeworkFileName, homework.homeworkFileOriginName) " +
+    @Query(value = "SELECT new com.learnershigh.dto.lessonhub.StudentHomeworkStatusDto(homework.userNo.userNo, homework.userNo.userName, homework.homeworkStatus, homework.lessonHomeworkNo) " +
             "FROM LessonHomework homework " +
             "WHERE homework.lessonHomeworkNoticeNo.lessonHomeworkNoticeNo = :lessonHomeworkNoticeNo " +
             "AND homework.userNo = :userNo")

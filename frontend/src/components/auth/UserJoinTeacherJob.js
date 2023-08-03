@@ -5,7 +5,7 @@ import { url } from "../../api/APIPath";
 
 const UserJoinTeacherJob = (props) => {
     const nextId = useRef(1)
-    const userNo = useSelector(state => state.user.userNo)
+    const userNo = useSelector(state => state.user.userNo) || props.userNo
     const initialState = [
         {
             id: nextId-1,
