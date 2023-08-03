@@ -3,6 +3,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { HiMenu, HiOutlineX } from "react-icons/hi";
 
 import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
@@ -21,6 +22,7 @@ const NavStyle = styled(NavLink)`
 
 const Header = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const userType = useSelector((state) => state.user.userType);
     // const userType = "T";
 
@@ -38,19 +40,41 @@ const Header = () => {
 
     return (
         <header>
-            <nav>
-                <h1>
-                    <NavStyle to="/">
-                        <img src="#" alt="logo" />
+            <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+                <h1 className="flex lg:flex-1">
+                    <NavStyle to="/" className="-m-1.5 p-1.5">
+                        <img
+                            className="h-14 w-auto"
+                            src="/assets/logo-temp.png"
+                            alt="logo-img"
+                        />
                     </NavStyle>
                 </h1>
+
+                {/* 햄버거 메뉴 */}
+                <div className="flex md:hidden">
+                    <button
+                        type="button"
+                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                        onClick={() => setMobileMenuOpen(true)}
+                    >
+                        <HiMenu className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                </div>
 
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <NavStyle to="/lesson">전체 강의</NavStyle>
-                        <NavStyle to="/join">회원가입</NavStyle>
-                        <NavLink onClick={handleLoginButtonClick}>
+                        <NavStyle to="/lesson" className="text-base">
+                            전체 강의
+                        </NavStyle>
+                        <NavStyle to="/join" className="text-base">
+                            회원가입
+                        </NavStyle>
+                        <NavLink
+                            onClick={handleLoginButtonClick}
+                            className="text-base"
+                        >
                             로그인
                         </NavLink>
 
@@ -86,9 +110,8 @@ const Header = () => {
                     </>
                 )}
             </nav>
-        </header>
 
-        
+        </header>
     );
 };
 

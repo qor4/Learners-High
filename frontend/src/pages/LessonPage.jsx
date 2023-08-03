@@ -1,22 +1,22 @@
-// 전체 강의 목록 페이지 (url: /class)
+// 전체 강의 목록 페이지 (url: /lesson)
 import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import { url } from "../api/APIPath";
 import { HiSearch } from "react-icons/hi";
 
-import ClassList from "../components/class/ClassList";
+import LessonList from "../components/class/LessonList";
 import Banner from "../components/common/Banner";
 import Pagination from "../components/common/Pagination";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
 
-const ClassPage = () => {
+const LessonPage = () => {
     // 기본 데이터 GET 요청
-    const [originClassListDataSet, setOriginClassListDataSet] = useState([]);
-    const [classListDataSet, setClassListDataSet] = useState([]);
-    const [classTypeDataSet, setClassTypeDataSet] = useState([]);
+    const [originLessonListDataSet, setOriginLessonListDataSet] = useState([]);
+    const [lessonListDataSet, setLessonListDataSet] = useState([]);
+    const [lessonTypeDataSet, setLessonTypeDataSet] = useState([]);
 
     const [searchOption, setSearchOption] = useState("전체");
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -26,7 +26,7 @@ const ClassPage = () => {
     const [page, setPage] = useState(1);
     const offset = (page - 1) * limitItem; // 첫 게시물의 위치 계산
     // 페이지 내 게시물 데이터
-    const pageClassListData = classListDataSet.slice(
+    const pageLessonListData = lessonListDataSet.slice(
         offset,
         offset + limitItem
     );
@@ -34,22 +34,22 @@ const ClassPage = () => {
     // 검색 버튼 눌렀을 때
     const handleSearchChange = () => {
         if (searchOption === "전체") {
-            const filteredData = originClassListDataSet.filter(
+            const filteredData = originLessonListDataSet.filter(
                 (item) =>
                     item.userName.includes(searchKeyword) ||
                     item.lessonName.includes(searchKeyword)
             );
-            setClassListDataSet(filteredData);
+            setLessonListDataSet(filteredData);
         } else if (searchOption === "강사명") {
-            const filteredData = originClassListDataSet.filter((item) =>
+            const filteredData = originLessonListDataSet.filter((item) =>
                 item.userName.includes(searchKeyword)
             );
-            setClassListDataSet(filteredData);
+            setLessonListDataSet(filteredData);
         } else if (searchOption === "강의명") {
-            const filteredData = originClassListDataSet.filter((item) =>
+            const filteredData = originLessonListDataSet.filter((item) =>
                 item.lessonName.includes(searchKeyword)
             );
-            setClassListDataSet(filteredData);
+            setLessonListDataSet(filteredData);
         }
         setSearchKeyword("");
     };
@@ -58,20 +58,23 @@ const ClassPage = () => {
     useEffect(() => {
         axios.get(`${url}/lesson/list/upcoming`).then((response) => {
             console.log(response);
-            setClassListDataSet(response.data.list[0]);
-            setOriginClassListDataSet(response.data.list[0]);
+            setLessonListDataSet(response.data.list[0]);
+            setOriginLessonListDataSet(response.data.list[0]);
         });
 
         axios.get(`${url}/lesson/type`).then((response) => {
             console.log(response);
-            setClassTypeDataSet(response.data.list[0]);
+            setLessonTypeDataSet(response.data.list[0]);
         });
     }, []);
 
     return (
         <div>
             {/* 배너 */}
-            <Banner $point>배너 들어갈 공간입니다.</Banner>
+            <div className="w-11/12 mx-auto">
+                <Banner $point>배너 들어갈 공간입니다.</Banner>
+                <Banner $point>배너 들어갈 공간입니다.</Banner>
+            </div>
             <div className="w-4/5 mx-auto">
                 {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
                 <select
@@ -95,8 +98,8 @@ const ClassPage = () => {
                 {/* 과목 분류를 누르면 필터링되는 공간 */}
                 <Card>
                     <Button>전체</Button>
-                    {classTypeDataSet &&
-                        classTypeDataSet.map((lessonType, index) => (
+                    {lessonTypeDataSet &&
+                        lessonTypeDataSet.map((lessonType, index) => (
                             <Button key={index} value={lessonType.lessonTypeNo}>
                                 {lessonType.lessonTypeName}
                             </Button>
@@ -110,14 +113,14 @@ const ClassPage = () => {
                 </div>
                 {/* 강의 목록 아이템이 보이는 공간 */}
                 <div>
-                    <ClassList items={pageClassListData} />
+                    <LessonList items={pageLessonListData} />
                 </div>
 
                 {/* 페이지네이션 */}
                 <div>
-                    {classListDataSet && classListDataSet.length > 0 && (
+                    {lessonListDataSet && lessonListDataSet.length > 0 && (
                         <Pagination
-                            total={classListDataSet.length}
+                            total={lessonListDataSet.length}
                             limit={limitItem}
                             page={page}
                             setPage={setPage}
@@ -129,4 +132,4 @@ const ClassPage = () => {
     );
 };
 
-export default ClassPage;
+export default LessonPage;

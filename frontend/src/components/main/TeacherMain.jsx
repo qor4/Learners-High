@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import AlertScheduleBox from "../class/AlertScheduleBox";
 import { useState } from "react";
-import ClassRoundItemBoxList from "../class/ClassRoundItemBoxList";
+import LessonRoundItemBoxList from "../class/LessonRoundItemBoxList";
 import Card from "../common/Card";
 import Button from "../common/Button";
 
@@ -52,7 +52,7 @@ const TeacherMain = () => {
             </Card>
 
             {/* 수업 아이템이 들어가는 공간 */}
-            <ClassRoundItemBoxList selectedDay={selectedDay} dayName={days[selectedDay - 1]} />
+            <LessonRoundItemBoxList selectedDay={selectedDay} dayName={days[selectedDay - 1]} />
         </div>
     );
 };

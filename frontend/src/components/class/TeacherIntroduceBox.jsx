@@ -1,6 +1,6 @@
 // 강사 소개 박스 (강의 상세 / 강사 페이지에서 사용될 박스)
 
-import ClassStatusBox from "../common/ClassStatusBox";
+import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
 
 const TeacherIntroduceBox = ({ teacherInfo }) => {
@@ -20,7 +20,7 @@ const TeacherIntroduceBox = ({ teacherInfo }) => {
             <Card>{teacherInfo.userInfo}</Card>
             
             {/* 학력과 경력이 들어가는 공간 */}
-            {eduInfo && eduInfo.length > 0 && <ClassStatusBox $point>학력</ClassStatusBox>}
+            {eduInfo && eduInfo.length > 0 && <LessonStatusBox $point>학력</LessonStatusBox>}
             {eduInfo &&
                 eduInfo.map((eduItem, index) => (
                     <div key={index}>
@@ -33,7 +33,7 @@ const TeacherIntroduceBox = ({ teacherInfo }) => {
                     </div>
                 ))}
 
-            {jobInfo && jobInfo.length > 0 && <ClassStatusBox $point>경력</ClassStatusBox>}
+            {jobInfo && jobInfo.length > 0 && <LessonStatusBox $point>경력</LessonStatusBox>}
             {jobInfo &&
                 jobInfo.map((jobItem, index) => (
                     <div key={index}>

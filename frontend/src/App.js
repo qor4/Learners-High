@@ -7,9 +7,9 @@ import Footer from "./components/common/Footer";
 
 import MainPage from "./pages/MainPage";
 import UserJoin from "./components/auth/UserJoin";
-import ClassPage from "./pages/ClassPage";
+import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/ClassJoinPage";
-import ClassInfoPage from "./pages/ClassInfoPage";
+import LessonInfoPage from "./pages/LessonInfoPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
@@ -32,9 +32,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/join" element={<UserJoin />}></Route>
-                <Route path="/lesson" element={<ClassPage />}></Route>
+                <Route path="/lesson" element={<LessonPage />}></Route>
                 <Route path="/lesson/join" element={<ClassJoinPage />}></Route>
-                <Route path="/lesson/info/:lessonNo" element={<ClassInfoPage />}></Route>
+                <Route path="/lesson/info/:lessonNo" element={<LessonInfoPage />}></Route>
                 <Route path="/profile/:userNo" element={<TeacherProfilePage />}></Route>
             </Routes>
             
