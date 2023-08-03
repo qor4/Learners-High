@@ -136,4 +136,22 @@ public class StudentController {
         }
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @GetMapping("/{userNo}/lesson/{lessonNo}/state")
+    @ApiOperation("학생 수강 신청 상태")
+    public ResponseEntity<BaseResponseBody> getStudentLessonState(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("수강 신청이 가능합니다.");
+        try {
+            studentService.getStudentLessonState(userNo, lessonNo);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

@@ -82,21 +82,10 @@ public class StudentService {
 
     // 학생 찜 목록 전체 출력
     public List<LessonListDto> wishListAll(User userNo) {
-
-
-        System.out.println(userNo);
-
         List<StudentWishlist> studentWishlist = studentWishlistRepository.findAllByUserNo(userNo);
-
-        System.out.println(studentWishlist.toString());
-
         List<LessonListDto> wishLessonList = new ArrayList<>();
-
-
         for (StudentWishlist sw : studentWishlist) {
-
             LessonListDto lessonListDto = new LessonListDto();
-
             Lesson wishLesson = lessonRepository.findByLessonNo(sw.getLessonNo().getLessonNo());
 
 
@@ -158,7 +147,7 @@ public class StudentService {
     public List<HashMap<String, Object>> getLessonRoundFileInfo(Long lessonNo) {
         List<HashMap<String, Object>> lessonRoundfileInfo = new ArrayList<>();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonNo);
-        for(LessonRound lessonRound : lessonRoundList){
+        for (LessonRound lessonRound : lessonRoundList) {
             HashMap<String, Object> fileInfo = new HashMap<>();
             fileInfo.put("lessonRoundNo", lessonRound.getLessonRoundNo());
             fileInfo.put("lessonRoundNumber", lessonRound.getLessonRoundNumber());
@@ -168,5 +157,23 @@ public class StudentService {
             lessonRoundfileInfo.add(fileInfo);
         }
         return lessonRoundfileInfo;
+    }
+
+    public void getStudentLessonState(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (user == null) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!user.getUserType().equals("S")) {
+            throw new IllegalStateException("학생만 수강 신청이 가능합니다.");
+        }
+        Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
+        if (lesson == null) {
+            throw new IllegalStateException("유효하지 않은 수업입니다.");
+        }
+        StudentLessonList studentLesson = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
+        if (studentLesson != null) {
+            throw new IllegalStateException("이미 수강 신청한 수업입니다.");
+        }
     }
 }
