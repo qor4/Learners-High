@@ -22,8 +22,9 @@ const TeacherMain = () => {
 
     // 요일을 클릭했을 때, selectedDay를 변경해줌
     const handleDayChange = (event) => {
+        const selectedDayValue = parseInt(event.target.value, 10);
         if (event.target.value !== selectedDay) {
-            setSelectedDay(event.target.value);
+            setSelectedDay(selectedDayValue);
         }
     };
 

@@ -17,8 +17,17 @@ const StyledInput = styled.input`
 `;
 
 const Input = (props) => {
-    const { id, name, label, value, type, placeholder, onChange, disabled } =
-        props;
+    const {
+        id,
+        name,
+        label,
+        value,
+        type,
+        placeholder,
+        onChange,
+        disabled,
+        onKeyPress,
+    } = props;
     return (
         <div>
             <StyledLabel htmlFor={id}>{label}</StyledLabel>
@@ -30,6 +39,7 @@ const Input = (props) => {
                 placeholder={placeholder}
                 onChange={onChange}
                 disabled={disabled}
+                onKeyPress={onKeyPress}
             />
         </div>
     );
