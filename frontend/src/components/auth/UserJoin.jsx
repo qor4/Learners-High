@@ -192,9 +192,6 @@ const UserJoin = () => {
             setCertEmailCheckMSG("인증 요망")
         }
     }
-
-
-
     const [userInfoMSG, setUserInfoMSG] = useState("");
     const [userInfoValidCheck, setUserInfoValidCheck] = useState(false);
     const userInfoFormCheck = () => {
