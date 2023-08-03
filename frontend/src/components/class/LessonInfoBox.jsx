@@ -2,10 +2,10 @@
 // 다른 곳에서도 강의 세부 내용 박스로 쓰일 컴포넌트
 import { HiOutlineHeart } from "react-icons/hi";
 
-import ClassStatusBox from "../common/ClassStatusBox";
+import LessonStatusBox from "../common/LessonStatusBox";
 import Button from "../common/Button";
 
-const ClassInfoBox = ({ lessonInfo }) => {
+const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
     if (!lessonInfo) {
         return <div>Loading...</div>;
     }
@@ -15,8 +15,8 @@ const ClassInfoBox = ({ lessonInfo }) => {
                 <img src={lessonInfo.lessonThumbnailImg} alt="thumbnail-img" />
             </div>
             <span>{lessonInfo.userName}</span>
-            <ClassStatusBox>{lessonInfo.lessonTypeName}</ClassStatusBox>
-            <ClassStatusBox>총 {lessonInfo.lessonTotalRound}회차</ClassStatusBox>
+            <LessonStatusBox>{lessonInfo.lessonTypeName}</LessonStatusBox>
+            <LessonStatusBox>총 {lessonInfo.lessonTotalRound}회차</LessonStatusBox>
             <span>
                 {lessonInfo.lessonStartDate} ~ {lessonInfo.lessonEndDate}
             </span>
@@ -24,7 +24,7 @@ const ClassInfoBox = ({ lessonInfo }) => {
             <span>{lessonInfo.lessonPrice}원</span>
             <span>{lessonInfo.userName}</span>
             <span>{lessonInfo.lessonThumbnailInfo}</span>
-            <Button>
+            <Button onClick={handleApplyChange}>
                 수강 신청 ( {lessonInfo.totalStudent} / {lessonInfo.maxStudent}{" "}
                 명 )
             </Button>
@@ -35,4 +35,4 @@ const ClassInfoBox = ({ lessonInfo }) => {
     );
 };
 
-export default ClassInfoBox;
+export default LessonInfoBox;

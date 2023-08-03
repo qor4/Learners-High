@@ -1,54 +1,69 @@
-// 강의 상세 페이지 (신청 페이지) url : /class/info/:강의no
+// 강의 상세 페이지 (신청 페이지) url : /lesson/info/:강의no
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineHeart } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
-import ClassInfoBox from "../components/class/ClassInfoBox";
+import LessonInfoBox from "../components/class/LessonInfoBox";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 
-const ClassInfoPage = () => {
+const LessonInfoPage = () => {
+    const userNo = useSelector((state) => state.user.userNo);
     const { lessonNo } = useParams();
-    const [classInfoDataSet, setClassInfoDataSet] = useState([]);
+    const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]);
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
 
-    // get 요청
+    // 강의 상세 GET 요청
     useEffect(() => {
-        // 강의 상세 GET 요청
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
             console.log(response);
-            setClassInfoDataSet(response.data.list[0]);
+            setLessonInfoDataSet(response.data.list[0]);
         });
     }, [lessonNo]);
 
+    // 강사 정보 가져오는 GET 요청
     useEffect(() => {
-        if (classInfoDataSet.lessonInfo) {
+        if (lessonInfoDataSet.lessonInfo) {
             axios
                 .get(
-                    `${url}/teacher/profile/${classInfoDataSet.lessonInfo.userNo}`
+                    `${url}/teacher/profile/${lessonInfoDataSet.lessonInfo.userNo}`
                 )
                 .then((response) => {
                     console.log(response);
                     setTeacherInfoDataSet(response.data.list[0]);
                 });
         }
-    }, [classInfoDataSet.lessonInfo]);
+    }, [lessonInfoDataSet.lessonInfo]);
 
-    const lessonRoundInfo = classInfoDataSet.lessonRoundInfo;
+    const lessonRoundInfo = lessonInfoDataSet.lessonRoundInfo;
+
+    const data = { lessonNo, userNo };
+
+    // 수강신청 버튼 클릭했을 때
+    const handleApplyChange = () => {
+        console.log("수강신청 버튼을 클릭했습니다.");
+        axios
+            .post(`${url}/student/apply`, data)
+            .then((response) => alert(response.data.resultMsg));
+    };
 
     return (
         <div>
             {/* 강의 상세 정보 들어갈 공간 */}
-            <ClassInfoBox lessonInfo={classInfoDataSet.lessonInfo} />
+            <LessonInfoBox
+                lessonInfo={lessonInfoDataSet.lessonInfo}
+                handleApplyChange={handleApplyChange}
+            />
 
             {/* 강사 소개 */}
             <h3>강사 소개</h3>
-            {classInfoDataSet.lessonInfo && (
-                <Link to={`/profile/${classInfoDataSet.lessonInfo.userNo}`}>
+            {lessonInfoDataSet.lessonInfo && (
+                <Link to={`/profile/${lessonInfoDataSet.lessonInfo.userNo}`}>
                     <Card>
                         <TeacherIntroduceBox teacherInfo={teacherInfoDataSet} />
                     </Card>
@@ -57,10 +72,10 @@ const ClassInfoPage = () => {
 
             {/* 수업 소개 */}
             <h3>수업 소개</h3>
-            {classInfoDataSet.lessonInfo &&
-                classInfoDataSet.lessonInfo.lessonInfo}
+            {lessonInfoDataSet.lessonInfo &&
+                lessonInfoDataSet.lessonInfo.lessonInfo}
 
-            {/* 회차 소개 => 추가할지 고민 수정@@@ */}
+            {/* 회차 소개 */}
             <h3>회차 소개</h3>
             {lessonRoundInfo &&
                 lessonRoundInfo.map((round, index) => (
@@ -75,14 +90,16 @@ const ClassInfoPage = () => {
 
             {/* 하단 고정 수강신청 바 */}
             <div>
-                {classInfoDataSet.lessonInfo ? (
+                {lessonInfoDataSet.lessonInfo ? (
                     <>
-                        <span>{classInfoDataSet.lessonInfo.lessonName}</span>
-                        <span>{classInfoDataSet.lessonInfo.lessonPrice}원</span>
-                        <Button>
+                        <span>{lessonInfoDataSet.lessonInfo.lessonName}</span>
+                        <span>
+                            {lessonInfoDataSet.lessonInfo.lessonPrice}원
+                        </span>
+                        <Button onClick={handleApplyChange}>
                             수강 신청 ({" "}
-                            {classInfoDataSet.lessonInfo.totalStudent} /{" "}
-                            {classInfoDataSet.lessonInfo.maxStudent} 명 )
+                            {lessonInfoDataSet.lessonInfo.totalStudent} /{" "}
+                            {lessonInfoDataSet.lessonInfo.maxStudent} 명 )
                         </Button>
                         <Button>
                             <HiOutlineHeart />
@@ -94,4 +111,4 @@ const ClassInfoPage = () => {
     );
 };
 
-export default ClassInfoPage;
+export default LessonInfoPage;

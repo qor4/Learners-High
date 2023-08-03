@@ -1,13 +1,13 @@
 // 강의 목록의 강의 아이템 (카드) 담아줄 List
-// axios로 데이터를 가져와서 ClassItem에게 보내줄 곳
+// axios로 데이터를 가져와서 LessonItem에게 보내줄 곳
 
-import ClassItem from "./ClassItem";
+import LessonItem from "./LessonItem";
 
-const ClassList = ({ items }) => {
+const LessonList = ({ items }) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {items.map((data, index) => (
-                <ClassItem
+                <LessonItem
                     key={index}
                     lessonName={data.lessonName}
                     userName={data.userName}
@@ -28,4 +28,4 @@ const ClassList = ({ items }) => {
     );
 };
 
-export default ClassList;
+export default LessonList;

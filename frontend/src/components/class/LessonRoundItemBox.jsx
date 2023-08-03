@@ -4,24 +4,24 @@
 import { useSelector } from "react-redux";
 import Button from "../common/Button";
 import Card from "../common/Card";
-import ClassStatusBox from "../common/ClassStatusBox";
+import LessonStatusBox from "../common/LessonStatusBox";
 
-const ClassRoundItemBox = ({ classInfo }) => {
+const LessonRoundItemBox = ({ lessonInfo }) => {
     // const userType = useSelector((state) => state.user.userType);
     const userType = "T";
 
     return (
         <Card>
-            <ClassStatusBox size="lg" $point $round>
-                {classInfo.classRoundNo}회차
-            </ClassStatusBox>
+            <LessonStatusBox size="lg" $point $round>
+                {lessonInfo.lessonRoundNo}회차
+            </LessonStatusBox>
             <span>
-                {classInfo.classRoundStartDatetime} ~{" "}
-                {classInfo.classRoundEndDatetime}
+                {lessonInfo.lessonRoundStartDatetime} ~{" "}
+                {lessonInfo.lessonRoundEndDatetime}
             </span>
-            <span>{classInfo.className}</span>
-            <span>{classInfo.classRoundTitle}</span>
-            <span>{classInfo.userName} 강사님</span>
+            <span>{lessonInfo.lessonName}</span>
+            <span>{lessonInfo.lessonRoundTitle}</span>
+            <span>{lessonInfo.userName} 강사님</span>
 
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
@@ -43,4 +43,4 @@ const ClassRoundItemBox = ({ classInfo }) => {
     );
 };
 
-export default ClassRoundItemBox;
+export default LessonRoundItemBox;

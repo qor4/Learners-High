@@ -1,12 +1,12 @@
 // 강의 아이템 컴포넌트 (카드)
 
 import { Link } from "react-router-dom";
-import ClassStatusBox from "../common/ClassStatusBox";
+import LessonStatusBox from "../common/LessonStatusBox";
 
 // react-icon import
 import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
 
-const ClassItem = (props) => {
+const LessonItem = (props) => {
     return (
         <div>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -14,13 +14,13 @@ const ClassItem = (props) => {
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <img src={props.lessonThumbnailImg} alt="Thumbnail" />
                 </Link>
-                <ClassStatusBox $point>{props.lessonStatus}</ClassStatusBox>
+                <LessonStatusBox $point>{props.lessonStatus}</LessonStatusBox>
                 <span>
                     <HiOutlineHeart />
                 </span>
             </div>
 
-            <ClassStatusBox>{props.lessonTypeName}</ClassStatusBox>
+            <LessonStatusBox>{props.lessonTypeName}</LessonStatusBox>
 
             <span>
                 <HiOutlineUserCircle />
@@ -44,4 +44,4 @@ const ClassItem = (props) => {
     );
 };
 
-export default ClassItem;
+export default LessonItem;
