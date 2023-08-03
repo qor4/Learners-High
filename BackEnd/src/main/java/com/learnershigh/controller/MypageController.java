@@ -33,7 +33,7 @@ public class MypageController {
 
 
     // 비밀번호 변경하기
-    @PutMapping("/update/pwd/{userNo}")
+    @PutMapping("/modify/pwd/{userNo}")
     @ApiOperation("비밀번호 변경하기")
     public ResponseEntity<BaseResponseBody> pwdChange(@PathVariable("userNo") Long userNo, @RequestParam("pwd") String pwd) {
         BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");

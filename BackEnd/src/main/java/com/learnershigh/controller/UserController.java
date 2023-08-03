@@ -105,7 +105,7 @@ public class UserController {
     @ApiOperation("이메일 중복 확인")
     public ResponseEntity<BaseResponseBody> duplicateEmail(@PathVariable("email") String userEmail) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
-        if (userService.duplicateId(userEmail)) {
+        if (userService.duplicateEmail(userEmail)) {
             baseResponseBody.setResultMsg("사용 할 수 있는 이메일 입니다.");
             baseResponseBody.setResultCode(0);
         } else {
