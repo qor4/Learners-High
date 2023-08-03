@@ -19,7 +19,7 @@ const ClassRoundJoin = () => {
     // 여기서 Link로 보낸 데이터 받았다.
     const location = useLocation()
     const lessonData = location.state?.data || null
-    console.log(lessonData)
+    console.log(lessonData, "classRoundJoin임")
 
     const initialLessonRoundItem = {
         lessonNo: "", // 임시
@@ -263,6 +263,8 @@ const ClassRoundJoin = () => {
     const handleClickRegisterLesson = () => {
         // lessonData.lessonStatus = "강의 전"
         // lessonData.lessonTotalRound = lessonTotalRound
+        lessonData.lessonStatus = "강의 전"
+        console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?")
         axios.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
         lessonData,
         {headers: {"Content-Type": 'application/json'}}

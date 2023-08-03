@@ -11,6 +11,7 @@ import { url } from "../../api/APIPath";
 import axios from "axios";
 
 const ClassJoin = () => {
+    const navigate = useNavigate()
     const userNo = useSelector(state=>state.user.userNo)
     const [lessonNo, setLessonNo] = useState("")
 
@@ -24,22 +25,23 @@ const ClassJoin = () => {
     const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
+    const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null)
     
     const [maxStudent, setMaxStudent] = useState(0);
     const [lessonPrice, setLessonPrice] = useState(0);
 
     
     // API가 완료되면 밑에 것들로 바꿀 것.
-    const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
+    // const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([])
-    // useEffect( () => {
-    //     axios.get(`${url}/lesson/type/`)
-    //     .then(res=> {
-    //         console.log(res.data)
-    //         setLessonTypeList(res.data)
-    //     })
-    // }, [])
+    useEffect( () => {
+        axios.get(`${url}/lesson/type/`)
+        .then(res=> {
+            // console.log(res.data.list[0], "들어왔니") // 들어옴
+            setLessonTypeList(res.data.list[0])
+        })
+    }, [])
 
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -57,17 +59,21 @@ const ClassJoin = () => {
 
     // 과목 이름 검색 버튼 클릭했을 때
     const handleSearchClick = () => {
-        const filteredResults = subjectData.filter((result) =>
-            result.includes(subjectName)
+        const filteredResults = lessonTypeList.filter((item) => {
+            console.log(item, "클릭")
+            return item.lessonTypeName === subjectName
+            }
         );
         setSearchResults(filteredResults);
         setSearchClicked(true);
     };
 
     // 검색을 통해 나온 과목 li를 클릭했을 때
-    const selectedResult = (event) => {
-        setSubjectName(event.target.textContent);
-        console.log(subjectName)
+    const selectedResult = (rlt) => {
+        setSubjectName(rlt.lessonTypeName);
+        setChooseLessonTypeNo(rlt.lessonTypeNo)
+        // console.log(subjectName)
+        console.log(rlt, "이벤트") // 이슈 해결! () => 함수(값)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
@@ -128,9 +134,9 @@ const ClassJoin = () => {
             lessonStatus: "작성 중",
             // lessonThumbnailImg: lessonThumbnailImg,
             lessonThumbnailInfo: lessonThumbnailInfo,
-            lessonTypeNo: 1, // 미정
+            lessonTypeNo: chooseLessonTypeNo, // 미정
             maxStudent: maxStudent,
-            userNo: 6 // 임시
+            userNo: userNo // 임시
         }
         console.log(data, "데이터")
         axios.post(`${url}/lesson/join`,
@@ -160,7 +166,8 @@ const ClassJoin = () => {
     }
     const nextPage = () => {
         sendDataToServer()
-        // navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성
+        console.log(data, "classJoin임")
+        navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
     }
     const data = {
         lessonInfo: lessonInfo,
@@ -169,10 +176,12 @@ const ClassJoin = () => {
         lessonStatus: "작성 중",
         lessonThumbnailImg: lessonThumbnailImg,
         lessonThumbnailInfo: lessonThumbnailInfo,
-        lessonTypeNo: 0, // 미정
+        lessonTypeNo: chooseLessonTypeNo, 
         maxStudent: maxStudent,
-        userNo: userNo ? userNo : 1 //
+        userNo: userNo ? userNo : 1, //
+        lessonNo: lessonNo
     }
+    console.log(data)
     return (
         <>
             <h3>기본 정보 입력</h3>
@@ -201,8 +210,8 @@ const ClassJoin = () => {
                         {searchClicked && searchResults.length > 0
                             ? searchResults.map((result) => {
                                   return (
-                                      <li key={result} onClick={selectedResult}>
-                                          {result}
+                                      <li key={result.lessonTypeNo} onClick={()=>selectedResult(result)}>
+                                          {result.lessonTypeName}
                                       </li>
                                   );
                               })
@@ -213,6 +222,8 @@ const ClassJoin = () => {
                     </ul>
                 </span>
                 <button onClick={handleSearchClick}>검색</button>
+                <br/>
+                <span>{ searchClicked ? subjectName: null}</span>
             </div>
 
             <div>
@@ -320,7 +331,7 @@ const ClassJoin = () => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <Link to="/lesson/round/join" state={data}> 
+                <Link to="/lesson/round/join" state={{data}}> 
                 <button onClick={nextPage}>
                     다음
                 </button>
