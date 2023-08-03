@@ -1,11 +1,9 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.dto.etc.BaseResponseBody;
-import com.learnershigh.service.OpenviduService;
+import com.learnershigh.service.etc.OpenviduService;
 import com.learnershigh.service.lesson.LessonRoundService;
 import com.learnershigh.service.lesson.LessonroomService;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ public class LessonroomController {
     @ApiOperation("수업 생성 및 출석")
     public ResponseEntity<BaseResponseBody> createLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo,@PathVariable Long userNo) {
         BaseResponseBody responseBody = new BaseResponseBody("수업 생성 완료");
-//        lessonroomService.createLessonroom(lessonNo, lessonRoundNo);
         try {
             lessonroomService.checkTeacher(userNo,lessonNo);
             openviduService.createSession(lessonNo,lessonRoundNo);
@@ -40,7 +37,6 @@ public class LessonroomController {
         }
     }
 
-    // 수업 입장 및 출석
     @GetMapping("/student/{lessonNo}/{lessonRoundNo}/{userNo}")
     @ApiOperation("수업 입장 및 출석")
     public ResponseEntity<BaseResponseBody> enterLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable Long userNo) {
