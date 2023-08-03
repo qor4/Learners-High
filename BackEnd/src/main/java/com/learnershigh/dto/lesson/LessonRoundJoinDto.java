@@ -18,6 +18,4 @@ public class LessonRoundJoinDto {
     private LocalDateTime lessonRoundStartDatetime;
     // 수업 회차 종료 일시
     private LocalDateTime lessonRoundEndDatetime;
-    // 수업 회차 과제 유무
-    private boolean isHomework;
 }

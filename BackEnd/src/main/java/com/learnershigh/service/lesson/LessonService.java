@@ -107,28 +107,33 @@ public class LessonService {
     public void apply(StudentLessonActionDto studentLessonActionDto) {
         StudentLessonList studentLessonList = new StudentLessonList();
         User user = userRepository.findByUserNo(studentLessonActionDto.getUserNo());
+
         if(user == null){
             throw new IllegalStateException("유효한 회원이 아닙니다.");
         }
         if (!user.getUserType().equals("S")) {
             throw new IllegalStateException("수강신청은 학생만 가능합니다.");
         }
-        Lesson lessonDomain = lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo());
-        if (lessonDomain == null) {
+        Lesson lesson = lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo());
+        if (lesson == null) {
             throw new IllegalStateException("유효한 수업이 아닙니다.");
         }
-        if (!lessonDomain.getLessonStatus().equals("강의 전")) {
+        if (!lesson.getLessonStatus().equals("강의 전")) {
             throw new IllegalStateException("수강이 가능한 날짜가 아닙니다.");
         }
-        if (lessonDomain.getTotalStudent() == lessonDomain.getMaxStudent()) {
+        if (lesson.getTotalStudent() == lesson.getMaxStudent()) {
             throw new IllegalStateException("수강 인원이 모두 모집되었습니다.");
         }
+        StudentLessonList studentLesson = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
+        if(studentLesson != null){
+            throw new IllegalStateException("이미 수강 중인 과목입니다.");
+        }
         studentLessonList.setUserNo(user);
-        studentLessonList.setLessonNo(lessonDomain);
+        studentLessonList.setLessonNo(lesson);
         studentLessonListRepository.save(studentLessonList);
-        int totalStudent = lessonDomain.getTotalStudent() + 1;
-        lessonDomain.setTotalStudent(totalStudent);
-        lessonRepository.save(lessonDomain);
+        int totalStudent = lesson.getTotalStudent() + 1;
+        lesson.setTotalStudent(totalStudent);
+        lessonRepository.save(lesson);
     }
 
     public LessonInfoDto getLessonDetailByLessonNo(Long lessonNo) {
