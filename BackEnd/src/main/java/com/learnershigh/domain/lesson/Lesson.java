@@ -69,7 +69,6 @@ public class Lesson {
     private int lessonPrice;
 
     // 수업 썸네일
-    @NotNull
     @Column(name = "lesson_thumbnail_img")
     private String lessonThumbnailImg;
 

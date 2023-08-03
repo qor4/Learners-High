@@ -29,12 +29,6 @@ public class LessonMainListDto {
     // 수업 회차 제목
     private String lessonRoundTitle;
 
-    // 수업 회차 강의자료 파일명
-    private String lessonRoundFileName;
-
-    // 수업 회차 강의자료 파일 원본 이름
-    private String lessonRoundFileOriginName;
-
     // 수업 회차 시작 일시
     private LocalDateTime lessonRoundStartDatetime;
 

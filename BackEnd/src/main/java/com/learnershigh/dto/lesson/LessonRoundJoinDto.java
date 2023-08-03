@@ -14,10 +14,6 @@ public class LessonRoundJoinDto {
     private int lessonRoundNumber;
     // 수업 회차 제목
     private String lessonRoundTitle;
-    // 수업 회차 강의자료 저장 이름
-    private String lessonRoundFileName;
-    // 수업 회차 강의자료 원본 이름
-    private String lessonRoundFileOriginName;
     // 수업 회차 시작 일시
     private LocalDateTime lessonRoundStartDatetime;
     // 수업 회차 종료 일시
