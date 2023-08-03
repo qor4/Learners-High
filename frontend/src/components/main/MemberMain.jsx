@@ -7,7 +7,7 @@ import LessonRoundItemBoxList from "../class/LessonRoundItemBoxList";
 import Card from "../common/Card";
 import Button from "../common/Button";
 
-const TeacherMain = () => {
+const MemberMain = () => {
     const userName = useSelector((state) => state.user.userName);
 
     // selectedDay의 기본값을 오늘 요일로 바꾸기 위함
@@ -22,15 +22,14 @@ const TeacherMain = () => {
 
     // 요일을 클릭했을 때, selectedDay를 변경해줌
     const handleDayChange = (event) => {
+        const selectedDayValue = parseInt(event.target.value, 10);
         if (event.target.value !== selectedDay) {
-            setSelectedDay(event.target.value);
+            setSelectedDay(selectedDayValue);
         }
     };
 
     return (
         <div className="w-4/5 mx-auto">
-            <h1>강사 로그인 메인페이지</h1>
-
             {/* 일정 안내하는 공간 ex) 김강사님의 월요일 일정은, */}
             <AlertScheduleBox>
                 {userName}님의{" "}
@@ -52,9 +51,12 @@ const TeacherMain = () => {
             </Card>
 
             {/* 수업 아이템이 들어가는 공간 */}
-            <LessonRoundItemBoxList selectedDay={selectedDay} dayName={days[selectedDay - 1]} />
+            <LessonRoundItemBoxList
+                selectedDay={selectedDay}
+                dayName={days[selectedDay - 1]}
+            />
         </div>
     );
 };
 
-export default TeacherMain;
+export default MemberMain;

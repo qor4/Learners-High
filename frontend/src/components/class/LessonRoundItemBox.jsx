@@ -24,7 +24,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         // })
     }
 
-
     return (
         <>
         <Card>

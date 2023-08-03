@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class LessonHomeworkNotice {
 
     // 과제 공지 제목
     @NotNull
+    @NotBlank
     @Column(name = "homework_notice_title")
     private String homeworkNoticeTitle;
 

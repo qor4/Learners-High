@@ -60,10 +60,11 @@ const UserJoinTeacherEdu = (props) => {
     const postTeacherEdu = () => {
         // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
         eduInputList.map((item) => (    
-            axios.post(`${url}/user/join/edu`, 
+            axios.post(`${url}/user/join/edu/${userNo}`, 
             item,
             {headers: {"Content-Type": 'application/json'}}
             )
+            .then(res=>console.log(res))
         ))
     }
 
@@ -73,7 +74,7 @@ const UserJoinTeacherEdu = (props) => {
                 {
                     eduInputList.map((item, index) => (
                         <div key={index}>
-                            <p>학력 {item.id+1}</p>
+                            <p>학력 { item.id+1}</p>
 
                             <span>학교명</span>
                             <input
@@ -93,7 +94,7 @@ const UserJoinTeacherEdu = (props) => {
                             value={item.majorName}
                             />
 
-                            <span>전공명</span>
+                            <span>학위명</span>
                             <input
                             type="text"
                             name="degree"

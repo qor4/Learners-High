@@ -105,7 +105,7 @@ public class UserController {
     @ApiOperation("이메일 중복 확인")
     public ResponseEntity<BaseResponseBody> duplicateEmail(@PathVariable("email") String userEmail) {
         BaseResponseBody baseResponseBody = new BaseResponseBody();
-        if (userService.duplicateId(userEmail)) {
+        if (userService.duplicateEmail(userEmail)) {
             baseResponseBody.setResultMsg("사용 할 수 있는 이메일 입니다.");
             baseResponseBody.setResultCode(0);
         } else {
@@ -166,17 +166,32 @@ public class UserController {
     // 경력 추가
     @PostMapping("/join/job/{userNo}")
     @ApiOperation("경력 추가")
-    public void jobJoin(@RequestBody JobDto jobDto, @PathVariable("userNo") Long userNo) {
-
-        userService.jobJoin(jobDto, userNo);
+    public ResponseEntity<BaseResponseBody> jobJoin(@RequestBody JobDto jobDto, @PathVariable("userNo") Long userNo) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("경력이 추가 되었습니다.");
+        try {
+            userService.jobJoin(jobDto, userNo);
+        } catch (Exception e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
     }
+
 
     // 학위 추가
     @PostMapping("/join/edu/{userNo}")
     @ApiOperation("학위 추가")
-    public void eduJoin(@RequestBody EduDto eduDto, @PathVariable("userNo") Long userNo) {
-
-        userService.eduJoin(eduDto, userNo);
+    public ResponseEntity<BaseResponseBody> eduJoin(@RequestBody EduDto eduDto, @PathVariable("userNo") Long userNo) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("학위가 추가 되었습니다.");
+        try {
+            userService.eduJoin(eduDto, userNo);
+        } catch (Exception e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
     }
 
     // 로그인

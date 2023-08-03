@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class Lesson {
 
     // 수업 이름
     @NotNull
+    @NotBlank
     @Column(name = "lesson_name", length = 100)
     private String lessonName;
 
@@ -54,6 +56,7 @@ public class Lesson {
 
     // 최대 수강 학생 수
     @NotNull
+    @NotBlank
     @Column(name = "max_student", columnDefinition = "TINYINT")
     private int maxStudent;
 
@@ -65,6 +68,7 @@ public class Lesson {
 
     // 수업 가격
     @NotNull
+    @NotBlank
     @Column(name = "lesson_price", columnDefinition = "MEDIUMINT")
     private int lessonPrice;
 
@@ -78,6 +82,7 @@ public class Lesson {
 
     // 수업 상태
     @NotNull
+    @NotBlank
     @Column(name = "lesson_status")
     private String lessonStatus;
 

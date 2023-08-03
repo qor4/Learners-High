@@ -27,9 +27,8 @@ const UserLogIn = (props) => {
 
     const userLogIn = () => {
         axios
-            .post(`${url}/user/login`, 
-            logInForm, 
-            {headers: { "Content-Type": "application/json" },
+            .post(`${url}/user/login`, logInForm, {
+                headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
                 console.log(res.data, "나는 로그인데이터!");
@@ -37,11 +36,17 @@ const UserLogIn = (props) => {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
                     dispatch(logInUser(res.data.list[0]));
-                    props.onClose()
+                    props.onClose();
                 } else {
                     alert("로그인 실패!");
                 }
             });
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            userLogIn();
+        }
     };
     return (
         <>
@@ -63,6 +68,7 @@ const UserLogIn = (props) => {
                     name="userPassword"
                     value={logInForm.userPassword}
                     onChange={onChange}
+                    onKeyPress={handleKeyPress}
                 />
 
                 <Button $fullWidth>카카오 로그인</Button>

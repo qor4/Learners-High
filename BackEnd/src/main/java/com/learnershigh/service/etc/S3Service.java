@@ -53,7 +53,7 @@ public class S3Service {
 
     // 수업 썸네일 DB와 S3에 모두 저장
     @Transactional
-    public String thumbnailUploadToAWS(MultipartFile file, String dirName, Long lessonNo) {
+    public boolean thumbnailUploadToAWS(MultipartFile file, String dirName, Long lessonNo) {
         String key = dirName + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         String originName = file.getOriginalFilename();
@@ -82,7 +82,7 @@ public class S3Service {
 
             lessonRepository.save(cla);
 
-            return key;
+            return true;
         } catch (AmazonServiceException e) {
             // The call was transmitted successfully, but Amazon S3 couldn't process
             // it, so it returned an error response.
@@ -97,7 +97,7 @@ public class S3Service {
             log.error("uploadToAWS SdkClientException filePath={}, error={}", e.getMessage());
         }
 
-        return "";
+        return false;
     }
 
     // 수업 회차마다 수업 자료를 DB와 S3에 모두 저장
@@ -461,6 +461,9 @@ public class S3Service {
     public String profileLoad(Long userNo) {
 
         User user = userRepository.findByUserNo(userNo);
+        if(user.getProfileImg() == null){
+            return "no";
+        }
         return URL + user.getProfileImg();
 
     }
