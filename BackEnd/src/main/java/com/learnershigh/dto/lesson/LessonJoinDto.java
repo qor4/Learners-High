@@ -18,8 +18,6 @@ public class LessonJoinDto {
     private int maxStudent;
     // 수업 가격
     private int lessonPrice;
-    // 수업 썸네일
-    private String lessonThumbnailImg;
     // 수업 썸네일과 함께 보일 간단한 수업 소개
     private String lessonThumbnailInfo;
     // 수업 상태

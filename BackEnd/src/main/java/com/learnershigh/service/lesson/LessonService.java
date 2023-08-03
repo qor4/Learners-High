@@ -58,7 +58,6 @@ public class LessonService {
         lessonDomain.setLessonInfo(lessonJoinDto.getLessonInfo());
         lessonDomain.setMaxStudent(lessonJoinDto.getMaxStudent());
         lessonDomain.setLessonPrice(lessonJoinDto.getLessonPrice());
-        lessonDomain.setLessonThumbnailImg(lessonJoinDto.getLessonThumbnailImg());
         lessonDomain.setLessonThumbnailInfo(lessonJoinDto.getLessonThumbnailInfo());
         lessonDomain.setLessonStatus(lessonJoinDto.getLessonStatus());
         Lesson lessonEntity = lessonRepository.save(lessonDomain); // 저장한 객체를 반환함.
@@ -80,7 +79,6 @@ public class LessonService {
             lessonListDto.setLessonEndDate(lessonDomain.getLessonEndDate());
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
-            lessonListDto.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
@@ -99,7 +97,6 @@ public class LessonService {
         lessonJoin.setLessonInfo(lessonDomain.getLessonInfo());
         lessonJoin.setMaxStudent(lessonDomain.getMaxStudent());
         lessonJoin.setLessonPrice(lessonDomain.getLessonPrice());
-        lessonJoin.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
         lessonJoin.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonJoin.setLessonStatus(lessonDomain.getLessonStatus());
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
@@ -152,7 +149,6 @@ public class LessonService {
         lessonInfo.setMaxStudent(lessonDomain.getMaxStudent());
         lessonInfo.setTotalStudent(lessonDomain.getTotalStudent());
         lessonInfo.setLessonPrice(lessonDomain.getLessonPrice());
-        lessonInfo.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
         lessonInfo.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonInfo.setLessonStatus(lessonDomain.getLessonStatus());
         lessonInfo.setLessonTotalRound(lessonDomain.getLessonTotalRound());

@@ -54,11 +54,6 @@ public class LessonRound {
     @Column(name = "lesson_round_end_datetime", columnDefinition = "DATETIME")
     private LocalDateTime lessonRoundEndDatetime;
 
-    // 수업 회차 과제 유무
-    @NotNull
-    @Column(name = "is_homework")
-    private boolean isHomework;
-
     // 수업 회차별 수업룸 입장 키
     @Column(name = "lesson_round_lessonroom")
     private String lessonRoundLessonroom;

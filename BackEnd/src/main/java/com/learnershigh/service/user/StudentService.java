@@ -70,11 +70,8 @@ public class StudentService {
                 lessonMainListDto.setLessonName(lessonRound.getLessonNo().getLessonName());
                 lessonMainListDto.setLessonRoundNumber(lessonRound.getLessonRoundNumber());
                 lessonMainListDto.setLessonRoundTitle(lessonRound.getLessonRoundTitle());
-                lessonMainListDto.setLessonRoundFileName(lessonRound.getLessonRoundFileName());
-                lessonMainListDto.setLessonRoundFileOriginName(lessonRound.getLessonRoundFileOriginName());
                 lessonMainListDto.setLessonRoundStartDatetime(lessonRound.getLessonRoundStartDatetime());
                 lessonMainListDto.setLessonRoundEndDatetime(lessonRound.getLessonRoundEndDatetime());
-                lessonMainListDto.setHomework(lessonRound.isHomework());
                 lessonMainListDto.setLessonRoundLessonroom(lessonRound.getLessonRoundLessonroom());
                 lessonListDtoMainList.add(lessonMainListDto);
             }
@@ -110,7 +107,6 @@ public class StudentService {
             lessonListDto.setUserName(wishLesson.getUserNo().getUserName());
             lessonListDto.setLessonStartDate(wishLesson.getLessonStartDate());
             lessonListDto.setLessonEndDate(wishLesson.getLessonEndDate());
-            lessonListDto.setLessonThumbnailImg(wishLesson.getLessonThumbnailImg());
             lessonListDto.setMaxStudent(wishLesson.getMaxStudent());
             lessonListDto.setTotalStudent(wishLesson.getTotalStudent());
 

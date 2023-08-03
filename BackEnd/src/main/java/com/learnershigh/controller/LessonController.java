@@ -55,10 +55,10 @@ public class LessonController {
     // 회차 개설
     @PostMapping("/join/round")
     @ApiOperation("회차 개설")
-    public ResponseEntity<BaseResponseBody> lessonRoundJoin(@RequestBody List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
-        BaseResponseBody responseBody = new BaseResponseBody("강의 회차 개설 성공");
+    public ResponseEntity<CustomResponseBody> lessonRoundJoin(@RequestBody List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
+        CustomResponseBody responseBody = new CustomResponseBody("강의 회차 개설 성공");
         try {
-            lessonRoundService.lessonRoundJoin(lessonRoundJoinDtoList);
+            responseBody.setList(lessonRoundService.lessonRoundJoin(lessonRoundJoinDtoList));
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -128,7 +128,6 @@ public class LessonController {
     }
 
 
-
     // 강의 상세 정보
     @GetMapping("/{lessonNo}")
     @ApiOperation("강의 상세 정보")
@@ -184,8 +183,6 @@ public class LessonController {
         responseBody.getList().add(lessonService.mainTop5());
         return ResponseEntity.ok().body(responseBody);
     }
-
-
 
 
 }
