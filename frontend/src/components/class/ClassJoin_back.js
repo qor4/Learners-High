@@ -12,12 +12,12 @@ import axios from "axios";
 
 const ClassJoin = () => {
     const userNo = useSelector(state=>state.user.userNo)
-    const [lessonNo, setLessonNo] = useState("")
+    const [classNo, setClassNo] = useState("")
 
-    const [lessonName, setLessonName] = useState("");
-    const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
-    const [lessonThumbnailInfo, setLessonIntro] = useState("");
-    const [lessonInfo, setLessonInfo] = useState("");
+    const [classCode, setclassCode] = useState("");
+    const [classThumbnailImg, setClassThumbnailImg] = useState(null);
+    const [classThumbnailInfo, setClassIntro] = useState("");
+    const [classInfo, setClassInfo] = useState("");
     
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
     
@@ -26,28 +26,28 @@ const ClassJoin = () => {
     const [searchClicked, setSearchClicked] = useState(false);
     
     const [maxStudent, setMaxStudent] = useState(0);
-    const [lessonPrice, setLessonPrice] = useState(0);
+    const [classPrice, setClassPrice] = useState(0);
 
     
     // API가 완료되면 밑에 것들로 바꿀 것.
     const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
-    //lessonTypeList 요청해서 담았다.
-    const [lessonTypeList, setLessonTypeList] = useState([])
+    //classTypeList 요청해서 담았다.
+    const [classTypeList, setClassTypeList] = useState([])
     // useEffect( () => {
-    //     axios.get(`${url}/lesson/type/`)
+    //     axios.get(`${url}/class/type/`)
     //     .then(res=> {
     //         console.log(res.data)
-    //         setLessonTypeList(res.data)
+    //         setClassTypeList(res.data)
     //     })
     // }, [])
 
 
-    // 강의 이름(lessonName) input 박스에Name을 때
-    const handleLessonChange = (event) => {
-        if (lessonName.length >= 30 ) {
+    // 강의 이름(classCode) input 박스에 입력했을 때
+    const handleClassChange = (event) => {
+        if (classCode.length >= 30) {
             return;
         }
-        setLessonName(event.target.value);
+        setclassCode(event.target.value);
     };
 
     // 과목 이름 input 박스에 입력했을 때
@@ -77,22 +77,22 @@ const ClassJoin = () => {
         const file = e.target.files[0];
         if (!file) return
         const imageURL = URL.createObjectURL(file)
-        setLessonThumbnailImg(file);
+        setClassThumbnailImg(file);
         setThumbnailURL(imageURL)
     };
 
     // 수업 내용을 입력했을 때
     const handleIntroChange = (event) => {
-        if (lessonThumbnailInfo.length >= 100) {
+        if (classThumbnailInfo.length >= 100) {
             return;
         }
-        setLessonIntro(event.target.value);
+        setClassIntro(event.target.value);
     };
 
     // html 에디터에 내용을 입력하고, 에디터에서 포커스가 빠져나왔을 때 (Blur)
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
-        setLessonInfo(data);
+        setClassInfo(data);
     };
 
     // 최대 학생 수를 입력했을 때 (최대 50명까지 가능)
@@ -108,7 +108,7 @@ const ClassJoin = () => {
     const handlePriceChange = (event) => {
         const numericValue = parseInt(event.target.value, 10);
         if (!isNaN(numericValue) && numericValue >= 0) {
-            setLessonPrice(numericValue);
+            setClassPrice(numericValue);
         }
     };
 
@@ -122,33 +122,30 @@ const ClassJoin = () => {
     // 데이터 전송 함수 (임시저장 눌렀을 때)
     const sendDataToServer = () => {
         const data = {
-            lessonInfo: lessonInfo,
-            lessonName: lessonName,
-            lessonPrice: lessonPrice,
-            lessonStatus: "작성 중",
-            // lessonThumbnailImg: lessonThumbnailImg,
-            lessonThumbnailInfo: lessonThumbnailInfo,
-            lessonTypeNo: 1, // 미정
+            classInfo: classInfo,
+            className: classCode,
+            classPrice: classPrice,
+            classStatus: "작성 중",
+            classThumbnailImg: classThumbnailImg,
+            classThumbnailInfo: classThumbnailInfo,
+            classTypeNo: 0, // 미정
             maxStudent: maxStudent,
-            userNo: 6 // 임시
+            userNo: userNo //
         }
-        console.log(data, "데이터")
-        axios.post(`${url}/lesson/join`,
+        axios.post(`${url}/class/join`,
         data,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res=> {
-            console.log(res.data, "resData")
-            console.log(res.data.list)
-            const {lessonNo} = res.data.list[0]
-            setLessonNo(lessonNo)
-            return lessonNo
+            const {classNo} = res.data.list[0]
+            setClassNo(classNo)
+            return classNo
         })
-        .then(lessonNo => {
-            if (lessonThumbnailImg) {
+        .then(classNo => {
+            if (classThumbnailImg) {
                 const formData = new FormData()
-                formData.append('multipartFile', lessonThumbnailImg)
-                axios.post(`${url}/s3/upload/thumbnail/${lessonNo}`,
+                formData.append('multipartFile', classThumbnailImg)
+                axios.post(`${url}/s3/upload/thumbnail/${classNo}`,
                 formData,
                 {headers: {'Content-Type': 'multipart/form-data'}}
                 )
@@ -156,20 +153,20 @@ const ClassJoin = () => {
                 .catch(err=>console.log(err))
         }
         })
-        .catch(err=> console.log(err, "에러")) // 여기에 강의개설 실패 메시지
+        .catch(err=> console.log(err))
     }
     const nextPage = () => {
         sendDataToServer()
-        // navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성
+        // navigate('/class/round/join') // 언급 필요. classRoundJoin url 생성
     }
     const data = {
-        lessonInfo: lessonInfo,
-        lessonName: lessonName,
-        lesNamerice: lessonPrice,
-        lessonStatus: "작성 중",
-        lessonThumbnailImg: lessonThumbnailImg,
-        lessonThumbnailInfo: lessonThumbnailInfo,
-        lessonTypeNo: 0, // 미정
+        classInfo: classInfo,
+        className: classCode,
+        classPrice: classPrice,
+        classStatus: "작성 중",
+        classThumbnailImg: classThumbnailImg,
+        classThumbnailInfo: classThumbnailInfo,
+        classTypeNo: 0, // 미정
         maxStudent: maxStudent,
         userNo: userNo ? userNo : 1 //
     }
@@ -177,13 +174,13 @@ const ClassJoin = () => {
         <>
             <h3>기본 정보 입력</h3>
             <div>
-                <label htmlFor="lessonName">강의 이름</label>
+                <label htmlFor="classCode">강의 이름</label>
                 <input
                     type="text"
-                    id="lessonName"
-                    value={lessonName}
+                    id="classCode"
+                    value={classCode}
                     placeholder="강의명 ( 30글자 이내 )"
-                    onChange={handleLessonChange}
+                    onChange={handleClassChange}
                 />
             </div>
 
@@ -216,30 +213,30 @@ const ClassJoin = () => {
             </div>
 
             <div>
-                <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
+                <label htmlFor="classThumbnailImg">강의 썸네일</label>
                 <div>
-                    {lessonThumbnailImg ? (
+                    {classThumbnailImg ? (
                         <img src={thumbnailURL} alt="Thumbnail"/>
                     ) : <img src="#" alt="썸네일 없을 때 보이는 사진"/>}
                 </div>
                 <input
                     type="file"
-                    id="lessonThumbnailImg"
+                    id="classThumbnailImg"
                     accept="image/*"
                     onChange={handleFileChange}
                 />
             </div>
 
             <div>
-                <label htmlFor="lessonIntroduce">수업 소개</label>
+                <label htmlFor="classIntroduce">수업 소개</label>
                 <textarea
-                    id="lessonIntroduce"
-                    value={lessonThumbnailInfo}
+                    id="classIntroduce"
+                    value={classThumbnailInfo}
                     placeholder="수업 소개를 100자 이내로 작성해 주세요."
                     onChange={handleIntroChange}
                     maxLength={100}
                 ></textarea>
-                <span>{lessonThumbnailInfo.length}/100</span>
+                <span>{classThumbnailInfo.length}/100</span>
             </div>
 
             <div>
@@ -257,7 +254,7 @@ const ClassJoin = () => {
                 {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
                 <CKEditor
                     editor={ClassicEditor}
-                    value={lessonInfo}
+                    value={classInfo}
                     // toolbar 설정
                     config={{
                         toolbar: {
@@ -308,8 +305,8 @@ const ClassJoin = () => {
                     type="number"
                     id="price"
                     min={0}
-                    onFocus={() => handleFocusChange(setLessonPrice, lessonPrice)}
-                    value={lessonPrice}
+                    onFocus={() => handleFocusChange(setClassPrice, classPrice)}
+                    value={classPrice}
                     onChange={handlePriceChange}
                 />
                 <span>원</span>
@@ -320,7 +317,7 @@ const ClassJoin = () => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <Link to="/lesson/round/join" state={data}> 
+                <Link to="/class/round/join" state={data}> 
                 <button onClick={nextPage}>
                     다음
                 </button>
