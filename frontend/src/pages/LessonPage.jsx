@@ -21,6 +21,9 @@ const LessonPage = () => {
     const [searchOption, setSearchOption] = useState("전체");
     const [searchKeyword, setSearchKeyword] = useState("");
 
+    // 과목 선택별 필터링 (기본값 : 전체)
+    const [selectedLessonType, setSelectedLessonType] = useState("전체");
+
     // 페이지네이션
     const limitItem = 12;
     const [page, setPage] = useState(1);
@@ -54,6 +57,16 @@ const LessonPage = () => {
         setSearchKeyword("");
     };
 
+    // 과목 분류를 눌렀을 때, 필터링
+    const filteredLessonListData = pageLessonListData.filter((item) => {
+        if (selectedLessonType === "전체") {
+            return true;
+        } else {
+            console.log(item);
+            return item.lessonTypeName === selectedLessonType;
+        }
+    });
+
     // GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/list/upcoming`).then((response) => {
@@ -74,7 +87,7 @@ const LessonPage = () => {
             <div className="w-11/12 mx-auto">
                 <Banner $point>배너 들어갈 공간입니다.</Banner>
             </div>
-            <div className="w-4/5 mx-auto">
+            <div className="w-11/12 md:w-4/5 mx-auto mt-12">
                 {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
                 <select
                     value={searchOption}
@@ -96,10 +109,27 @@ const LessonPage = () => {
 
                 {/* 과목 분류를 누르면 필터링되는 공간 */}
                 <Card>
-                    <Button>전체</Button>
+                    <Button
+                        onClick={() => setSelectedLessonType("전체")}
+                        $point={selectedLessonType === "전체"}
+                    >
+                        전체
+                    </Button>
                     {lessonTypeDataSet &&
                         lessonTypeDataSet.map((lessonType, index) => (
-                            <Button key={index} value={lessonType.lessonTypeNo}>
+                            <Button
+                                key={index}
+                                value={lessonType.lessonTypeNo}
+                                onClick={() => {
+                                    setSelectedLessonType(
+                                        lessonType.lessonTypeName
+                                    );
+                                }}
+                                $point={
+                                    selectedLessonType ===
+                                    lessonType.lessonTypeName
+                                }
+                            >
                                 {lessonType.lessonTypeName}
                             </Button>
                         ))}
@@ -112,7 +142,7 @@ const LessonPage = () => {
                 </div>
                 {/* 강의 목록 아이템이 보이는 공간 */}
                 <div>
-                    <LessonList items={pageLessonListData} />
+                    <LessonList items={filteredLessonListData} />
                 </div>
 
                 {/* 페이지네이션 */}

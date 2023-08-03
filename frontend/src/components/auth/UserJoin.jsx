@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { url } from "../../api/APIPath";
 import { useNavigate } from 'react-router-dom';
+import Input from '../common/Input'
 
 import UserJoinTeacherJob from "./UserJoinTeacherJob"
 import UserJoinTeacherEdu from "./UserJoinTeacherEdu"
@@ -16,7 +17,7 @@ const UserJoin = () => {
     const [userPasswordCheck, setUserPasswordCheck] = useState(""); // 비밀번호 확인 varchar(256) (임의)
     const [userTel, setUserTel] = useState(""); // varchar(15) // 전화번호
     const [userInfo, setUserInfo] = useState(""); // varchar(150) // 3 한마디 소개 (학생과 강사에 따라 달라짐)
-    const [profileImg, setProfileImg] = useState(""); // null 허용 & 강사만 들어갈 것.
+    const [profileImg, setProfileImg] = useState(null); // null 허용 & 강사만 들어갈 것.
 
     const [userNo, setUserNo] = useState(0) // 받을 거야!
 
@@ -162,6 +163,35 @@ const UserJoin = () => {
         setUserEmailMSG("");
         setUserEmailVailidCheck(true);
     };
+    // 이메일 인증
+    const [certEmailCode, setCertEmailCode] = useState("")
+    const certEmail = () => {
+        const data = {userEmail}
+        axios.post(`${url}/user/cert/email?email=${userEmail}`,
+        data,
+        {headers: { "Content-Type": "application/json" }}
+        )
+        .then(res => {
+            console.log(res.data)
+            setCertEmailCode(res.data)
+        })
+        .catch(err => console.log(err))
+    }
+
+    const [certEmailCheck,setCertEmailCheck] = useState("")
+    const [certEmailValidCheck, setCertEmailValidCheck] = useState(false)
+    const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("")
+    const certEmailFormCheck = () => {
+        console.log(certEmailCheck, "이메일코드")
+        console.log(certEmailCheck, "내가 입력")
+        if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
+            setCertEmailValidCheck(true)
+            setCertEmailCheckMSG("인증 성공")
+        } else {
+            setCertEmailValidCheck(false)
+            setCertEmailCheckMSG("인증 요망")
+        }
+    }
     const [userInfoMSG, setUserInfoMSG] = useState("");
     const [userInfoValidCheck, setUserInfoValidCheck] = useState(false);
     const userInfoFormCheck = () => {
@@ -174,6 +204,17 @@ const UserJoin = () => {
         }
     };
 
+    const [profileImgURL, setProfileImgURL] = useState("")
+    // 프로필 이미지 다루는중
+    const handleUploadProfileIMG = (e) => {
+        const file = e.target.files[0];
+        if (!file) return
+        const imageURL = URL.createObjectURL(file)
+        setProfileImgURL(imageURL)
+        setProfileImg(file)
+        console.log(file, "이미지 넣어봄")
+    }
+
     const signUp = () => {
         if (
             userType &&
@@ -181,7 +222,7 @@ const UserJoin = () => {
             passwordValidCheck &&
             userTelValidCheck &&
             userEmailValidCheck &&
-            userEmailValidCheck &&
+            certEmailValidCheck &&
             userInfoValidCheck &&
             userNameValidCheck
         ) {
@@ -202,12 +243,31 @@ const UserJoin = () => {
                 data, 
                 {headers: { "Content-Type": "application/json" }})
                 .then((res) => {
-                    console.log(res.data, res.data, "userNo 나오니?!!!")
+                    console.log(res.data, "응답")
                     if (res.data.resultCode === 0) {
                         alert("회원가입 성공");
+                        console.log(res.data.userNo)
                         setUserNo(res.data.userNo)
                     }
-                });
+                    return res.data.userNo
+                })
+                .then((userNo)=> {
+                    console.log(userNo, "갔어요?!")
+                    setUserNo(userNo)
+                    
+                    console.log(profileImg, "프로필이미지- 회원가입중")
+                    // console.log(formData)
+                    if (profileImg) {
+                        const formData = new FormData()
+                        formData.append('multipartFile', profileImg)
+                        axios.post(`${url}/s3/upload/profile/${userNo}`, 
+                        formData,
+                        {headers: {'Content-Type': 'multipart/form-data'}}
+                        )
+                        .then(res=> console.log(res))
+                        .catch(err=>console.log(err))
+                    }
+                })
         } else {
             alert("유효하지 않은 형식이 있습니다.");
         }
@@ -290,6 +350,21 @@ const UserJoin = () => {
                     onBlur={userEmailFormCheck}
                 />
                 <p> {userEmailMSG} </p>
+
+                <button onClick={certEmail}>인증번호 전송</button>
+                <br/>
+                <span>인증코드</span>
+                <input
+                    type="text"
+                    name="certEmailCheck"
+                    placeholder="인증코드"
+                    id="certEmailCheck"
+                    onChange={e=> setCertEmailCheck(removeAllEmpty(e.currentTarget.value))}
+                    onBlur={certEmailFormCheck}
+                />
+                <br/>
+                <span> {certEmailCheckMSG} </span>
+                <br/>
                 <label htmlFor="userName">이름: </label>
                 <input
                     type="text"
@@ -328,6 +403,22 @@ const UserJoin = () => {
                 />
                 <p> {userInfoMSG} </p>
             </div>
+
+            {
+                userType==='T' ? (
+                <>
+                <span>프로필사진</span>
+                {
+                    profileImg ? (    
+                    <img src={profileImgURL} alt="프로필 사진" /> ) : (
+                    <img src="#" alt="프로필 없을 떄 보이는 사진" />
+                    )
+                } 
+                <input type="file" accept="image/*" onChange={handleUploadProfileIMG}/>
+                </>
+                ) : null
+            }
+            <br/>
             <button onClick={signUp}>회원가입</button>
         </form>
     {/* 여기서 userType이 "T"면,  */}

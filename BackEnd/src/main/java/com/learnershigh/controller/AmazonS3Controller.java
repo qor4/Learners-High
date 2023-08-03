@@ -1,10 +1,12 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.service.etc.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 @Api(tags = {"S3에 대한 API"})
 @CrossOrigin("*")
 
+
 public class AmazonS3Controller {
 
 
@@ -26,18 +29,28 @@ public class AmazonS3Controller {
     //  업로드 (lesson/수업no/Thumbnail)
     @PostMapping(value = "/upload/thumbnail/{lessonNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation("수업 썸네일 파일 업로드 (lesson/수업no/Thumbnail)")
-    public String thumbnailUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("lessonNo") Long lessonNo) throws IOException {
-        System.out.println("업로드");
-        return s3Service.thumbnailUploadToAWS(multipartFile, "lesson/" + lessonNo + "/Thumbnail", lessonNo); // lesson 가 lesson/로 들어감.
-
+    public ResponseEntity<BaseResponseBody> thumbnailUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("lessonNo") Long lessonNo) throws IOException {
+        BaseResponseBody responseBody = new BaseResponseBody("썸네일 업로드 성공");
+        if (s3Service.thumbnailUploadToAWS(multipartFile, "lesson/" + lessonNo + "/Thumbnail", lessonNo)) {
+        } else {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg("업로드에 실패했습니다.");
+            return ResponseEntity.ok().body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
+//    public String thumbnailUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("lessonNo") Long lessonNo) throws IOException {
+//        System.out.println("업로드");
+//        return s3Service.thumbnailUploadToAWS(multipartFile, "lesson/" + lessonNo + "/Thumbnail", lessonNo); // lesson 가 lesson/로 들어감.
+//    }
+
 
     //  업로드 (lesson/수업no/수업회차no/data)
     @PostMapping(value = "/upload/data/{lessonNo}/{lessonRoundNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation("수업 자료 파일 업로드 (lesson/수업no/수업회차no/data)")
-    public String dataUpload(@RequestParam("multipartFile") MultipartFile multipartFile,@PathVariable("lessonHomeworkNo") Long lessonHomeworkNo, @PathVariable("lessonNo") Long lessonNo, @PathVariable("lessonRoundNo") Long lessonRoundNo) throws IOException {
+    public String dataUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("lessonNo") Long lessonNo, @PathVariable("lessonRoundNo") Long lessonRoundNo) throws IOException {
         System.out.println("업로드");
-        return s3Service.dataUploadToAWS(multipartFile, "lesson/" + lessonNo +"/" +  lessonRoundNo + "/data", lessonRoundNo); // lesson 가 lesson/로 들어감.
+        return s3Service.dataUploadToAWS(multipartFile, "lesson/" + lessonNo + "/" + lessonRoundNo + "/data", lessonRoundNo); // lesson 가 lesson/로 들어감.
 
     }
 
@@ -45,7 +58,7 @@ public class AmazonS3Controller {
     //  업로드 (lesson/수업no/수업회차no/homework)
     @PostMapping(value = "/upload/homework/{lessonNo}/{lessonRoundNo}/{lessonHomeworkNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation("학생 회차 당 과제 파일 업로드 (lesson/수업no/수업회차no/homework)")
-    public String homeworkUpload(@RequestParam("multipartFile") MultipartFile multipartFile,@PathVariable("lessonHomeworkNo") Long lessonHomeworkNo, @PathVariable("lessonNo") Long lessonNo, @PathVariable("lessonRoundNo") Long lessonRoundNo) throws IOException {
+    public String homeworkUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("lessonHomeworkNo") Long lessonHomeworkNo, @PathVariable("lessonNo") Long lessonNo, @PathVariable("lessonRoundNo") Long lessonRoundNo) throws IOException {
         System.out.println("업로드");
         return s3Service.homeworkUploadToAWS(multipartFile, "lesson/" + lessonNo + "/" + lessonRoundNo + "/homework", lessonHomeworkNo); // lesson 가 lesson/로 들어감.
 
@@ -55,15 +68,15 @@ public class AmazonS3Controller {
     @PostMapping(value = "/upload/profile/{userNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation("사용자 프로필 사진 파일 업로드 (user)")
     public String profileUpload(@RequestParam("multipartFile") MultipartFile multipartFile, @PathVariable("userNo") Long userNo) throws IOException {
+
         System.out.println("업로드");
         return s3Service.profileUploadToAWS(multipartFile, "user", userNo); // lesson 가 lesson/로 들어감.
 
     }
 
 
-
-//    강사가 올린 학습자료 다운로드,
-    @PostMapping("/s3/data-download")
+    //    강사가 올린 학습자료 다운로드,
+    @PostMapping("/download/data")
     @ApiOperation("강사가 올린 학습자료 다운로드")
     public void dataDownload(@RequestParam("lessonRoundNo") Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) {
         // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
@@ -104,17 +117,23 @@ public class AmazonS3Controller {
     // S3 thumbnail 불러오기
     @ApiOperation("S3 thumbnail 불러오기")
     @GetMapping("/thumbnail-load")
-    public String thumbnailLoad(@RequestParam Long lessonNo)
-    {
-        return s3Service.thumbnailLoad(lessonNo);
+    public ResponseEntity<BaseResponseBody> thumbnailLoad(@RequestParam Long lessonNo) throws IOException {
+        BaseResponseBody responseBody = new BaseResponseBody("사진을 불러오지 못했습니다.");
+        if (s3Service.thumbnailLoad(lessonNo).equals("no")) {
+            responseBody.setResultCode(-1);
+        } else {
+            responseBody.setResultCode(0);
+            responseBody.setResultMsg(s3Service.thumbnailLoad(lessonNo));
+            return ResponseEntity.ok().body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 
 
     // S3 profile 불러오기
     @ApiOperation("S3 profile 불러오기")
     @GetMapping("/profile-load")
-    public String profileLoad(@RequestParam Long userNo)
-    {
+    public String profileLoad(@RequestParam Long userNo) {
         return s3Service.profileLoad(userNo);
     }
 

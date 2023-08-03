@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,16 +28,19 @@ public class User {
 
     // user id
     @NotNull
+    @NotBlank
     @Column(name = "user_id", length = 20)
     private String userId;
 
     //user name
     @NotNull
+    @NotBlank
     @Column(name = "user_name", length = 20)
     private String userName;
 
     // user email
     @NotNull
+    @NotBlank
     @Column(name = "user_email", length = 50)
     private String userEmail;
 

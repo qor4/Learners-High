@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class LessonType {
     private int lessonTypeNo;
 
     @NotNull
+    @NotBlank
     @Column(name = "lesson_type_name", length = 15)
     private String lessonTypeName;
 

@@ -19,7 +19,7 @@ const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
-                    setDayLessonListDataSet(response.data.list);
+                    setDayLessonListDataSet(response.data.list[0]);
                 });
         }
     }, [selectedDay, userNo]);
@@ -29,6 +29,9 @@ const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
 
     return (
         <>
+            {/* 이 부분은 이후 요일 버튼에 작게 들어갈 수 있도록 변경 예정 => 후순위 */}
+            {selectedDayLessons && <div>{selectedDayLessons.length} 건의 수업이 있습니다.</div>}
+            
             {selectedDayLessons && selectedDayLessons.length > 0 ? (
                 selectedDayLessons.map((lessonItem, index) => (
                     <LessonRoundItemBox lessonInfo={lessonItem} key={index} />

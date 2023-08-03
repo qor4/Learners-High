@@ -4,11 +4,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
-import { HiOutlineHeart } from "react-icons/hi";
 import { useSelector } from "react-redux";
 
 import LessonInfoBox from "../components/class/LessonInfoBox";
-import Button from "../components/common/Button";
 import Card from "../components/common/Card";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 
@@ -21,7 +19,6 @@ const LessonInfoPage = () => {
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
-            console.log(response);
             setLessonInfoDataSet(response.data.list[0]);
         });
     }, [lessonNo]);
@@ -34,7 +31,6 @@ const LessonInfoPage = () => {
                     `${url}/teacher/profile/${lessonInfoDataSet.lessonInfo.userNo}`
                 )
                 .then((response) => {
-                    console.log(response);
                     setTeacherInfoDataSet(response.data.list[0]);
                 });
         }
@@ -63,11 +59,16 @@ const LessonInfoPage = () => {
             {/* 강사 소개 */}
             <h3>강사 소개</h3>
             {lessonInfoDataSet.lessonInfo && (
-                <Link to={`/profile/${lessonInfoDataSet.lessonInfo.userNo}`}>
+                <>
+                    <Link
+                        to={`/profile/${lessonInfoDataSet.lessonInfo.userNo}`}
+                    >
+                        강사 프로필 바로가기
+                    </Link>
                     <Card>
                         <TeacherIntroduceBox teacherInfo={teacherInfoDataSet} />
                     </Card>
-                </Link>
+                </>
             )}
 
             {/* 수업 소개 */}
@@ -87,26 +88,6 @@ const LessonInfoPage = () => {
                         </span>
                     </Card>
                 ))}
-
-            {/* 하단 고정 수강신청 바 */}
-            <div>
-                {lessonInfoDataSet.lessonInfo ? (
-                    <>
-                        <span>{lessonInfoDataSet.lessonInfo.lessonName}</span>
-                        <span>
-                            {lessonInfoDataSet.lessonInfo.lessonPrice}원
-                        </span>
-                        <Button onClick={handleApplyChange}>
-                            수강 신청 ({" "}
-                            {lessonInfoDataSet.lessonInfo.totalStudent} /{" "}
-                            {lessonInfoDataSet.lessonInfo.maxStudent} 명 )
-                        </Button>
-                        <Button>
-                            <HiOutlineHeart />
-                        </Button>
-                    </>
-                ) : null}
-            </div>
         </div>
     );
 };
