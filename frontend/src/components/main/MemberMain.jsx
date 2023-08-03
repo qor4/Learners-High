@@ -7,7 +7,7 @@ import LessonRoundItemBoxList from "../class/LessonRoundItemBoxList";
 import Card from "../common/Card";
 import Button from "../common/Button";
 
-const TeacherMain = () => {
+const MemberMain = () => {
     const userName = useSelector((state) => state.user.userName);
 
     // selectedDay의 기본값을 오늘 요일로 바꾸기 위함
@@ -59,4 +59,4 @@ const TeacherMain = () => {
     );
 };
 
-export default TeacherMain;
+export default MemberMain;

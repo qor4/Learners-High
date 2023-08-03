@@ -5,7 +5,6 @@ import axios from "axios";
 import { url } from "../../api/APIPath";
 
 import Banner from "../common/Banner";
-import LessonItem from "../class/LessonItem";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
 
