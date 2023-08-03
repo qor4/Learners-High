@@ -2,39 +2,49 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 // 컴포넌트
-import Main from './Main';
-import UserJoin from './components/auth/UserJoin'
-import UserJoinTeacherJob from './components/auth/UserJoinTeacherJob';
-import UserJoinTeacherEdu from './components/auth/UserJoinTeacherEdu';
-import UserLogIn from './components/auth/UserLogIn';
-import UserJoinPage from './pages/auth/UserJoinPage'
-
-import ClassJoinPage from './pages/class/ClassJoinPage'
-import ClassRoundJoinPage from './pages/class/ClassRoundJoinPage';
-import TestList from './components/test/TestList';
-import DatePickerComponent from "./components/class/DatePickerComponent"
+import Main from "./Main";
+import UserJoin from "./components/auth/UserJoin";
+import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
+import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
+import UserLogIn from "./components/auth/UserLogIn";
+import UserJoinPage from "./pages/auth/UserJoinPage";
+import MainPage from "./pages/MainPage";
+import LessonPage from "./pages/LessonPage";
+import ClassJoinPage from "./pages/class/ClassJoinPage";
+import LessonInfoPage from "./pages/LessonInfoPage";
+import TeacherProfilePage from "./pages/TeacherProfilePage";
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 
 // test용
 
 function App() {
-  return (
-    <div className="App">
-    {/* <TeacherJobItem/> */}
-    {/* <UserJoinTeacherJob/>
+    return (
+        <div className="App">
+            <Header />
+            {/* <TeacherJobItem/> */}
+            {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
-    {/* <UserLogIn/> */}
+            {/* <UserLogIn/> */}
 
-    {/* <ClassRoundJoinPage/> */}
-    <Routes>
-      <Route path="/" element={<Main/>}></Route>
-      <Route path="/join" element={<UserJoin/>}></Route>
-      <Route path="/class/join" element={<ClassJoinPage/>}></Route>
-      <Route path="/class/round/join" element={<ClassRoundJoinPage/>}></Route>
-    </Routes>
-
-
-    </div>
-  );
+            {/* <ClassRoundJoinPage/> */}
+            <Routes>
+                <Route path="/" element={<MainPage />}></Route>
+                <Route path="/join" element={<UserJoin />}></Route>
+                <Route path="/lesson" element={<LessonPage />}></Route>
+                <Route path="/lesson/join" element={<ClassJoinPage />}></Route>
+                <Route
+                    path="/lesson/info/:lessonNo"
+                    element={<LessonInfoPage />}
+                ></Route>
+                <Route
+                    path="/profile/:userNo"
+                    element={<TeacherProfilePage />}
+                ></Route>
+            </Routes>
+            <Footer />
+        </div>
+    );
 }
 
 export default App;
