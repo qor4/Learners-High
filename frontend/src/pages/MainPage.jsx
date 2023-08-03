@@ -6,7 +6,6 @@ import MemberMain from "../components/main/MemberMain";
 
 const MainPage = () => {
     const userType = useSelector((state) => state.user.userType);
-    // const userType = "T";
 
     return (
         <div>
