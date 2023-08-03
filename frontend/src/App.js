@@ -17,6 +17,7 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
 // test용
+import StudentMain from "./components/main/StudentMain";
 
 function App() {
     return (
@@ -26,7 +27,7 @@ function App() {
             {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
             {/* <UserLogIn/> */}
-
+            {/* <StudentMain/> */}
             {/* <ClassRoundJoinPage/> */}
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>

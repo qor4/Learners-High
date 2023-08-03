@@ -31,8 +31,8 @@ root.render(
     <BrowserRouter>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          {/* <App /> */}
-          <VideoRoomComponent />
+          <App />
+          {/* <VideoRoomComponent /> */}
         </PersistGate>
       </Provider>
     </BrowserRouter>

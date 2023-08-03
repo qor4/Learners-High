@@ -1,16 +1,32 @@
 // 메인 페이지에서 사용되는 수업 회차별 박스
 // 들어가는 내용 : 현재 회차, 일시, 수업 이름, 회차 제목, 강사 이름, 과제 일괄 다운, 강의룸 만들기
-
+import { useState } from "react"; // 내꺼.
 import { useSelector } from "react-redux";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
+import VideoRoomComponent from "../VideoRoomComponent"
+
 const LessonRoundItemBox = ({ lessonInfo }) => {
-    // const userType = useSelector((state) => state.user.userType);
-    const userType = "T";
+    const userType = useSelector((state) => state.user.userType);
+    console.log(userType, "userType")
+    // const userType = "T";
+    console.log(lessonInfo)
+    const [bool, setBool] = useState(false)
+    // const [token, setToken] = useState("")
+    const handleEnter = () => {
+        setBool(true)
+
+        // axios.get(`${url}/lesson/lessonId/3/15/2`)
+        // .then(res=> {
+        //     setToken(res.data.token)
+        // })
+    }
+
 
     return (
+        <>
         <Card>
             <LessonStatusBox size="lg" $point $round>
                 {lessonInfo.lessonRoundNo}회차
@@ -27,7 +43,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <div>
                     <Button>과제 일괄 다운</Button>
-                    <Button $point>강의룸 만들기</Button>
+                    <Button $point onClick={handleEnter}>강의룸 만들기</Button>
                 </div>
             )}
 
@@ -36,10 +52,16 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <div>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Button $point>강의 입장</Button>
+                    <Button $point onClick={handleEnter}>강의 입장</Button>
                 </div>
             )}
         </Card>
+
+        {
+                bool ? <VideoRoomComponent userType={userType}/> : null
+        }
+
+        </>
     );
 };
 

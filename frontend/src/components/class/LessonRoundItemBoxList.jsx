@@ -19,7 +19,8 @@ const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
-                    setDayLessonListDataSet(response.data.list);
+                    console.log(response.data)
+                    setDayLessonListDataSet(response.data.list[0]);
                 });
         }
     }, [selectedDay, userNo]);

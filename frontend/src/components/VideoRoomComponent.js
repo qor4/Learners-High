@@ -17,6 +17,7 @@ const APPLICATION_SERVER_URL = 'https://i9b105.p.ssafy.io:7777/';
 class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
+        this.userType = this.props.userType
         this.hasBeenUpdated = false;
         this.layout = new OpenViduLayout();
         let sessionName = this.props.sessionName ? this.props.sessionName : 'SessionA';
@@ -556,22 +557,26 @@ class VideoRoomComponent extends Component {
      * more about the integration of OpenVidu in your application server.
      */
     async getToken() {
-        const sessionId = await this.createSession(this.state.mySessionId);
-        return await this.createToken(this.state.mySessionId);
+        if (this.userType==="T") {
+            
+            return await this.createSession(this.state.mySessionId);
+        } else {
+            return await this.createToken(this.state.mySessionId);
+        }
+
     }
 
     async createSession(sessionId) {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'openvidu/api/sessions', { customSessionId: sessionId }, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        return response.data.sessionId; // The sessionId
+        const response = await axios.get(APPLICATION_SERVER_URL + 'lessonroom/teacher/3/15/2');
+        console.log(response.data, "이거머니")
+        console.log(response.resultMsg, "이거머니MSG")
+        return response.data.resultMsg; // The sessionId
     }
 
     async createToken(sessionId) {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'openvidu/api/sessions/' + sessionId + '/connections', {}, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        return response.data.token; // The token
+        const response = await axios.get(APPLICATION_SERVER_URL + 'lessonroom/student/3/15/1' );
+        console.log(response.data)
+        return response.data.resultMsg; // The token
     }
 }
 export default VideoRoomComponent;
