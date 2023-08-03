@@ -66,6 +66,10 @@ public class LessonroomService {
 
         logger.info("*** 출석 데이터 변경 시작");
         LessonAttend lessonAttend = lessonAttendRepository.findByLessonRoundNoAndUserNo(lessonRound, user);
+        if(lessonAttend == null) {
+            logger.info("*** lessonAttend 가 없음");
+            return;
+        }
         if (lessonAttend.getLessonAttendDatetime() == null) { // 처음 출석
             LocalDateTime lessonStartTime = lessonRound.getLessonRoundStartDatetime();
             LocalDateTime lessonEndTime = lessonRound.getLessonRoundEndDatetime();
