@@ -1,11 +1,15 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.service.OpenviduService;
 import com.learnershigh.service.lesson.LessonRoundService;
 import com.learnershigh.service.lesson.LessonroomService;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +21,39 @@ import org.springframework.web.bind.annotation.*;
 public class LessonroomController {
     private final LessonroomService lessonroomService;
     private final LessonRoundService lessonRoundService;
-
+    private final OpenviduService openviduService;
     // 수업 생성 및 출석
-    @GetMapping("/teacher/{lessonNo}/{lessonRoundNo}")
+    @GetMapping("/teacher/{lessonNo}/{lessonRoundNo}/{userNo}")
     @ApiOperation("수업 생성 및 출석")
-    public ResponseEntity<BaseResponseBody> createLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo) {
+    public ResponseEntity<BaseResponseBody> createLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo,@PathVariable Long userNo) {
         BaseResponseBody responseBody = new BaseResponseBody("수업 생성 완료");
-        lessonroomService.createLessonroom(lessonNo, lessonRoundNo);
-        return ResponseEntity.ok().body(responseBody);
+//        lessonroomService.createLessonroom(lessonNo, lessonRoundNo);
+        try {
+            lessonroomService.checkTeacher(userNo,lessonNo);
+            openviduService.createSession(lessonNo,lessonRoundNo);
+            String token = openviduService.createConnection(lessonNo,lessonRoundNo);
+            responseBody.setResultMsg(token);
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
     }
 
     // 수업 입장 및 출석
     @GetMapping("/student/{lessonNo}/{lessonRoundNo}/{userNo}")
     @ApiOperation("수업 입장 및 출석")
     public ResponseEntity<BaseResponseBody> enterLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable Long userNo) {
-        BaseResponseBody responseBody = new BaseResponseBody("수업 입장 및 출석 완료");
-        lessonroomService.enterLessonroom(lessonNo, lessonRoundNo, userNo);
-        return ResponseEntity.ok().body(responseBody);
+        BaseResponseBody responseBody = new BaseResponseBody("asd");
+        try {
+            lessonroomService.checkStudent(userNo,lessonNo);
+            String token = openviduService.createConnection(lessonNo,lessonRoundNo);
+            lessonroomService.Attend(lessonRoundNo, userNo);
+            responseBody.setResultMsg(token);
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
     }
 }

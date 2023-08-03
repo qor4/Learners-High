@@ -34,7 +34,8 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
-        if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null) {
+        if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
+                || userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType() != "T") {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
         }
         // 수업 분류가 0일 경우 어떻게 처리할 것인지
