@@ -29,8 +29,6 @@ const TeacherMain = () => {
 
     return (
         <div className="w-4/5 mx-auto">
-            <h1>강사 로그인 메인페이지</h1>
-
             {/* 일정 안내하는 공간 ex) 김강사님의 월요일 일정은, */}
             <AlertScheduleBox>
                 {userName}님의{" "}
@@ -52,7 +50,10 @@ const TeacherMain = () => {
             </Card>
 
             {/* 수업 아이템이 들어가는 공간 */}
-            <LessonRoundItemBoxList selectedDay={selectedDay} dayName={days[selectedDay - 1]} />
+            <LessonRoundItemBoxList
+                selectedDay={selectedDay}
+                dayName={days[selectedDay - 1]}
+            />
         </div>
     );
 };

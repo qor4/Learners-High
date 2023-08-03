@@ -74,7 +74,7 @@ const LessonPage = () => {
             <div className="w-11/12 mx-auto">
                 <Banner $point>배너 들어갈 공간입니다.</Banner>
             </div>
-            <div className="w-4/5 mx-auto">
+            <div className="w-11/12 md:w-4/5 mx-auto mt-12">
                 {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
                 <select
                     value={searchOption}
