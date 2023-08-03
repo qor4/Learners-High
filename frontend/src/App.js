@@ -10,15 +10,18 @@ import UserLogIn from "./components/auth/UserLogIn";
 import UserJoinPage from "./pages/auth/UserJoinPage";
 import MainPage from "./pages/MainPage";
 import LessonPage from "./pages/LessonPage";
-import ClassJoinPage from "./pages/ClassJoinPage";
+import ClassJoinPage from "./pages/class/ClassJoinPage";
 import LessonInfoPage from "./pages/LessonInfoPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 
 // test용
 
 function App() {
     return (
         <div className="App">
+            <Header />
             {/* <TeacherJobItem/> */}
             {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
@@ -39,6 +42,7 @@ function App() {
                     element={<TeacherProfilePage />}
                 ></Route>
             </Routes>
+            <Footer />
         </div>
     );
 }

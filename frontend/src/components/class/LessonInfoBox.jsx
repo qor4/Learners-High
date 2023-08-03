@@ -5,7 +5,7 @@ import { HiOutlineHeart } from "react-icons/hi";
 import LessonStatusBox from "../common/LessonStatusBox";
 import Button from "../common/Button";
 
-const LessonInfoBox = ({ lessonInfo }) => {
+const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
     if (!lessonInfo) {
         return <div>Loading...</div>;
     }
@@ -24,7 +24,7 @@ const LessonInfoBox = ({ lessonInfo }) => {
             <span>{lessonInfo.lessonPrice}원</span>
             <span>{lessonInfo.userName}</span>
             <span>{lessonInfo.lessonThumbnailInfo}</span>
-            <Button>
+            <Button onClick={handleApplyChange}>
                 수강 신청 ( {lessonInfo.totalStudent} / {lessonInfo.maxStudent}{" "}
                 명 )
             </Button>

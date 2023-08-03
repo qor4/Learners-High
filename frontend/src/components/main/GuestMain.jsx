@@ -24,7 +24,7 @@ const GuestMain = () => {
             {/* 배너 공간 */}
             <div className="w-11/12 mx-auto">
                 <Banner $point>
-                    <div>
+                    <div className="text-center mb-3 leading-10">
                         <strong>LEARNERS HIGH 만의</strong>
                         <br />
                         서비스를 경험해 보고 싶다면,
@@ -37,7 +37,7 @@ const GuestMain = () => {
                 </Banner>
             </div>
 
-            <div className="w-4/5 mx-auto">
+            <div className="w-11/12 md:w-4/5 mx-auto">
                 {/* 인기 강의 공간 */}
                 <div>
                     <span>인기 강의</span>
