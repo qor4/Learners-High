@@ -18,6 +18,8 @@ const UserJoin = () => {
     const [userInfo, setUserInfo] = useState(""); // varchar(150) // 3 한마디 소개 (학생과 강사에 따라 달라짐)
     const [profileImg, setProfileImg] = useState(""); // null 허용 & 강사만 들어갈 것.
 
+    const [userNo, setUserNo] = useState(0) // 받을 거야!
+
     // #### 공통 사용 #####
     // 모든 공백 제거 함수
     const removeAllEmpty = (value) => value.replace(/ /g, "");
@@ -149,6 +151,7 @@ const UserJoin = () => {
             .get(`${url}/user/duplicate/email/${userEmail}`)
             .then((response) => {
                 console.log(response.data);
+                console.log(userEmail)
                 if (response.data.resultCode !== 0) {
                     setUserEmailMSG("중복된 이메일입니다.");
                     setUserEmailVailidCheck(false);
@@ -199,8 +202,10 @@ const UserJoin = () => {
                 data, 
                 {headers: { "Content-Type": "application/json" }})
                 .then((res) => {
+                    console.log(res.data, res.data, "userNo 나오니?!!!")
                     if (res.data.resultCode === 0) {
                         alert("회원가입 성공");
+                        setUserNo(res.data.userNo)
                     }
                 });
         } else {
@@ -328,8 +333,10 @@ const UserJoin = () => {
     {/* 여기서 userType이 "T"면,  */}
     {
       userType==='T' ? (
-        [<UserJoinTeacherJob key="0"></UserJoinTeacherJob>,
-        <UserJoinTeacherEdu key="1"></UserJoinTeacherEdu>]
+        <>
+        <UserJoinTeacherJob userNo={userNo}></UserJoinTeacherJob>
+        <UserJoinTeacherEdu userNo={userNo}></UserJoinTeacherEdu>
+        </>
       ) : null
     }
     </>
