@@ -34,7 +34,8 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
-        if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null) {
+        if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
+                || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
         }
         // 수업 분류가 0일 경우 어떻게 처리할 것인지
@@ -58,7 +59,6 @@ public class LessonService {
         lessonDomain.setLessonInfo(lessonJoinDto.getLessonInfo());
         lessonDomain.setMaxStudent(lessonJoinDto.getMaxStudent());
         lessonDomain.setLessonPrice(lessonJoinDto.getLessonPrice());
-        lessonDomain.setLessonThumbnailImg(lessonJoinDto.getLessonThumbnailImg());
         lessonDomain.setLessonThumbnailInfo(lessonJoinDto.getLessonThumbnailInfo());
         lessonDomain.setLessonStatus(lessonJoinDto.getLessonStatus());
         Lesson lessonEntity = lessonRepository.save(lessonDomain); // 저장한 객체를 반환함.
@@ -80,7 +80,6 @@ public class LessonService {
             lessonListDto.setLessonEndDate(lessonDomain.getLessonEndDate());
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
-            lessonListDto.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
@@ -99,7 +98,6 @@ public class LessonService {
         lessonJoin.setLessonInfo(lessonDomain.getLessonInfo());
         lessonJoin.setMaxStudent(lessonDomain.getMaxStudent());
         lessonJoin.setLessonPrice(lessonDomain.getLessonPrice());
-        lessonJoin.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
         lessonJoin.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonJoin.setLessonStatus(lessonDomain.getLessonStatus());
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
@@ -110,25 +108,33 @@ public class LessonService {
     public void apply(StudentLessonActionDto studentLessonActionDto) {
         StudentLessonList studentLessonList = new StudentLessonList();
         User user = userRepository.findByUserNo(studentLessonActionDto.getUserNo());
+
         if(user == null){
             throw new IllegalStateException("유효한 회원이 아닙니다.");
         }
         if (!user.getUserType().equals("S")) {
             throw new IllegalStateException("수강신청은 학생만 가능합니다.");
         }
-        Lesson lessonDomain = lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo());
-        if (lessonDomain == null) {
+        Lesson lesson = lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo());
+        if (lesson == null) {
             throw new IllegalStateException("유효한 수업이 아닙니다.");
         }
-        if (!lessonDomain.getLessonStatus().equals("강의 전")) {
+        if (!lesson.getLessonStatus().equals("강의 전")) {
             throw new IllegalStateException("수강이 가능한 날짜가 아닙니다.");
         }
+        if (lesson.getTotalStudent() == lesson.getMaxStudent()) {
+            throw new IllegalStateException("수강 인원이 모두 모집되었습니다.");
+        }
+        StudentLessonList studentLesson = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
+        if(studentLesson != null){
+            throw new IllegalStateException("이미 수강 중인 과목입니다.");
+        }
         studentLessonList.setUserNo(user);
-        studentLessonList.setLessonNo(lessonDomain);
+        studentLessonList.setLessonNo(lesson);
         studentLessonListRepository.save(studentLessonList);
-        int totalStudent = lessonDomain.getTotalStudent() + 1;
-        lessonDomain.setTotalStudent(totalStudent);
-        lessonRepository.save(lessonDomain);
+        int totalStudent = lesson.getTotalStudent() + 1;
+        lesson.setTotalStudent(totalStudent);
+        lessonRepository.save(lesson);
     }
 
     public LessonInfoDto getLessonDetailByLessonNo(Long lessonNo) {
@@ -149,7 +155,6 @@ public class LessonService {
         lessonInfo.setMaxStudent(lessonDomain.getMaxStudent());
         lessonInfo.setTotalStudent(lessonDomain.getTotalStudent());
         lessonInfo.setLessonPrice(lessonDomain.getLessonPrice());
-        lessonInfo.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
         lessonInfo.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonInfo.setLessonStatus(lessonDomain.getLessonStatus());
         lessonInfo.setLessonTotalRound(lessonDomain.getLessonTotalRound());

@@ -48,7 +48,7 @@ const StyledBox = styled.span`
         `}
 `;
 
-const ClassStatusBox = (props) => {
+const LessonStatusBox = (props) => {
     return (
         <>
             {props.children && <StyledBox {...props}>{props.children}</StyledBox>}
@@ -56,4 +56,4 @@ const ClassStatusBox = (props) => {
     );
 };
 
-export default ClassStatusBox;
+export default LessonStatusBox;

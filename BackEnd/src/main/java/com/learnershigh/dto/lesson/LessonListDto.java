@@ -41,9 +41,6 @@ public class LessonListDto {
     // 수업 가격
     private int lessonPrice;
 
-    // 수업 썸네일
-    private String lessonThumbnailImg;
-
     // 현재 진행 상태
     private String lessonStatus;
 

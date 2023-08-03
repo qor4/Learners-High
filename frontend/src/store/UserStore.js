@@ -13,12 +13,12 @@ export const UserStore = createSlice({
     },
     reducers: {
         logInUser: (state, action) => {
-            console.log(action, "action", action.payload);
-            state.userNo = action.payload.userNo;
-            state.userType = action.payload.userType;
-            state.userId = action.payload.userId;
-            state.userName = action.payload.userName;
-            state.isLogin = true;
+            console.log(action, "action", action.payload)
+            state.userNo = action.payload.userNo
+            state.userType = action.payload.userType
+            state.userId = action.payload.userId
+            state.userName = action.payload.userName
+            state.isLogin = true
         },
         logOutUser: (state) => {
             state.userNo = "";

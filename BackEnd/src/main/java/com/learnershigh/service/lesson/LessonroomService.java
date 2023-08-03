@@ -10,13 +10,14 @@ import com.learnershigh.repository.lesson.LessonRoundRepository;
 import com.learnershigh.repository.lessonhub.LessonAttendRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import com.learnershigh.repository.user.UserRepository;
+import com.learnershigh.service.etc.OpenviduService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Service
 @Transactional(readOnly = true)
@@ -28,36 +29,42 @@ public class LessonroomService {
     private final StudentLessonListRepository studentLessonListRepository;
     private final LessonAttendRepository lessonAttendRepository;
 
-    @Transactional
-    public void createLessonroom(Long lessonNo, Long lessonRoundNo) {
-        // sessionId lessonRoundNo에 업데이트
-        // 수업 생성되면 해당 수업을 듣는 학생들 전체 출결 테이블에 생성
-        Lesson lessonDomain = lessonRepository.findByLessonNo(lessonNo);
-        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
-        List<StudentLessonList> studentLessonLists = studentLessonListRepository.findByLessonNo(lessonNo);
-        for (StudentLessonList studentLessonList : studentLessonLists) {
-            User user = userRepository.findByUserNo(studentLessonList.getUserNo().getUserNo());
-            LessonAttend lessonAttend = new LessonAttend();
-            lessonAttend.setLessonNo(lessonDomain);
-            lessonAttend.setLessonRoundNo(lessonRound);
-            lessonAttend.setUserNo(user);
-            lessonAttend.setLessonAttendStatus("결석");
-            lessonAttendRepository.save(lessonAttend);
-        }
-    }
-    @Transactional
-    public void enterLessonroom(Long lessonNo, Long lessonRoundNo, Long userNo) {
-        User user = userRepository.findByUserNo(userNo);
-        Lesson lessonDomain = lessonRepository.findByLessonNo(lessonNo);
-        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
-        StudentLessonList studentLessonList = studentLessonListRepository.findByLessonNoAndUserNo(lessonDomain, user);
-        if (studentLessonList == null) {
+    public static final Logger logger = LoggerFactory.getLogger(LessonroomService.class);
+    
+    public void checkStudent(Long userNo, Long lessonNo){
+        logger.info("*** checkStudent 메소드 호출");
+        Lesson lesson = new Lesson();
+        lesson.setLessonNo(lessonNo);
+        User user = new User();
+        user.setUserNo(userNo);
+        StudentLessonList studentLessonList = studentLessonListRepository.findByLessonNoAndUserNo(lesson,user);
+        if(studentLessonList == null){
+            logger.info("*** 수강 신청 목록에 존재하지 않음.");
             throw new IllegalStateException("수강하지 않는 수업입니다.");
         }
+        logger.info("*** checkStudent 메소드 종료");
+        
+    }
+    
+    public void checkTeacher(Long userNo, Long lessonNo){
+        logger.info("*** checkTeacher 메소드 호출");
+        User user = new User();
+        user.setUserNo(userNo);
+        Lesson lesson = lessonRepository.findByLessonNoAndUserNo(lessonNo,user);
 
-        // 토큰 값 리턴
+        if(lesson == null){
+            logger.info("*** 강의 목록에 존재하지 않음.");
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
+        logger.info("*** checkTeacher 메소드 종료");
+    }
+    @Transactional
+    public void Attend(Long lessonRoundNo, Long userNo) {
+        logger.info("*** Attend 메소드 호출");
+        User user = userRepository.findByUserNo(userNo);
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
 
-        // 출석을 했었는지
+        logger.info("*** 출석 데이터 변경 시작");
         LessonAttend lessonAttend = lessonAttendRepository.findByLessonRoundNoAndUserNo(lessonRound, user);
         if (lessonAttend.getLessonAttendDatetime() == null) { // 처음 출석
             LocalDateTime lessonStartTime = lessonRound.getLessonRoundStartDatetime();
@@ -72,7 +79,9 @@ public class LessonroomService {
                 lessonAttend.setLessonAttendStatus("결석");
             }
             lessonAttendRepository.save(lessonAttend);
+            logger.info("*** 출석 데이터 변경 완료");
         }
-
+        logger.info("*** Attend 메소드 종료");
     }
+
 }

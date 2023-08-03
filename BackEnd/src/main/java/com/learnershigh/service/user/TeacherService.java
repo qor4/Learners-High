@@ -50,11 +50,8 @@ public class TeacherService {
                 lessonMainListDto.setLessonName(lessonRound.getLessonNo().getLessonName());
                 lessonMainListDto.setLessonRoundNumber(lessonRound.getLessonRoundNumber());
                 lessonMainListDto.setLessonRoundTitle(lessonRound.getLessonRoundTitle());
-                lessonMainListDto.setLessonRoundFileName(lessonRound.getLessonRoundFileName());
-                lessonMainListDto.setLessonRoundFileOriginName(lessonRound.getLessonRoundFileOriginName());
                 lessonMainListDto.setLessonRoundStartDatetime(lessonRound.getLessonRoundStartDatetime());
                 lessonMainListDto.setLessonRoundEndDatetime(lessonRound.getLessonRoundEndDatetime());
-                lessonMainListDto.setHomework(lessonRound.isHomework());
                 lessonMainListDto.setLessonRoundLessonroom(lessonRound.getLessonRoundLessonroom());
                 lessonListDtoMainList.add(lessonMainListDto);
             }
@@ -91,7 +88,6 @@ public class TeacherService {
             lessonListDto.setLessonEndDate(lessonDomain.getLessonEndDate());
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
-            lessonListDto.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
@@ -103,6 +99,9 @@ public class TeacherService {
         LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(homeworkNoticeJoinDto.getLessonRoundNo());
         if (lessonDomain == null) {
             throw new IllegalStateException("수업 정보와 사용자 정보가 일치하지 않습니다.");
+        }
+        if (!lessonDomain.getLessonStatus().equals("강의 중")) {
+            throw new IllegalStateException("진행 중인 강의만 과제 공지를 등록할 수 있습니다.");
         }
         // 과제 정보 등록
         LessonHomeworkNotice lessonHomeworkNotice = new LessonHomeworkNotice();
@@ -152,11 +151,13 @@ public class TeacherService {
         List<StudentLessonList> studentLessonLists = studentLessonListRepository.findByLessonNo(lessonNo);
         for (LessonRound lessonRound : lessonRoundList) {
             LessonRoundHomeworkStatusDto lessonRoundHomeworkStatusDto = new LessonRoundHomeworkStatusDto();
-            HomeworkNoticeDto homeworkNoticeDto = lessonHomeworkNoticeRepository.getHomeworkNoticeByLessonRoundNo(lessonRound.getLessonRoundNo());
             List<StudentHomeworkStatusDto> studentHomeworkStatusDtoList = new ArrayList<>();
-            for (StudentLessonList studentLessonList : studentLessonLists) {
-                StudentHomeworkStatusDto studentHomeworkStatusDto = lessonHomeworkRepository.getStudentHomeworkStatusByHomeworkNoticeNo(homeworkNoticeDto.getLessonHomeworkNoticeNo(), studentLessonList.getUserNo());
-                studentHomeworkStatusDtoList.add(studentHomeworkStatusDto);
+            HomeworkNoticeDto homeworkNoticeDto = lessonHomeworkNoticeRepository.getHomeworkNoticeByLessonRoundNo(lessonRound.getLessonRoundNo());
+            if (homeworkNoticeDto != null) {
+                for (StudentLessonList studentLessonList : studentLessonLists) {
+                    StudentHomeworkStatusDto studentHomeworkStatusDto = lessonHomeworkRepository.getStudentHomeworkStatusByHomeworkNoticeNo(homeworkNoticeDto.getLessonHomeworkNoticeNo(), studentLessonList.getUserNo());
+                    studentHomeworkStatusDtoList.add(studentHomeworkStatusDto);
+                }
             }
             lessonRoundHomeworkStatusDto.setLessonRoundNo(lessonRound.getLessonRoundNo());
             lessonRoundHomeworkStatusDto.setLessonRoundNumber(lessonRound.getLessonRoundNumber());

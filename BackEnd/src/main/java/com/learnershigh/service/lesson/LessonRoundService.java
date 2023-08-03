@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -23,11 +24,10 @@ public class LessonRoundService {
 
     // 강의 회차 정보 추가
     @Transactional
-    public void lessonRoundJoin(List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
+    public List<HashMap<String, Object>> lessonRoundJoin(List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
+        List<HashMap<String, Object>> result = new ArrayList<>();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
-        for (LessonRound lessonRound : lessonRoundList) {
-            lessonRoundRepository.delete(lessonRound);
-        }
+        lessonRoundRepository.deleteAll(lessonRoundList);
         for (LessonRoundJoinDto lessonRoundJoinDto : lessonRoundJoinDtoList) {
             LessonRound lessonRound = new LessonRound();
             if (lessonRepository.findByLessonNo(lessonRoundJoinDto.getLessonNo()) == null) {
@@ -50,12 +50,13 @@ public class LessonRoundService {
             lessonRound.setLessonNo(lessonRepository.findByLessonNo(lessonRoundJoinDto.getLessonNo()));
             lessonRound.setLessonRoundNumber(lessonRoundJoinDto.getLessonRoundNumber());
             lessonRound.setLessonRoundTitle(lessonRoundJoinDto.getLessonRoundTitle());
-            lessonRound.setLessonRoundFileName(lessonRoundJoinDto.getLessonRoundFileName());
-            lessonRound.setLessonRoundFileOriginName(lessonRoundJoinDto.getLessonRoundFileOriginName());
             lessonRound.setLessonRoundStartDatetime(lessonRoundJoinDto.getLessonRoundStartDatetime());
             lessonRound.setLessonRoundEndDatetime(lessonRoundJoinDto.getLessonRoundEndDatetime());
-            lessonRound.setHomework(lessonRoundJoinDto.isHomework());
-            lessonRoundRepository.save(lessonRound);
+            LessonRound joinLessonRound = lessonRoundRepository.save(lessonRound);
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("lessonRoundNo", joinLessonRound.getLessonRoundNo());
+            hashMap.put("lessonRoundNumber", joinLessonRound.getLessonRoundNumber());
+            result.add(hashMap);
         }
         // 회차 정보를 통해 수업의 시작, 종료 날짜 설정
         Lesson lessonEntity = lessonRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
@@ -63,6 +64,8 @@ public class LessonRoundService {
         lessonEntity.setLessonEndDate(lessonRoundJoinDtoList.get(lessonRoundJoinDtoList.size() - 1).getLessonRoundStartDatetime().toLocalDate());
         lessonEntity.setLessonTotalRound(lessonRoundJoinDtoList.size());
         lessonRepository.save(lessonEntity);
+
+        return result;
     }
 
     public List<LessonRoundJoinDto> getWritingLessonRoundByLessonNo(Long lessonNo) {
@@ -73,11 +76,8 @@ public class LessonRoundService {
             lessonRoundJoinDto.setLessonNo(lessonRound.getLessonNo().getLessonNo());
             lessonRoundJoinDto.setLessonRoundNumber(lessonRound.getLessonRoundNumber());
             lessonRoundJoinDto.setLessonRoundTitle(lessonRound.getLessonRoundTitle());
-            lessonRoundJoinDto.setLessonRoundFileName(lessonRound.getLessonRoundFileName());
-            lessonRoundJoinDto.setLessonRoundFileOriginName(lessonRound.getLessonRoundFileOriginName());
             lessonRoundJoinDto.setLessonRoundStartDatetime(lessonRound.getLessonRoundStartDatetime());
             lessonRoundJoinDto.setLessonRoundEndDatetime(lessonRound.getLessonRoundEndDatetime());
-            lessonRoundJoinDto.setHomework(lessonRound.isHomework());
             lessonRoundJoinDtoList.add(lessonRoundJoinDto);
         }
         return lessonRoundJoinDtoList;

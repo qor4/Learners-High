@@ -1,26 +1,26 @@
 // 강의 아이템 컴포넌트 (카드)
 
 import { Link } from "react-router-dom";
-import ClassStatusBox from "../common/ClassStatusBox";
+import LessonStatusBox from "../common/LessonStatusBox";
 
 // react-icon import
 import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
 
-const ClassItem = (props) => {
+const LessonItem = (props) => {
     return (
         <div>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
             <div>
-                <Link to={`/class/info/${props.classNo}`}>
-                    <img src={props.classThumbnailImg} alt="Thumbnail" />
+                <Link to={`/lesson/info/${props.lessonNo}`}>
+                    <img src={props.lessonThumbnailImg} alt="Thumbnail" />
                 </Link>
-                <ClassStatusBox $point>{props.classStatus}</ClassStatusBox>
+                <LessonStatusBox $point>{props.lessonStatus}</LessonStatusBox>
                 <span>
                     <HiOutlineHeart />
                 </span>
             </div>
 
-            <ClassStatusBox>{props.classTypeName}</ClassStatusBox>
+            <LessonStatusBox>{props.lessonTypeName}</LessonStatusBox>
 
             <span>
                 <HiOutlineUserCircle />
@@ -28,20 +28,20 @@ const ClassItem = (props) => {
             </span>
             <br />
 
-            <Link to={`/class/info/${props.classNo}`}>
-                <span>{props.$className}</span>
+            <Link to={`/lesson/info/${props.lessonNo}`}>
+                <span>{props.lessonName}</span>
             </Link>
             <span>{props.userName}</span>
             <br />
 
-            <span>{props.classPrice}원</span>
+            <span>{props.lessonPrice}원</span>
             <br />
 
             <span>
-                {props.classStartDate} ~ {props.classEndDate}
+                {props.lessonStartDate} ~ {props.lessonEndDate}
             </span>
         </div>
     );
 };
 
-export default ClassItem;
+export default LessonItem;
