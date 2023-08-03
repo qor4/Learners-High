@@ -2,11 +2,12 @@
 import { url } from "../../api/APIPath";
 import { useState } from "react";
 import VideoRoomComponent from "../VideoRoomComponent"
+import {useSelector} from "react-redux"
 
 const StudentMain = () => {
     const [bool, setBool] = useState(false)
     // const [token, setToken] = useState("")
-    const userTypeS = "S" // 리덕스
+    const userType = useSelector(state=>state.user.userType)
     const handleEnter = () => {
         setBool(true)
 
@@ -23,7 +24,7 @@ const StudentMain = () => {
             {/* 비디오 컴포넌트 */}
             {/* 토큰이 바뀌면 on/off */}
             {
-                bool ? <VideoRoomComponent userType={userTypeS}/> : null
+                bool ? <VideoRoomComponent userType={userType}/> : null
             }
         </div>
     );
