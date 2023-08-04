@@ -73,7 +73,7 @@ public class StudentController {
     public ResponseEntity<CustomResponseBody> showWeeklyLessonSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("학생 메인 강의 조회 완료");
         HashMap<Integer, Object> mainLessonListDtoList = studentService.showWeeklyLessonSchedule(userNo);
-        responseBody.getList().add(mainLessonListDtoList);
+        responseBody.setResult(mainLessonListDtoList);
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -104,7 +104,7 @@ public class StudentController {
             dashboardTab.put("lessonNo", lessonNo);
             dashboardTab.put("lessonAttendHomeworkInfo", attendHomeworkInfo);
             dashboardTab.put("lessonRoundFileInfo", fileInfo);
-            responseBody.getList().add(dashboardTab);
+            responseBody.setResult(dashboardTab);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());

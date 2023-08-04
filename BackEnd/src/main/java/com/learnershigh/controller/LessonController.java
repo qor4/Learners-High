@@ -39,7 +39,7 @@ public class LessonController {
             Lesson lessonEntity = lessonService.lessonJoin(lessonJoinDto);
             HashMap<String, Long> lessonNo = new HashMap<>();
             lessonNo.put("lessonNo", lessonEntity.getLessonNo());
-            responseBody.getList().add(lessonNo);
+            responseBody.setResult(lessonNo);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -58,7 +58,7 @@ public class LessonController {
     public ResponseEntity<CustomResponseBody> lessonRoundJoin(@RequestBody List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
         CustomResponseBody responseBody = new CustomResponseBody("강의 회차 개설 성공");
         try {
-            responseBody.setList(lessonRoundService.lessonRoundJoin(lessonRoundJoinDtoList));
+            responseBody.setResult(lessonRoundService.lessonRoundJoin(lessonRoundJoinDtoList));
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -77,9 +77,8 @@ public class LessonController {
     public ResponseEntity<CustomResponseBody> upcomingLessonList() {
         CustomResponseBody responseBody = new CustomResponseBody("강의 목록 출력");
         try {
-//            List<LessonListProjectionInterface> list = lessonService.upcomingLessonList();
             List<LessonListDto> list = lessonService.upcomingLessonList();
-            responseBody.getList().add(list);
+            responseBody.setResult(list);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -105,7 +104,7 @@ public class LessonController {
         } else {
             isWriting.put("isWriging", Boolean.FALSE);
         }
-        responseBody.getList().add(isWriting);
+        responseBody.setResult(isWriting);
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -114,7 +113,7 @@ public class LessonController {
     @ApiOperation("수업 정보 작성 페이지 조회")
     public ResponseEntity<CustomResponseBody> getWritingLessonByLessonNo(@PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 정보 조회 완료");
-        responseBody.getList().add(lessonService.getWritingLessonByLessonNo(lessonNo));
+        responseBody.setResult(lessonService.getWritingLessonByLessonNo(lessonNo));
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -123,7 +122,7 @@ public class LessonController {
     @ApiOperation("회차 정보 작성 페이지 조회")
     public ResponseEntity<CustomResponseBody> getWritingLessonRoundByLessonNo(@PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("작성중인 강의 회차 정보 조회 완료");
-        responseBody.getList().add(lessonRoundService.getWritingLessonRoundByLessonNo(lessonNo));
+        responseBody.setResult(lessonRoundService.getWritingLessonRoundByLessonNo(lessonNo));
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -139,7 +138,7 @@ public class LessonController {
             List<LessonRoundDetailDto> lessonRoundDetailDtoList = lessonRoundService.getLessonRoundDetailByLessonNo(lessonNo);
             lessonDetailDto.setLessonInfo(lessonInfoDto);
             lessonDetailDto.setLessonRoundInfo(lessonRoundDetailDtoList);
-            responseBody.getList().add(lessonDetailDto);
+            responseBody.setResult(lessonDetailDto);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -156,7 +155,7 @@ public class LessonController {
     @ApiOperation("수업 분류 정보 조회 (type)")
     public ResponseEntity<CustomResponseBody> getLessonType() {
         CustomResponseBody responseBody = new CustomResponseBody("수업 분류 정보 조회 완료");
-        responseBody.getList().add(lessonService.getLessonType());
+        responseBody.setResult(lessonService.getLessonType());
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -180,7 +179,7 @@ public class LessonController {
     @GetMapping("/list/main")
     public ResponseEntity<CustomResponseBody> mainTop5() {
         CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
-        responseBody.getList().add(lessonService.mainTop5());
+        responseBody.setResult(lessonService.mainTop5());
         return ResponseEntity.ok().body(responseBody);
     }
 
