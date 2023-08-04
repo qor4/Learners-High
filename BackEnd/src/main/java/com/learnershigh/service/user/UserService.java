@@ -149,7 +149,7 @@ public class UserService {
     }
 
     @Transactional
-    public HashMap<String, Object> kakaoUserJoin(String code, KakaoInfo kakaoInfo) throws JsonProcessingException {
+    public HashMap<String, Object> kakaoUserJoin(String code) throws JsonProcessingException {
 
         RestTemplate rt = new RestTemplate();
 
@@ -219,16 +219,6 @@ public class UserService {
         System.out.println(checkuser);
         if (checkuser == null) {
 
-            // 전화번호 유효성 검사
-            if (!Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", kakaoInfo.getUserTel())) {
-                throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
-            }
-
-            // 한마디 글자수 유효성 검사
-            if (!checkInfo(kakaoInfo.getUserInfo())) {
-                throw new IllegalStateException("글자수가 50개를 넘었습니다.");
-            }
-
             System.out.println("DB 에 없어");
 
             User person = new User();
@@ -237,9 +227,6 @@ public class UserService {
             person.setUserId(kaKaoDto.getId());
             person.setUserName(kaKaoDto.getProperties().getNickname());
             person.setProfileImg(kaKaoDto.getProperties().getThumbnail_image());
-            person.setUserType(kakaoInfo.getUserType());
-            person.setUserTel(kakaoInfo.getUserTel());
-            person.setUserInfo(kakaoInfo.getUserInfo());
 
             // 이름과 아이디 섞은 해시값을 비밀번호로 설정함.
             String encodePassword = passwordEncoder.encode(kaKaoDto.getId() + kaKaoDto.getProperties().getNickname());
@@ -272,6 +259,8 @@ public class UserService {
 
     }
 
+    // 이메일로
+
     // 로그인
     public HashMap<String, Object> userLogin(LoginDto loginDto) {
         System.out.println("로그인 함수에 들어왔니");
@@ -301,26 +290,36 @@ public class UserService {
         return userInfo;
     }
 
+    // 카카오 로그인 시 이메일로 사용자 정보 비어있는 지 검사
+    public void kakaoEmailCheck(String userEmail) {
+        User user = userRepository.findByUserEmail(userEmail);
+        if (user.getUserTel() == null) {
+
+        } else {
+            throw new IllegalStateException("정보가 꽉 차 있습니다.");
+        }
+    }
+
 
     // 카카오 로그인 이후 더 받을 정보들 받는 것.
     @Transactional
-    public User kakaoPlus(JoinDto joinDto) {
+    public User kakaoPlus(KakaoInfo kakaoInfo, String userEmail) {
 
-        User user = new User();
+        User user = userRepository.findByUserEmail(userEmail);
 
         // 전화번호 유효성 검사
-        if (!Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", joinDto.getUserTel())) {
+        if (!Pattern.matches("^\\d{11}$", kakaoInfo.getUserTel())) {
             throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
         }
 
         // 한마디 글자수 유효성 검사
-        if (!checkInfo(joinDto.getUserInfo())) {
+        if (!checkInfo(kakaoInfo.getUserInfo())) {
             throw new IllegalStateException("글자수가 50개를 넘었습니다.");
         }
 
-        user.setUserType(joinDto.getUserType());
-        user.setUserTel(joinDto.getUserTel());
-        user.setUserInfo(joinDto.getUserInfo());
+        user.setUserType(kakaoInfo.getUserType());
+        user.setUserTel(kakaoInfo.getUserTel());
+        user.setUserInfo(kakaoInfo.getUserInfo());
 
 
         return userRepository.save(user); // 저장한 객체를 반환함.
