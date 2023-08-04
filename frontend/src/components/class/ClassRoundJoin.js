@@ -243,21 +243,25 @@ const ClassRoundJoin = () => {
         )
         .then(res=> {
             console.log(res, "개별강의")
+            return res.data.list[0].lessonNo
+        })
+        .then(lessonNo=> {
+            lessonData.lessonNo = lessonNo
+            axios.post(`${url}/lesson/join/round`,
+            lessonRoundDataSet,
+            {headers: {"Content-Type": 'application/json'}}
+            )
+            .then(res => {
+                console.log(res, "강의회차")
+            })
+            .catch(err => {
+                console.log(err)
+            })    
         })
         .catch(err=>{
             console.log(err)
         })
         // 개별 강의 갑니다.
-        axios.post(`${url}/lesson/join/round`,
-        lessonRoundDataSet,
-        {headers: {"Content-Type": 'application/json'}}
-        )
-        .then(res => {
-            console.log(res, "강의회차")
-        })
-        .catch(err => {
-            console.log(err)
-        })
         navigate("/")
     }
     const handleClickRegisterLesson = () => {
@@ -272,6 +276,7 @@ const ClassRoundJoin = () => {
         .then(res=> {
             console.log(res, "개별강의 #### 등록!!")
         })
+
         .catch(err=>{
             console.log(err)
         })
