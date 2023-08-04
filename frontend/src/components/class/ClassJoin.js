@@ -39,7 +39,7 @@ const ClassJoin = () => {
         axios.get(`${url}/lesson/type/`)
         .then(res=> {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
-            setLessonTypeList(res.data.list[0])
+            setLessonTypeList(res.data.result)
         })
     }, [])
 
@@ -145,8 +145,8 @@ const ClassJoin = () => {
         )
         .then(res=> {
             console.log(res.data, "resData")
-            console.log(res.data.list)
-            const {lessonNo} = res.data.list[0]
+            console.log(res.data.result)
+            const {lessonNo} = res.data.result
             setLessonNo(lessonNo)
             return lessonNo
         })

@@ -17,6 +17,11 @@ import TeacherProfilePage from "./pages/TeacherProfilePage";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
+import StudentWaitLessonRoomPage from "./pages/room/StudentWaitLessonRoomPage"
+import StudentRealLessonRoomPage from "./pages/room/StudentRealLessonRoomPage"
+import TeacherRealLessonRoomPage from "./pages/room/TeacherRealLessonRoomPage"
+
+
 // test용
 import StudentMain from "./components/main/StudentMain";
 
@@ -30,6 +35,8 @@ function App() {
             {/* <UserLogIn/> */}
             {/* <StudentMain/> */}
             {/* <ClassRoundJoinPage/> */}
+            {/* <StudentWaitLessonRoomPage/> */}
+
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/join" element={<UserJoinPage />}></Route>
@@ -44,6 +51,19 @@ function App() {
                     path="/profile/:userNo"
                     element={<TeacherProfilePage />}
                 ></Route>
+                <Route 
+                    path="/lessonroom/:lessonNo/:lessonRoundNo/wait"
+                    element={<StudentWaitLessonRoomPage/>}
+                />
+                <Route 
+                    path="/lessonroom/:lessonNo/:lessonRoundNo/student"
+                    element={<StudentRealLessonRoomPage/>}
+                />
+                <Route 
+                    path="/lessonroom/:lessonNo/:lessonRoundNo/teacher"
+                    element={<TeacherRealLessonRoomPage/>}
+                />
+
                 <Route path="*" element={<MainPage/>}/>
             </Routes>
             <Footer />

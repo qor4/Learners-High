@@ -558,7 +558,6 @@ class VideoRoomComponent extends Component {
      */
     async getToken() {
         if (this.userType==="T") {
-            
             return await this.createSession(this.state.mySessionId);
         } else {
             return await this.createToken(this.state.mySessionId);

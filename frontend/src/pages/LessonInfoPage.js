@@ -19,7 +19,7 @@ const LessonInfoPage = () => {
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
-            setLessonInfoDataSet(response.data.list[0]);
+            setLessonInfoDataSet(response.data.result);
         });
     }, [lessonNo]);
 
@@ -31,7 +31,7 @@ const LessonInfoPage = () => {
                     `${url}/teacher/profile/${lessonInfoDataSet.lessonInfo.userNo}`
                 )
                 .then((response) => {
-                    setTeacherInfoDataSet(response.data.list[0]);
+                    setTeacherInfoDataSet(response.data.result);
                 });
         }
     }, [lessonInfoDataSet.lessonInfo]);

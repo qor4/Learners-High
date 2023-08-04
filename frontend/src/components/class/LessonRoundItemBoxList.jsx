@@ -20,14 +20,14 @@ const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
-                    setDayLessonListDataSet(response.data.list[0]);
+                    setDayLessonListDataSet(response.data.result);
                 });
         } else if (selectedDay && userType === "S") {
             axios
                 .get(`${url}/student/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
-                    setDayLessonListDataSet(response.data.list[0]);
+                    setDayLessonListDataSet(response.data.result);
                 });
         }
     }, [selectedDay, userNo, userType]);

@@ -7,6 +7,7 @@ import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 import VideoRoomComponent from "../VideoRoomComponent"
+import { Link } from "react-router-dom";
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
@@ -23,6 +24,8 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         //     setToken(res.data.token)
         // })
     }
+    const lessonNo = "1" // 임시
+    const lessonRoundNo = "2" // 임시
 
     return (
         <>
@@ -42,7 +45,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <div>
                     <Button>과제 일괄 다운</Button>
+                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/teacher`} state="">
                     <Button $point onClick={handleEnter}>강의룸 만들기</Button>
+                    </Link>
                 </div>
             )}
 
@@ -51,17 +56,14 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <div>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Button $point onClick={handleEnter}>강의 입장</Button>
+                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/wait`}>
+                        <Button $point>강의 입장</Button>
+                    </Link>
                 </div>
             )}
         </Card>
-
-        {
-                bool ? <VideoRoomComponent userType={userType}/> : null
-        }
-
         </>
     );
-};
+}
 
 export default LessonRoundItemBox;
