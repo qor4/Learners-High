@@ -172,7 +172,7 @@ const ClassJoin = () => {
     const data = {
         lessonInfo: lessonInfo,
         lessonName: lessonName,
-        lesNamerice: lessonPrice,
+        lessonPrice: lessonPrice,
         lessonStatus: "작성 중",
         lessonThumbnailImg: lessonThumbnailImg,
         lessonThumbnailInfo: lessonThumbnailInfo,
