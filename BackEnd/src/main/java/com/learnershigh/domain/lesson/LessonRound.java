@@ -29,7 +29,6 @@ public class LessonRound {
 
     // 수업 회차
     @NotNull
-    @NotBlank
     @Column(name = "lesson_round_number", columnDefinition = "TINYINT")
     private int lessonRoundNumber;
 

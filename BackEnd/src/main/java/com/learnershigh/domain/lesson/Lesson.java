@@ -56,7 +56,6 @@ public class Lesson {
 
     // 최대 수강 학생 수
     @NotNull
-    @NotBlank
     @Column(name = "max_student", columnDefinition = "TINYINT")
     private int maxStudent;
 
@@ -68,7 +67,6 @@ public class Lesson {
 
     // 수업 가격
     @NotNull
-    @NotBlank
     @Column(name = "lesson_price", columnDefinition = "MEDIUMINT")
     private int lessonPrice;
 
