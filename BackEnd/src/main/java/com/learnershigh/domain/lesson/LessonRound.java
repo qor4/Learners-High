@@ -48,13 +48,11 @@ public class LessonRound {
 
     // 수업 회차 시작 일시
     @NotNull
-    @NotBlank
     @Column(name = "lesson_round_start_datetime", columnDefinition = "DATETIME")
     private LocalDateTime lessonRoundStartDatetime;
 
     // 수업 회차 종료 일시
     @NotNull
-    @NotBlank
     @Column(name = "lesson_round_end_datetime", columnDefinition = "DATETIME")
     private LocalDateTime lessonRoundEndDatetime;
 
