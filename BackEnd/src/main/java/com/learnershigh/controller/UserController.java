@@ -148,7 +148,7 @@ public class UserController {
     public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code ,@RequestBody KakaoInfo kakaoInfo) throws JsonProcessingException{
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
         try {
-            HashMap<String, Object> userInfo = userService.kakaogitUserJoin(code, kakaoInfo);
+            HashMap<String, Object> userInfo = userService.kakaoUserJoin(code, kakaoInfo);
             responseBody.getList().add(userInfo);
         }catch (IllegalStateException i){
             responseBody.setResultCode(-1);
