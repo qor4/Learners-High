@@ -70,14 +70,12 @@ const LessonPage = () => {
     // GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/list/upcoming`).then((response) => {
-            console.log(response);
-            setLessonListDataSet(response.data.list[0]);
-            setOriginLessonListDataSet(response.data.list[0]);
+            setLessonListDataSet(response.data.result);
+            setOriginLessonListDataSet(response.data.result);
         });
 
         axios.get(`${url}/lesson/type`).then((response) => {
-            console.log(response);
-            setLessonTypeDataSet(response.data.list[0]);
+            setLessonTypeDataSet(response.data.result);
         });
     }, []);
 

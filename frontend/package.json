@@ -13,8 +13,11 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
     "immer": "^10.0.2",
     "jquery": "3.5.0",
+    "open": "^8.2.1",
     "openvidu-browser": "2.27.0",
     "react": "^18.2.0",
     "react-calendar": "^4.5.0",
@@ -25,15 +28,18 @@
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.14.2",
     "react-scripts": "5.0.1",
+    "react-webcam": "^7.1.1",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",
     "sass": "^1.64.1",
+    "seeso": "^0.2.0-beta-25",
     "styled-components": "^6.0.4",
+    "wasm-check": "^2.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build:openvidu-react": "npm install --prefix ../library/ && node library-copy.js && cd ../library && npm run create-library",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -56,5 +62,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.2.1"
   }
 }

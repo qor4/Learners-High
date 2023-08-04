@@ -243,7 +243,7 @@ const ClassRoundJoin = () => {
         )
         .then(res=> {
             console.log(res, "개별강의")
-            return res.data.list[0].lessonNo
+            return res.data.lessonNo
         })
         .then(lessonNo=> {
             lessonData.lessonNo = lessonNo

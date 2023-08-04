@@ -14,8 +14,7 @@ const GuestMain = () => {
     // 인기 강의 데이터 get 요청
     useEffect(() => {
         axios.get(`${url}/lesson/list/main`).then((response) => {
-            console.log(response);
-            setPopularLessonDataSet(response.data.list[0]);
+            setPopularLessonDataSet(response.data.result);
         });
     }, []);
 
