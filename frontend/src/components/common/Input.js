@@ -27,6 +27,7 @@ const Input = (props) => {
         onChange,
         disabled,
         onKeyPress,
+        onBlur
     } = props;
     return (
         <div>
@@ -40,6 +41,7 @@ const Input = (props) => {
                 onChange={onChange}
                 disabled={disabled}
                 onKeyPress={onKeyPress}
+                onBlur={onBlur}
             />
         </div>
     );
