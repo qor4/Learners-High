@@ -10,19 +10,27 @@ import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
 
 const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
+    const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
     const [dayLessonListDataSet, setDayLessonListDataSet] = useState([]);
 
     useEffect(() => {
-        if (selectedDay) {
+        if (selectedDay && userType === "T") {
             axios
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     console.log(response);
                     setDayLessonListDataSet(response.data.list[0]);
                 });
+        } else if (selectedDay && userType === "S") {
+            axios
+                .get(`${url}/student/lesson/main/${userNo}`)
+                .then((response) => {
+                    console.log(response);
+                    setDayLessonListDataSet(response.data.list[0]);
+                });
         }
-    }, [selectedDay, userNo]);
+    }, [selectedDay, userNo, userType]);
 
     // prop 받은 (선택된) 요일에 맞는 수업들을 담아둔 곳
     const selectedDayLessons = dayLessonListDataSet[selectedDay];

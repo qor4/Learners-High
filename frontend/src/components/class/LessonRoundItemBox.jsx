@@ -7,8 +7,8 @@ import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
-    // const userType = useSelector((state) => state.user.userType);
-    const userType = "T";
+    const userType = useSelector((state) => state.user.userType);
+    // const userType = "T";
 
     return (
         <Card>

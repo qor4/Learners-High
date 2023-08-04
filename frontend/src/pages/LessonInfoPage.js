@@ -52,6 +52,8 @@ const LessonInfoPage = () => {
             .then((response) => alert(response.data.resultMsg));
     };
 
+    console.log(data);
+
     return (
         <div>
             {/* 강의 상세 정보 들어갈 공간 */}
