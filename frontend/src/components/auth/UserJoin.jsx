@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { url } from "../../api/APIPath";
-import { useNavigate } from 'react-router-dom';
-import Input from '../common/Input'
+import { useNavigate } from "react-router-dom";
+import Input from "../common/Input";
+import Button from "../common/Button";
 
-import UserJoinTeacherJob from "./UserJoinTeacherJob"
-import UserJoinTeacherEdu from "./UserJoinTeacherEdu"
+import UserJoinTeacherJob from "./UserJoinTeacherJob";
+import UserJoinTeacherEdu from "./UserJoinTeacherEdu";
 
 const UserJoin = () => {
     const [userType, setUserType] = useState("S");
@@ -19,7 +20,7 @@ const UserJoin = () => {
     const [userInfo, setUserInfo] = useState(""); // varchar(150) // 3 한마디 소개 (학생과 강사에 따라 달라짐)
     const [profileImg, setProfileImg] = useState(null); // null 허용 & 강사만 들어갈 것.
 
-    const [userNo, setUserNo] = useState(0) // 받을 거야!
+    const [userNo, setUserNo] = useState(0); // 받을 거야!
 
     // #### 공통 사용 #####
     // 모든 공백 제거 함수
@@ -56,15 +57,14 @@ const UserJoin = () => {
         }
         // 2. id 중복확인
         // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
-        axios.get(`${url}/user/duplicate/id/${userId}`)
-            .then((response) => {
-            console.log(response)
+        axios.get(`${url}/user/duplicate/id/${userId}`).then((response) => {
+            console.log(response);
             if (response.data.resultCode !== 0) {
-                setIdMSG('중복된 아이디입니다.')
-                setIdValidCheck(false)
-                return
+                setIdMSG("중복된 아이디입니다.");
+                setIdValidCheck(false);
+                return;
             }
-            });    
+        });
         setIdMSG("");
         setIdValidCheck(true);
     };
@@ -93,7 +93,7 @@ const UserJoin = () => {
             return;
         }
         setPasswordMSG("");
-    }
+    };
     const passwordDuplicateCheck = (e) => {
         if (userPassword !== userPasswordCheck) {
             setPasswordMSG("비밀번호가 일치하지 않습니다.");
@@ -152,7 +152,7 @@ const UserJoin = () => {
             .get(`${url}/user/duplicate/email/${userEmail}`)
             .then((response) => {
                 console.log(response.data);
-                console.log(userEmail)
+                console.log(userEmail);
                 if (response.data.resultCode !== 0) {
                     setUserEmailMSG("중복된 이메일입니다.");
                     setUserEmailVailidCheck(false);
@@ -164,34 +164,34 @@ const UserJoin = () => {
         setUserEmailVailidCheck(true);
     };
     // 이메일 인증
-    const [certEmailCode, setCertEmailCode] = useState("")
+    const [certEmailCode, setCertEmailCode] = useState("");
     const certEmail = () => {
-        const data = {userEmail}
-        axios.post(`${url}/user/cert/email?email=${userEmail}`,
-        data,
-        {headers: { "Content-Type": "application/json" }}
-        )
-        .then(res => {
-            console.log(res.data)
-            setCertEmailCode(res.data)
-        })
-        .catch(err => console.log(err))
-    }
+        const data = { userEmail };
+        axios
+            .post(`${url}/user/cert/email?email=${userEmail}`, data, {
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res) => {
+                console.log(res.data);
+                setCertEmailCode(res.data);
+            })
+            .catch((err) => console.log(err));
+    };
 
-    const [certEmailCheck,setCertEmailCheck] = useState("")
-    const [certEmailValidCheck, setCertEmailValidCheck] = useState(false)
-    const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("")
+    const [certEmailCheck, setCertEmailCheck] = useState("");
+    const [certEmailValidCheck, setCertEmailValidCheck] = useState(false);
+    const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("");
     const certEmailFormCheck = () => {
-        console.log(certEmailCheck, "이메일코드")
-        console.log(certEmailCheck, "내가 입력")
+        console.log(certEmailCheck, "이메일코드");
+        console.log(certEmailCheck, "내가 입력");
         if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
-            setCertEmailValidCheck(true)
-            setCertEmailCheckMSG("인증 성공")
+            setCertEmailValidCheck(true);
+            setCertEmailCheckMSG("인증 성공");
         } else {
-            setCertEmailValidCheck(false)
-            setCertEmailCheckMSG("인증 요망")
+            setCertEmailValidCheck(false);
+            setCertEmailCheckMSG("인증 요망");
         }
-    }
+    };
     const [userInfoMSG, setUserInfoMSG] = useState("");
     const [userInfoValidCheck, setUserInfoValidCheck] = useState(false);
     const userInfoFormCheck = () => {
@@ -204,16 +204,16 @@ const UserJoin = () => {
         }
     };
 
-    const [profileImgURL, setProfileImgURL] = useState("")
+    const [profileImgURL, setProfileImgURL] = useState("");
     // 프로필 이미지 다루는중
     const handleUploadProfileIMG = (e) => {
         const file = e.target.files[0];
-        if (!file) return
-        const imageURL = URL.createObjectURL(file)
-        setProfileImgURL(imageURL)
-        setProfileImg(file)
-        console.log(file, "이미지 넣어봄")
-    }
+        if (!file) return;
+        const imageURL = URL.createObjectURL(file);
+        setProfileImgURL(imageURL);
+        setProfileImg(file);
+        console.log(file, "이미지 넣어봄");
+    };
 
     const signUp = () => {
         if (
@@ -239,35 +239,41 @@ const UserJoin = () => {
             console.log(data);
             console.log(url);
             axios
-                .post(`${url}/user/join`, 
-                data, 
-                {headers: { "Content-Type": "application/json" }})
+                .post(`${url}/user/join`, data, {
+                    headers: { "Content-Type": "application/json" },
+                })
                 .then((res) => {
-                    console.log(res.data, "응답")
+                    console.log(res.data, "응답");
                     if (res.data.resultCode === 0) {
                         alert("회원가입 성공");
-                        console.log(res.data.userNo)
-                        setUserNo(res.data.userNo)
+                        console.log(res.data.userNo);
+                        setUserNo(res.data.userNo);
                     }
-                    return res.data.userNo
+                    return res.data.userNo;
                 })
-                .then((userNo)=> {
-                    console.log(userNo, "갔어요?!")
-                    setUserNo(userNo)
-                    
-                    console.log(profileImg, "프로필이미지- 회원가입중")
+                .then((userNo) => {
+                    console.log(userNo, "갔어요?!");
+                    setUserNo(userNo);
+
+                    console.log(profileImg, "프로필이미지- 회원가입중");
                     // console.log(formData)
                     if (profileImg) {
-                        const formData = new FormData()
-                        formData.append('multipartFile', profileImg)
-                        axios.post(`${url}/s3/upload/profile/${userNo}`, 
-                        formData,
-                        {headers: {'Content-Type': 'multipart/form-data'}}
-                        )
-                        .then(res=> console.log(res))
-                        .catch(err=>console.log(err))
+                        const formData = new FormData();
+                        formData.append("multipartFile", profileImg);
+                        axios
+                            .post(
+                                `${url}/s3/upload/profile/${userNo}`,
+                                formData,
+                                {
+                                    headers: {
+                                        "Content-Type": "multipart/form-data",
+                                    },
+                                }
+                            )
+                            .then((res) => console.log(res))
+                            .catch((err) => console.log(err));
                     }
-                })
+                });
         } else {
             alert("유효하지 않은 형식이 있습니다.");
         }
@@ -285,153 +291,263 @@ const UserJoin = () => {
     };
     return (
         <>
-        <form onSubmit={(e) => e.preventDefault()}>
-            <div>
-                <button className="student" onClick={userTypeChangeS} value="S">
-                    학생
-                </button>
-                <button className="teacher" onClick={userTypeChangeT}>
-                    선생님
-                </button>
-            </div>
-            <div>
+            <form onSubmit={(e) => e.preventDefault()}>
                 <div>
-                    <label htmlFor="userId">아이디: </label>
+                    <Button
+                        className="student"
+                        onClick={userTypeChangeS}
+                        value="S"
+                        $point={userType === "S"}
+                    >
+                        학생
+                    </Button>
+                    <Button
+                        className="teacher"
+                        onClick={userTypeChangeT}
+                        $point={userType === "T"}
+                    >
+                        선생님
+                    </Button>
+                </div>
+                <div>
+                    <div>
+                        <Input
+                            label="아이디"
+                            type="text"
+                            value={userId}
+                            name="userId"
+                            id="userId"
+                            placeholder="아이디를 입력해 주세요."
+                            onChange={(e) =>
+                                setUserId(removeAllEmpty(e.currentTarget.value))
+                            }
+                            onBlur={idCheck}
+                        />
+                        {/* 첫 렌더링엔 idMSG none */}
+                        {idMSG ? <p>{idMSG}</p> : ""}
+                        {/* <label htmlFor="userId">아이디: </label>
+                        <input
+                            type="text"
+                            value={userId}
+                            name="userId"
+                            id="userId"
+                            placeholder="아이디를 입력해 주세요."
+                            onChange={(e) =>
+                                setUserId(removeAllEmpty(e.currentTarget.value))
+                            }
+                            onBlur={idCheck}
+                        /> */}
+                    </div>
+                    <Input
+                        label="비밀번호"
+                        type="password"
+                        // value={userPassword}
+                        name="userPassword"
+                        id="userPassword"
+                        placeholder="비밀번호: 특수문자 포함 9~16자로 입력해 주세요."
+                        onChange={(e) =>
+                            setUserPassword(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={passwordFormCheck}
+                    />
+                    {/* <label htmlFor="userPassword">비밀번호: </label>
+                    <input
+                        type="password"
+                        // value={userPassword}
+                        name="userPassword"
+                        id="userPassword"
+                        placeholder="비밀번호: 특수문자 포함 9~16자로 입력해 주세요."
+                        onChange={(e) =>
+                            setUserPassword(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={passwordFormCheck}
+                    /> */}
+
+                    <Input
+                        label="비밀번호 확인"
+                        type="password"
+                        // value={userPassword}
+                        name="userPasswordCheck"
+                        id="userPasswordCheck"
+                        placeholder=""
+                        onChange={(e) =>
+                            setUserPasswordCheck(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={passwordDuplicateCheck}
+                    />
+                    <p> {passwordMSG} </p>
+                    {/* <label htmlFor="userPasswordCheck">비밀번호 확인: </label>
+                    <input
+                        type="password"
+                        // value={userPasswordCheck}
+                        name="userPasswordCheck"
+                        id="userPasswordCheck"
+                        placeholder=""
+                        onChange={(e) =>
+                            setUserPasswordCheck(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={passwordDuplicateCheck}
+                    /> */}
+
+                    <Input
+                        label="이메일"
+                        type="text"
+                        name="userEmail"
+                        id="userEmail"
+                        placeholder="*@*"
+                        onChange={(e) =>
+                            setUserEmail(removeAllEmpty(e.currentTarget.value))
+                        }
+                        onBlur={userEmailFormCheck}
+                    />
+                    <p> {userEmailMSG} </p>
+                    <Button onClick={certEmail}>인증번호 전송</Button>
+                    {/* <label htmlFor="userEmail">이메일: </label>
                     <input
                         type="text"
-                        value={userId}
-                        name="userId"
-                        id="userId"
-                        placeholder="아이디를 입력해 주세요."
+                        name="userEmail"
+                        id="userEmail"
+                        placeholder="*@*"
                         onChange={(e) =>
-                            setUserId(removeAllEmpty(e.currentTarget.value))
+                            setUserEmail(removeAllEmpty(e.currentTarget.value))
                         }
-                        onBlur={idCheck}
+                        onBlur={userEmailFormCheck}
+                    /> */}
+
+                    <Input
+                        label="인증코드"
+                        type="text"
+                        name="certEmailCheck"
+                        id="certEmailCheck"
+                        placeholder="인증코드"
+                        onChange={(e) =>
+                            setCertEmailCheck(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={certEmailFormCheck}
                     />
-                    {/* 첫 렌더링엔 idMSG none */}
-                    {idMSG ? <p>{idMSG}</p> : ""}
+                    <span> {certEmailCheckMSG} </span>
+                    {/* <span>인증코드</span>
+                    <input
+                        type="text"
+                        name="certEmailCheck"
+                        placeholder="인증코드"
+                        id="certEmailCheck"
+                        onChange={(e) =>
+                            setCertEmailCheck(
+                                removeAllEmpty(e.currentTarget.value)
+                            )
+                        }
+                        onBlur={certEmailFormCheck}
+                    /> */}
+
+                    <Input
+                        label="이름"
+                        type="text"
+                        name="userName"
+                        id="userName"
+                        placeholder="10자 이내로 입력해주세요."
+                        onChange={(e) =>
+                            setUserName(removeAllEmpty(e.currentTarget.value))
+                        }
+                        onBlur={userNameFormCheck}
+                    />
+                    <p>{userNameMSG}</p>
+                    {/* <label htmlFor="userName">이름: </label>
+                    <input
+                        type="text"
+                        name="userName"
+                        id="userName"
+                        placeholder="10자 이내로 입력해주세요."
+                        onChange={(e) =>
+                            setUserName(removeAllEmpty(e.currentTarget.value))
+                        }
+                        onBlur={userNameFormCheck}
+                    /> */}
+
+                    <Input
+                        label="전화번호"
+                        type="text"
+                        name="userTel"
+                        id="userTel"
+                        value={userTel}
+                        placeholder="숫자만 입력해 주세요(01012345678)"
+                        onChange={(e) =>
+                            setUserTel(removeAllEmpty(e.currentTarget.value))
+                        }
+                        onBlur={userTelFormCheck}
+                    />
+                    <p>{userTelMSG}</p>
+                    {/* <label htmlFor="userTel">전화번호: </label>
+                    <input
+                        type="text"
+                        name="userTel"
+                        id="userTel"
+                        value={userTel}
+                        placeholder="숫자만 입력해 주세요(01012345678)"
+                        onChange={(e) =>
+                            setUserTel(removeAllEmpty(e.currentTarget.value))
+                        }
+                        onBlur={userTelFormCheck}
+                    /> */}
+
+                    {/* <label htmlFor="userInfo">{userInfoLabel}: </label> */}
+                    <textarea
+                        // 임시 textarea 스타일
+                        style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                            borderRadius: "12px",
+                        }}
+                        type="text"
+                        name="userInfo"
+                        id="userInfo"
+                        placeholder="소개"
+                        onChange={(e) => setUserInfo(e.currentTarget.value)}
+                        onBlur={userInfoFormCheck}
+                    />
+                    <p> {userInfoMSG} </p>
                 </div>
-                <label htmlFor="userPassword">비밀번호: </label>
-                <input
-                    type="password"
-                    // value={userPassword}
-                    name="userPassword"
-                    id="userPassword"
-                    placeholder="비밀번호: 특수문자 포함 9~16자로 입력해 주세요."
-                    onChange={(e) =>
-                        setUserPassword(removeAllEmpty(e.currentTarget.value))
-                    }
-                    onBlur={passwordFormCheck}
-                />
-                <label htmlFor="userPasswordCheck">비밀번호 확인: </label>
-                <input
-                    type="password"
-                    // value={userPasswordCheck}
-                    name="userPasswordCheck"
-                    id="userPasswordCheck"
-                    placeholder=""
-                    onChange={(e) =>
-                        setUserPasswordCheck(
-                            removeAllEmpty(e.currentTarget.value)
-                        )
-                    }
-                    onBlur={passwordDuplicateCheck}
-                />
-                <p> {passwordMSG} </p>
-                <label htmlFor="userEmail">이메일: </label>
-                <input
-                    type="text"
-                    name="userEmail"
-                    id="userEmail"
-                    placeholder="*@*"
-                    onChange={(e) =>
-                        setUserEmail(removeAllEmpty(e.currentTarget.value))
-                    }
-                    onBlur={userEmailFormCheck}
-                />
-                <p> {userEmailMSG} </p>
 
-                <button onClick={certEmail}>인증번호 전송</button>
-                <br/>
-                <span>인증코드</span>
-                <input
-                    type="text"
-                    name="certEmailCheck"
-                    placeholder="인증코드"
-                    id="certEmailCheck"
-                    onChange={e=> setCertEmailCheck(removeAllEmpty(e.currentTarget.value))}
-                    onBlur={certEmailFormCheck}
-                />
-                <br/>
-                <span> {certEmailCheckMSG} </span>
-                <br/>
-                <label htmlFor="userName">이름: </label>
-                <input
-                    type="text"
-                    name="userName"
-                    id="userName"
-                    placeholder="10자 이내로 입력해주세요."
-                    onChange={(e) =>
-                        setUserName(removeAllEmpty(e.currentTarget.value))
-                    }
-                    onBlur={userNameFormCheck}
-                />
-                <p>{userNameMSG}</p>
-
-                <label htmlFor="userTel">전화번호: </label>
-                <input
-                    type="text"
-                    name="userTel"
-                    id="userTel"
-                    value={userTel}
-                    placeholder="숫자만 입력해 주세요(01012345678)"
-                    onChange={(e) =>
-                        setUserTel(removeAllEmpty(e.currentTarget.value))
-                    }
-                    onBlur={userTelFormCheck}
-                />
-                <p>{userTelMSG}</p>
-
-                {/* <label htmlFor="userInfo">{userInfoLabel}: </label> */}
-                <textarea
-                    type="text"
-                    name="userInfo"
-                    id="userInfo"
-                    placeholder="소개"
-                    onChange={(e) => setUserInfo(e.currentTarget.value)}
-                    onBlur={userInfoFormCheck}
-                />
-                <p> {userInfoMSG} </p>
-            </div>
-
-            {
-                userType==='T' ? (
+                {userType === "T" ? (
+                    <>
+                        <label htmlFor="profileImg">프로필사진</label>
+                        {profileImg ? (
+                            <img src={profileImgURL} alt="프로필 사진" />
+                        ) : (
+                            <img
+                                src="assets/bannerimg.jpg"
+                                alt="프로필 없을 떄 보이는 사진"
+                            />
+                        )}
+                        <input
+                            id="profileImg"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleUploadProfileIMG}
+                        />
+                    </>
+                ) : null}
+                <br />
+                <Button onClick={signUp}>회원가입</Button>
+            </form>
+            {/* 여기서 userType이 "T"면,  */}
+            {userType === "T" ? (
                 <>
-                <span>프로필사진</span>
-                {
-                    profileImg ? (    
-                    <img src={profileImgURL} alt="프로필 사진" /> ) : (
-                    <img src="#" alt="프로필 없을 떄 보이는 사진" />
-                    )
-                } 
-                <input type="file" accept="image/*" onChange={handleUploadProfileIMG}/>
+                    <UserJoinTeacherJob userNo={userNo}></UserJoinTeacherJob>
+                    <UserJoinTeacherEdu userNo={userNo}></UserJoinTeacherEdu>
                 </>
-                ) : null
-            }
-            <br/>
-            <button onClick={signUp}>회원가입</button>
-        </form>
-    {/* 여기서 userType이 "T"면,  */}
-    {
-      userType==='T' ? (
-        <>
-        <UserJoinTeacherJob userNo={userNo}></UserJoinTeacherJob>
-        <UserJoinTeacherEdu userNo={userNo}></UserJoinTeacherEdu>
+            ) : null}
         </>
-      ) : null
-    }
-    </>
-  )
-}
+    );
+};
 export default UserJoin;
-

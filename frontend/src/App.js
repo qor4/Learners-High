@@ -32,7 +32,7 @@ function App() {
             {/* <ClassRoundJoinPage/> */}
             <Routes>
                 <Route path="/" element={<MainPage />}></Route>
-                <Route path="/join" element={<UserJoin />}></Route>
+                <Route path="/join" element={<UserJoinPage />}></Route>
                 <Route path="/lesson" element={<LessonPage />}></Route>
                 <Route path="/lesson/join" element={<ClassJoinPage />}></Route>
                 <Route path="/lesson/round/join" element={<ClassRoundJoin />}></Route>
