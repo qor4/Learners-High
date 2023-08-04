@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
-import com.learnershigh.dto.user.EduDto;
-import com.learnershigh.dto.user.JobDto;
-import com.learnershigh.dto.user.JoinDto;
-import com.learnershigh.dto.user.LoginDto;
+import com.learnershigh.dto.user.*;
 import com.learnershigh.service.etc.EmailService;
 import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
@@ -148,20 +145,23 @@ public class UserController {
     @GetMapping("/login/kakao/callback")
     @ApiOperation("카카오 로그인")
     @ResponseBody
-    public Boolean kakaoCallback(String code) throws JsonProcessingException {
-
-        System.out.println("들어왔니");
-
-        // 가입 한 적이 없다면.
-        if (userService.kakaoUserJoin(code) == null) {
-            return true;
+    public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code ,@RequestBody KakaoInfo kakaoInfo) throws JsonProcessingException{
+        CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
+        try {
+            HashMap<String, Object> userInfo = userService.kakaogitUserJoin(code, kakaoInfo);
+            responseBody.getList().add(userInfo);
+        }catch (IllegalStateException i){
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(i.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        }catch (Exception e){
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
         }
-
-        // 가입한 적이 있으면.
-        return false;
-
-
+        return ResponseEntity.ok().body(responseBody);
     }
+
 
     // 경력 추가
     @PostMapping("/join/job/{userNo}")

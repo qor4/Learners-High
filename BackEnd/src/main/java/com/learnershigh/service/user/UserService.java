@@ -149,7 +149,8 @@ public class UserService {
     }
 
     @Transactional
-    public User kakaoUserJoin(String code) throws JsonProcessingException {
+    public HashMap<String, Object> kakaoUserJoin(String code, KakaoInfo kakaoInfo) throws JsonProcessingException {
+
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -160,7 +161,7 @@ public class UserService {
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", "b6858c19fc043da6c74478b610af98a0");
-        params.add("redirect_uri", "http://localhost:8080/user/auth/kakao/callback");
+        params.add("redirect_uri", "http://localhost:7777/user/login/kakao/callback");
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
@@ -212,33 +213,94 @@ public class UserService {
             throw new RuntimeException(e);
         }
 
-        User user = new User();
-
 
 //         이메일 검사!!
-        User emailcheckuser = new User();
-        emailcheckuser = userRepository.findByUserEmail(kaKaoDto.getKakao_account().getEmail());
-        if (emailcheckuser == null) {
+        User checkuser = userRepository.findByUserEmail(kaKaoDto.getKakao_account().getEmail());
+        System.out.println(checkuser);
+        if (checkuser == null) {
 
-            user.setUserEmail(kaKaoDto.getKakao_account().getEmail());
+            // 전화번호 유효성 검사
+            if (!Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", kakaoInfo.getUserTel())) {
+                throw new IllegalStateException("전화번호 형식이 맞지않습니다.");
+            }
+
+            // 한마디 글자수 유효성 검사
+            if (!checkInfo(kakaoInfo.getUserInfo())) {
+                throw new IllegalStateException("글자수가 50개를 넘었습니다.");
+            }
+
+            System.out.println("DB 에 없어");
+
+            User person = new User();
+
+            person.setUserEmail(kaKaoDto.getKakao_account().getEmail());
+            person.setUserId(kaKaoDto.getId());
+            person.setUserName(kaKaoDto.getProperties().getNickname());
+            person.setProfileImg(kaKaoDto.getProperties().getThumbnail_image());
+            person.setUserType(kakaoInfo.getUserType());
+            person.setUserTel(kakaoInfo.getUserTel());
+            person.setUserInfo(kakaoInfo.getUserInfo());
+
+            // 이름과 아이디 섞은 해시값을 비밀번호로 설정함.
+            String encodePassword = passwordEncoder.encode(kaKaoDto.getId() + kaKaoDto.getProperties().getNickname());
+            person.setUserPassword(encodePassword);
+            System.out.println(encodePassword);
+
+            userRepository.save(person);
+
+            LoginDto loginDto = new LoginDto();
+            loginDto.setUserId(person.getUserId());
+            loginDto.setUserPassword(kaKaoDto.getId() + kaKaoDto.getProperties().getNickname());
+
+            HashMap<String, Object> userInfo = userLogin(loginDto);
+
+            return userInfo;
+
         } else {
-            // 이미 존재하는 거라면 어떻게?  access 토큰? refresh 토큰 어케?
-            return null;
+            LoginDto loginDto = new LoginDto();
+            loginDto.setUserId(checkuser.getUserId());
+            User user = userRepository.findByUserId(checkuser.getUserId());
+            loginDto.setUserPassword(user.getUserId() + user.getUserName());
+
+            userLogin(loginDto);
+
+            HashMap<String, Object> userInfo = userLogin(loginDto);
+
+            return userInfo;
         }
 
-        System.out.println(kaKaoDto.getId());
-        user.setUserId(kaKaoDto.getId());
-        System.out.println(kaKaoDto.getProperties().getNickname());
-        user.setUserName(kaKaoDto.getProperties().getNickname());
-        System.out.println(kaKaoDto.getProperties().getThumbnail_image());
-        user.setProfileImg(kaKaoDto.getProperties().getThumbnail_image());
-        System.out.println(kaKaoDto.getKakao_account().getEmail());
-
-
-//        return response2.getBody();
-        return userRepository.save(user);
 
     }
+
+    // 로그인
+    public HashMap<String, Object> userLogin(LoginDto loginDto) {
+        System.out.println("로그인 함수에 들어왔니");
+        HashMap<String, Object> userInfo = new HashMap<>();
+        User user = userRepository.findByUserId(loginDto.getUserId());
+        if (user == null) {
+            System.out.println("잘못된 로그인");
+            throw new BadCredentialsException("잘못된 계정정보입니다.");
+        }
+        System.out.println(user.getUserPassword());
+        System.out.println(loginDto.getUserPassword());
+        System.out.println(passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword()));
+        if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
+            System.out.println("잘못된 로그인2");
+            throw new BadCredentialsException("잘못된 계정정보입니다.");
+        }
+        TokenDto token = new TokenDto();
+        System.out.println("토큰" + token);
+        token.setAccessToken(tokenProvider.createToken(user.getUserId()));
+        System.out.println("지나왔어");
+        userInfo.put("token", token);
+        userInfo.put("userNo", user.getUserNo());
+        userInfo.put("userName", user.getUserName());
+        userInfo.put("userType", user.getUserType());
+        userInfo.put("userId", user.getUserId());
+        userInfo.put("userInfo", user.getUserInfo());
+        return userInfo;
+    }
+
 
     // 카카오 로그인 이후 더 받을 정보들 받는 것.
     @Transactional
@@ -311,10 +373,10 @@ public class UserService {
     }
 
     // 받아온 이메일과 아이디가 일치하는 사용자가 있는지 확인
-    public Boolean searchPwd(String userId, String userEmail){
-        User user = userRepository.findByUserIdAndUserEmail(userId,userEmail);
+    public Boolean searchPwd(String userId, String userEmail) {
+        User user = userRepository.findByUserIdAndUserEmail(userId, userEmail);
 
-        if(user != null){
+        if (user != null) {
             return true;
         }
         return false;
@@ -337,7 +399,6 @@ public class UserService {
 //        user.pwdChange(pwd);
 //
 //    }
-
 
 
     // 이름 글자수 제한 검사 (length = 10 제한)
@@ -401,28 +462,6 @@ public class UserService {
         eduCareer.setUserNo(userRepository.findByUserNo(userNo));
 
         eduRepository.save(eduCareer);
-    }
-
-    // 로그인
-    public HashMap<String, Object> userLogin(LoginDto loginDto) {
-        HashMap<String, Object> userInfo = new HashMap<>();
-        User user = userRepository.findByUserId(loginDto.getUserId());
-        if (user == null) {
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
-        }
-        if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
-        }
-        TokenDto token = new TokenDto();
-
-        token.setAccessToken(tokenProvider.createToken(user.getUserId()));
-        userInfo.put("token", token);
-        userInfo.put("userNo", user.getUserNo());
-        userInfo.put("userName", user.getUserName());
-        userInfo.put("userType", user.getUserType());
-        userInfo.put("userId", user.getUserId());
-        userInfo.put("userInfo", user.getUserInfo());
-        return userInfo;
     }
 
 
