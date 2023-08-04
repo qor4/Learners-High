@@ -34,6 +34,7 @@ function App() {
                 <Route path="/join" element={<UserJoin />}></Route>
                 <Route path="/lesson" element={<LessonPage />}></Route>
                 <Route path="/lesson/join" element={<ClassJoinPage />}></Route>
+                <Route path="/lesson/round/join" element={<ClassRoundJoin />}></Route>
                 <Route
                     path="/lesson/info/:lessonNo"
                     element={<LessonInfoPage />}
@@ -42,6 +43,7 @@ function App() {
                     path="/profile/:userNo"
                     element={<TeacherProfilePage />}
                 ></Route>
+                <Route path="*" element={<MainPage/>}/>
             </Routes>
             <Footer />
         </div>

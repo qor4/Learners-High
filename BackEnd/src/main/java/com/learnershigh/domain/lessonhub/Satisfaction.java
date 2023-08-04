@@ -48,13 +48,11 @@ public class Satisfaction {
 
     // 수업 만족도
     @NotNull
-    @NotBlank
     @Column(name = "lesson_round_csat")
     private float lessonRoundCsat;
 
     // 강사 만족도
     @NotNull
-    @NotBlank
     @Column(name = "teacher_csat")
     private float teacherCsat;
 

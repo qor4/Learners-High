@@ -43,10 +43,12 @@ const LessonInfoPage = () => {
     // 수강신청 버튼 클릭했을 때
     const handleApplyChange = () => {
         console.log("수강신청 버튼을 클릭했습니다.");
+        console.log(data)
         axios
-            .post(`${url}/student/apply`, data, {
-                headers: { "Content-Type": "application/json" },
-            })
+            .post(`${url}/student/apply`, 
+            data,
+            {headers: { "Content-Type": "application/json" }}
+            )
             .then((response) => alert(response.data.resultMsg));
     };
 

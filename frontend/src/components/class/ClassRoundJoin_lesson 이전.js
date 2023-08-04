@@ -12,30 +12,29 @@ import axios from "axios";
 import { url } from "../../api/APIPath";
 
 const ClassRoundJoin = () => {
-    const [lessonTotalRound, setLessonTotalRound] = useState(0);
+    const [classTotalRound, setClassTotalRound] = useState(0);
 
     const navigate = useNavigate()
 
     // 여기서 Link로 보낸 데이터 받았다.
     const location = useLocation()
-    const lessonData = location.state?.data || null
-    console.log(lessonData, "classRoundJoin임")
+    const classData = location.state?.data || null
 
-    const initialLessonRoundItem = {
-        lessonNo: "", // 임시
-        lessonRoundNumber: "",
-        lessonRoundTitle: "",
+    const initialClassRoundItem = {
+        classNo: "", // 임시
+        classRoundNumber: "",
+        classRoundTitle: "",
         // classRoundFileName: "", // S3 접근
-        lessonRoundFileOriginName: "",
-        lessonRoundStartDatetime: "",
-        lessonRoundEndDateTime: "",
+        classRoundFileOriginName: "",
+        classRoundStartDatetime: "",
+        classRoundEndDateTime: "",
         isHomework: false,
 
-        lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
+        classRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
     }
-    const [lessonRoundDataSet, setLessonRoundDataSet] = useState([initialLessonRoundItem])
+    const [classRoundDataSet, setClassRoundDataSet] = useState([initialClassRoundItem])
     const [startDate, setStartDate] = useState("");
-    const [lessonRunningTime, setLessonRunningTime] = useState("") // 오직 분 단위로.
+    const [classRunningTime, setClassRunningTime] = useState("") // 오직 분 단위로.
 
     const initialDays = [
         {
@@ -43,7 +42,7 @@ const ClassRoundJoin = () => {
             code: 0,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -51,7 +50,7 @@ const ClassRoundJoin = () => {
             code: 1,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -59,7 +58,7 @@ const ClassRoundJoin = () => {
             code: 2,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -67,7 +66,7 @@ const ClassRoundJoin = () => {
             code: 3,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -75,7 +74,7 @@ const ClassRoundJoin = () => {
             code: 4,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -83,7 +82,7 @@ const ClassRoundJoin = () => {
             code: 5,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
         {
@@ -91,7 +90,7 @@ const ClassRoundJoin = () => {
             code: 6,
             startHour: 0,
             startMinute: "",
-            lessonRunningTime: "",
+            classRunningTime: "",
             isSelected: false,
         },
     ]
@@ -104,13 +103,13 @@ const ClassRoundJoin = () => {
         setDays(daysCopy)
     }
 
-    const handleLessonRoundTimeChange = (id, newStartHour, newStartMinute, newLessonRunningTime) => {
+    const handleClassRoundTimeChange = (id, newStartHour, newStartMinute, newClassRunningTime) => {
         const updateData = days.map(day => 
             day.code === id ? {
             ...day, 
             startHour: newStartHour,
             startMinute: newStartMinute,
-            lessonRunningTime: newLessonRunningTime,
+            classRunningTime: newClassRunningTime,
             } : day
             )
         setDays(updateData)
@@ -120,25 +119,25 @@ const ClassRoundJoin = () => {
     const handleTotalTimeChange = (event) => {
         const numericValue = parseInt(event.target.value, 10);
         if (!isNaN(numericValue) && numericValue >= 0) {
-            setLessonTotalRound(numericValue);
+            setClassTotalRound(numericValue);
             return
         }
-        setLessonTotalRound(0)
+        setClassTotalRound(0)
     };
     // 강의 배열 길이 결정함. (이건 추후...)
     const handletotalTimeBlur = () => {
-        const lessonRoundDataSetCopy = new Array(lessonTotalRound).fill(initialLessonRoundItem)
+        const classRoundDataSetCopy = new Array(classTotalRound).fill(initialClassRoundItem)
         const newDate = new Date(startDate)
-        newDate.setMinutes(newDate.getMinutes()+Number(lessonRunningTime))
-        lessonRoundDataSetCopy[0].lessonRoundEndDateTime = newDate
-        console.log(lessonRoundDataSetCopy[0].lessonRoundEndDateTime, "끝난 시간")
-        console.log(lessonRoundDataSet, "여긴 바뀌는 곳")
-        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = lessonRunningTime
-        setLessonRoundDataSet(lessonRoundDataSetCopy) // 여기서 추가했다!!!!
+        newDate.setMinutes(newDate.getMinutes()+Number(classRunningTime))
+        classRoundDataSetCopy[0].classRoundEndDateTime = newDate
+        console.log(classRoundDataSetCopy[0].classRoundEndDateTime, "끝난 시간")
+        console.log(classRoundDataSet, "여긴 바뀌는 곳")
+        classRoundDataSetCopy[0].classRunningTimeForEnd = classRunningTime
+        setClassRoundDataSet(classRoundDataSetCopy) // 여기서 추가했다!!!!
     }
 
     const handleRunningTimeChange = (e) => {
-        setLessonRunningTime(e.currentTarget.value)
+        setClassRunningTime(e.currentTarget.value)
     }
 
     // 인풋박스에 포커스가 가면 빈 문자열로 바꿔주는 커스텀 함수
@@ -150,14 +149,14 @@ const ClassRoundJoin = () => {
         setStartDate(newStartDate);
     };
     useEffect(()=> {
-        console.log(lessonRoundDataSet, "실시간 반영")
-    }, [lessonRoundDataSet])
+        console.log(classRoundDataSet, "실시간 반영")
+    }, [classRoundDataSet])
 
-    const handleInsertLessonRoundTime = () => {
-        const lessonRoundDataSetCopy = JSON.parse(JSON.stringify(lessonRoundDataSet))
-        lessonRoundDataSetCopy[0].lessonRoundStartDatetime = startDate
-        lessonRoundDataSetCopy[0].lessonRoundNumber = 1
-        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = Number(lessonRunningTime)
+    const handleInsertClassRoundTime = () => {
+        const classRoundDataSetCopy = JSON.parse(JSON.stringify(classRoundDataSet))
+        classRoundDataSetCopy[0].classRoundStartDatetime = startDate
+        classRoundDataSetCopy[0].classRoundNumber = 1
+        classRoundDataSetCopy[0].classRunningTimeForEnd = Number(classRunningTime)
 
         // addDay가 startDate가 아니라, days의 startDate여야 함.
         const standDay = new Date(startDate)
@@ -171,7 +170,7 @@ const ClassRoundJoin = () => {
             days.map(day=> {
                 if (day.isSelected && Number(standDay.getDay()) === Number(day.code) ) {
                     standardDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
-                    standardRunningTime.push(Number(day.lessonRunningTime))
+                    standardRunningTime.push(Number(day.classRunningTime))
                     // standardEndDate.push( new Date(standDay.getFullYear(), standDay.getMonth(), standDay.getDate(), day.startHour, day.startMinute) )
                     console.log(standardDate, "standardDate")
                     console.log(standardRunningTime, "기준 진행시간")
@@ -182,53 +181,53 @@ const ClassRoundJoin = () => {
         
         let weekNum = standardDate.length
         console.log(weekNum, "날짜 길이")
-        for (let i=1;i<lessonTotalRound;i++) { // 배열 절대 바꾸지 마라.
+        for (let i=1;i<classTotalRound;i++) { // 배열 절대 바꾸지 마라.
             
             if (i-1<weekNum) {
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate())
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
-                lessonRoundDataSetCopy[i].lessonRoundNumber = i+1
-                lessonRoundDataSetCopy[i].lessonRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
+                classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
+                classRoundDataSetCopy[i].classRoundNumber = i+1
+                classRoundDataSetCopy[i].classRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
             } else {
-                // lessonRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%weekNum].getDate()+7*parseInt((i-1)/weekNum))
+                // classRoundDataSetCopy[i].startDate = new Date( standardDate[(i-1)%weekNum].getDate()+7*parseInt((i-1)/weekNum))
                 standardDate[(i-1)%weekNum].setDate(standardDate[(i-1)%weekNum].getDate()+7)
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
-                lessonRoundDataSetCopy[i].lessonRoundNumber = i+1
-                lessonRoundDataSetCopy[i].lessonRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
+                classRoundDataSetCopy[i].classRoundStartDatetime = new Date( standardDate[(i-1)%weekNum] )
+                classRoundDataSetCopy[i].classRoundNumber = i+1
+                classRoundDataSetCopy[i].classRunningTimeForEnd = standardRunningTime[(i-1)%weekNum]
             }
         }
-        setLessonRoundDataSet(lessonRoundDataSetCopy)
-        console.log(lessonRoundDataSetCopy, "카피!")
+        setClassRoundDataSet(classRoundDataSetCopy)
+        console.log(classRoundDataSetCopy, "카피!")
     }
 
-    const getDateData = (index, newLessonRoundStartDatetime, newLessonRoundEndDateTime) => {
-        const lessonRoundDataSetCopy = lessonRoundDataSet.map((item, idx) => 
+    const getDateData = (index, newClassRoundStartDatetime, newClassRoundEndDateTime) => {
+        const classRoundDataSetCopy = classRoundDataSet.map((item, idx) => 
             idx === index ? {
                 ...item, 
-                lessonRoundStartDatetime: newLessonRoundStartDatetime,
-                lessonRoundEndDateTime: newLessonRoundEndDateTime
+                classRoundStartDatetime: newClassRoundStartDatetime,
+                classRoundEndDateTime: newClassRoundEndDateTime
             }: item
             )
-        setLessonRoundDataSet(lessonRoundDataSetCopy)
+        setClassRoundDataSet(classRoundDataSetCopy)
     }
 
-    const getLessonData = (roundData, idx) => {
-        const {lessonRoundTitle, lessonRoundFileOriginName} = roundData
+    const getClassData = (roundData, idx) => {
+        const {classRoundTitle, classRoundFileOriginName} = roundData
         
-        const lessonRoundDataSetCopy = [...lessonRoundDataSet]
+        const classRoundDataSetCopy = [...classRoundDataSet]
 
-        const updatedItem = lessonRoundDataSetCopy.find((item)=> idx === item.lessonRoundNumber-1)
+        const updatedItem = classRoundDataSetCopy.find((item)=> idx === item.classRoundNumber-1)
         
         if (updatedItem) {
-            updatedItem.lessonRoundTitle = lessonRoundTitle
-            updatedItem.lessonRoundFileOriginName = lessonRoundFileOriginName ? lessonRoundFileOriginName : null 
+            updatedItem.classRoundTitle = classRoundTitle
+            updatedItem.classRoundFileOriginName = classRoundFileOriginName ? classRoundFileOriginName : null 
         }
-        setLessonRoundDataSet(lessonRoundDataSetCopy)
-        console.log(lessonRoundDataSet)
+        setClassRoundDataSet(classRoundDataSetCopy)
+        console.log(classRoundDataSet)
         // 여기에 진행시간 나올 것.
     }
 
-    console.log(lessonRoundDataSet, "데이터셋 바꼈니?!")
+    console.log(classRoundDataSet, "데이터셋 바꼈니?!")
 
     const plusRunnigTime = (date, runTime) => {
         const startDate = new Date(date)
@@ -236,9 +235,9 @@ const ClassRoundJoin = () => {
     }
 
     const handleClickTmpStore = () => {
-        // lessonData.lessonTotalRound = lessonTotalRound 
-        axios.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
-        lessonData,
+        // classData.classTotalRound = classTotalRound 
+        axios.post(`${url}/class/join`, // 강의 데이터 갑니다.
+        classData,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res=> {
@@ -248,8 +247,8 @@ const ClassRoundJoin = () => {
             console.log(err)
         })
         // 개별 강의 갑니다.
-        axios.post(`${url}/lesson/join/round`,
-        lessonRoundDataSet,
+        axios.post(`${url}/class/join/round`,
+        classRoundDataSet,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res => {
@@ -260,13 +259,11 @@ const ClassRoundJoin = () => {
         })
         navigate("/")
     }
-    const handleClickRegisterLesson = () => {
-        // lessonData.lessonStatus = "강의 전"
-        // lessonData.lessonTotalRound = lessonTotalRound
-        lessonData.lessonStatus = "강의 전"
-        console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?")
-        axios.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
-        lessonData,
+    const handleClickRegisterClass = () => {
+        // classData.classStatus = "강의 전"
+        // classData.classTotalRound = classTotalRound
+        axios.post(`${url}/class/join`, // 강의 데이터 갑니다.
+        classData,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res=> {
@@ -276,8 +273,8 @@ const ClassRoundJoin = () => {
             console.log(err)
         })
         // 개별 강의 회차 갑니다.
-        axios.post(`${url}/lesson/join/round`,
-        lessonRoundDataSet,
+        axios.post(`${url}/class/join/round`,
+        classRoundDataSet,
         {headers: {"Content-Type": 'application/json'}}
         )
         .then(res => {
@@ -298,8 +295,8 @@ const ClassRoundJoin = () => {
                     type="number"
                     id="totalTime"
                     min={0}
-                    onFocus={() => handleFocusChange(setLessonTotalRound, lessonTotalRound)}
-                    value={lessonTotalRound}
+                    onFocus={() => handleFocusChange(setClassTotalRound, classTotalRound)}
+                    value={classTotalRound}
                     onChange={handleTotalTimeChange}
                 />
                 <span>회</span>
@@ -314,8 +311,8 @@ const ClassRoundJoin = () => {
                 <p>강의시간(분)</p>
                 <input
                 type="number"
-                name="lessonRunningTime"
-                value={lessonRunningTime}
+                name="classRunningTime"
+                value={classRunningTime}
                 min={0}
                 onChange={handleRunningTimeChange}
                 onBlur={handletotalTimeBlur}
@@ -347,8 +344,8 @@ const ClassRoundJoin = () => {
                         id={day.code}
                         startHour={day.startHour}
                         startMinute={day.startMinute}
-                        lessonRunningTime={day.lessonRunningTime}
-                        onDataChange={handleLessonRoundTimeChange}
+                        classRunningTime={day.classRunningTime}
+                        onDataChange={handleClassRoundTimeChange}
                         />
                         </>
                     )
@@ -356,12 +353,12 @@ const ClassRoundJoin = () => {
             })}
 
 
-            <button onClick={handleInsertLessonRoundTime}>수업시간 기본 입력</button>
+            <button onClick={handleInsertClassRoundTime}>수업시간 기본 입력</button>
             {/* 하나씩 하나씩. */}
             <div>
                 <h1>수업 일자 확인</h1>
-                {lessonRoundDataSet.map((item, idx)=> {
-                    console.log(item.lessonRoundStartDatetime, "시작시간")
+                {classRoundDataSet.map((item, idx)=> {
+                    console.log(item.classRoundStartDatetime, "시작시간")
                     return (
                     <>
                     <p>{idx+1}번째 강의</p>
@@ -369,11 +366,11 @@ const ClassRoundJoin = () => {
                     key={idx}
                     idx={idx}
                     initial={false}
-                    initialDate={item.lessonRoundStartDatetime}
-                    miniDisabledDate={idx!==0 ? lessonRoundDataSet[idx-1]?.lessonRoundStartDatetime : new Date()}
-                    maxDisabledDate={idx!==lessonTotalRound ? lessonRoundDataSet[idx+1]?.lessonRoundStartDatetime : false}
+                    initialDate={item.classRoundStartDatetime}
+                    miniDisabledDate={idx!==0 ? classRoundDataSet[idx-1]?.classRoundStartDatetime : new Date()}
+                    maxDisabledDate={idx!==classTotalRound ? classRoundDataSet[idx+1]?.classRoundStartDatetime : false}
                     onDataChange={getDateData}
-                    lessonRunningTime={item.lessonRunningTimeForEnd}
+                    classRunningTime={item.classRunningTimeForEnd}
                     />
                     </>
                     )
@@ -384,12 +381,12 @@ const ClassRoundJoin = () => {
             {/* 캘린더 */}
             <div>수업 일자 확인 및 추가 일정 수정</div>
 
-            {lessonRoundDataSet.map((item, idx)=> {
+            {classRoundDataSet.map((item, idx)=> {
                     return <ClassRoundItem 
                     key={idx}
                     idx={idx}
-                    onDataChange={getLessonData}
-                    title={item?.lessonRoundTitle}
+                    onDataChange={getClassData}
+                    title={item?.classRoundTitle}
                     />
                 })}
 
@@ -397,7 +394,7 @@ const ClassRoundJoin = () => {
             <div>
                 <button>이전</button>
                 <button onClick={handleClickTmpStore}>임시 저장</button>
-                <button onClick={handleClickRegisterLesson}>강의 등록</button>
+                <button onClick={handleClickRegisterClass}>강의 등록</button>
             </div>
         </>
     );
