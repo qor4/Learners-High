@@ -41,7 +41,7 @@ public class TeacherController {
     public ResponseEntity<CustomResponseBody> showWeeklyLessonSchedule(@PathVariable Long userNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 메인 강의 조회 완료");
         HashMap<Integer, Object> mainLessonListDtoList = teacherService.showWeeklyLessonSchedule(userNo);
-        responseBody.getList().add(mainLessonListDtoList);
+        responseBody.setResult(mainLessonListDtoList);
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -52,7 +52,7 @@ public class TeacherController {
         CustomResponseBody responseBody = new CustomResponseBody("강사 " + status + " 목록 조회 완료");
         try {
             List<LessonListDto> lessonList = teacherService.teacherLessonList(userNo, status);
-            responseBody.getList().add(lessonList);
+            responseBody.setResult(lessonList);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -78,7 +78,7 @@ public class TeacherController {
             List<JobDto> jobDtoList = userService.jobList(user);
             teacherProfile.setEduInfos(eduDtoList);
             teacherProfile.setJobInfos(jobDtoList);
-            responseBody.getList().add(teacherProfile);
+            responseBody.setResult(teacherProfile);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -112,7 +112,7 @@ public class TeacherController {
             HashMap<String, Object> studentTabInfo = new HashMap<>();
             studentTabInfo.put("lessonRoundInfo", lessonRoundDetailDtoList);
             studentTabInfo.put("studentInfo", studentAttendHomeworkDtoList);
-            responseBody.getList().add(studentTabInfo);
+            responseBody.setResult(studentTabInfo);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -135,7 +135,7 @@ public class TeacherController {
             String lessonInfo = teacherService.getInfoTab(lessonNo);
             HashMap<String, Object> InfoTab = new HashMap<>();
             InfoTab.put("lessonInfo", lessonInfo);
-            responseBody.getList().add(InfoTab);
+            responseBody.setResult(InfoTab);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
@@ -156,7 +156,7 @@ public class TeacherController {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 과제 탭 조회 완료");
         try {
             List<LessonRoundHomeworkStatusDto> lessonHomeworkInfo = teacherService.getHomeworkTabInfo(lessonNo);
-            responseBody.setList(lessonHomeworkInfo);
+            responseBody.setResult(lessonHomeworkInfo);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
