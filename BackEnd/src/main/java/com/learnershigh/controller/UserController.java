@@ -145,11 +145,12 @@ public class UserController {
     @GetMapping("/login/kakao/callback")
     @ApiOperation("카카오 로그인")
     @ResponseBody
-    public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code ,@RequestBody KakaoInfo kakaoInfo) throws JsonProcessingException{
+    public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code) throws JsonProcessingException{
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
         try {
-            HashMap<String, Object> userInfo = userService.kakaoUserJoin(code, kakaoInfo);
-            responseBody.getList().add(userInfo);
+            HashMap<String, Object> userInfo = userService.kakaoUserJoin(code);
+
+            responseBody.setResult(userInfo);
         }catch (IllegalStateException i){
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(i.getMessage());
@@ -160,6 +161,52 @@ public class UserController {
             return ResponseEntity.ok().body(responseBody);
         }
         return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 카카오 로그인시 user_tel, user_info, user_type이 비어있다면 검사하는 곳
+    @GetMapping("/kakao/info/check/{userEmail}")
+    @ApiOperation("카카오 로그인시 user_tel, user_info, user_type이 비어있다면 검사")
+    public ResponseEntity<BaseResponseBody> kakaoEmailCheck(@PathVariable("userEmail") String userEmail) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("정보들이 비어있습니다.");
+        try {
+            userService.kakaoEmailCheck(userEmail);
+                baseResponseBody.setResultCode(0);
+                return ResponseEntity.ok().body(baseResponseBody);
+
+        } catch (IllegalStateException i){
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(i.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        catch (Exception e) {
+            baseResponseBody.setResultCode(-2);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+
+    }
+
+    //카카오 로그인 추가 정보 받기
+    @PostMapping("/kakao/addinfo/{userEmail}")
+    @ApiOperation("카카오 로그인 추가 정보 받기")
+    public ResponseEntity<BaseResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("정보들이 추가 되었습니다.");
+        try {
+            userService.kakaoPlus(kakaoInfo, userEmail);
+            baseResponseBody.setResultCode(0);
+            return ResponseEntity.ok().body(baseResponseBody);
+
+        } catch (IllegalStateException i){
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(i.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        catch (Exception e) {
+            baseResponseBody.setResultCode(-2);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+
     }
 
 
@@ -201,7 +248,7 @@ public class UserController {
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto) {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
         HashMap<String, Object> userInfo = userService.userLogin(loginDto);
-        responseBody.getList().add(userInfo);
+        responseBody.setResult(userInfo);
         return ResponseEntity.ok().body(responseBody);
     }
 
