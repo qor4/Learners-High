@@ -11,6 +11,7 @@ import UserJoinPage from "./pages/auth/UserJoinPage";
 import MainPage from "./pages/MainPage";
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
+import ClassRoundJoin from "./components/class/ClassRoundJoin"
 import LessonInfoPage from "./pages/LessonInfoPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import Header from "./components/common/Header";
