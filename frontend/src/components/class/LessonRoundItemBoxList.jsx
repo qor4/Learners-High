@@ -5,11 +5,33 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { url } from "../../api/APIPath";
+import styled from "styled-components";
 
 import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
 
-const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
+const StyledBox = styled.div`
+    background-color: #fff;
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+    position: relative;
+    margin-top: 1.25rem;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:hover {
+        background-color: #edf1ff;
+        cursor: pointer;
+    }
+`;
+
+const LessonRoundItemBoxList = ({
+    selectedDay,
+    dayName,
+    onSelectedDayLessonsChange,
+}) => {
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
     const [dayLessonListDataSet, setDayLessonListDataSet] = useState([]);
@@ -19,34 +41,46 @@ const LessonRoundItemBoxList = ({ selectedDay, dayName }) => {
             axios
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
-                    console.log(response);
                     setDayLessonListDataSet(response.data.result);
+                    // 요일에 맞는 수업들의 개수를 전달하는 것
+                    if (response.data.result[selectedDay]) {
+                        onSelectedDayLessonsChange(
+                            response.data.result[selectedDay].length
+                        );
+                    }
                 });
         } else if (selectedDay && userType === "S") {
             axios
                 .get(`${url}/student/lesson/main/${userNo}`)
                 .then((response) => {
-                    console.log(response);
                     setDayLessonListDataSet(response.data.result);
+
+                    // 요일에 맞는 수업들의 개수를 전달하는 것
+                    if (response.data.result[selectedDay]) {
+                        onSelectedDayLessonsChange(
+                            response.data.result[selectedDay].length
+                        );
+                    }
                 });
         }
-    }, [selectedDay, userNo, userType]);
+    }, [selectedDay, userNo, userType, onSelectedDayLessonsChange]);
 
     // prop 받은 (선택된) 요일에 맞는 수업들을 담아둔 곳
     const selectedDayLessons = dayLessonListDataSet[selectedDay];
 
     return (
         <>
-            {/* 이 부분은 이후 요일 버튼에 작게 들어갈 수 있도록 변경 예정 => 후순위 */}
-            {selectedDayLessons && <div>{selectedDayLessons.length} 건의 수업이 있습니다.</div>}
-            
-            {selectedDayLessons && selectedDayLessons.length > 0 ? (
-                selectedDayLessons.map((lessonItem, index) => (
-                    <LessonRoundItemBox lessonInfo={lessonItem} key={index} />
-                ))
-            ) : (
-                <Card>{dayName}요일 수업 없음</Card>
-            )}
+            <Card $skyBlue>
+                {selectedDayLessons && selectedDayLessons.length > 0 ? (
+                    selectedDayLessons.map((lessonItem, index) => (
+                        <StyledBox key={index}>
+                            <LessonRoundItemBox lessonInfo={lessonItem} />
+                        </StyledBox>
+                    ))
+                ) : (
+                    <StyledBox>{dayName}요일 수업 없음</StyledBox>
+                )}
+            </Card>
         </>
     );
 };

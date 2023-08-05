@@ -2,11 +2,44 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import { url } from "../../api/APIPath";
 
 import Banner from "../common/Banner";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
+
+// 배너 wrap styled
+const StyledBanner = styled.div`
+    width: 90%;
+    margin: 0 auto;
+`;
+
+// 링크 hover 했을 때
+const HoverLink = styled(Link)`
+    &:hover {
+        font-weight: bold;
+        color: #293c81;
+    }
+`;
+
+// 인기 강의 styled
+const StyledPopular = styled.div`
+    width: 85%;
+    margin: 3rem auto;
+`;
+
+const PopularTitle = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    & > span {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+`;
 
 const GuestMain = () => {
     const [popularLessonDataSet, setPopularLessonDataSet] = useState([]);
@@ -21,9 +54,9 @@ const GuestMain = () => {
     return (
         <>
             {/* 배너 공간 */}
-            <div className="w-11/12 mx-auto">
-                <Banner $point>
-                    <div className="text-center mb-3 leading-10">
+            <StyledBanner>
+                <Banner $image="assets/temp-banner.jpg" $point>
+                    <div>
                         <strong>LEARNERS HIGH 만의</strong>
                         <br />
                         서비스를 경험해 보고 싶다면,
@@ -34,20 +67,22 @@ const GuestMain = () => {
                         </Button>
                     </Link>
                 </Banner>
-            </div>
+            </StyledBanner>
 
-            <div className="w-11/12 md:w-4/5 mx-auto mt-12">
+            <div>
                 {/* 인기 강의 공간 */}
-                <div>
-                    <span className="text-2xl font-bold">인기 강의</span>
-                    <Link to="/lesson">더보기</Link>
+                <StyledPopular>
+                    <PopularTitle>
+                        <span>인기 강의</span>
+                        <HoverLink to="/lesson">더보기</HoverLink>
+                    </PopularTitle>
 
                     {/* 인기 강의 4개 데이터 가져와서 보여주면 됨 api: /lesson/list/main  */}
                     <LessonList items={popularLessonDataSet} />
-                </div>
+                </StyledPopular>
 
                 {/* 서비스 내용이 들어갈 공간 */}
-                <div className="mt-16">
+                <div>
                     <div>
                         <span>LEARNERS HIGH의 장점은 이렇습니다.</span>
                         <span>

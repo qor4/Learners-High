@@ -19,12 +19,47 @@ const NavStyle = styled(NavLink)`
         color: #293c81;
     }
 `;
+const NavHoverStyle = styled(NavLink)`
+    &:hover {
+        font-weight: bold;
+        color: #293c81;
+    }
+`;
+
+const Img = styled.img`
+    width: 2.5rem;
+`;
+
+const StyledHeader = styled.header`
+    width: 100%;
+    height: 6.25rem;
+    margin-bottom: 2rem;
+    background-color: #fff;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const StyledNav = styled.nav`
+    width: 95%;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const HeaderCommonNav = styled.div`
+    display: flex;
+    align-items: center;
+
+    & > * {
+        margin: 0 1rem;
+    }
+`;
 
 const Header = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const userType = useSelector((state) => state.user.userType);
-    // const userType = "T";
+    const userNo = useSelector((state) => state.user.userNo);
 
     // 로그인 버튼 클릭 했을 때, 로그인 모달 창
     const handleLoginButtonClick = () => {
@@ -39,44 +74,27 @@ const Header = () => {
     };
 
     return (
-        <header>
-            <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-                <h1 className="flex lg:flex-1">
-                    <NavStyle to="/" className="-m-1.5 p-1.5">
-                        <img
-                            className="h-14 w-auto"
-                            src="/assets/logo-temp.png"
-                            alt="logo-img"
-                        />
-                    </NavStyle>
-                </h1>
-
-                {/* 햄버거 메뉴 */}
-                <div className="flex md:hidden">
-                    <button
-                        type="button"
-                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-                        onClick={() => setMobileMenuOpen(true)}
-                    >
-                        <HiMenu className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                </div>
-
+        <StyledHeader>
+            <StyledNav>
                 {/* 로그인이 안 되어있을 경우 */}
                 {!userType && (
                     <>
-                        <NavStyle to="/lesson" className="text-base">
-                            전체 강의
-                        </NavStyle>
-                        <NavStyle to="/join" className="text-base">
-                            회원가입
-                        </NavStyle>
-                        <NavLink
-                            onClick={handleLoginButtonClick}
-                            className="text-base"
-                        >
-                            로그인
-                        </NavLink>
+                        <HeaderCommonNav>
+                            <NavStyle to="/">
+                                <Img
+                                    src="/assets/logo-temp.png"
+                                    alt="logo-img"
+                                />
+                            </NavStyle>
+                            <NavStyle to="/lesson">전체 강의</NavStyle>
+                        </HeaderCommonNav>
+
+                        <HeaderCommonNav>
+                            <NavStyle to="/join">회원가입</NavStyle>
+                            <NavHoverStyle onClick={handleLoginButtonClick}>
+                                로그인
+                            </NavHoverStyle>
+                        </HeaderCommonNav>
 
                         {/* 로그인 모달창 */}
                         <Modal
@@ -92,26 +110,57 @@ const Header = () => {
                 {/* 로그인이 되어있고 선생님일 경우 */}
                 {userType === "T" && (
                     <>
-                        <NavStyle to="/lesson">전체 강의</NavStyle>
-                        <li>수업 관리</li>
-                        <NavStyle to="/lesson/join">강의 개설</NavStyle>
-                        <UserLogOut />
-                        <li>마이페이지</li>
+                        <HeaderCommonNav>
+                            <NavStyle to="/">
+                                <Img
+                                    src="/assets/logo-temp.png"
+                                    alt="logo-img"
+                                />
+                            </NavStyle>
+                            <NavStyle to="/lesson">전체 강의</NavStyle>
+                            <NavStyle to={`/edu/teacher/${userNo}`}>
+                                수업 관리
+                            </NavStyle>
+                            <NavStyle to="/lesson/join">강의 개설</NavStyle>
+                        </HeaderCommonNav>
+                        <HeaderCommonNav>
+                            <NavHoverStyle>
+                                <UserLogOut />
+                            </NavHoverStyle>
+                            <NavStyle to={`/user/${userNo}`}>
+                                마이페이지
+                            </NavStyle>
+                        </HeaderCommonNav>
                     </>
                 )}
 
                 {/* 로그인이 되어있고 학생일 경우 */}
                 {userType === "S" && (
                     <>
-                        <NavStyle to="/lesson">전체 강의</NavStyle>
-                        <li>수강 목록</li>
-                        <UserLogOut />
-                        <li>마이페이지</li>
+                        <HeaderCommonNav>
+                            <NavStyle to="/">
+                                <Img
+                                    src="/assets/logo-temp.png"
+                                    alt="logo-img"
+                                />
+                            </NavStyle>
+                            <NavStyle to="/lesson">전체 강의</NavStyle>
+                            <NavStyle to={`/edu/student/${userNo}`}>
+                                수강 목록
+                            </NavStyle>
+                        </HeaderCommonNav>
+                        <HeaderCommonNav>
+                            <NavHoverStyle>
+                                <UserLogOut />
+                            </NavHoverStyle>
+                            <NavStyle to={`/user/${userNo}`}>
+                                마이페이지
+                            </NavStyle>
+                        </HeaderCommonNav>
                     </>
                 )}
-            </nav>
-
-        </header>
+            </StyledNav>
+        </StyledHeader>
     );
 };
 

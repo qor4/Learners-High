@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
 import { logOutUser } from "../../store/UserStore";
 
 export const UserLogOut = () => {
@@ -14,5 +15,5 @@ export const UserLogOut = () => {
         navigate("/");
     };
 
-    return <button onClick={handleLogout}>로그아웃</button>;
+    return <div onClick={handleLogout}>로그아웃</div>;
 };

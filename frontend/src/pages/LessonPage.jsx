@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 
 import axios from "axios";
-import { url } from "../api/APIPath";
+import styled from "styled-components";
 import { HiSearch } from "react-icons/hi";
+import { url } from "../api/APIPath";
+import { Grid } from "@mui/material";
 
 import LessonList from "../components/class/LessonList";
 import Banner from "../components/common/Banner";
@@ -11,6 +13,41 @@ import Pagination from "../components/common/Pagination";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
+
+// 배너 styled
+const StyledBanner = styled.div`
+    width: 90%;
+    margin: 0 auto;
+`;
+
+// contents 부분
+const StyledContents = styled.div`
+    width: 85%;
+    margin: 0 auto;
+`;
+
+// 검색 부분
+const StyledSearch = styled.div`
+    margin-top: 3rem;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    & > select {
+        width: 5rem;
+        height: 3rem;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+    }
+`;
+
+// 필터 wrap (인기순 같은 ,,,)
+const FilterWrapper = styled.div`
+    display: flex;
+    justify-content: right;
+    margin: 1.5rem 0;
+
+`
 
 const LessonPage = () => {
     // 기본 데이터 GET 요청
@@ -82,34 +119,45 @@ const LessonPage = () => {
     return (
         <div>
             {/* 배너 */}
-            <div className="w-11/12 mx-auto">
-                <Banner $point>배너 들어갈 공간입니다.</Banner>
-            </div>
-            <div className="w-11/12 md:w-4/5 mx-auto mt-12">
+            <StyledBanner>
+                <Grid container spacing={3}>
+                    <Grid item xs={7}>
+                        <Banner $point>배너1 들어갈 공간입니다.</Banner>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Banner $point>배너2 들어갈 공간입니다.</Banner>
+                    </Grid>
+                </Grid>
+            </StyledBanner>
+            <StyledContents>
                 {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
-                <select
-                    value={searchOption}
-                    onChange={(e) => setSearchOption(e.target.value)}
-                >
-                    <option value="전체">전체</option>
-                    <option value="강사명">강사명</option>
-                    <option value="강의명">강의명</option>
-                </select>
-                <Input
-                    type="text"
-                    placeholder="검색어를 입력해 주세요."
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                />
-                <Button onClick={handleSearchChange}>
-                    <HiSearch />
-                </Button>
+                <StyledSearch>
+                    <select
+                        value={searchOption}
+                        onChange={(e) => setSearchOption(e.target.value)}
+                    >
+                        <option value="전체">전체</option>
+                        <option value="강사명">강사명</option>
+                        <option value="강의명">강의명</option>
+                    </select>
+                    <Input
+                        type="text"
+                        placeholder="검색어를 입력해 주세요."
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
+                    <Button onClick={handleSearchChange}>
+                        <HiSearch />
+                    </Button>
+                </StyledSearch>
 
                 {/* 과목 분류를 누르면 필터링되는 공간 */}
-                <Card>
+                <Card $skyBlue $MarginReset>
                     <Button
                         onClick={() => setSelectedLessonType("전체")}
                         $point={selectedLessonType === "전체"}
+                        $white
+                        disabled={selectedLessonType === "전체"}
                     >
                         전체
                     </Button>
@@ -123,7 +171,12 @@ const LessonPage = () => {
                                         lessonType.lessonTypeName
                                     );
                                 }}
+                                $white
                                 $point={
+                                    selectedLessonType ===
+                                    lessonType.lessonTypeName
+                                }
+                                disabled={
                                     selectedLessonType ===
                                     lessonType.lessonTypeName
                                 }
@@ -134,10 +187,10 @@ const LessonPage = () => {
                 </Card>
 
                 {/* 순서 정렬 기준 */}
-                <div>
+                <FilterWrapper>
                     <span>인기순</span>
                     <span>강사 만족도순</span>
-                </div>
+                </FilterWrapper>
                 {/* 강의 목록 아이템이 보이는 공간 */}
                 <div>
                     <LessonList items={filteredLessonListData} />
@@ -154,7 +207,7 @@ const LessonPage = () => {
                         />
                     )}
                 </div>
-            </div>
+            </StyledContents>
         </div>
     );
 };

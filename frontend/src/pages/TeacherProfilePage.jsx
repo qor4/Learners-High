@@ -13,22 +13,21 @@ import Button from "../components/common/Button";
 const TeacherProfilePage = () => {
     const { userNo } = useParams();
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
-    const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체")
+    const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체");
 
     useEffect(() => {
         // 강사 프로필 GET 요청
         axios.get(`${url}/teacher/profile/${userNo}`).then((response) => {
-            setTeacherInfoDataSet(response.data);
+            setTeacherInfoDataSet(response.data.result);
         });
     }, [userNo]);
 
     // 강의 상태에 따른 데이터 GET 요청
 
-
     return (
         <div>
             {/* 강사 정보 들어갈 공간 */}
-            <div className="bg-slate-200 p-10">
+            <div>
                 <TeacherIntroduceBox teacherInfo={teacherInfoDataSet} />
             </div>
 
@@ -38,7 +37,7 @@ const TeacherProfilePage = () => {
             </Card>
 
             {/* 탭바 (전체 강의 / 수업 예정 / 진행 중 / 종료) */}
-            <div className="w-11/12 md:w-4/5 mx-auto">
+            <div>
                 <Button>전체</Button>
                 <Button>강의 중</Button>
                 <Button>강의 종료</Button>

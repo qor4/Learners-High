@@ -4,7 +4,14 @@ import styled, { css } from "styled-components";
 
 const StyledBanner = styled.div`
     width: auto;
-    background-image: url(${(props) => props.image});
+
+    ${(props) =>
+        props.$image &&
+        `
+    background-image: url(${props.$image});
+  `}
+    background-size: cover;
+
     height: 444px;
     border-radius: 40px;
     position: relative;
@@ -36,7 +43,7 @@ const PointBanner = styled.div`
 
 const Banner = (props) => {
     return (
-        <StyledBanner {...props}>
+        <StyledBanner $image={props.$image}>
             <PointBanner {...props}>{props.children}</PointBanner>
         </StyledBanner>
     );

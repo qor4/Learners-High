@@ -25,6 +25,15 @@ const StyledBottomBar = styled.div`
     z-index: 1;
 `;
 
+const BottomBarContents = styled.div`
+    width: 55%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
 const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
@@ -127,8 +136,8 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
 
                     {/* 하단바 */}
                     <StyledBottomBar>
-                        <div className="w-4/5 mx-auto">
-                            <span>{lessonInfo.lessonName}</span>
+                        <BottomBarContents>
+                            <span><strong>{lessonInfo.lessonName}</strong></span>
                             <span>{lessonInfo.lessonPrice}원</span>
 
                             {/* 수강신청을 한 경우 */}
@@ -152,7 +161,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
 
                             {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
                             {userType === "S" && lessonStateDataSet === 0 && (
-                                <>
+                                <div>
                                     <Button onClick={handleApplyChange}>
                                         수강 신청 ( {lessonInfo.totalStudent} /{" "}
                                         {lessonInfo.maxStudent} 명 )
@@ -160,9 +169,9 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
                                     <Button>
                                         <HiOutlineHeart />
                                     </Button>
-                                </>
+                                </div>
                             )}
-                        </div>
+                        </BottomBarContents>
                     </StyledBottomBar>
                 </>
             )}

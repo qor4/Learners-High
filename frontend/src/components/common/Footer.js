@@ -11,7 +11,7 @@ const StyledFooter = styled.footer`
 
 const Footer = () => {
     return (
-        <StyledFooter className="mt-20">
+        <StyledFooter>
             <span>푸터에 들어갈 내용을 입력해 주세요.</span>
         </StyledFooter>
     );
