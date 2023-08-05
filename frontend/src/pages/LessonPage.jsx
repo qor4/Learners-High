@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 
 import axios from "axios";
-import { url } from "../api/APIPath";
+import styled from "styled-components";
 import { HiSearch } from "react-icons/hi";
+import { url } from "../api/APIPath";
 
 import LessonList from "../components/class/LessonList";
 import Banner from "../components/common/Banner";
@@ -83,7 +84,8 @@ const LessonPage = () => {
         <div>
             {/* 배너 */}
             <div>
-                <Banner $point>배너 들어갈 공간입니다.</Banner>
+                <Banner $point>배너1 들어갈 공간입니다.</Banner>
+                <Banner $point>배너2 들어갈 공간입니다.</Banner>
             </div>
             <div>
                 {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
@@ -106,10 +108,12 @@ const LessonPage = () => {
                 </Button>
 
                 {/* 과목 분류를 누르면 필터링되는 공간 */}
-                <Card>
+                <Card $skyBlue>
                     <Button
                         onClick={() => setSelectedLessonType("전체")}
                         $point={selectedLessonType === "전체"}
+                        $white
+                        disabled={selectedLessonType === "전체"}
                     >
                         전체
                     </Button>
@@ -123,7 +127,12 @@ const LessonPage = () => {
                                         lessonType.lessonTypeName
                                     );
                                 }}
+                                $white
                                 $point={
+                                    selectedLessonType ===
+                                    lessonType.lessonTypeName
+                                }
+                                disabled={
                                     selectedLessonType ===
                                     lessonType.lessonTypeName
                                 }

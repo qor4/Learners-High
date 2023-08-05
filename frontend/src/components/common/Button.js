@@ -21,17 +21,17 @@ const SIZES = {
 const StyledButton = styled.button`
     width: auto;
     background-color: #fff;
-    border: 1px solid #000;
-    border-radius: 12px;
+    border: 1px solid #293c81;
+    border-radius: 0.75rem;
     box-sizing: border-box;
-    padding: 4px 20px;
+    padding: 0.25rem 1.25rem;
     cursor: pointer;
     color: #000;
     font-size: 1rem;
 
     // disabled 아닐 때, hover 시
     &:not(:disabled):hover {
-        background: #000;
+        background: #293c81;
         color: #fff;
     }
 
@@ -42,7 +42,6 @@ const StyledButton = styled.button`
     &:disabled {
         cursor: default;
         font-weight: bold;
-        opacity: 0.7;
     }
 
     // width 100%
@@ -52,15 +51,21 @@ const StyledButton = styled.button`
             width: 100%;
         `}
 
+    // 흰색 버튼
+    ${(props) =>
+        props.$white &&
+        css`
+            border: none;
+        `}
+
     // 포인트 버튼 (반전)
     ${(props) =>
         props.$point &&
         css`
-            background-color: #000;
+            background-color: #293c81;
             color: #fff;
             &:not(:disabled):hover {
-                background: #fff;
-                color: #000;
+                background: #3f56a9;
             }
         `}
     

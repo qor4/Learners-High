@@ -2,11 +2,24 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import { url } from "../../api/APIPath";
 
 import Banner from "../common/Banner";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
+
+// 배너 styled
+const StyledBanner = styled.div`
+    width: 90%;
+    margin: 0 auto;
+`;
+
+// 인기 강의 styled
+const StyledPopular = styled.div`
+    width: 85%;
+    margin: 3rem auto;
+`;
 
 const GuestMain = () => {
     const [popularLessonDataSet, setPopularLessonDataSet] = useState([]);
@@ -21,8 +34,8 @@ const GuestMain = () => {
     return (
         <>
             {/* 배너 공간 */}
-            <div>
-                <Banner $point>
+            <StyledBanner>
+                <Banner $image="assets/temp-banner.jpg" $point>
                     <div>
                         <strong>LEARNERS HIGH 만의</strong>
                         <br />
@@ -34,17 +47,19 @@ const GuestMain = () => {
                         </Button>
                     </Link>
                 </Banner>
-            </div>
+            </StyledBanner>
 
             <div>
                 {/* 인기 강의 공간 */}
-                <div>
-                    <span>인기 강의</span>
-                    <Link to="/lesson">더보기</Link>
+                <StyledPopular>
+                    <div>
+                        <span>인기 강의</span>
+                        <Link to="/lesson">더보기</Link>
+                    </div>
 
                     {/* 인기 강의 4개 데이터 가져와서 보여주면 됨 api: /lesson/list/main  */}
                     <LessonList items={popularLessonDataSet} />
-                </div>
+                </StyledPopular>
 
                 {/* 서비스 내용이 들어갈 공간 */}
                 <div>

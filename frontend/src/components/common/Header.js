@@ -59,6 +59,7 @@ const HeaderCommonNav = styled.div`
 const Header = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const userType = useSelector((state) => state.user.userType);
+    const userNo = useSelector((state) => state.user.userNo);
 
     // 로그인 버튼 클릭 했을 때, 로그인 모달 창
     const handleLoginButtonClick = () => {
@@ -117,14 +118,18 @@ const Header = () => {
                                 />
                             </NavStyle>
                             <NavStyle to="/lesson">전체 강의</NavStyle>
-                            <li>수업 관리</li>
+                            <NavStyle to={`/edu/teacher/${userNo}`}>
+                                수업 관리
+                            </NavStyle>
                             <NavStyle to="/lesson/join">강의 개설</NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
                             <NavHoverStyle>
                                 <UserLogOut />
                             </NavHoverStyle>
-                            <li>마이페이지</li>
+                            <NavStyle to={`/user/${userNo}`}>
+                                마이페이지
+                            </NavStyle>
                         </HeaderCommonNav>
                     </>
                 )}
@@ -140,13 +145,17 @@ const Header = () => {
                                 />
                             </NavStyle>
                             <NavStyle to="/lesson">전체 강의</NavStyle>
-                            <li>수강 목록</li>
+                            <NavStyle to={`/edu/student/${userNo}`}>
+                                수강 목록
+                            </NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
                             <NavHoverStyle>
                                 <UserLogOut />
                             </NavHoverStyle>
-                            <li>마이페이지</li>
+                            <NavStyle to={`/user/${userNo}`}>
+                                마이페이지
+                            </NavStyle>
                         </HeaderCommonNav>
                     </>
                 )}

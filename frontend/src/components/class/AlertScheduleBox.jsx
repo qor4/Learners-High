@@ -9,7 +9,7 @@ const StyledImg = styled.img`
     bottom: 0;
 `
 const StyledDiv = styled.div`
-    margin-left: 100px;
+    margin-left: 6rem;
 `
 
 const AlertScheduleBox = (props) => {
@@ -17,7 +17,6 @@ const AlertScheduleBox = (props) => {
         <Card>
             <StyledImg src="assets/watch.png" alt="watch-img" />
             <StyledDiv>{props.children}</StyledDiv>
-            
         </Card>
     );
 };

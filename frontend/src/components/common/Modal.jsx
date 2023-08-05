@@ -14,7 +14,7 @@ const StyledModalBackdrop = styled.div`
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1;
+    z-index: 2;
 `;
 
 // 모달 콘텐츠 (흰색 박스)
@@ -30,16 +30,16 @@ const StyledModalContent = styled.div`
 
 const StyledHixIcon = styled(HiX)`
     position: absolute;
-    top: 40px;
-    right: 40px;
+    top: 2.5rem;
+    right: 2.5rem;
 
     cursor: pointer;
 `;
 
 const ModalTitle = styled.div`
-    font-size: 36px;
+    font-size: 2.25rem;
     font-weight: bold;
-`
+`;
 
 const Modal = (props) => {
     if (!props.show) return null;

@@ -24,6 +24,9 @@ import TeacherRealLessonRoomPage from "./pages/room/TeacherRealLessonRoomPage";
 
 // test용
 import StudentMain from "./components/main/StudentMain";
+import MyPagePage from "./pages/user/MyPagePage";
+import EduTeacherManagePage from "./pages/EduTeacherManagePage";
+import EduStudentManagePage from "./pages/EduStudentManagePage";
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -75,6 +78,18 @@ function App() {
                     <Route
                         path="/profile/:userNo"
                         element={<TeacherProfilePage />}
+                    ></Route>
+                    <Route
+                        path="/user/:userNo"
+                        element={<MyPagePage />}
+                    ></Route>
+                    <Route
+                        path="/edu/teacher/:userNo"
+                        element={<EduTeacherManagePage />}
+                    ></Route>
+                    <Route
+                        path="/edu/student/:userNo"
+                        element={<EduStudentManagePage />}
                     ></Route>
                     <Route
                         path="/lessonroom/:lessonNo/:lessonRoundNo/wait"

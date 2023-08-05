@@ -15,5 +15,5 @@ export const UserLogOut = () => {
         navigate("/");
     };
 
-    return <NavLink onClick={handleLogout}>로그아웃</NavLink>;
+    return <div onClick={handleLogout}>로그아웃</div>;
 };
