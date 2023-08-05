@@ -3,31 +3,26 @@ import { UserStatusOption } from "seeso";
 import EasySeeSo from "seeso/easy-seeso";
 import VideoRoomComponent from "../../components/VideoRoomComponent";
 import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
+import { EyeTracker } from "../../store/EyeStore";
 
 import Button from "../../components/common/Button";
 
 const StudentWaitLessonRoomPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
-    let calibrationData = null;
     const navigate = useNavigate()
     const {lessonNo, lessonRoundNo} = useParams()
+    const dispatch = useDispatch()
+
+    
 
     const [bool, setBool] = useState(false);
-    console.log("??")
+  
 
-    // 강의 룸 입장 버튼
-    const enterLessonRoom = () => {
-        console.log(lessonNo+" "+ lessonRoundNo +"으로 입장");
-        // data를 가지고 가야함
-        navigate(`/lessonroom/student/${lessonNo}/${lessonRoundNo}`)
-
-    };
     const licenseKey = "dev_81af036sl2mwzmcbii6lfx2vi9cfhgzhaio8lxc9";
     const dotMaxSize = 10;
     const dotMinSize = 5;
@@ -72,7 +67,6 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
 }
 
     const tmpClick = () => {
-      console.log("클릭은 되지?", eyeTracker)
         if (!isCalibrationMode) {
             isCalibrationMode = true;
             setTimeout(function () {
@@ -108,7 +102,7 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
     function onCalibrationFinished(calibrationData) {
         clearCanvas();
         isCalibrationMode = false;
-        
+        dispatch(EyeTracker(eyeTracker))
     }
 
     function onAttention(timestampBegin, timestampEnd, score) {
@@ -150,6 +144,11 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
     const changeDistance = (e) => {
       setDistance(e.currentTarget.value)
     }
+    const [eyeTrackerSave, setEyeTrackerSave] = useState({})
+    // const saveEyeTracker = () => {
+    //   setEyeTrackerSave(eyeTracker)
+    // }
+        
     return (
         <div style={{position:"relative"}}>
             <div  className="Wrap-Cam-canvas">
@@ -159,7 +158,7 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
 
             {/* 추후 하나의 컴포넌트로 대체 */}
             <div style={{position: 'relative', top: '500px', backgroundColor: "blue",}}>
-              <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} state={{'eyeTracker':eyeTracker}}>
+              <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} >
                 <Button>실제 룸 입장</Button>
               </Link>
               <button onClick={tmpClick}>테스트</button>

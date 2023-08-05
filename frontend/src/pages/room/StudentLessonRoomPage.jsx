@@ -5,18 +5,24 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-const StudentRealLessonRoomPage = () => {
+const StudentLessonRoomPage = () => {
   const userNo = useSelector(state=>state.user.userNo)
   const userId = useSelector(state=>state.user.userId)
   const userName = useSelector(state=>state.userName)
   const {lessonNo, lessonRoundNo} = useParams()
-  const location = useLocation()
-  const eyeTracker = location.state?.eyeTracker || null;
-  (async ()=>{
-    if(eyeTracker){
-      await eyeTracker.startTracking();
-    }
-  })();
+  const location = useLocation();
+  // const eyeTracker = location.state?.eyeTrackerSave || null;
+  const eyeTracker = useSelector(state=> state.EyeTracker.EyeTracker)
+
+  // console.log(eyeTracker, "############## 아이트래커 정보 갔을까?")
+  if(eyeTracker){
+    eyeTracker.startTracking();
+  }
+  // (async ()=>{
+  //   if(eyeTracker){
+  //     await 
+  //   }
+  // })();
   return (
     <>
     <VideoRoomComponent 
@@ -31,4 +37,4 @@ const StudentRealLessonRoomPage = () => {
   )
 }
 
-export default StudentRealLessonRoomPage
+export default StudentLessonRoomPage
