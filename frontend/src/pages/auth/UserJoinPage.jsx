@@ -4,7 +4,7 @@ import UserJoin from "../../components/auth/UserJoin";
 
 const UserJoinPage = () => {
     return (
-        <div className="w-11/12 md:w-3/5 mx-auto">
+        <div>
             <UserJoin />
         </div>
     );

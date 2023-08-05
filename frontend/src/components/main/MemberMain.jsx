@@ -29,7 +29,7 @@ const MemberMain = () => {
     };
 
     return (
-        <div className="w-4/5 mx-auto">
+        <div>
             {/* 일정 안내하는 공간 ex) 김강사님의 월요일 일정은, */}
             <AlertScheduleBox>
                 {userName}님의{" "}

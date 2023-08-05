@@ -127,7 +127,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
 
                     {/* 하단바 */}
                     <StyledBottomBar>
-                        <div className="w-4/5 mx-auto">
+                        <div>
                             <span>{lessonInfo.lessonName}</span>
                             <span>{lessonInfo.lessonPrice}원</span>
 

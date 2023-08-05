@@ -11,42 +11,39 @@ import { url } from "../../api/APIPath";
 import axios from "axios";
 
 const ClassJoin = () => {
-    const navigate = useNavigate()
-    const userNo = useSelector(state=>state.user.userNo)
-    const [lessonNo, setLessonNo] = useState("")
+    const navigate = useNavigate();
+    const userNo = useSelector((state) => state.user.userNo);
+    const [lessonNo, setLessonNo] = useState("");
 
     const [lessonName, setLessonName] = useState("");
     const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
     const [lessonThumbnailInfo, setLessonIntro] = useState("");
     const [lessonInfo, setLessonInfo] = useState("");
-    
+
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
-    
+
     const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
-    const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null)
-    
+    const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null);
+
     const [maxStudent, setMaxStudent] = useState(0);
     const [lessonPrice, setLessonPrice] = useState(0);
 
-    
     // API가 완료되면 밑에 것들로 바꿀 것.
     // const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //lessonTypeList 요청해서 담았다.
-    const [lessonTypeList, setLessonTypeList] = useState([])
-    useEffect( () => {
-        axios.get(`${url}/lesson/type/`)
-        .then(res=> {
+    const [lessonTypeList, setLessonTypeList] = useState([]);
+    useEffect(() => {
+        axios.get(`${url}/lesson/type/`).then((res) => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
-            setLessonTypeList(res.data.result)
-        })
-    }, [])
-
+            setLessonTypeList(res.data.result);
+        });
+    }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
     const handleLessonChange = (event) => {
-        if (lessonName.length >= 30 ) {
+        if (lessonName.length >= 30) {
             return;
         }
         setLessonName(event.target.value);
@@ -60,10 +57,9 @@ const ClassJoin = () => {
     // 과목 이름 검색 버튼 클릭했을 때
     const handleSearchClick = () => {
         const filteredResults = lessonTypeList.filter((item) => {
-            console.log(item, "클릭")
-            return item.lessonTypeName === subjectName
-            }
-        );
+            console.log(item, "클릭");
+            return item.lessonTypeName === subjectName;
+        });
         setSearchResults(filteredResults);
         setSearchClicked(true);
     };
@@ -71,20 +67,20 @@ const ClassJoin = () => {
     // 검색을 통해 나온 과목 li를 클릭했을 때
     const selectedResult = (rlt) => {
         setSubjectName(rlt.lessonTypeName);
-        setChooseLessonTypeNo(rlt.lessonTypeNo)
+        setChooseLessonTypeNo(rlt.lessonTypeNo);
         // console.log(subjectName)
-        console.log(rlt, "이벤트") // 이슈 해결! () => 함수(값)
+        console.log(rlt, "이벤트"); // 이슈 해결! () => 함수(값)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
     // 썸네일 이미지 넣는 URL
-    const [thumbnailURL, setThumbnailURL] = useState("")
+    const [thumbnailURL, setThumbnailURL] = useState("");
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (!file) return
-        const imageURL = URL.createObjectURL(file)
+        if (!file) return;
+        const imageURL = URL.createObjectURL(file);
         setLessonThumbnailImg(file);
-        setThumbnailURL(imageURL)
+        setThumbnailURL(imageURL);
     };
 
     // 수업 내용을 입력했을 때
@@ -124,7 +120,7 @@ const ClassJoin = () => {
     const handleFocusChange = (setStateFunc, value) => {
         setStateFunc(value === 0 ? "" : value);
     };
-    
+
     // 데이터 전송 함수 (임시저장 눌렀을 때)
     const sendDataToServer = () => {
         const data = {
@@ -136,39 +132,45 @@ const ClassJoin = () => {
             lessonThumbnailInfo: lessonThumbnailInfo,
             lessonTypeNo: chooseLessonTypeNo, // 미정
             maxStudent: maxStudent,
-            userNo: userNo // 임시
-        }
-        console.log(data, "데이터")
-        axios.post(`${url}/lesson/join`,
-        data,
-        {headers: {"Content-Type": 'application/json'}}
-        )
-        .then(res=> {
-            console.log(res.data, "resData")
-            console.log(res.data.result)
-            const {lessonNo} = res.data.result
-            setLessonNo(lessonNo)
-            return lessonNo
-        })
-        .then(lessonNo => {
-            if (lessonThumbnailImg) {
-                const formData = new FormData()
-                formData.append('multipartFile', lessonThumbnailImg)
-                axios.post(`${url}/s3/upload/thumbnail/${lessonNo}`,
-                formData,
-                {headers: {'Content-Type': 'multipart/form-data'}}
-                )
-                .then(res=> console.log(res))
-                .catch(err=>console.log(err))
-        }
-        })
-        .catch(err=> console.log(err, "에러")) // 여기에 강의개설 실패 메시지
-    }
+            userNo: userNo, // 임시
+        };
+        console.log(data, "데이터");
+        axios
+            .post(`${url}/lesson/join`, data, {
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res) => {
+                console.log(res.data, "resData");
+                console.log(res.data.result);
+                const { lessonNo } = res.data.result;
+                setLessonNo(lessonNo);
+                return lessonNo;
+            })
+            .then((lessonNo) => {
+                if (lessonThumbnailImg) {
+                    const formData = new FormData();
+                    formData.append("multipartFile", lessonThumbnailImg);
+                    axios
+                        .post(
+                            `${url}/s3/upload/thumbnail/${lessonNo}`,
+                            formData,
+                            {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            }
+                        )
+                        .then((res) => console.log(res))
+                        .catch((err) => console.log(err));
+                }
+            })
+            .catch((err) => console.log(err, "에러")); // 여기에 강의개설 실패 메시지
+    };
     const nextPage = () => {
-        sendDataToServer()
-        console.log(data, "classJoin임")
-        navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
-    }
+        sendDataToServer();
+        console.log(data, "classJoin임");
+        navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
+    };
     const data = {
         lessonInfo: lessonInfo,
         lessonName: lessonName,
@@ -176,12 +178,12 @@ const ClassJoin = () => {
         lessonStatus: "작성 중",
         lessonThumbnailImg: lessonThumbnailImg,
         lessonThumbnailInfo: lessonThumbnailInfo,
-        lessonTypeNo: chooseLessonTypeNo, 
+        lessonTypeNo: chooseLessonTypeNo,
         maxStudent: maxStudent,
         userNo: userNo ? userNo : 1, //
-        lessonNo: lessonNo
-    }
-    console.log(data)
+        lessonNo: lessonNo,
+    };
+    console.log(data);
     return (
         <>
             <h3>기본 정보 입력</h3>
@@ -210,7 +212,10 @@ const ClassJoin = () => {
                         {searchClicked && searchResults.length > 0
                             ? searchResults.map((result) => {
                                   return (
-                                      <li key={result.lessonTypeNo} onClick={()=>selectedResult(result)}>
+                                      <li
+                                          key={result.lessonTypeNo}
+                                          onClick={() => selectedResult(result)}
+                                      >
                                           {result.lessonTypeName}
                                       </li>
                                   );
@@ -222,16 +227,18 @@ const ClassJoin = () => {
                     </ul>
                 </span>
                 <button onClick={handleSearchClick}>검색</button>
-                <br/>
-                <span>{ searchClicked ? subjectName: null}</span>
+                <br />
+                <span>{searchClicked ? subjectName : null}</span>
             </div>
 
             <div>
                 <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
                 <div>
                     {lessonThumbnailImg ? (
-                        <img src={thumbnailURL} alt="Thumbnail"/>
-                    ) : <img src="#" alt="썸네일 없을 때 보이는 사진"/>}
+                        <img src={thumbnailURL} alt="Thumbnail" />
+                    ) : (
+                        <img src="#" alt="썸네일 없을 때 보이는 사진" />
+                    )}
                 </div>
                 <input
                     type="file"
@@ -319,25 +326,23 @@ const ClassJoin = () => {
                     type="number"
                     id="price"
                     min={0}
-                    onFocus={() => handleFocusChange(setLessonPrice, lessonPrice)}
+                    onFocus={() =>
+                        handleFocusChange(setLessonPrice, lessonPrice)
+                    }
                     value={lessonPrice}
                     onChange={handlePriceChange}
                 />
                 <span>원</span>
             </div>
 
-
-
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <button onClick={sendDataToServer}>임시 저장</button>
-                <Link to="/lesson/round/join" state={{data}}> 
-                <button onClick={nextPage}>
-                    다음
-                </button>
+                <Link to="/lesson/round/join" state={{ data }}>
+                    <button onClick={nextPage}>다음</button>
                 </Link>
             </div>
-            <hr/>
+            <hr />
         </>
     );
 };

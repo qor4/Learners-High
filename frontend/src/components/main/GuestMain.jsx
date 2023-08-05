@@ -21,9 +21,9 @@ const GuestMain = () => {
     return (
         <>
             {/* 배너 공간 */}
-            <div className="w-11/12 mx-auto">
+            <div>
                 <Banner $point>
-                    <div className="text-center mb-3 leading-10">
+                    <div>
                         <strong>LEARNERS HIGH 만의</strong>
                         <br />
                         서비스를 경험해 보고 싶다면,
@@ -36,10 +36,10 @@ const GuestMain = () => {
                 </Banner>
             </div>
 
-            <div className="w-11/12 md:w-4/5 mx-auto mt-12">
+            <div>
                 {/* 인기 강의 공간 */}
                 <div>
-                    <span className="text-2xl font-bold">인기 강의</span>
+                    <span>인기 강의</span>
                     <Link to="/lesson">더보기</Link>
 
                     {/* 인기 강의 4개 데이터 가져와서 보여주면 됨 api: /lesson/list/main  */}
@@ -47,7 +47,7 @@ const GuestMain = () => {
                 </div>
 
                 {/* 서비스 내용이 들어갈 공간 */}
-                <div className="mt-16">
+                <div>
                     <div>
                         <span>LEARNERS HIGH의 장점은 이렇습니다.</span>
                         <span>
