@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import { HiX } from "react-icons/hi";
+import { Container } from "@material-ui/core";
 
 // 모달 백드롭 (검은색 배경)
 const StyledModalBackdrop = styled.div`
@@ -37,8 +38,9 @@ const StyledHixIcon = styled(HiX)`
 `;
 
 const ModalTitle = styled.div`
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: bold;
+    margin-bottom: 2rem;
 `;
 
 const Modal = (props) => {
@@ -46,11 +48,13 @@ const Modal = (props) => {
 
     return (
         <StyledModalBackdrop onClick={props.onClose}>
-            <StyledModalContent onClick={(e) => e.stopPropagation()}>
-                <StyledHixIcon onClick={props.onClose} />
-                <ModalTitle>{props.title}</ModalTitle>
-                {props.children}
-            </StyledModalContent>
+            <Container maxWidth="sm">
+                <StyledModalContent onClick={(e) => e.stopPropagation()}>
+                    <StyledHixIcon onClick={props.onClose} />
+                    <ModalTitle>{props.title}</ModalTitle>
+                    {props.children}
+                </StyledModalContent>
+            </Container>
         </StyledModalBackdrop>
     );
 };

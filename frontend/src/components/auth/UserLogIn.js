@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { url } from "../../api/APIPath";
-import { logInUser } from "../../store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
 
+import styled from "styled-components";
+
+import { url } from "../../api/APIPath";
+import { logInUser } from "../../store/UserStore";
 import Input from "../common/Input";
 import Button from "../common/Button";
+
+const ButtonWrap = styled.div`
+    margin-top: 1.5rem;
+
+    & > * {
+        margin-bottom: 0.5rem;
+    }
+`
 
 const UserLogIn = (props) => {
     const user = useSelector((state) => state.user);
@@ -37,7 +47,6 @@ const UserLogIn = (props) => {
                     alert("로그인!"); // 여기 꼭 확인하기!!
                     dispatch(logInUser(res.data.result));
                     props.onClose();
-                    
                 } else {
                     alert("로그인 실패!");
                 }
@@ -72,15 +81,17 @@ const UserLogIn = (props) => {
                     onKeyPress={handleKeyPress}
                 />
 
-                <Button $fullWidth>카카오 로그인</Button>
-                <Button $fullWidth onClick={userLogIn}>
-                    로그인
-                </Button>
-                <Link to="/join">
-                    <Button onClick={props.onClose} $fullWidth>
-                        회원가입
+                <ButtonWrap>
+                    <Button $fullWidth $kakao>카카오톡 로그인</Button>
+                    <Button $fullWidth $point onClick={userLogIn}>
+                        로그인
                     </Button>
-                </Link>
+                    <Link to="/join">
+                        <Button onClick={props.onClose} $fullWidth $skyBlue>
+                            회원가입
+                        </Button>
+                    </Link>
+                </ButtonWrap>
             </form>
         </>
     );
