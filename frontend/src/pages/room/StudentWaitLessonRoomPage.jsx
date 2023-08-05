@@ -42,6 +42,7 @@ const StudentWaitLessonRoomPage = () => {
         await eyeTracker.init(
             licenseKey,
             async () => {
+                await eyeTracker.startTracking(onGaze,onDebug);
                 if (!eyeTracker.checkMobile()) {
                     // eyeTracker.setMonitorSize(16); // 14 inch
                     eyeTracker.setScreenSize(window.innerWidth,window.innerheith)
@@ -56,7 +57,22 @@ const StudentWaitLessonRoomPage = () => {
         );
     })();
     
+// gaze callback.
+function onGaze(gazeInfo) {
+    if(!isCalibrationMode){
+        // do something with gaze info.
+        showGaze(gazeInfo)
+    }else {
+        hideGaze()
+    }
+  }
+  // debug callback.
+function onDebug(FPS, latency_min, latency_max, latency_avg){
+    // do something with debug info.
+}
+
     const tmpClick = () => {
+      console.log("클릭은 되지?", eyeTracker)
         if (!isCalibrationMode) {
             isCalibrationMode = true;
             setTimeout(function () {
@@ -143,10 +159,10 @@ const StudentWaitLessonRoomPage = () => {
 
             {/* 추후 하나의 컴포넌트로 대체 */}
             <div style={{position: 'relative', top: '500px', backgroundColor: "blue",}}>
-              <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} state={{eyeTracker}}>
+              <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} state={{'eyeTracker':eyeTracker}}>
                 <Button>실제 룸 입장</Button>
               </Link>
-              <Button onClick={tmpClick}>테스트</Button>
+              <button onClick={tmpClick}>테스트</button>
               <input type="number" onChange={changeDistance}></input>
                 <button onClick={()=> {
                   eyeTracker.setFaceDistance(distance)
