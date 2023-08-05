@@ -26,6 +26,7 @@ const UserLogIn = (props) => {
     };
 
     const userLogIn = () => {
+        console.log(logInForm, "로그인")
         axios
             .post(`${url}/user/login`, logInForm, {
                 headers: { "Content-Type": "application/json" },
@@ -41,7 +42,11 @@ const UserLogIn = (props) => {
                 } else {
                     alert("로그인 실패!");
                 }
-            });
+            })
+            .catch((err)=> {
+                alert("로그인이 실패했습니다.")
+            })
+            ;
     };
 
     const handleKeyPress = (e) => {

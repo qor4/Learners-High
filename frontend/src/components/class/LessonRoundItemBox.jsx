@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
     console.log(userType, "userType")
+    const userName = useSelector((state)=> state.user.userName)
     // const userType = "T";
     console.log(lessonInfo)
     const [bool, setBool] = useState(false)
@@ -45,7 +46,8 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <div>
                     <Button>과제 일괄 다운</Button>
-                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/teacher`} state="">
+                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/teacher`} 
+                    state={userName}>
                     <Button $point onClick={handleEnter}>강의룸 만들기</Button>
                     </Link>
                 </div>
