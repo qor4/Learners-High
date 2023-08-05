@@ -18,9 +18,12 @@ class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
         this.userType = this.props.userType
+        this.userNo = Number(this.props.userNo)
+        this.lessonNo = Number(this.props.lessonNo)
+        this.lessonRoundNo = Number(this.props.lessonRoundNo)
         this.hasBeenUpdated = false;
         this.layout = new OpenViduLayout();
-        let sessionName = this.props.sessionName ? this.props.sessionName : 'SessionA';
+        let sessionName = this.props.sessionName ? this.props.sessionName : 'SessionB';
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
         this.remotes = [];
         this.localUserAccessAllowed = false;
@@ -209,7 +212,7 @@ class VideoRoomComponent extends Component {
         this.setState({
             session: undefined,
             subscribers: [],
-            mySessionId: 'SessionA',
+            mySessionId: 'SessionB',
             myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
             localUser: undefined,
         });
@@ -566,14 +569,16 @@ class VideoRoomComponent extends Component {
     }
 
     async createSession(sessionId) {
-        const response = await axios.get(APPLICATION_SERVER_URL + 'lessonroom/teacher/3/15/2');
+        console.log(this.lessonNo,this.lessonRoundNo,this.userNo)
+        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
         console.log(response.data, "이거머니")
-        console.log(response.resultMsg, "이거머니MSG")
         return response.data.resultMsg; // The sessionId
     }
 
     async createToken(sessionId) {
-        const response = await axios.get(APPLICATION_SERVER_URL + 'lessonroom/student/3/15/1' );
+        console.log(this.lessonNo, this.lessonRoundNo, typeof this.lessonNo, "강의Num 들어옴")
+
+        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
         console.log(response.data)
         return response.data.resultMsg; // The token
     }

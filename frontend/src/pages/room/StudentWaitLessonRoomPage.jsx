@@ -148,7 +148,7 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
     // const saveEyeTracker = () => {
     //   setEyeTrackerSave(eyeTracker)
     // }
-        
+
     return (
         <div style={{position:"relative"}}>
             <div  className="Wrap-Cam-canvas">
@@ -157,7 +157,7 @@ function onDebug(FPS, latency_min, latency_max, latency_avg){
             </div>
 
             {/* 추후 하나의 컴포넌트로 대체 */}
-            <div style={{position: 'relative', top: '500px', backgroundColor: "blue",}}>
+            <div style={{position: 'relative', top: '500px', backgroundColor: "blue", width: '50%'}}>
               <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} >
                 <Button>실제 룸 입장</Button>
               </Link>

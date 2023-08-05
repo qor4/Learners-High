@@ -10,6 +10,7 @@ const StudentLessonRoomPage = () => {
   const userId = useSelector(state=>state.user.userId)
   const userName = useSelector(state=>state.userName)
   const {lessonNo, lessonRoundNo} = useParams()
+  console.log(lessonRoundNo, "params!!")
   const location = useLocation();
   // const eyeTracker = location.state?.eyeTrackerSave || null;
   const eyeTracker = useSelector(state=> state.EyeTracker.EyeTracker)

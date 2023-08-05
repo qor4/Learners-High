@@ -9,7 +9,8 @@ const TeacherLessonRoomPage = () => {
   const userId = useSelector(state=>state.user.userId)
   const userType = useSelector(state=>state.user.userType)
 
-  const {lessonNo, lessonRounNo} = useParams()
+  const {lessonNo, lessonRoundNo} = useParams()
+  console.log(lessonRoundNo, "params!!")
 
 
 
@@ -18,7 +19,7 @@ const TeacherLessonRoomPage = () => {
     <VideoRoomComponent userNo={userNo} userId={userId}
     userType={userType}
     lessonNo={lessonNo}
-    lessonRoundNo={lessonRounNo}
+    lessonRoundNo={lessonRoundNo}
     />
     </>
   )
