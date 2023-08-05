@@ -25,8 +25,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         //     setToken(res.data.token)
         // })
     }
-    const lessonNo = "1" // 임시
-    const lessonRoundNo = "2" // 임시
+    console.log(lessonInfo)
+    const lessonNo = lessonInfo.lessonNo
+    const lessonRoundNo = lessonInfo.lessonRoundNo // 임시
 
     return (
         <>
@@ -46,7 +47,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <div>
                     <Button>과제 일괄 다운</Button>
-                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/teacher`} 
+                    <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}>
                     <Button $point onClick={handleEnter}>강의룸 만들기</Button>
                     </Link>
@@ -58,7 +59,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <div>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/wait`}>
+                    <Link to={`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`}>
                         <Button $point>강의 입장</Button>
                     </Link>
                 </div>

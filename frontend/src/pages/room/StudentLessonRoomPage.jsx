@@ -6,14 +6,17 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const StudentRealLessonRoomPage = () => {
-  const location = useLocation()
   const userNo = useSelector(state=>state.user.userNo)
   const userId = useSelector(state=>state.user.userId)
   const userName = useSelector(state=>state.userName)
   const {lessonNo, lessonRoundNo} = useParams()
-
-  
-
+  const location = useLocation()
+  const eyeTracker = location.state?.eyeTracker || null;
+  (async ()=>{
+    if(eyeTracker){
+      await eyeTracker.startTracking();
+    }
+  })();
   return (
     <>
     <VideoRoomComponent 
@@ -22,6 +25,7 @@ const StudentRealLessonRoomPage = () => {
     userId={userId} 
     lessonNo={lessonNo}
     lessonRoundNo={lessonRoundNo}
+    eyeTracker={eyeTracker}
     />
     </>
   )

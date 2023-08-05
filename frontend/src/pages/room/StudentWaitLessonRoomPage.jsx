@@ -14,19 +14,18 @@ import Button from "../../components/common/Button";
 
 const StudentWaitLessonRoomPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
-    // const webcamRef = useRef(null)
-    const [startBtn, setStartBtn] = useState(true);
+    let calibrationData = null;
     const navigate = useNavigate()
     const {lessonNo, lessonRoundNo} = useParams()
 
     const [bool, setBool] = useState(false);
     console.log("??")
-    const changeBool = () => {
-        console.log(lessonNo, lessonRoundNo)
-        console.log("???")
-        setBool(!bool);
-        setStartBtn(false)
-        navigate(`/lessonroom/${lessonNo}/${lessonRoundNo}/student`)
+
+    // 강의 룸 입장 버튼
+    const enterLessonRoom = () => {
+        console.log(lessonNo+" "+ lessonRoundNo +"으로 입장");
+        // data를 가지고 가야함
+        navigate(`/lessonroom/student/${lessonNo}/${lessonRoundNo}`)
 
     };
     const licenseKey = "dev_81af036sl2mwzmcbii6lfx2vi9cfhgzhaio8lxc9";
@@ -38,27 +37,28 @@ const StudentWaitLessonRoomPage = () => {
     let userStatus = null;
     userStatus = new UserStatusOption(true, false, false);
     eyeTracker = new EasySeeSo();
-    eyeTracker.init(
-        licenseKey,
-        async () => {
-            await eyeTracker.startTracking(onGaze, onDebug);
-            if (!eyeTracker.checkMobile()) {
-                eyeTracker.setMonitorSize(16); // 14 inch
-                eyeTracker.setFaceDistance(30);
-                eyeTracker.setCameraPosition(window.outerWidth / 2, true);
-                eyeTracker.setUserStatusCallback(onAttention, null, null);
-                eyeTracker.setAttentionInterval(10);
-            }
-            // calibrationButton.disabled = false;
-        }, // callback when init succeeded.
-        () => console.log("callback when init failed."), // callback when init failed.
-        userStatus
-    );
+
+     (async ()=>{
+        await eyeTracker.init(
+            licenseKey,
+            async () => {
+                if (!eyeTracker.checkMobile()) {
+                    // eyeTracker.setMonitorSize(16); // 14 inch
+                    eyeTracker.setScreenSize(window.innerWidth,window.innerheith)
+                    eyeTracker.setFaceDistance(60); // 여기가 모니터 사이즈 놓는 곳.
+                    eyeTracker.setCameraPosition(window.outerWidth / 2, true);
+                    eyeTracker.setUserStatusCallback(onAttention, null, null);
+                    eyeTracker.setAttentionInterval(10);
+                }
+            }, // callback when init succeeded.
+            () => console.log("callback when init failed."), // callback when init failed.
+            userStatus
+        );
+    })();
+    
     const tmpClick = () => {
-        // setStartBtn(!startBtn)
         if (!isCalibrationMode) {
             isCalibrationMode = true;
-            // hideGaze()
             setTimeout(function () {
                 eyeTracker.startCalibration(
                     onCalibrationNextPoint,
@@ -92,43 +92,33 @@ const StudentWaitLessonRoomPage = () => {
     function onCalibrationFinished(calibrationData) {
         clearCanvas();
         isCalibrationMode = false;
+        
     }
 
     function onAttention(timestampBegin, timestampEnd, score) {
         console.log(
             `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
         );
-        axios
-            .post(
-                "http://192.168.31.200:7777/class/attention-rate/time-series",
-                {
-                    classNo: lessonNo,
-                    classRoundNo: lessonRoundNo,
-                    rate: score,
-                    userNo: userNo,
-                },
-                { "Content-type": "application/json" }
-            )
-            .then(() => {
-                console.log("정상");
-            })
-            .catch(() => {
-                console.log("오류");
-            });
+        // axios
+        //     .post(
+        //         "http://192.168.31.200:7777/class/attention-rate/time-series",
+        //         {
+        //             classNo: lessonNo,
+        //             classRoundNo: lessonRoundNo,
+        //             rate: score,
+        //             userNo: userNo,
+        //         },
+        //         { "Content-type": "application/json" }
+        //     )
+        //     .then(() => {
+        //         console.log("정상");
+        //     })
+        //     .catch(() => {
+        //         console.log("오류");
+        //     });
     }
     // gaze callback.
-    function onGaze(gazeInfo) {
-        if (!isCalibrationMode) {
-            // do something with gaze info.
-            showGaze(gazeInfo);
-        } else {
-            hideGaze();
-        }
-    }
-    // debug callback.
-    function onDebug(FPS, latency_min, latency_max, latency_avg) {
-        // do something with debug info.
-    }
+    
     function clearCanvas() {
         let canvas = document.getElementById("output");
         canvas.width = window.innerWidth;
@@ -139,21 +129,30 @@ const StudentWaitLessonRoomPage = () => {
     }
 
     // const { lessonNo, lessonRoundNo } = useParams();
+
+    const [distance, setDistance] = useState(16)
+    const changeDistance = (e) => {
+      setDistance(e.currentTarget.value)
+    }
     return (
-        <>
-            {/* <button onClick={tmpClick}>테스트</button>+ */}
-            <button onClick={changeBool}>실제 룸 입장</button>
-            <br />
-            <canvas id="preview" style={{ position: "fixed" }}></canvas>
-            <canvas
-                id="output"
-                style={{ position: "fixed", zIndex: 9999 }}
-            ></canvas>
-            {startBtn ? <Webcam /> : null}
+        <div style={{position:"relative"}}>
+            <div  className="Wrap-Cam-canvas">
+              <Webcam style={{position:"absolute",height: '500px', width:'70%', overFit:'cover', margin: 'auto'}}/>
+              <canvas id="output" style={{position: "absolute", height: '500px', width:'100%', margin: 'auto'}}/>
+            </div>
 
-
-            {/* {bool ? <VideoRoomComponent /> : null} */}
-        </>
+            {/* 추후 하나의 컴포넌트로 대체 */}
+            <div style={{position: 'relative', top: '500px', backgroundColor: "blue",}}>
+              <Link to={`/lessonroom/student/${lessonNo}/${lessonRoundNo}`} state={{eyeTracker}}>
+                <Button>실제 룸 입장</Button>
+              </Link>
+              <Button onClick={tmpClick}>테스트</Button>
+              <input type="number" onChange={changeDistance}></input>
+                <button onClick={()=> {
+                  eyeTracker.setFaceDistance(distance)
+                }}>모니터 거리 조정</button>
+            </div>
+        </div>
     );
 };
 

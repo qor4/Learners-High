@@ -32,13 +32,14 @@ const UserLogIn = (props) => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data, "나는 로그인데이터!");
+                console.log(res.data.result, "나는 로그인데이터!");
+                console.log(res.data, "데이터")
+                console.log(res.data.result, "데이터!")
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
-                    alert("로그인!"); // 여기 꼭 확인하기!!
                     dispatch(logInUser(res.data.result));
+                    alert("로그인!"); // 여기 꼭 확인하기!!
                     props.onClose();
-                    
                 } else {
                     alert("로그인 실패!");
                 }

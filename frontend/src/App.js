@@ -18,17 +18,24 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
 import StudentWaitLessonRoomPage from "./pages/room/StudentWaitLessonRoomPage"
-import StudentRealLessonRoomPage from "./pages/room/StudentRealLessonRoomPage"
-import TeacherRealLessonRoomPage from "./pages/room/TeacherRealLessonRoomPage"
+import StudentLessonRoomPage from "./pages/room/StudentLessonRoomPage"
+import TeacherLessonRoomPage from "./pages/room/TeacherLessonRoomPage"
 
+import { useLocation } from "react-router-dom";
 
 // test용
 import StudentMain from "./components/main/StudentMain";
 
 function App() {
+    const location = useLocation()
+    const hideComponetStudent = location.pathname.startsWith("/lessonroom/student")
+    const hideComponetTeacher = location.pathname.startsWith("/lessonroom/teacher")
+    const hideComponetWait = location.pathname.startsWith("/lessonroom/wait")
     return (
         <div className="App">
-            <Header />
+
+            {(!hideComponetStudent || !hideComponetTeacher) && <Header/>}
+            {/* <Header /> */}
             {/* <TeacherJobItem/> */}
             {/* <UserJoinTeacherJob/>
     <UserJoinTeacherEdu/> */}
@@ -52,21 +59,21 @@ function App() {
                     element={<TeacherProfilePage />}
                 ></Route>
                 <Route 
-                    path="/lessonroom/:lessonNo/:lessonRoundNo/wait"
+                    path="/lessonroom/wait/:lessonNo/:lessonRoundNo"
                     element={<StudentWaitLessonRoomPage/>}
                 />
                 <Route 
-                    path="/lessonroom/:lessonNo/:lessonRoundNo/student"
-                    element={<StudentRealLessonRoomPage/>}
+                    path="/lessonroom/student/:lessonNo/:lessonRoundNo"
+                    element={<StudentLessonRoomPage/>}
                 />
                 <Route 
-                    path="/lessonroom/:lessonNo/:lessonRoundNo/teacher"
-                    element={<TeacherRealLessonRoomPage/>}
+                    path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
+                    element={<TeacherLessonRoomPage/>}
                 />
 
                 <Route path="*" element={<MainPage/>}/>
             </Routes>
-            <Footer />
+            {(!hideComponetWait && (!hideComponetStudent || !hideComponetTeacher)) && <Footer/> }
         </div>
     );
 }

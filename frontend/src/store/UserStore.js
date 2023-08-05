@@ -13,7 +13,7 @@ export const UserStore = createSlice({
     },
     reducers: {
         logInUser: (state, action) => {
-            console.log(action, "action", action.payload)
+            console.log(action, "action", action.payload, "액션이 갔니?")
             state.userNo = action.payload.userNo
             state.userType = action.payload.userType
             state.userId = action.payload.userId
