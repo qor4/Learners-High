@@ -18,7 +18,7 @@ const TeacherProfilePage = () => {
     useEffect(() => {
         // 강사 프로필 GET 요청
         axios.get(`${url}/teacher/profile/${userNo}`).then((response) => {
-            setTeacherInfoDataSet(response.data);
+            setTeacherInfoDataSet(response.data.result);
         });
     }, [userNo]);
 

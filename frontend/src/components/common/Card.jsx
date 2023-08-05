@@ -18,6 +18,12 @@ const StyledCard = styled.div`
         css`
             background-color: #e1e6f9;
         `}
+    // Margin 초기화
+    ${(props) =>
+        props.$MarginReset &&
+        css`
+            margin-top: 0;
+        `}
 `;
 
 const Card = (props) => {

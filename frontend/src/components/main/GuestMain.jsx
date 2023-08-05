@@ -9,16 +9,36 @@ import Banner from "../common/Banner";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
 
-// 배너 styled
+// 배너 wrap styled
 const StyledBanner = styled.div`
     width: 90%;
     margin: 0 auto;
+`;
+
+// 링크 hover 했을 때
+const HoverLink = styled(Link)`
+    &:hover {
+        font-weight: bold;
+        color: #293c81;
+    }
 `;
 
 // 인기 강의 styled
 const StyledPopular = styled.div`
     width: 85%;
     margin: 3rem auto;
+`;
+
+const PopularTitle = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    & > span {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
 `;
 
 const GuestMain = () => {
@@ -52,10 +72,10 @@ const GuestMain = () => {
             <div>
                 {/* 인기 강의 공간 */}
                 <StyledPopular>
-                    <div>
+                    <PopularTitle>
                         <span>인기 강의</span>
-                        <Link to="/lesson">더보기</Link>
-                    </div>
+                        <HoverLink to="/lesson">더보기</HoverLink>
+                    </PopularTitle>
 
                     {/* 인기 강의 4개 데이터 가져와서 보여주면 됨 api: /lesson/list/main  */}
                     <LessonList items={popularLessonDataSet} />

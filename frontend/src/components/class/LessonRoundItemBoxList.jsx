@@ -20,6 +20,11 @@ const StyledBox = styled.div`
     &:first-child {
         margin-top: 0;
     }
+
+    &:hover {
+        background-color: #edf1ff;
+        cursor: pointer;
+    }
 `;
 
 const LessonRoundItemBoxList = ({
