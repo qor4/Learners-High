@@ -12,6 +12,8 @@ const TeacherIntroduceBox = ({ teacherInfo }) => {
             <img src={teacherInfo.profileImg} alt="teacher-img" />
 
             {/* 수업 만족도 / 강사 만족도 */}
+            <span>수업 만족도</span>
+            <span>강사 만족도</span>
 
             {/* 강사 이름 */}
             <span>{teacherInfo && teacherInfo.userName} 강사님</span>

@@ -75,75 +75,47 @@ const UserJoinTeacherJob = (props) => {
                     <div key={index}>
                         <LessonStatusBox $point>
                             경력
-                            {/* 경력 {item.id + 1} */}
                         </LessonStatusBox>
-
-                        {/* <span>직장명</span>
-                        <input
-                            type="text"
-                            name="companyName"
-                            className={`companyName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.companyName}
-                        /> */}
+                        
                         <Input
                             label="직장명"
                             type="text"
                             name="companyName"
                             id="companyName"
+                            placeholder="직장명"
                             className={`companyName-${index}`}
                             onChange={(e) => onChange(e, index)}
                             value={item.companyName}
                         />
 
-                        {/* <span>부서/직무</span>
-                        <input
-                            type="text"
-                            name="departName"
-                            className={`departName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.departName}
-                        /> */}
                         <Input
-                            label="부서/직무"
+                            label="부서 / 직무"
                             type="text"
                             name="departName"
                             id="departName"
+                            placeholder="부서 / 직무"
                             className={`departName-${index}`}
                             onChange={(e) => onChange(e, index)}
                             value={item.departName}
                         />
 
-                        {/* <span>입사년월</span>
-                        <input
-                            type="text"
-                            name="hireStartDate"
-                            className={`hireStartDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.hireStartDate}
-                        /> */}
                         <Input
                             label="입사년월"
                             type="text"
                             name="hireStartDate"
                             id="hireStartDate"
+                            placeholder="입사년월"
                             className={`hireStartDate-${index}`}
                             onChange={(e) => onChange(e, index)}
                             value={item.hireStartDate}
                         />
-                        {/* <span>퇴사년월</span>
-                        <input
-                            type="text"
-                            name="hireEndDate"
-                            className={`hireEndDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.hireEndDate}
-                        /> */}
+
                         <Input
                             label="퇴사년월"
                             type="text"
                             name="hireEndDate"
                             id="hireEndDate"
+                            placeholder="퇴사년월"
                             className={`hireEndDate-${index}`}
                             onChange={(e) => onChange(e, index)}
                             value={item.hireEndDate}

@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { HiSearch } from "react-icons/hi";
 import { url } from "../api/APIPath";
-import { Grid } from "@mui/material";
+import { Grid, MenuItem, Select } from "@mui/material";
 
 import LessonList from "../components/class/LessonList";
 import Banner from "../components/common/Banner";
@@ -46,8 +46,7 @@ const FilterWrapper = styled.div`
     display: flex;
     justify-content: right;
     margin: 1.5rem 0;
-
-`
+`;
 
 const LessonPage = () => {
     // 기본 데이터 GET 요청
@@ -150,6 +149,18 @@ const LessonPage = () => {
                         <HiSearch />
                     </Button>
                 </StyledSearch>
+
+                {/* MUI 셀렉트박스 */}
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={searchOption}
+                    onChange={(e) => setSearchOption(e.target.value)}
+                >
+                    <MenuItem value={"전체"}>전체</MenuItem>
+                    <MenuItem value={"강사명"}>강사명</MenuItem>
+                    <MenuItem value={"강의명"}>강의명</MenuItem>
+                </Select>
 
                 {/* 과목 분류를 누르면 필터링되는 공간 */}
                 <Card $skyBlue $MarginReset>

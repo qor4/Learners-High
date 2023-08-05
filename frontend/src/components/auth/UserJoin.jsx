@@ -18,7 +18,6 @@ const FirstJoinWrap = styled.div`
     width: 100%;
     text-align: center;
     margin: 2rem 0;
-    /* background-color: red; */
 
     & > * {
         margin-top: 1.25rem;
@@ -84,6 +83,22 @@ const StyledImg = styled.img`
 `;
 const StyledImgInput = styled.input`
     width: 35%;
+`;
+const EduJobWrap = styled.div`
+    padding: 2rem 1rem;
+`;
+
+// button wrapper
+const ButtonWrap = styled.div`
+    width: 50%;
+    margin: 0 auto;
+    & > * {
+        width: 47.5%;
+        margin-right: 5%;
+    }
+    & > *:last-child {
+        margin-right: 0;
+    }
 `;
 
 const UserJoin = () => {
@@ -379,7 +394,7 @@ const UserJoin = () => {
                 <Container maxWidth="sm">
                     <form onSubmit={(e) => e.preventDefault()}>
                         <FirstJoinWrap>
-                            <div>
+                            <ButtonWrap>
                                 <Button
                                     className="student"
                                     onClick={userTypeChangeS}
@@ -397,7 +412,7 @@ const UserJoin = () => {
                                 >
                                     강사
                                 </Button>
-                            </div>
+                            </ButtonWrap>
                             <div>
                                 <div>
                                     <div>
@@ -644,13 +659,17 @@ const UserJoin = () => {
             )}
             {userType === "T" && openAddInfo ? (
                 <MenuCard title="학력 및 경력 입력">
-                    <Container maxWidth="sm">
-                        <UserJoinTeacherJob
-                            userNo={userNo}
-                        ></UserJoinTeacherJob>
-                        <UserJoinTeacherEdu
-                            userNo={userNo}
-                        ></UserJoinTeacherEdu>
+                    <Container maxWidth="md">
+                        <EduJobWrap>
+                            {/* 학력 */}
+                            <UserJoinTeacherEdu
+                                userNo={userNo}
+                            ></UserJoinTeacherEdu>
+                            {/* 경력 */}
+                            <UserJoinTeacherJob
+                                userNo={userNo}
+                            ></UserJoinTeacherJob>
+                        </EduJobWrap>
                     </Container>
                 </MenuCard>
             ) : null}
