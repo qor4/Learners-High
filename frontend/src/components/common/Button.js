@@ -75,6 +75,13 @@ const StyledButton = styled.button`
         css`
             font-weight: bold;
         `}
+
+    // MT20
+    ${(props) =>
+        props.$marginTop &&
+        css`
+            margin-top: 2rem;
+        `}
 `;
 
 const Button = (props) => {

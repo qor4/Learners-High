@@ -9,6 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { url } from "../../api/APIPath";
 
 import axios from "axios";
+import MenuCard from "../common/MenuCard";
+import Button from "../common/Button";
 
 const ClassJoin = () => {
     const navigate = useNavigate();
@@ -186,163 +188,166 @@ const ClassJoin = () => {
     console.log(data);
     return (
         <>
-            <h3>기본 정보 입력</h3>
-            <div>
-                <label htmlFor="lessonName">강의 이름</label>
-                <input
-                    type="text"
-                    id="lessonName"
-                    value={lessonName}
-                    placeholder="강의명 ( 30글자 이내 )"
-                    onChange={handleLessonChange}
-                />
-            </div>
-
-            <div>
-                <label htmlFor="subjectName">과목 이름</label>
-                <span>
+            <MenuCard title="기본 정보 입력">
+                <div>
+                    <label htmlFor="lessonName">강의 이름</label>
                     <input
                         type="text"
-                        id="subjectName"
-                        value={subjectName}
-                        placeholder="과목명"
-                        onChange={handleSubjectChange}
+                        id="lessonName"
+                        value={lessonName}
+                        placeholder="강의명 ( 30글자 이내 )"
+                        onChange={handleLessonChange}
                     />
-                    <ul>
-                        {searchClicked && searchResults.length > 0
-                            ? searchResults.map((result) => {
-                                  return (
-                                      <li
-                                          key={result.lessonTypeNo}
-                                          onClick={() => selectedResult(result)}
-                                      >
-                                          {result.lessonTypeName}
-                                      </li>
-                                  );
-                              })
-                            : null}
-                        {searchClicked && searchResults.length === 0 && (
-                            <li>검색한 과목이 없습니다.</li>
-                        )}
-                    </ul>
-                </span>
-                <button onClick={handleSearchClick}>검색</button>
-                <br />
-                <span>{searchClicked ? subjectName : null}</span>
-            </div>
-
-            <div>
-                <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
-                <div>
-                    {lessonThumbnailImg ? (
-                        <img src={thumbnailURL} alt="Thumbnail" />
-                    ) : (
-                        <img src="#" alt="썸네일 없을 때 보이는 사진" />
-                    )}
                 </div>
-                <input
-                    type="file"
-                    id="lessonThumbnailImg"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                />
-            </div>
 
-            <div>
-                <label htmlFor="lessonIntroduce">수업 소개</label>
-                <textarea
-                    id="lessonIntroduce"
-                    value={lessonThumbnailInfo}
-                    placeholder="수업 소개를 100자 이내로 작성해 주세요."
-                    onChange={handleIntroChange}
-                    maxLength={100}
-                ></textarea>
-                <span>{lessonThumbnailInfo.length}/100</span>
-            </div>
-
-            <div>
-                <span>수업 상세 소개</span>
-                {/* 수업 상세 소개 내용 수정@@@ */}
                 <div>
-                    학생들이 수업에 대해 상세하게 알 수 있도록, 강사님께서
-                    수업에 대한 내용을 상세히 입력해 주세요.
+                    <label htmlFor="subjectName">과목 이름</label>
+                    <span>
+                        <input
+                            type="text"
+                            id="subjectName"
+                            value={subjectName}
+                            placeholder="과목명"
+                            onChange={handleSubjectChange}
+                        />
+                        <ul>
+                            {searchClicked && searchResults.length > 0
+                                ? searchResults.map((result) => {
+                                      return (
+                                          <li
+                                              key={result.lessonTypeNo}
+                                              onClick={() =>
+                                                  selectedResult(result)
+                                              }
+                                          >
+                                              {result.lessonTypeName}
+                                          </li>
+                                      );
+                                  })
+                                : null}
+                            {searchClicked && searchResults.length === 0 && (
+                                <li>검색한 과목이 없습니다.</li>
+                            )}
+                        </ul>
+                    </span>
+                    <button onClick={handleSearchClick}>검색</button>
                     <br />
-                    해당 내용은 학생들에게 직접적으로 보여지며, 수업 상세 목록의
-                    소개에서도 볼 수 있는 내용입니다. 강사님이 원하는 대로 해당
-                    내용을 추가하거나, 꾸밀 수 있습니다. 강사님의 수업을 상세히
-                    소개해 주세요!
+                    <span>{searchClicked ? subjectName : null}</span>
                 </div>
-                {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
-                <CKEditor
-                    editor={ClassicEditor}
-                    value={lessonInfo}
-                    // toolbar 설정
-                    config={{
-                        toolbar: {
-                            items: [
-                                "heading",
-                                "|",
-                                "bold",
-                                "italic",
-                                "link",
-                                "bulletedList",
-                                "numberedList",
-                                "|",
-                                "blockQuote",
-                                "insertTable",
-                                "undo",
-                                "redo",
-                            ],
-                        },
-                        table: {
-                            contentToolbar: [
-                                "tableColumn",
-                                "tableRow",
-                                "mergeTableCells",
-                            ],
-                        },
-                    }}
-                    onBlur={handleEditorChange}
-                />
-            </div>
 
-            <div>
-                <label htmlFor="maxStudent">최대 학생 수</label>
-                <input
-                    type="number"
-                    id="maxStudent"
-                    min={0}
-                    max={50}
-                    onFocus={() => handleFocusChange(setMaxStudent, maxStudent)}
-                    value={maxStudent}
-                    onChange={handleMaxStudentChange}
-                />
-                <span>명</span>
-            </div>
+                <div>
+                    <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
+                    <div>
+                        {lessonThumbnailImg ? (
+                            <img src={thumbnailURL} alt="Thumbnail" />
+                        ) : (
+                            <img src="#" alt="썸네일 없을 때 보이는 사진" />
+                        )}
+                    </div>
+                    <input
+                        type="file"
+                        id="lessonThumbnailImg"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                </div>
 
-            <div>
-                <label htmlFor="price">가격</label>
-                <input
-                    type="number"
-                    id="price"
-                    min={0}
-                    onFocus={() =>
-                        handleFocusChange(setLessonPrice, lessonPrice)
-                    }
-                    value={lessonPrice}
-                    onChange={handlePriceChange}
-                />
-                <span>원</span>
-            </div>
+                <div>
+                    <label htmlFor="lessonIntroduce">수업 소개</label>
+                    <textarea
+                        id="lessonIntroduce"
+                        value={lessonThumbnailInfo}
+                        placeholder="수업 소개를 100자 이내로 작성해 주세요."
+                        onChange={handleIntroChange}
+                        maxLength={100}
+                    ></textarea>
+                    <span>{lessonThumbnailInfo.length}/100</span>
+                </div>
 
+                <div>
+                    <span>수업 상세 소개</span>
+                    {/* 수업 상세 소개 내용 수정@@@ */}
+                    <div>
+                        학생들이 수업에 대해 상세하게 알 수 있도록, 강사님께서
+                        수업에 대한 내용을 상세히 입력해 주세요.
+                        <br />
+                        해당 내용은 학생들에게 직접적으로 보여지며, 수업 상세
+                        목록의 소개에서도 볼 수 있는 내용입니다. 강사님이 원하는
+                        대로 해당 내용을 추가하거나, 꾸밀 수 있습니다. 강사님의
+                        수업을 상세히 소개해 주세요!
+                    </div>
+                    {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
+                    <CKEditor
+                        editor={ClassicEditor}
+                        value={lessonInfo}
+                        // toolbar 설정
+                        config={{
+                            toolbar: {
+                                items: [
+                                    "heading",
+                                    "|",
+                                    "bold",
+                                    "italic",
+                                    "link",
+                                    "bulletedList",
+                                    "numberedList",
+                                    "|",
+                                    "blockQuote",
+                                    "insertTable",
+                                    "undo",
+                                    "redo",
+                                ],
+                            },
+                            table: {
+                                contentToolbar: [
+                                    "tableColumn",
+                                    "tableRow",
+                                    "mergeTableCells",
+                                ],
+                            },
+                        }}
+                        onBlur={handleEditorChange}
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="maxStudent">최대 학생 수</label>
+                    <input
+                        type="number"
+                        id="maxStudent"
+                        min={0}
+                        max={50}
+                        onFocus={() =>
+                            handleFocusChange(setMaxStudent, maxStudent)
+                        }
+                        value={maxStudent}
+                        onChange={handleMaxStudentChange}
+                    />
+                    <span>명</span>
+                </div>
+
+                <div>
+                    <label htmlFor="price">가격</label>
+                    <input
+                        type="number"
+                        id="price"
+                        min={0}
+                        onFocus={() =>
+                            handleFocusChange(setLessonPrice, lessonPrice)
+                        }
+                        value={lessonPrice}
+                        onChange={handlePriceChange}
+                    />
+                    <span>원</span>
+                </div>
+            </MenuCard>
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
-                <button onClick={sendDataToServer}>임시 저장</button>
+                <Button onClick={sendDataToServer}>임시 저장</Button>
                 <Link to="/lesson/round/join" state={{ data }}>
-                    <button onClick={nextPage}>다음</button>
+                    <Button onClick={nextPage}>다음</Button>
                 </Link>
             </div>
-            <hr />
         </>
     );
 };

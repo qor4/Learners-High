@@ -1,13 +1,90 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { url } from "../../api/APIPath";
 import { useNavigate } from "react-router-dom";
-import Input from "../common/Input";
-import Button from "../common/Button";
+import { Container } from "@material-ui/core";
+import styled from "styled-components";
+import { url } from "../../api/APIPath";
 
 import UserJoinTeacherJob from "./UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./UserJoinTeacherEdu";
+
+import Input from "../common/Input";
+import Button from "../common/Button";
+import Card from "../common/Card";
+import MenuCard from "../common/MenuCard";
+
+const FirstJoinWrap = styled.div`
+    width: 100%;
+    text-align: center;
+    margin: 2rem 0;
+    /* background-color: red; */
+
+    & > * {
+        margin-top: 1.25rem;
+    }
+
+    & > * > * {
+        margin-top: 1.25rem;
+    }
+`;
+
+const EmailWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & > * {
+        display: flex;
+        align-items: center;
+    }
+
+    & > div > Button {
+        margin-left: 0.5rem;
+    }
+`;
+
+const StyledInput = styled.input`
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+    padding: 0.25rem 1rem;
+    height: 3rem;
+    margin: 0.5rem 0;
+`;
+const TextareaWrap = styled.div`
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+`;
+const StyledTextarea = styled.textarea`
+    width: 65%;
+    height: 3rem;
+    padding: 1rem;
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+`;
+
+// 추가 메시지
+const StyledMessage = styled.div`
+    font-size: 0.75rem;
+    text-align: right;
+`;
+
+const ImgWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const StyledImg = styled.img`
+    width: 40%;
+    border-radius: 0.75rem;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+`;
+const StyledImgInput = styled.input`
+    width: 35%;
+`;
 
 const UserJoin = () => {
     const [userType, setUserType] = useState("S");
@@ -22,6 +99,12 @@ const UserJoin = () => {
 
     const [userNo, setUserNo] = useState(0); // 받을 거야!
 
+    // 경력 및 학력 입력 버튼을 누를 때,
+    const [openAddInfo, setOpenAddInfo] = useState(false);
+    const handleOpenAddInfo = () => {
+        setOpenAddInfo(true);
+    };
+    console.log(openAddInfo);
     // #### 공통 사용 #####
     // 모든 공백 제거 함수
     const removeAllEmpty = (value) => value.replace(/ /g, "");
@@ -186,10 +269,11 @@ const UserJoin = () => {
         console.log(certEmailCheck, "내가 입력");
         if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
             setCertEmailValidCheck(true);
-            setCertEmailCheckMSG("인증 성공");
+            setCertEmailCheckMSG("인증 성공!");
         } else {
             setCertEmailValidCheck(false);
             setCertEmailCheckMSG("인증 요망");
+            // 문구 수정@@@
         }
     };
     const [userInfoMSG, setUserInfoMSG] = useState("");
@@ -291,262 +375,290 @@ const UserJoin = () => {
     };
     return (
         <>
-            <form onSubmit={(e) => e.preventDefault()}>
-                <div>
-                    <Button
-                        className="student"
-                        onClick={userTypeChangeS}
-                        value="S"
-                        $point={userType === "S"}
-                    >
-                        학생
-                    </Button>
-                    <Button
-                        className="teacher"
-                        onClick={userTypeChangeT}
-                        $point={userType === "T"}
-                    >
-                        선생님
-                    </Button>
-                </div>
-                <div>
-                    <div>
-                        <Input
-                            label="아이디"
-                            type="text"
-                            value={userId}
-                            name="userId"
-                            id="userId"
-                            placeholder="아이디를 입력해 주세요."
-                            onChange={(e) =>
-                                setUserId(removeAllEmpty(e.currentTarget.value))
-                            }
-                            onBlur={idCheck}
-                        />
-                        {/* 첫 렌더링엔 idMSG none */}
-                        {idMSG ? <p>{idMSG}</p> : ""}
-                        {/* <label htmlFor="userId">아이디: </label>
-                        <input
-                            type="text"
-                            value={userId}
-                            name="userId"
-                            id="userId"
-                            placeholder="아이디를 입력해 주세요."
-                            onChange={(e) =>
-                                setUserId(removeAllEmpty(e.currentTarget.value))
-                            }
-                            onBlur={idCheck}
-                        /> */}
-                    </div>
-                    <Input
-                        label="비밀번호"
-                        type="password"
-                        // value={userPassword}
-                        name="userPassword"
-                        id="userPassword"
-                        placeholder="비밀번호: 특수문자 포함 9~16자로 입력해 주세요."
-                        onChange={(e) =>
-                            setUserPassword(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={passwordFormCheck}
-                    />
-                    {/* <label htmlFor="userPassword">비밀번호: </label>
-                    <input
-                        type="password"
-                        // value={userPassword}
-                        name="userPassword"
-                        id="userPassword"
-                        placeholder="비밀번호: 특수문자 포함 9~16자로 입력해 주세요."
-                        onChange={(e) =>
-                            setUserPassword(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={passwordFormCheck}
-                    /> */}
+            <Card>
+                <Container maxWidth="sm">
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <FirstJoinWrap>
+                            <div>
+                                <Button
+                                    className="student"
+                                    onClick={userTypeChangeS}
+                                    value="S"
+                                    $point={userType === "S"}
+                                    disabled={userType === "S"}
+                                >
+                                    학생
+                                </Button>
+                                <Button
+                                    className="teacher"
+                                    onClick={userTypeChangeT}
+                                    $point={userType === "T"}
+                                    disabled={userType === "T"}
+                                >
+                                    강사
+                                </Button>
+                            </div>
+                            <div>
+                                <div>
+                                    <div>
+                                        <Input
+                                            label="아이디"
+                                            type="text"
+                                            value={userId}
+                                            name="userId"
+                                            id="userId"
+                                            placeholder="아이디를 입력해 주세요."
+                                            onChange={(e) =>
+                                                setUserId(
+                                                    removeAllEmpty(
+                                                        e.currentTarget.value
+                                                    )
+                                                )
+                                            }
+                                            onBlur={idCheck}
+                                        />
+                                        {/* 첫 렌더링엔 idMSG none */}
+                                        {idMSG ? (
+                                            <StyledMessage>
+                                                {idMSG}
+                                            </StyledMessage>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
+                                    <Input
+                                        label="비밀번호"
+                                        type="password"
+                                        // value={userPassword}
+                                        name="userPassword"
+                                        id="userPassword"
+                                        placeholder="특수문자 포함 9~16자로 입력해 주세요."
+                                        onChange={(e) =>
+                                            setUserPassword(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={passwordFormCheck}
+                                    />
 
-                    <Input
-                        label="비밀번호 확인"
-                        type="password"
-                        // value={userPassword}
-                        name="userPasswordCheck"
-                        id="userPasswordCheck"
-                        placeholder=""
-                        onChange={(e) =>
-                            setUserPasswordCheck(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={passwordDuplicateCheck}
-                    />
-                    <p> {passwordMSG} </p>
-                    {/* <label htmlFor="userPasswordCheck">비밀번호 확인: </label>
-                    <input
-                        type="password"
-                        // value={userPasswordCheck}
-                        name="userPasswordCheck"
-                        id="userPasswordCheck"
-                        placeholder=""
-                        onChange={(e) =>
-                            setUserPasswordCheck(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={passwordDuplicateCheck}
-                    /> */}
+                                    <Input
+                                        label="비밀번호 확인"
+                                        type="password"
+                                        // value={userPassword}
+                                        name="userPasswordCheck"
+                                        id="userPasswordCheck"
+                                        placeholder=""
+                                        onChange={(e) =>
+                                            setUserPasswordCheck(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={passwordDuplicateCheck}
+                                    />
+                                    <StyledMessage>
+                                        {" "}
+                                        {passwordMSG}{" "}
+                                    </StyledMessage>
+                                </div>
 
-                    <Input
-                        label="이메일"
-                        type="text"
-                        name="userEmail"
-                        id="userEmail"
-                        placeholder="*@*"
-                        onChange={(e) =>
-                            setUserEmail(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userEmailFormCheck}
-                    />
-                    <p> {userEmailMSG} </p>
-                    <Button onClick={certEmail}>인증번호 전송</Button>
-                    {/* <label htmlFor="userEmail">이메일: </label>
-                    <input
-                        type="text"
-                        name="userEmail"
-                        id="userEmail"
-                        placeholder="*@*"
-                        onChange={(e) =>
-                            setUserEmail(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userEmailFormCheck}
-                    /> */}
+                                <div>
+                                    <EmailWrap>
+                                        <label htmlFor="userEmail">
+                                            이메일
+                                        </label>
+                                        <div>
+                                            <StyledInput
+                                                type="text"
+                                                name="userEmail"
+                                                id="userEmail"
+                                                placeholder="*@*"
+                                                onChange={(e) =>
+                                                    setUserEmail(
+                                                        removeAllEmpty(
+                                                            e.currentTarget
+                                                                .value
+                                                        )
+                                                    )
+                                                }
+                                                onBlur={userEmailFormCheck}
+                                            />
+                                            <Button onClick={certEmail}>
+                                                인증번호
+                                            </Button>
+                                        </div>
+                                    </EmailWrap>
+                                    <StyledMessage>
+                                        {userEmailMSG}
+                                    </StyledMessage>
 
-                    <Input
-                        label="인증코드"
-                        type="text"
-                        name="certEmailCheck"
-                        id="certEmailCheck"
-                        placeholder="인증코드"
-                        onChange={(e) =>
-                            setCertEmailCheck(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={certEmailFormCheck}
-                    />
-                    <span> {certEmailCheckMSG} </span>
-                    {/* <span>인증코드</span>
-                    <input
-                        type="text"
-                        name="certEmailCheck"
-                        placeholder="인증코드"
-                        id="certEmailCheck"
-                        onChange={(e) =>
-                            setCertEmailCheck(
-                                removeAllEmpty(e.currentTarget.value)
-                            )
-                        }
-                        onBlur={certEmailFormCheck}
-                    /> */}
+                                    <Input
+                                        label="인증코드"
+                                        type="text"
+                                        name="certEmailCheck"
+                                        id="certEmailCheck"
+                                        placeholder="인증코드"
+                                        onChange={(e) =>
+                                            setCertEmailCheck(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={certEmailFormCheck}
+                                    />
+                                    <StyledMessage>
+                                        {" "}
+                                        {certEmailCheckMSG}{" "}
+                                    </StyledMessage>
+                                </div>
+                                <div>
+                                    <Input
+                                        label="이름"
+                                        type="text"
+                                        name="userName"
+                                        id="userName"
+                                        placeholder="10자 이내로 입력해주세요."
+                                        onChange={(e) =>
+                                            setUserName(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={userNameFormCheck}
+                                    />
+                                    <StyledMessage>{userNameMSG}</StyledMessage>
 
-                    <Input
-                        label="이름"
-                        type="text"
-                        name="userName"
-                        id="userName"
-                        placeholder="10자 이내로 입력해주세요."
-                        onChange={(e) =>
-                            setUserName(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userNameFormCheck}
-                    />
-                    <p>{userNameMSG}</p>
-                    {/* <label htmlFor="userName">이름: </label>
-                    <input
-                        type="text"
-                        name="userName"
-                        id="userName"
-                        placeholder="10자 이내로 입력해주세요."
-                        onChange={(e) =>
-                            setUserName(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userNameFormCheck}
-                    /> */}
+                                    <Input
+                                        label="전화번호"
+                                        type="text"
+                                        name="userTel"
+                                        id="userTel"
+                                        value={userTel}
+                                        placeholder="숫자만 입력해 주세요. (01012345678)"
+                                        onChange={(e) =>
+                                            setUserTel(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={userTelFormCheck}
+                                    />
+                                    <StyledMessage>{userTelMSG}</StyledMessage>
+                                    <TextareaWrap>
+                                        {userType === "T" ? (
+                                            <label htmlFor="userInfo">
+                                                강사 소개
+                                            </label>
+                                        ) : (
+                                            <label htmlFor="userInfo">
+                                                목표 / 다짐
+                                            </label>
+                                        )}
+                                        <StyledTextarea
+                                            type="text"
+                                            name="userInfo"
+                                            id="userInfo"
+                                            placeholder={
+                                                userType === "T"
+                                                    ? "100자 이내로 본인을 소개해 주세요!"
+                                                    : "목표 및 다짐을 50자 이내로 적어보세요!"
+                                            }
+                                            onChange={(e) =>
+                                                setUserInfo(
+                                                    e.currentTarget.value
+                                                )
+                                            }
+                                            onBlur={userInfoFormCheck}
+                                        />
+                                    </TextareaWrap>
+                                    <StyledMessage>
+                                        {" "}
+                                        {userInfoMSG}{" "}
+                                    </StyledMessage>
+                                </div>
+                            </div>
 
-                    <Input
-                        label="전화번호"
-                        type="text"
-                        name="userTel"
-                        id="userTel"
-                        value={userTel}
-                        placeholder="숫자만 입력해 주세요(01012345678)"
-                        onChange={(e) =>
-                            setUserTel(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userTelFormCheck}
-                    />
-                    <p>{userTelMSG}</p>
-                    {/* <label htmlFor="userTel">전화번호: </label>
-                    <input
-                        type="text"
-                        name="userTel"
-                        id="userTel"
-                        value={userTel}
-                        placeholder="숫자만 입력해 주세요(01012345678)"
-                        onChange={(e) =>
-                            setUserTel(removeAllEmpty(e.currentTarget.value))
-                        }
-                        onBlur={userTelFormCheck}
-                    /> */}
+                            {userType === "T" ? (
+                                <>
+                                    <div>
+                                        <ImgWrap>
+                                            <label htmlFor="profileImg">
+                                                프로필사진
+                                            </label>
+                                            {profileImg ? (
+                                                <StyledImg
+                                                    src={profileImgURL}
+                                                    alt="프로필 사진"
+                                                />
+                                            ) : (
+                                                <StyledImg
+                                                    src="assets/bannerimg.jpg"
+                                                    alt="임시 프로필 사진"
+                                                />
+                                            )}
+                                            <StyledImgInput
+                                                id="profileImg"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={
+                                                    handleUploadProfileIMG
+                                                }
+                                            />
+                                        </ImgWrap>
+                                    </div>
+                                    <Button
+                                        onClick={handleOpenAddInfo}
+                                        $fullWidth
+                                    >
+                                        학력 및 경력 입력
+                                    </Button>
+                                </>
+                            ) : null}
+                            <br />
+                            {userType === "S" && (
+                                <Button
+                                    onClick={signUp}
+                                    $fullWidth
+                                    $point
+                                    $marginTop
+                                >
+                                    회원가입
+                                </Button>
+                            )}
+                        </FirstJoinWrap>
+                    </form>
+                </Container>
+            </Card>
 
-                    {/* <label htmlFor="userInfo">{userInfoLabel}: </label> */}
-                    <textarea
-                        // 임시 textarea 스타일
-                        style={{
-                            border: "1px solid black",
-                            padding: "8px",
-                            borderRadius: "12px",
-                        }}
-                        type="text"
-                        name="userInfo"
-                        id="userInfo"
-                        placeholder="소개"
-                        onChange={(e) => setUserInfo(e.currentTarget.value)}
-                        onBlur={userInfoFormCheck}
-                    />
-                    <p> {userInfoMSG} </p>
-                </div>
-
-                {userType === "T" ? (
-                    <>
-                        <label htmlFor="profileImg">프로필사진</label>
-                        {profileImg ? (
-                            <img src={profileImgURL} alt="프로필 사진" />
-                        ) : (
-                            <img
-                                src="assets/bannerimg.jpg"
-                                alt="프로필 없을 떄 보이는 사진"
-                            />
-                        )}
-                        <input
-                            id="profileImg"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleUploadProfileIMG}
-                        />
-                    </>
-                ) : null}
-                <br />
-                <Button onClick={signUp}>회원가입</Button>
-            </form>
             {/* 여기서 userType이 "T"면,  */}
-            {userType === "T" ? (
-                <>
-                    <UserJoinTeacherJob userNo={userNo}></UserJoinTeacherJob>
-                    <UserJoinTeacherEdu userNo={userNo}></UserJoinTeacherEdu>
-                </>
+            {userType === "T" && !openAddInfo && (
+                <Card $skyBlue $bold>
+                    학력 및 경력 입력
+                </Card>
+            )}
+            {userType === "T" && openAddInfo ? (
+                <MenuCard title="학력 및 경력 입력">
+                    <Container maxWidth="sm">
+                        <UserJoinTeacherJob
+                            userNo={userNo}
+                        ></UserJoinTeacherJob>
+                        <UserJoinTeacherEdu
+                            userNo={userNo}
+                        ></UserJoinTeacherEdu>
+                    </Container>
+                </MenuCard>
             ) : null}
+            {userType === "T" && (
+                <Button onClick={signUp} $fullWidth $point $marginTop>
+                    회원가입
+                </Button>
+            )}
         </>
     );
 };

@@ -24,6 +24,12 @@ const StyledCard = styled.div`
         css`
             margin-top: 0;
         `}
+    // Margin 초기화
+    ${(props) =>
+        props.$bold &&
+        css`
+            font-weight: bold;
+        `}
 `;
 
 const Card = (props) => {

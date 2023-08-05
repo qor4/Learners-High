@@ -74,7 +74,8 @@ const UserJoinTeacherJob = (props) => {
                 {jobInputList.map((item, index) => (
                     <div key={index}>
                         <LessonStatusBox $point>
-                            경력 {item.id + 1}
+                            경력
+                            {/* 경력 {item.id + 1} */}
                         </LessonStatusBox>
 
                         {/* <span>직장명</span>

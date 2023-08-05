@@ -76,7 +76,8 @@ const UserJoinTeacherEdu = (props) => {
                 {eduInputList.map((item, index) => (
                     <div key={index}>
                         <LessonStatusBox $point>
-                            학력 {item.id + 1}
+                            {/* 학력 {item.id + 1} */}
+                            학력
                         </LessonStatusBox>
 
                         <Input

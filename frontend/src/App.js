@@ -12,7 +12,7 @@ import UserJoinPage from "./pages/auth/UserJoinPage";
 import MainPage from "./pages/MainPage";
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
-import ClassRoundJoin from "./components/class/ClassRoundJoin";
+import ClassRoundJoinPage from "./pages/class/ClassRoundJoinPage";
 import LessonInfoPage from "./pages/LessonInfoPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import Header from "./components/common/Header";
@@ -69,7 +69,7 @@ function App() {
                     ></Route>
                     <Route
                         path="/lesson/round/join"
-                        element={<ClassRoundJoin />}
+                        element={<ClassRoundJoinPage />}
                     ></Route>
                     <Route
                         path="/lesson/info/:lessonNo"
