@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+import { Typography } from "@mui/material";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
@@ -12,14 +13,30 @@ import LessonStatusBox from "../common/LessonStatusBox";
 import VideoRoomComponent from "../VideoRoomComponent";
 
 const StyledButtonWrap = styled.div`
-    /* position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 1.25rem; */
     text-align: right;
 
     & > *:not(:first-child) {
         margin-left: 0.75rem;
+    }
+`;
+
+const LessonInfoWrap = styled.div`
+    margin-left: 1rem;
+    margin-top: 1rem;
+    & > * {
+        margin-bottom: 0.75rem;
+    }
+`;
+
+const FlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const RoundDateWrap = styled.div`
+    :not(:first-child) {
+        margin-left: 2rem;
     }
 `;
 
@@ -41,21 +58,53 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     const lessonNo = "1"; // 임시
     const lessonRoundNo = "2"; // 임시
 
+    // 날짜 format
+    const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
+    const endDatetime = new Date(lessonInfo.lessonRoundEndDatetime);
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+
+    // 시간 format
+    const formatTime = (date) => {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours < 12 ? "오전" : "오후";
+        const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+        const formattedMinutes = minutes.toString().padStart(2, "0");
+
+        return `${ampm} ${formattedHours}시 ${formattedMinutes}분`;
+    };
+
+    const formattedStartDate = `${formatDate(startDatetime)} ${formatTime(
+        startDatetime
+    )}`;
+    const formattedEndDate = `${formatTime(endDatetime)}`;
+
     return (
         <>
-            <div>
+            <RoundDateWrap>
                 <LessonStatusBox size="lg" $point $round>
                     {lessonInfo.lessonRoundNo}회차
                 </LessonStatusBox>
                 <span>
-                    {lessonInfo.lessonRoundStartDatetime} ~{" "}
-                    {lessonInfo.lessonRoundEndDatetime}
+                    {formattedStartDate} ~ {formattedEndDate}
                 </span>
-            </div>
-
-            <div>{lessonInfo.lessonName}</div>
-            <div>{lessonInfo.lessonRoundTitle}</div>
-            <div>{lessonInfo.userName} 강사님</div>
+            </RoundDateWrap>
+            <LessonInfoWrap>
+                <FlexWrap>
+                    <Typography style={{ fontSize: "1.25rem", fontWeight: 600 }}>
+                        {lessonInfo.lessonName}
+                    </Typography>
+                    <div>{lessonInfo.userName} 강사님</div>
+                </FlexWrap>
+                <div>{lessonInfo.lessonRoundTitle}</div>
+            </LessonInfoWrap>
 
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (

@@ -57,6 +57,28 @@ const StyledButton = styled.button`
         css`
             border: none;
         `}
+    // skyBlue
+    ${(props) =>
+        props.$skyBlue &&
+        css`
+            background-color: #e1e6f9;
+            border: 1px solid #e1e6f9;
+            &:not(:disabled):hover {
+                background: #c9d1f1;
+                color: #000;
+            }
+        `}
+    // kakao
+    ${(props) =>
+        props.$kakao &&
+        css`
+            background-color: #f9e000;
+            border: 1px solid #f9e000;
+            &:not(:disabled):hover {
+                background: #f1d900;
+                color: #000;
+            }
+        `}
 
     // 포인트 버튼 (반전)
     ${(props) =>
@@ -74,6 +96,13 @@ const StyledButton = styled.button`
         props.$active &&
         css`
             font-weight: bold;
+        `}
+
+    // MT20
+    ${(props) =>
+        props.$marginTop &&
+        css`
+            margin-top: 2rem;
         `}
 `;
 

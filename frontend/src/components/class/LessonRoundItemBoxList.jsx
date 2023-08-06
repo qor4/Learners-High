@@ -9,6 +9,7 @@ import styled from "styled-components";
 
 import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
+import { Link } from "react-router-dom";
 
 const StyledBox = styled.div`
     background-color: #fff;
@@ -21,7 +22,7 @@ const StyledBox = styled.div`
         margin-top: 0;
     }
 
-    &:hover {
+    &:hover:not(${(props) => props.$hover}) {
         background-color: #edf1ff;
         cursor: pointer;
     }
@@ -73,9 +74,17 @@ const LessonRoundItemBoxList = ({
             <Card $skyBlue>
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
-                        <StyledBox key={index}>
-                            <LessonRoundItemBox lessonInfo={lessonItem} />
-                        </StyledBox>
+                        <Link
+                            to={
+                                userType === "T"
+                                    ? `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
+                                    : `/edu/student/${userNo}/${lessonItem.lessonNo}`
+                            }
+                        >
+                            <StyledBox $hover key={index}>
+                                <LessonRoundItemBox lessonInfo={lessonItem} />
+                            </StyledBox>
+                        </Link>
                     ))
                 ) : (
                     <StyledBox>{dayName}요일 수업 없음</StyledBox>

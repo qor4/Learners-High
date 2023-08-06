@@ -5,13 +5,15 @@ import axios from "axios";
 import styled from "styled-components";
 import { url } from "../../api/APIPath";
 
+import { Container } from "@mui/material";
+
 import Banner from "../common/Banner";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
 
 // 배너 wrap styled
 const StyledBanner = styled.div`
-    width: 90%;
+    /* width: 90%; */
     margin: 0 auto;
 `;
 
@@ -25,7 +27,7 @@ const HoverLink = styled(Link)`
 
 // 인기 강의 styled
 const StyledPopular = styled.div`
-    width: 85%;
+    /* width: 85%; */
     margin: 3rem auto;
 `;
 
@@ -54,7 +56,7 @@ const GuestMain = () => {
     return (
         <>
             {/* 배너 공간 */}
-            <StyledBanner>
+            <Container maxWidth="lg">
                 <Banner $image="assets/temp-banner.jpg" $point>
                     <div>
                         <strong>LEARNERS HIGH 만의</strong>
@@ -67,9 +69,9 @@ const GuestMain = () => {
                         </Button>
                     </Link>
                 </Banner>
-            </StyledBanner>
+            </Container>
 
-            <div>
+            <Container maxWidth="lg">
                 {/* 인기 강의 공간 */}
                 <StyledPopular>
                     <PopularTitle>
@@ -150,7 +152,7 @@ const GuestMain = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </Container>
         </>
     );
 };

@@ -2,19 +2,24 @@
 import styled from "styled-components";
 
 const StyledLabel = styled.label`
-    font-size: 20px;
+    font-size: 1rem;
 `;
 
 const StyledInput = styled.input`
-    width: auto;
+    width: 70%;
     border: 1px solid #000;
-    border-radius: 12px;
+    border-radius: 0.75rem;
     box-sizing: border-box;
-    padding: 4px 16px;
-    height: 48px;
-    font-size: 16px;
-    margin: 16px;
+    padding: 0.25rem 1rem;
+    height: 3rem;
+    margin: 0.5rem 0;
 `;
+
+const StyledInputWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`
 
 const Input = (props) => {
     const {
@@ -27,23 +32,23 @@ const Input = (props) => {
         onChange,
         disabled,
         onKeyPress,
-        onBlur
+        onBlur,
     } = props;
     return (
-        <div>
-            <StyledLabel htmlFor={id}>{label}</StyledLabel>
-            <StyledInput
-                id={id}
-                name={name}
-                value={value}
-                type={type}
-                placeholder={placeholder}
-                onChange={onChange}
-                disabled={disabled}
-                onKeyPress={onKeyPress}
-                onBlur={onBlur}
-            />
-        </div>
+            <StyledInputWrap>
+                <StyledLabel htmlFor={id}>{label}</StyledLabel>
+                <StyledInput
+                    id={id}
+                    name={name}
+                    value={value}
+                    type={type}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    disabled={disabled}
+                    onKeyPress={onKeyPress}
+                    onBlur={onBlur}
+                />
+            </StyledInputWrap>
     );
 };
 

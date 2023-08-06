@@ -1,10 +1,28 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import styled from "styled-components";
+import { Grid } from "@mui/material";
+
 import { url } from "../../api/APIPath";
+
 import LessonStatusBox from "../common/LessonStatusBox";
-import Input from "../common/Input";
 import Button from "../common/Button";
+
+// input 태그 style한 것
+const StyledInput = styled.input`
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+    padding: 0.25rem 1rem;
+    height: 3rem;
+    margin: 0.5rem 0;
+`;
+
+const InputWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
 const UserJoinTeacherEdu = (props) => {
     const nextId = useRef(1);
@@ -75,99 +93,90 @@ const UserJoinTeacherEdu = (props) => {
             <form onSubmit={(e) => e.preventDefault()}>
                 {eduInputList.map((item, index) => (
                     <div key={index}>
-                        <LessonStatusBox $point>
-                            학력 {item.id + 1}
-                        </LessonStatusBox>
+                        <LessonStatusBox $point>학력</LessonStatusBox>
+                        <Grid container columns={{ md: 15 }} spacing={2}>
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="universityName">
+                                        학교명
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="universityName"
+                                        id="universityName"
+                                        placeholder="학교명"
+                                        className={`universityName-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.universityName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="majorName">전공명</label>
+                                    <StyledInput
+                                        label="전공명"
+                                        type="text"
+                                        name="majorName"
+                                        id="majorName"
+                                        placeholder="전공명"
+                                        className={`majorName-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.majorName}
+                                    />
+                                </InputWrap>
+                            </Grid>
 
-                        <Input
-                            label="학교명"
-                            type="text"
-                            name="universityName"
-                            id="universityName"
-                            className={`universityName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.universityName}
-                        />
-                        {/* <span>학교명</span>
-                        <input
-                            type="text"
-                            name="universityName"
-                            className={`universityName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.universityName}
-                        /> */}
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="degree">학위명</label>
+                                    <StyledInput
+                                        label="학위명"
+                                        type="text"
+                                        name="degree"
+                                        id="degree"
+                                        placeholder="학위명"
+                                        className={`degree-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.degree}
+                                    />
+                                </InputWrap>
+                            </Grid>
 
-                        <Input
-                            label="전공명"
-                            type="text"
-                            name="majorName"
-                            id="majorName"
-                            className={`majorName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.majorName}
-                        />
-                        {/* <span>전공명</span>
-                        <input
-                            type="text"
-                            name="majorName"
-                            className={`majorName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.majorName}
-                        /> */}
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="eduStartDate">
+                                        입학년월
+                                    </label>
+                                    <StyledInput
+                                        label="입학년월"
+                                        type="text"
+                                        name="eduStartDate"
+                                        id="eduStartDate"
+                                        placeholder="입학년월"
+                                        className={`eduStartDate-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.eduStartDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
 
-                        <Input
-                            label="학위명"
-                            type="text"
-                            name="degree"
-                            id="degree"
-                            className={`degree-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.degree}
-                        />
-                        {/* <span>학위명</span>
-                        <input
-                            type="text"
-                            name="degree"
-                            className={`degree-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.degree}
-                        /> */}
-
-                        <Input
-                            label="입학년월"
-                            type="text"
-                            name="eduStartDate"
-                            id="eduStartDate"
-                            className={`eduStartDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.eduStartDate}
-                        />
-                        {/* <span>입학년월</span>
-                        <input
-                            type="text"
-                            name="eduStartDate"
-                            className={`eduStartDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.eduStartDate}
-                        /> */}
-
-                        <Input
-                            label="졸업년월"
-                            type="text"
-                            name="eduEndDate"
-                            id="eduEndDate"
-                            className={`eduEndDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.eduEndDate}
-                        />
-                        {/* <span>졸업년월</span>
-                        <input
-                            type="text"
-                            name="eduEndDate"
-                            className={`eduEndDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.eduEndDate}
-                        /> */}
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="eduEndDate">졸업년월</label>
+                                    <StyledInput
+                                        label="졸업년월"
+                                        type="text"
+                                        name="eduEndDate"
+                                        id="eduEndDate"
+                                        placeholder="졸업년월"
+                                        className={`eduEndDate-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.eduEndDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                        </Grid>
 
                         <Button
                             $point
