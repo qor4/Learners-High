@@ -445,7 +445,7 @@ class VideoRoomComponent extends Component {
         this.connectWebCam();
     }
 
-    checkSomeoneShareScreen() {
+    checkSomeoneShare9Screen() {
         let isScreenShared;
         // return true if at least one passes the test
         isScreenShared = this.state.subscribers.some((user) => user.isScreenShareActive()) || localUser.isScreenShareActive();
@@ -573,7 +573,7 @@ class VideoRoomComponent extends Component {
     async createSession(sessionId) {
         console.log(this.lessonNo,this.lessonRoundNo,this.userNo)
         const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
-        console.log(response.data.resultMsg, "이거머니")
+        console.log(response.data, "이거머니")
         return response.data.resultMsg; // The sessionId
     }
 
@@ -584,22 +584,5 @@ class VideoRoomComponent extends Component {
         console.log(response.data)
         return response.data.resultMsg; // The token
     }
-
-    // 이걸 
-// 선생
-    async createLessonRoom() {
-        // Number인지 확인하고 넘기기
-        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
-        console.log(response.data.resultMsg, "선생님 토큰")
-        console.log(response.data, "선생님 데이터")
-        return response.data.resultMsg; // The sessionId
-    }
-// 학생 // 여기서 토큰 받고 저장. 클릭하면 컴포넌트 바뀜. 이 바뀔 때, 이 컴포넌트에 Token. token 이걸 SessionToToken
-    // async EnterLessonRoom() {
-    //     // Number인지 확인하기
-    //     const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
-    //     console.log(response.data)
-    //     return response.data.resultMsg; // The token
-    // }
 }
 export default VideoRoomComponent;

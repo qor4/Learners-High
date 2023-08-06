@@ -17,7 +17,7 @@ import OpenViduLayout from '../../layout/openvidu-layout';
 import EasySeeSo from "seeso/easy-seeso";
 import { showGaze, hideGaze } from "./showGaze";
 
-const StudentLessonRoomPage = () => { 
+const StudentLessonRoomPage = ({token}) => { 
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
@@ -29,7 +29,7 @@ const StudentLessonRoomPage = () => {
     const layout = new OpenViduLayout();
     let sessionName = lessonNo + "_" + lessonRoundNo;
     // session에 접속할 토큰
-    let sessionToToken = "";
+    let sessionToToken = token;
     let remotes = [];
     let localUserAccessAllowed = false;
     let OV =null;
@@ -232,7 +232,7 @@ function subscribeToStreamCreated() {
         const subscriber = roomState.session.subscribe(event.stream, undefined);
         // var subscribers = this.state.subscribers;
         subscriber.on('streamPlaying', (e) => {
-            checkSomeoneShareScreen();
+            // checkSomeoneShareScreen();
             subscriber.videos[0].video.parentElement.classList.remove('custom-class');
         });
         const newUser = new UserModel();
@@ -254,7 +254,7 @@ function subscribeToStreamDestroyed() {
         // Remove the stream from 'subscribers' array
         deleteSubscriber(event.stream);
         setTimeout(() => {
-            checkSomeoneShareScreen();
+            // checkSomeoneShareScreen();
         }, 20);
         event.preventDefault();
         updateLayout();
@@ -283,7 +283,7 @@ function subscribeToUserChanged() {
             }
         });
         roomState.subscribers=remoteUsers;
-        checkSomeoneShareScreen();
+        // checkSomeoneShareScreen();
     });
 }
 

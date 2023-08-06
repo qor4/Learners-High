@@ -16,7 +16,9 @@ const TeacherLessonRoomPage = () => {
 
   return (
     <>
-    <VideoRoomComponent userNo={userNo} userId={userId}
+    <VideoRoomComponent 
+    userNo={userNo} 
+    userId={userId}
     userType={userType}
     lessonNo={lessonNo}
     lessonRoundNo={lessonRoundNo}
