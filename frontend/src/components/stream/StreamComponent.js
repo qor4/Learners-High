@@ -65,6 +65,7 @@ const StreamComponent =(props)=> {
 
                 {props.user !== undefined && props.user.getStreamManager() !== undefined ? (
                     <div className="streamComponent">
+                        {console.log(props.user.getStreamManager(), "StreamComponent 스티머")}
                         <OvVideoComponent user={props.user} mutedSound={streamState.mutedSound} />
                         <div id="statusIcons">
                             {!props.user.isVideoActive() ? (
