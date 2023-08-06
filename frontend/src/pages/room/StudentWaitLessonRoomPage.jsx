@@ -197,20 +197,12 @@ const StudentWaitLessonRoomPage = () => {
                                 }}
                             />
                         ) : (
-                            <VideoRoomComponent
-                                style={{
-                                    position: "absolute",
-                                    overFit: "cover",
-                                    margin: "auto",
-                                }}
-                                userNo={userNo}
-                                userName={userName}
-                                userId={userId}
-                                lessonNo={lessonNo}
-                                lessonRoundNo={lessonRoundNo}
-                                token={token}
-                            />
-                            // <StudentLessonRoomPage                            
+                            // <VideoRoomComponent
+                            //     style={{
+                            //         position: "absolute",
+                            //         overFit: "cover",
+                            //         margin: "auto",
+                            //     }}
                             //     userNo={userNo}
                             //     userName={userName}
                             //     userId={userId}
@@ -218,6 +210,14 @@ const StudentWaitLessonRoomPage = () => {
                             //     lessonRoundNo={lessonRoundNo}
                             //     token={token}
                             // />
+                            <StudentLessonRoomPage                            
+                                userNo={userNo}
+                                userName={userName}
+                                userId={userId}
+                                lessonNo={lessonNo}
+                                lessonRoundNo={lessonRoundNo}
+                                token={token}
+                            />
                             // <p>계속되니?</p>
                         )}
                         <canvas

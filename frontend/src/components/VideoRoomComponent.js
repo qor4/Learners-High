@@ -5,18 +5,20 @@ import ChatComponent from './chat/ChatComponent';
 // import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import StreamComponent from './stream/StreamComponent';
 import './VideoRoomComponent.css';
+import { url } from "../api/APIPath";
 
 import OpenViduLayout from '../layout/openvidu-layout';
 import UserModel from '../models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
 
 var localUser = new UserModel();
-const APPLICATION_SERVER_URL = 'https://i9b105.p.ssafy.io:7777/';
+// const APPLICATION_SERVER_URL = 'https://i9b105.p.ssafy.io:7777/';
 
 
 class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
+        this.token = this.props.token;
         this.userType = this.props.userType
         this.userNo = Number(this.props.userNo)
         this.lessonNo = Number(this.props.lessonNo)
@@ -53,8 +55,22 @@ class VideoRoomComponent extends Component {
         this.checkNotification = this.checkNotification.bind(this);
         this.checkSize = this.checkSize.bind(this);
         this.checkSomeoneShareScreen = this.checkSomeoneShareScreen.bind(this);
+        this.getToken =this.getToken.bind(this);
     }
 
+    getToken(){
+        axios.get(url + '/lessonroom/teacher/20/7/5')
+        .then(res =>{
+            this.token =res.data.resultMsg;
+            console.log("teacher : ",this.token);
+        }).then(()=>{
+            this.connect(this.token);
+        })
+        .catch(err=>{
+            console.error(err);
+        });
+    }
+    
     componentDidMount() {
         const openViduLayoutOptions = {
             maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
@@ -102,21 +118,15 @@ class VideoRoomComponent extends Component {
     }
 
     async connectToSession() {
-        if (this.props.token !== undefined) {
-            console.log('token received: ', this.props.token);
-            this.connect(this.props.token);
-        } else {
-            try {
-                var token = await this.getToken();
-                console.log(token);
-                this.connect(token);
-            } catch (error) {
-                console.error('There was an error getting the token:', error.code, error.message);
-                if(this.props.error){
-                    this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
-                }
-                alert('There was an error getting the token:', error.message);
+        try {
+            await this.getToken();
+            console.log("this :",this.token);
+        } catch (error) {
+            console.error('There was an error getting the token:', error.code, error.message);
+            if(this.props.error){
+                this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
             }
+            alert('There was an error getting the token:', error.message);
         }
     }
 
@@ -562,45 +572,45 @@ class VideoRoomComponent extends Component {
      * Visit https://docs.openvidu.io/en/stable/application-server to learn
      * more about the integration of OpenVidu in your application server.
      */
-    async getToken() {
-        if (this.userType==="T") {
-            return await this.createSession(this.state.mySessionId);
-        } else {
-            return await this.createToken(this.state.mySessionId);
-        }
+//     async getToken() {
+//         if (this.userType==="T") {
+//             return await this.createSession(this.state.mySessionId);
+//         } else {
+//             return await this.createToken(this.state.mySessionId);
+//         }
 
-    }
+//     }
 
-    async createSession(sessionId) {
-        console.log(this.lessonNo,this.lessonRoundNo,this.userNo)
-        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
-        console.log(response.data.resultMsg, "이거머니")
-        return response.data.resultMsg; // The sessionId
-    }
+//     async createSession(sessionId) {
+//         console.log(this.lessonNo,this.lessonRoundNo,this.userNo)
+//         const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
+//         console.log(response.data.resultMsg, "이거머니")
+//         return response.data.resultMsg; // The sessionId
+//     }
 
-    async createToken(sessionId) {
-        console.log(this.lessonNo, this.lessonRoundNo, typeof this.lessonNo, "강의Num 들어옴")
+//     async createToken(sessionId) {
+//         console.log(this.lessonNo, this.lessonRoundNo, typeof this.lessonNo, "강의Num 들어옴")
 
-        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
-        console.log(response.data)
-        return response.data.resultMsg; // The token
-    }
+//         const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
+//         console.log(response.data)
+//         return response.data.resultMsg; // The token
+//     }
 
-    // 이걸 
-// 선생
-    async createLessonRoom() {
-        // Number인지 확인하고 넘기기
-        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
-        console.log(response.data.resultMsg, "선생님 토큰")
-        console.log(response.data, "선생님 데이터")
-        return response.data.resultMsg; // The sessionId
-    }
-// 학생 // 여기서 토큰 받고 저장. 클릭하면 컴포넌트 바뀜. 이 바뀔 때, 이 컴포넌트에 Token. token 이걸 SessionToToken
-    // async EnterLessonRoom() {
-    //     // Number인지 확인하기
-    //     const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
-    //     console.log(response.data)
-    //     return response.data.resultMsg; // The token
-    // }
+//     // 이걸 
+// // 선생
+//     async createLessonRoom() {
+//         // Number인지 확인하고 넘기기
+//         const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
+//         console.log(response.data.resultMsg, "선생님 토큰")
+//         console.log(response.data, "선생님 데이터")
+//         return response.data.resultMsg; // The sessionId
+//     }
+// // 학생 // 여기서 토큰 받고 저장. 클릭하면 컴포넌트 바뀜. 이 바뀔 때, 이 컴포넌트에 Token. token 이걸 SessionToToken
+//     // async EnterLessonRoom() {
+//     //     // Number인지 확인하기
+//     //     const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
+//     //     console.log(response.data)
+//     //     return response.data.resultMsg; // The token
+//     // }
 }
 export default VideoRoomComponent;

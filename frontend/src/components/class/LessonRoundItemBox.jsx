@@ -5,8 +5,6 @@ import { useSelector } from "react-redux";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
-
-import VideoRoomComponent from "../VideoRoomComponent"
 import { Link } from "react-router-dom";
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
@@ -14,21 +12,15 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     console.log(userType, "userType")
     const userName = useSelector((state)=> state.user.userName)
     // const userType = "T";
-    console.log(lessonInfo)
-    const [bool, setBool] = useState(false)
-    // const [token, setToken] = useState("")
-    const handleEnter = () => {
-        setBool(true)
-
-        // axios.get(`${url}/lesson/lessonId/3/15/2`)
-        // .then(res=> {
-        //     setToken(res.data.token)
-        // })
+    const [bool, setBool] = useState(false);
+    
+    const handleEnter =  () => {
+        setBool(true);
     }
-    console.log(lessonInfo)
-    const lessonNo = lessonInfo.lessonNo
-    const lessonRoundNo = lessonInfo.lessonRoundNo // 임시
-    const lessonName = lessonInfo.lessonName
+    console.log(lessonInfo);
+    const lessonNo = lessonInfo.lessonNo;
+    const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
+    const lessonName = lessonInfo.lessonName;
 
     return (
         <>

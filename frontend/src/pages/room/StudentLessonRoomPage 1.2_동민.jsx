@@ -22,8 +22,8 @@ const StudentLessonRoomPage = ({ token }) => {
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
     const userType = useSelector((state) => state.user.userType);
-    const { lessonNo, lessonRoundNo } = useParams();
 
+    const { lessonNo, lessonRoundNo } = useParams();
     const location = useLocation();
     const hasBeenUpdated = false;
     const layout = new OpenViduLayout();
@@ -45,7 +45,6 @@ const StudentLessonRoomPage = ({ token }) => {
         chatDisplay: "none",
         currentVideoDevice: undefined,
     };
-    console.log(roomState.mySessionId, "세션Id")
     // 컴포넌트가 마운트될 때 실행되는 코드
     // useEffect(() => {
     //     const openViduLayoutOptions = {
@@ -60,24 +59,22 @@ const StudentLessonRoomPage = ({ token }) => {
     //     bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
     //     animate: true, // Whether you want to animate the transitions
     //     };
-
+    //     console.log("초기 렌더링 돼?, 세션 토큰 보는중")
     //     // layout 초기화
     //     layout.initLayoutContainer(document.getElementById('layout'), openViduLayoutOptions);
     //     window.addEventListener('beforeunload', onbeforeunload);
     //     window.addEventListener('resize', updateLayout);
     //     window.addEventListener('resize', checkSize);
     //     joinSession();
-    //     console.log('*** startjoin');
 
     //     // 컴포넌트가 언마운트될 때 실행되는 코드 (clean-up)
     //     return () => {
-    //         console.log('*** unmount');
     //         window.removeEventListener('beforeunload', onbeforeunload);
     //         window.removeEventListener('resize', updateLayout);
     //         window.removeEventListener('resize', checkSize);
     //         leaveSession();
     //     };
-    // }, []);
+    // }, [sessionToToken]);
 
     ////////
     const openViduLayoutOptions = {
@@ -110,7 +107,7 @@ const StudentLessonRoomPage = ({ token }) => {
         leaveSession();
     }
 
-    function joinSession() {
+    async function joinSession() {
         console.log("*** startjoin1");
 
         OV = new OpenVidu();
@@ -194,6 +191,7 @@ const StudentLessonRoomPage = ({ token }) => {
             resolution: "640x480",
             frameRate: 30,
             insertMode: "APPEND",
+            // stream: null,
         });
 
         if (roomState.session.capabilities.publish) {
@@ -208,6 +206,7 @@ const StudentLessonRoomPage = ({ token }) => {
         localUser.setConnectionId(roomState.session.connection.connectionId);
         localUser.setScreenShareActive(false);
         localUser.setStreamManager(publisher);
+        console.log(publisher, "퍼블리셔");
         console.log("*** startjoin13");
 
         subscribeToUserChanged();
@@ -328,6 +327,7 @@ const StudentLessonRoomPage = ({ token }) => {
             });
             const newUser = new UserModel();
             newUser.setStreamManager(subscriber);
+            console.log(subscriber, "구독자");
             newUser.setConnectionId(event.stream.connection.connectionId);
             newUser.setType("remote");
             const nickname = event.stream.connection.data.split("%")[0];
@@ -666,11 +666,12 @@ const StudentLessonRoomPage = ({ token }) => {
         <>
             <div id="layout" className="bounds">
                 {localUser !== undefined &&
-                    localUser.getStreamManager() !== undefined && (
+                    localUser.getStreamManager() !== null && (
                         <div
                             className="OT_root OT_publisher custom-class"
                             id="localUser"
                         >
+                            {console.log(localUser.getStreamManager(), "1번")}
                             <StreamComponent
                                 user={localUser}
                                 handleNickname={userName}
@@ -683,21 +684,26 @@ const StudentLessonRoomPage = ({ token }) => {
                         className="OT_root OT_publisher custom-class"
                         id="remoteUsers"
                     >
+                        {console.log(localUser.getStreamManager(), "2번")}
+
                         <StreamComponent
                             user={sub}
                             streamId={sub.streamManager.stream.streamId}
                         />
                     </div>
                 ))}
-                <div
-                    className="OT_root OT_publisher custom-class"
-                    // style={chatDisplay}
-                >
-                    <ChatComponent
-                        user={localUser}
-                        messageReceived={checkNotification}
-                    />
-                </div>
+                {localUser !== undefined &&
+                    localUser.getStreamManager() !== null && (
+                        <div
+                            className="OT_root OT_publisher custom-class"
+                            // style={chatDisplay}
+                        >
+                            <ChatComponent
+                                user={localUser}
+                                messageReceived={checkNotification}
+                            />
+                        </div>
+                    )}
             </div>
         </>
     );
