@@ -584,5 +584,18 @@ class VideoRoomComponent extends Component {
         console.log(response.data)
         return response.data.resultMsg; // The token
     }
+
+    async createLessonRoom() {
+        // Number인지 확인하고 넘기기
+        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/teacher/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}`);
+        return response.data.resultMsg; // The sessionId
+    }
+
+    async EnterLessonRoom() {
+        // Number인지 확인하기
+        const response = await axios.get(APPLICATION_SERVER_URL + `lessonroom/student/${this.lessonNo}/${this.lessonRoundNo}/${this.userNo}` );
+        console.log(response.data)
+        return response.data.resultMsg; // The token
+    }
 }
 export default VideoRoomComponent;
