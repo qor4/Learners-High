@@ -445,7 +445,7 @@ class VideoRoomComponent extends Component {
         this.connectWebCam();
     }
 
-    checkSomeoneShareScreen() {
+    checkSomeoneShare9Screen() {
         let isScreenShared;
         // return true if at least one passes the test
         isScreenShared = this.state.subscribers.some((user) => user.isScreenShareActive()) || localUser.isScreenShareActive();
@@ -494,6 +494,8 @@ class VideoRoomComponent extends Component {
             this.hasBeenUpdated = false;
         }
     }
+
+    
 
     render() {
         const mySessionId = this.state.mySessionId;

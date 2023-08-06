@@ -28,6 +28,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     console.log(lessonInfo)
     const lessonNo = lessonInfo.lessonNo
     const lessonRoundNo = lessonInfo.lessonRoundNo // 임시
+    const lessonName = lessonInfo.lessonName
 
     return (
         <>
@@ -59,7 +60,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <div>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Link to={`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`}>
+                    <Link to={`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`} state={{lessonName}}>
                         <Button $point>강의 입장</Button>
                     </Link>
                 </div>
