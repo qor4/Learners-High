@@ -11,7 +11,7 @@ const StyledBanner = styled.div`
     background-image: url(${props.$image});
   `}
     background-size: cover;
-
+    margin-top: 2.5rem;
     height: 444px;
     border-radius: 40px;
     position: relative;

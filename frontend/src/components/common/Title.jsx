@@ -18,7 +18,7 @@ const Title = (props) => {
     return (
         <Card>
             <StyledDiv>{props.children}</StyledDiv>
-            <StyledImg src="assets/watch.png" alt="watch-img" />
+            {/* <StyledImg src="assets/watch.png" alt="watch-img" /> */}
         </Card>
     );
 };

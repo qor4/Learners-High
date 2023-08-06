@@ -33,7 +33,6 @@ const Img = styled.img`
 const StyledHeader = styled.header`
     width: 100%;
     height: 6.25rem;
-    margin-bottom: 2rem;
     background-color: #fff;
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
 `;
