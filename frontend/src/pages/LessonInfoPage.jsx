@@ -6,7 +6,7 @@ import { url } from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled } from "styled-components";
-import { Container } from "@material-ui/core";
+import { Container } from '@mui/material';
 
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Card from "../components/common/Card";
@@ -84,6 +84,7 @@ const LessonInfoPage = () => {
                 <LessonInfoBox
                     lessonInfo={lessonInfoDataSet.lessonInfo}
                     handleApplyChange={handleApplyChange}
+                    $info
                 />
             </StyledLessonInfoWrap>
 

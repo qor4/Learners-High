@@ -6,7 +6,7 @@ import LessonItem from "./LessonItem";
 
 const LessonList = ({ items }) => {
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
             {items.map((data, index) => (
                 <Grid item xs={6} md={3} key={index}>
                     <LessonItem

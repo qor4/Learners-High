@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,9 +16,10 @@ const ButtonWrap = styled.div`
     & > * {
         margin-bottom: 0.5rem;
     }
-`
+`;
 
 const UserLogIn = (props) => {
+    const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     console.log(user);
 
@@ -46,6 +47,7 @@ const UserLogIn = (props) => {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
                     dispatch(logInUser(res.data.result));
+                    navigate(`/`);
                     props.onClose();
                 } else {
                     alert("로그인 실패!");
@@ -82,7 +84,9 @@ const UserLogIn = (props) => {
                 />
 
                 <ButtonWrap>
-                    <Button $fullWidth $kakao>카카오톡 로그인</Button>
+                    <Button $fullWidth $kakao>
+                        카카오톡 로그인
+                    </Button>
                     <Button $fullWidth $point onClick={userLogIn}>
                         로그인
                     </Button>

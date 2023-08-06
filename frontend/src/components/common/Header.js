@@ -123,7 +123,7 @@ const Header = () => {
                             <NavStyle to="/lesson/join">강의 개설</NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
-                            <NavHoverStyle>
+                            <NavHoverStyle to={`/`}>
                                 <UserLogOut />
                             </NavHoverStyle>
                             <NavStyle to={`/user/${userNo}`}>
@@ -149,7 +149,7 @@ const Header = () => {
                             </NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
-                            <NavHoverStyle>
+                            <NavHoverStyle to={`/`}>
                                 <UserLogOut />
                             </NavHoverStyle>
                             <NavStyle to={`/user/${userNo}`}>

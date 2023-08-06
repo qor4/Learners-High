@@ -15,7 +15,7 @@ const ImgInfoWrap = styled.div`
 
 // image styled
 const StyledThumbnail = styled.img`
-    width: 40%;
+    width: 35%;
     border-radius: 50%;
 `;
 
@@ -24,7 +24,7 @@ const InfoWrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 55%;
+    width: 60%;
 
     & > *:not(:first-child) {
         margin-top: 1rem;
@@ -44,7 +44,7 @@ const FlexWrap = styled.div`
     }
 `;
 
-const TeacherIntroduceBox = ({ teacherInfo }) => {
+const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     // 강사 만족도, 수업 만족도 GET 요청@@@
 
     const eduInfo = teacherInfo.eduInfos;
@@ -63,17 +63,19 @@ const TeacherIntroduceBox = ({ teacherInfo }) => {
                 />
 
                 <InfoWrap>
-                    <FlexWrap>
-                        {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
-                        <div>
-                            <strong>수업 만족도</strong>
-                            <span>😍 5.0</span>
-                        </div>
-                        <div>
-                            <strong>강사 만족도</strong>
-                            <span>😍 5.0</span>
-                        </div>
-                    </FlexWrap>
+                    {!$profile && (
+                        <FlexWrap>
+                            {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
+                            <div>
+                                <strong>수업 만족도</strong>
+                                <span>😍 5.0</span>
+                            </div>
+                            <div>
+                                <strong>강사 만족도</strong>
+                                <span>😍 5.0</span>
+                            </div>
+                        </FlexWrap>
+                    )}
 
                     {/* 강사 이름 */}
                     <span>
@@ -82,7 +84,7 @@ const TeacherIntroduceBox = ({ teacherInfo }) => {
                     </span>
 
                     {/* 강사 한 마디 */}
-                    <Card $skyBlue>{teacherInfo.userInfo}</Card>
+                    {$profile && <Card>{teacherInfo.userInfo}</Card>}
 
                     {/* 학력과 경력이 들어가는 공간 */}
                     {eduInfo && eduInfo.length > 0 && (

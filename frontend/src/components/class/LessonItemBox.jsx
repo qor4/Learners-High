@@ -4,9 +4,13 @@
 import Card from "../common/Card";
 
 const LessonItemBox = () => {
-    return (<Card>
-        수업 시작일 ~ 종료일, 수업 이름, 수업 만족도, 강사 만족도
-    </Card>)
+    return (
+        <>
+            <Card>
+                수업 시작일 ~ 종료일, 수업 이름, 수업 만족도, 강사 만족도
+            </Card>
+        </>
+    );
 };
 
 export default LessonItemBox;

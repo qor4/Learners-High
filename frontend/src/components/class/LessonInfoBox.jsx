@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 
-import { Container } from "@material-ui/core";
+import { Container } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { url } from "../../api/APIPath";
 import { HiOutlineHeart } from "react-icons/hi";
@@ -68,7 +68,7 @@ const BottomBarContents = styled.div`
     align-items: center;
 `;
 
-const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
+const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
     const lessonNo = useParams();
@@ -127,48 +127,68 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
                             </FlexWrap>
                             <FlexWrap>
                                 <h3>{lessonInfo.lessonName}</h3>
-                                <span>{lessonInfo.lessonPrice}원</span>
+                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
                             </FlexWrap>
                             <div>{lessonInfo.userName}</div>
                             <div>{lessonInfo.lessonThumbnailInfo}</div>
-                            
-                            {/* 수강신청을 한 경우 */}
-                            {lessonStateDataSet === -1 && (
-                                <Button disabled>
-                                    이미 수강신청을 하셨습니다.
-                                </Button>
-                            )}
 
-                            {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
-                            {!userType && (
+                            {$info && (
                                 <>
-                                    <Button onClick={handleLoginButtonClick}>
-                                        로그인을 해주세요!
-                                    </Button>
+                                    {/* 수강신청을 한 경우 */}
+                                    {lessonStateDataSet === -1 && (
+                                        <Button disabled>
+                                            이미 수강신청을 하셨습니다.
+                                        </Button>
+                                    )}
 
-                                    {/* 로그인 모달창 */}
-                                    <Modal
-                                        title="로그인"
-                                        show={showLoginModal}
-                                        onClose={handleCloseModal}
-                                    >
-                                        <UserLogIn onClose={handleCloseModal} />
-                                    </Modal>
+                                    {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
+                                    {!userType && (
+                                        <>
+                                            <Button
+                                                onClick={handleLoginButtonClick}
+                                            >
+                                                로그인을 해주세요!
+                                            </Button>
+
+                                            {/* 로그인 모달창 */}
+                                            <Modal
+                                                title="로그인"
+                                                show={showLoginModal}
+                                                onClose={handleCloseModal}
+                                            >
+                                                <UserLogIn
+                                                    onClose={handleCloseModal}
+                                                />
+                                            </Modal>
+                                        </>
+                                    )}
+
+                                    {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
+                                    {userType === "T" && (
+                                        <Button disabled>수강신청 불가</Button>
+                                    )}
+
+                                    {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
+                                    {userType === "S" &&
+                                        lessonStateDataSet === 0 && (
+                                            <>
+                                                <Button
+                                                    onClick={handleApplyChange}
+                                                >
+                                                    수강 신청 ({" "}
+                                                    {lessonInfo.totalStudent} /{" "}
+                                                    {lessonInfo.maxStudent} 명 )
+                                                </Button>
+                                                <Button>
+                                                    <HiOutlineHeart />
+                                                </Button>
+                                            </>
+                                        )}
                                 </>
                             )}
-
-                            {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
-                            {userType === "T" && (
-                                <Button disabled>수강신청 불가</Button>
-                            )}
-
-                            {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
-                            {userType === "S" && lessonStateDataSet === 0 && (
+                            {$edu && (
                                 <>
-                                    <Button onClick={handleApplyChange}>
-                                        수강 신청 ( {lessonInfo.totalStudent} /{" "}
-                                        {lessonInfo.maxStudent} 명 )
-                                    </Button>
+                                    <Button $point>강의 입장</Button>
                                     <Button>
                                         <HiOutlineHeart />
                                     </Button>
@@ -178,46 +198,50 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
                     </ImgInfoWrap>
 
                     {/* 하단바 */}
-                    <StyledBottomBar>
-                        <BottomBarContents>
-                            <span>
-                                <strong>{lessonInfo.lessonName}</strong>
-                            </span>
-                            <span>{lessonInfo.lessonPrice}원</span>
+                    {$info && (
+                        <StyledBottomBar>
+                            <BottomBarContents>
+                                <span>
+                                    <strong>{lessonInfo.lessonName}</strong>
+                                </span>
+                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
 
-                            {/* 수강신청을 한 경우 */}
-                            {lessonStateDataSet === -1 && (
-                                <Button disabled>
-                                    이미 수강신청을 하셨습니다.
-                                </Button>
-                            )}
-
-                            {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
-                            {!userType && (
-                                <Button onClick={handleLoginButtonClick}>
-                                    로그인을 해주세요!
-                                </Button>
-                            )}
-
-                            {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
-                            {userType === "T" && (
-                                <Button disabled>수강신청 불가</Button>
-                            )}
-
-                            {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
-                            {userType === "S" && lessonStateDataSet === 0 && (
-                                <div>
-                                    <Button onClick={handleApplyChange}>
-                                        수강 신청 ( {lessonInfo.totalStudent} /{" "}
-                                        {lessonInfo.maxStudent} 명 )
+                                {/* 수강신청을 한 경우 */}
+                                {lessonStateDataSet === -1 && (
+                                    <Button disabled>
+                                        이미 수강신청을 하셨습니다.
                                     </Button>
-                                    <Button>
-                                        <HiOutlineHeart />
+                                )}
+
+                                {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
+                                {!userType && (
+                                    <Button onClick={handleLoginButtonClick}>
+                                        로그인을 해주세요!
                                     </Button>
-                                </div>
-                            )}
-                        </BottomBarContents>
-                    </StyledBottomBar>
+                                )}
+
+                                {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
+                                {userType === "T" && (
+                                    <Button disabled>수강신청 불가</Button>
+                                )}
+
+                                {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
+                                {userType === "S" &&
+                                    lessonStateDataSet === 0 && (
+                                        <div>
+                                            <Button onClick={handleApplyChange}>
+                                                수강 신청 ({" "}
+                                                {lessonInfo.totalStudent} /{" "}
+                                                {lessonInfo.maxStudent} 명 )
+                                            </Button>
+                                            <Button>
+                                                <HiOutlineHeart />
+                                            </Button>
+                                        </div>
+                                    )}
+                            </BottomBarContents>
+                        </StyledBottomBar>
+                    )}
                 </>
             )}
         </Container>

@@ -16,9 +16,8 @@ const StyledItemWrap = styled.div`
 
 const StyledThumbnail = styled.img`
     width: 100%;
-    background-color: green;
     border-radius: 1.25rem;
-    position: relative;
+    /* position: relative; */
 `;
 
 const FlexWrap = styled.div`
@@ -27,11 +26,28 @@ const FlexWrap = styled.div`
     justify-content: space-between;
 `;
 
+const ImageIconWrap = styled.div`
+    width: 100%;
+    position: relative;
+
+    & > LessonStatusBox {
+        position: absolute;
+        top: 1.25rem;
+        left: 1.25rem;
+    }
+
+    & > span {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+`;
+
 const LessonItem = (props) => {
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
-            <div>
+            <ImageIconWrap>
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <StyledThumbnail
                         src={
@@ -47,11 +63,11 @@ const LessonItem = (props) => {
                         {props.lessonStatus}
                     </LessonStatusBox>
                 )}
-
                 <span>
                     <HiOutlineHeart />
                 </span>
-            </div>
+            </ImageIconWrap>
+
             <FlexWrap>
                 <LessonStatusBox>{props.lessonTypeName}</LessonStatusBox>
 
@@ -60,16 +76,13 @@ const LessonItem = (props) => {
                     {`${props.totalStudent} / ${props.maxStudent}`}
                 </FlexWrap>
             </FlexWrap>
-
             <FlexWrap>
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <strong>{props.lessonName}</strong>
                 </Link>
                 <span>{props.userName}</span>
             </FlexWrap>
-
-            <div>{props.lessonPrice}원</div>
-
+            <div>{props.lessonPrice.toLocaleString()}원</div>
             <div>
                 {props.lessonStartDate} ~ {props.lessonEndDate}
             </div>
