@@ -11,6 +11,7 @@ import { Container } from "@material-ui/core";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Card from "../components/common/Card";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
+import LessonStatusBox from "../components/common/LessonStatusBox";
 
 const FlexWrap = styled.div`
     display: flex;
@@ -99,26 +100,30 @@ const LessonInfoPage = () => {
                     )}
                 </FlexWrap>
                 {lessonInfoDataSet.lessonInfo && (
-                    <>
-                        <Card>
-                            <TeacherIntroduceBox
-                                teacherInfo={teacherInfoDataSet}
-                            />
-                        </Card>
-                    </>
+                    <Card>
+                        <TeacherIntroduceBox teacherInfo={teacherInfoDataSet} />
+                    </Card>
                 )}
 
                 {/* 수업 소개 */}
-                <h3>수업 소개</h3>
-                {lessonInfoDataSet.lessonInfo &&
-                    lessonInfoDataSet.lessonInfo.lessonInfo}
+                <FlexWrap>
+                    <h3>수업 소개</h3>
+                </FlexWrap>
+                <Card>
+                    {lessonInfoDataSet.lessonInfo &&
+                        lessonInfoDataSet.lessonInfo.lessonInfo}
+                </Card>
 
                 {/* 회차 소개 */}
-                <h3>회차 소개</h3>
+                <FlexWrap>
+                    <h3>회차 소개</h3>
+                </FlexWrap>
                 {lessonRoundInfo &&
                     lessonRoundInfo.map((round, index) => (
                         <Card key={index}>
-                            <span>{round.lessonRoundTitle}</span>
+                            <LessonStatusBox>
+                                {round.lessonRoundTitle}
+                            </LessonStatusBox>
                             <span>
                                 {round.lessonRoundStartDatetime} ~{" "}
                                 {round.lessonRoundEndDatetime}
