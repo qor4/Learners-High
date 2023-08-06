@@ -46,97 +46,57 @@ const StudentLessonRoomPage = ({token}) => {
         currentVideoDevice: undefined,
     };
     // 컴포넌트가 마운트될 때 실행되는 코드
-    // useEffect(() => {
-    //     const openViduLayoutOptions = {
-    //     maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
-    //     minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
-    //     fixedRatio: false, // If this is true then the aspect ratio of the video is maintained and minRatio and maxRatio are ignored (default false)
-    //     bigClass: 'OV_big', // The class to add to elements that should be sized bigger
-    //     bigPercentage: 0.8, // The maximum percentage of space the big ones should take up
-    //     bigFixedRatio: false, // fixedRatio for the big ones
-    //     bigMaxRatio: 3 / 2, // The narrowest ratio to use for the big elements (default 2x3)
-    //     bigMinRatio: 9 / 16, // The widest ratio to use for the big elements (default 16x9)
-    //     bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
-    //     animate: true, // Whether you want to animate the transitions
-    //     };
+    useEffect(() => {
+        const openViduLayoutOptions = {
+        maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
+        minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
+        fixedRatio: false, // If this is true then the aspect ratio of the video is maintained and minRatio and maxRatio are ignored (default false)
+        bigClass: 'OV_big', // The class to add to elements that should be sized bigger
+        bigPercentage: 0.8, // The maximum percentage of space the big ones should take up
+        bigFixedRatio: false, // fixedRatio for the big ones
+        bigMaxRatio: 3 / 2, // The narrowest ratio to use for the big elements (default 2x3)
+        bigMinRatio: 9 / 16, // The widest ratio to use for the big elements (default 16x9)
+        bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
+        animate: true, // Whether you want to animate the transitions
+        };
 
-    //     // layout 초기화
-    //     layout.initLayoutContainer(document.getElementById('layout'), openViduLayoutOptions);
-    //     window.addEventListener('beforeunload', onbeforeunload);
-    //     window.addEventListener('resize', updateLayout);
-    //     window.addEventListener('resize', checkSize);
-    //     joinSession();
-    //     console.log('*** startjoin');
+        // layout 초기화
+        layout.initLayoutContainer(document.getElementById('layout'), openViduLayoutOptions);
+        window.addEventListener('beforeunload', onbeforeunload);
+        window.addEventListener('resize', updateLayout);
+        window.addEventListener('resize', checkSize);
+        joinSession();
         
         
-    //     // 컴포넌트가 언마운트될 때 실행되는 코드 (clean-up)
-    //     return () => {
-    //         console.log('*** unmount');
-    //         window.removeEventListener('beforeunload', onbeforeunload);
-    //         window.removeEventListener('resize', updateLayout);
-    //         window.removeEventListener('resize', checkSize);
-    //         leaveSession();
-    //     };
-    // }, []);
-
-    ////////
-    const openViduLayoutOptions = {
-            maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
-            minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
-            fixedRatio: false, // If this is true then the aspect ratio of the video is maintained and minRatio and maxRatio are ignored (default false)
-            bigClass: 'OV_big', // The class to add to elements that should be sized bigger
-            bigPercentage: 0.8, // The maximum percentage of space the big ones should take up
-            bigFixedRatio: false, // fixedRatio for the big ones
-            bigMaxRatio: 3 / 2, // The narrowest ratio to use for the big elements (default 2x3)
-            bigMinRatio: 9 / 16, // The widest ratio to use for the big elements (default 16x9)
-            bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
-            animate: true, // Whether you want to animate the transitions
-            };
-    
-            // layout 초기화
-            layout.initLayoutContainer(document.getElementById('layout'), openViduLayoutOptions);
-            window.addEventListener('beforeunload', onbeforeunload);
-            window.addEventListener('resize', updateLayout);
-            window.addEventListener('resize', checkSize);
-            joinSession();
-            console.log('*** startjoin');
-
-
-    //////
+        // 컴포넌트가 언마운트될 때 실행되는 코드 (clean-up)
+        return () => {
+            window.removeEventListener('beforeunload', onbeforeunload);
+            window.removeEventListener('resize', updateLayout);
+            window.removeEventListener('resize', checkSize);
+            leaveSession();
+        };
+    }, []);
     
   function onbeforeunload(event) {
     leaveSession();
   }
 
   function joinSession() {
-    console.log('*** startjoin1');
-
     OV = new OpenVidu();
     roomState.session = OV.initSession();
-    console.log('*** startjoin2');
-
     (async () => {
-        console.log('*** startjoin3');
         subscribeToStreamCreated();
-        console.log('*** startjoin4');
         await connectToSession();
-        console.log('*** startjoin5');
     })();
   }
 
   async function connectToSession() {
-    console.log('*** startjoin6');
-
     if (sessionToToken === undefined) {
         console.log('token received: ', sessionToToken);
         console.log('잘못된 입장 || 토큰을 못가져옴');
     } else {
-        console.log('*** startjoin7');
-
         try {
             connect(sessionToToken);
-            console.log('*** startjoin8');
-
         } catch (error) {
             console.error('There was an error getting the token:', error.code, error.message);
             alert('There was an error getting the token:', error.message);
@@ -145,8 +105,6 @@ const StudentLessonRoomPage = ({token}) => {
   }
 
   function connect(token) {
-    console.log('*** startjoin9');
-
     roomState.myUserName = userName;
       roomState.session
         .connect(
@@ -154,11 +112,7 @@ const StudentLessonRoomPage = ({token}) => {
             { clientData: roomState.myUserName },
         )
         .then(() => {
-        console.log('*** startjoin10');
-
             connectWebCam();
-        console.log('*** startjoin11');
-
         })
         .catch((error) => {
             alert('There was an error connecting to the session:', error.message);
@@ -168,8 +122,6 @@ const StudentLessonRoomPage = ({token}) => {
 
 async function connectWebCam() {
     await OV.getUserMedia({ audioSource: undefined, videoSource: undefined });
-    console.log('*** startjoin12');
-    
     var devices = await OV.getDevices();
     var videoDevices = devices.filter(device => device.kind === 'videoinput');
 
@@ -195,8 +147,6 @@ async function connectWebCam() {
     localUser.setConnectionId(roomState.session.connection.connectionId);
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
-    console.log('*** startjoin13');
-
     subscribeToUserChanged();
     subscribeToStreamDestroyed();
     sendSignalUserChanged({ isScreenShareActive: localUser.isScreenShareActive() });

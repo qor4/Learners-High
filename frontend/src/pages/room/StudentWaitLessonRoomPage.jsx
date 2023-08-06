@@ -157,7 +157,7 @@ const StudentWaitLessonRoomPage = () => {
             );
         }
     }, []);
-    main();
+    // main();
 
     // function tmpClick() {
 
@@ -169,29 +169,18 @@ const StudentWaitLessonRoomPage = () => {
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
     const [token, setToken] = useState("")
-    const enterLessonRoom = async () => {
-        // Number인지 확인하고 넘기기
-        const response = await axios.get(APPLICATION_SERVER_URL + 
-            `lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`)
-            .then(res => console.log(res, "응답코드"))
-            ;
-        console.log(response.data.resultMsg, "데이터")
-        console.log(response.data, "Primise")
-        setToken(response.data.resultMsg)
-        return response.data.resultMsg; // The sessionId
-    }
-
     const [enterRoom, setEnterRoom] = useState(false);
-    const enterTheLessonRoom = () => {
+
+    const enterTheLessonRoom = async () => {
         // navigate(`/lessonroom/student/${lessonNo}/${lessonRoundNo}`)
-        const value = enterLessonRoom()
-        // console.log(value.)
-        console.log(enterRoom)
-        console.log(value, "학생토큰")
-        setToken(value)
-        setEnterRoom(true);
+        await axios.get(APPLICATION_SERVER_URL + 
+            `lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`)
+            .then(res =>{
+                setToken(res.data.resultMsg)
+                setEnterRoom(true);
+            })
+            .catch(err=>console.log(err));
     };
-    console.log(token, "토큰")
     return (
         <>
             <>

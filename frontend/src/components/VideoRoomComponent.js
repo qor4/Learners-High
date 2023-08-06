@@ -52,6 +52,7 @@ class VideoRoomComponent extends Component {
         this.toggleChat = this.toggleChat.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
         this.checkSize = this.checkSize.bind(this);
+        this.checkSomeoneShareScreen = this.checkSomeoneShareScreen.bind(this);
     }
 
     componentDidMount() {
