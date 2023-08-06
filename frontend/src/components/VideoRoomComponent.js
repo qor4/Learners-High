@@ -10,6 +10,7 @@ import { url } from "../api/APIPath";
 import OpenViduLayout from '../layout/openvidu-layout';
 import UserModel from '../models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
+import { toHaveStyle } from '@testing-library/jest-dom/matchers';
 
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = 'https://i9b105.p.ssafy.io:7777/';
@@ -56,14 +57,16 @@ class VideoRoomComponent extends Component {
         this.checkSize = this.checkSize.bind(this);
         this.checkSomeoneShareScreen = this.checkSomeoneShareScreen.bind(this);
         this.getToken =this.getToken.bind(this);
+        this.connectToSession = this.connectToSession.bind(this)
     }
 
     getToken(){
         axios.get(url + '/lessonroom/teacher/20/7/5')
         .then(res =>{
-            this.token =res.data.resultMsg;
-            console.log("teacher : ",this.token);
+            this.token=res.data.resultMsg;
+            console.log("teacher1 : ",this.token);
         }).then(()=>{
+            console.log("teacher2 : ",this.token);
             this.connect(this.token);
         })
         .catch(err=>{
@@ -89,14 +92,15 @@ class VideoRoomComponent extends Component {
         window.addEventListener('beforeunload', this.onbeforeunload);
         window.addEventListener('resize', this.updateLayout);
         window.addEventListener('resize', this.checkSize);
-        this.joinSession();
+        // this.joinSession();
     }
 
     componentWillUnmount() {
         window.removeEventListener('beforeunload', this.onbeforeunload);
         window.removeEventListener('resize', this.updateLayout);
         window.removeEventListener('resize', this.checkSize);
-        this.leaveSession();
+        // this.leaveSession();
+        this.joinSession();
     }
 
     onbeforeunload(event) {
@@ -118,16 +122,15 @@ class VideoRoomComponent extends Component {
     }
 
     async connectToSession() {
-        try {
-            await this.getToken();
-            console.log("this :",this.token);
-        } catch (error) {
-            console.error('There was an error getting the token:', error.code, error.message);
-            if(this.props.error){
-                this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
+            try {
+                await this.getToken();
+            } catch (error) {
+                console.error('There was an error getting the token:', error.code, error.message);
+                if(this.props.error){
+                    this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
+                }
+                alert('There was an error getting the token:', error.message);
             }
-            alert('There was an error getting the token:', error.message);
-        }
     }
 
     connect(token) {
@@ -168,9 +171,9 @@ class VideoRoomComponent extends Component {
                 this.state.session.publish(publisher).then(() => {
                     this.updateSubscribers();
                     this.localUserAccessAllowed = true;
-                    if (this.props.joinSession) {
-                        this.props.joinSession();
-                    }
+                    // if (this.props.joinSession) {
+                    //     this.props.joinSession();
+                    // }
                 });
             });
 
@@ -227,9 +230,9 @@ class VideoRoomComponent extends Component {
             myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
             localUser: undefined,
         });
-        if (this.props.leaveSession) {
-            this.props.leaveSession();
-        }
+        // if (this.props.leaveSession) {
+        //     this.props.leaveSession();
+        // }
     }
     camStatusChanged() {
         localUser.setVideoActive(!localUser.isVideoActive());
@@ -515,7 +518,7 @@ class VideoRoomComponent extends Component {
 
         return (
             <div className="container" id="container">
-                <ToolbarComponent
+                {/* <ToolbarComponent
                     sessionId={mySessionId}
                     user={localUser}
                     showNotification={this.state.messageReceived}
@@ -527,7 +530,7 @@ class VideoRoomComponent extends Component {
                     switchCamera={this.switchCamera}
                     leaveSession={this.leaveSession}
                     toggleChat={this.toggleChat}
-                />
+                /> */}
 
                 {/* <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} /> */}
 

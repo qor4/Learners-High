@@ -22,7 +22,6 @@ const TeacherLessonRoomPage = () => {
   // lessonRoundItem에서 보낸 토큰을 여기서 받아서 VideoRoom에 보낸다.
 
   return (
-    <>
     <VideoRoomComponent 
       // token={token}
       userNo={userNo} 
@@ -31,7 +30,6 @@ const TeacherLessonRoomPage = () => {
       lessonNo={lessonNo}
       lessonRoundNo={lessonRoundNo}
     />
-    </>
   )
 }
 
