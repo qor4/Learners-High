@@ -1,9 +1,18 @@
 // 전체 마이 페이지
 
+import Button from "../../components/common/Button";
+import TeacherJobList from "../../components/user/TeacherJobList";
+import TeacherEduList from "../../components/user/TeacherEduList";
+import { useSelector } from "react-redux";
+import MypageInfo from "../../components/user/MypageInfo";
+
 const MyPagePage = () => {
+    const userNo = useSelector((state) => state.user.userNo);
     return (
         <div>
-            <h1>마이페이지 페이지입니다.</h1>
+            <MypageInfo userNo={userNo} />
+            <TeacherJobList userNo={userNo} />
+            <TeacherEduList userNo={userNo} />
         </div>
     );
 };

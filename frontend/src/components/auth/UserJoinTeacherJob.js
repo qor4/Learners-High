@@ -57,26 +57,29 @@ const UserJoinTeacherJob = (props) => {
     const [hireEndDateYear, setHireEndDateYear] = useState("");
     const [hireEndDateMonth, setHireEndDateMonth] = useState("");
 
-    const postTeacherJob = () => {
-        // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
-        jobInputList.map((item) =>
-            axios
-                .post(`${url}/user/join/job/${userNo}`, item, {
-                    headers: { "Content-Type": "application/json" },
-                })
-                .then((res) => console.log(res))
-        );
+    // const postTeacherJob = () => {
+    //     // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
+    //     jobInputList.map((item) =>
+    //         axios
+    //             .post(`${url}/user/join/job/${userNo}`, item, {
+    //                 headers: { "Content-Type": "application/json" },
+    //             })
+    //             .then((res) => console.log(res))
+    //     );
+    // };
+
+    const handleJobChange = () => {
+        const updatedJobInputList = [...jobInputList];
+        props.onJobChange(updatedJobInputList);
     };
 
     return (
         <>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={(e) => e.preventDefault()} onBlur={handleJobChange}>
                 {jobInputList.map((item, index) => (
                     <div key={index}>
-                        <LessonStatusBox $point>
-                            경력
-                        </LessonStatusBox>
-                        
+                        <LessonStatusBox $point>경력</LessonStatusBox>
+
                         <Input
                             label="직장명"
                             type="text"
@@ -131,10 +134,6 @@ const UserJoinTeacherJob = (props) => {
                 ))}
             </form>
             <Button onClick={addJobInputItem}>+</Button>
-            <br />
-            <Button size="sm" $point onClick={postTeacherJob}>
-                이력 등록
-            </Button>
         </>
     );
 };
