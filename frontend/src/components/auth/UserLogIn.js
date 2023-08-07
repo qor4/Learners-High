@@ -1,14 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { url } from "../../api/APIPath";
-import { logInUser } from "../../store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
 
+import styled from "styled-components";
+
+import { url } from "../../api/APIPath";
+import { logInUser } from "../../store/UserStore";
 import Input from "../common/Input";
 import Button from "../common/Button";
 
+const ButtonWrap = styled.div`
+    margin-top: 1.5rem;
+
+    & > * {
+        margin-bottom: 0.5rem;
+    }
+`;
+
 const UserLogIn = (props) => {
+    const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     console.log(user);
 
@@ -37,8 +48,17 @@ const UserLogIn = (props) => {
                 console.log(res.data.result, "데이터!")
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
-                    dispatch(logInUser(res.data.result));
                     alert("로그인!"); // 여기 꼭 확인하기!!
+                    localStorage.setItem(
+                        "accessToken",
+                        res.data.result.token.accessToken
+                    );
+                    localStorage.setItem(
+                        "refreshToken",
+                        res.data.result.token.refreshToken
+                    );
+                    dispatch(logInUser(res.data.result));
+                    navigate(`/`);
                     props.onClose();
                 } else {
                     alert("로그인 실패!");
@@ -78,15 +98,19 @@ const UserLogIn = (props) => {
                     onKeyPress={handleKeyPress}
                 />
 
-                <Button $fullWidth>카카오 로그인</Button>
-                <Button $fullWidth onClick={userLogIn}>
-                    로그인
-                </Button>
-                <Link to="/join">
-                    <Button onClick={props.onClose} $fullWidth>
-                        회원가입
+                <ButtonWrap>
+                    <Button $fullWidth $kakao>
+                        카카오톡 로그인
                     </Button>
-                </Link>
+                    <Button $fullWidth $point onClick={userLogIn}>
+                        로그인
+                    </Button>
+                    <Link to="/join">
+                        <Button onClick={props.onClose} $fullWidth $skyBlue>
+                            회원가입
+                        </Button>
+                    </Link>
+                </ButtonWrap>
             </form>
         </>
     );

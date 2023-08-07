@@ -263,24 +263,17 @@ public class UserService {
 
     // 로그인
     public HashMap<String, Object> userLogin(LoginDto loginDto) {
-        System.out.println("로그인 함수에 들어왔니");
         HashMap<String, Object> userInfo = new HashMap<>();
         User user = userRepository.findByUserId(loginDto.getUserId());
         if (user == null) {
-            System.out.println("잘못된 로그인");
             throw new BadCredentialsException("잘못된 계정정보입니다.");
         }
-        System.out.println(user.getUserPassword());
-        System.out.println(loginDto.getUserPassword());
-        System.out.println(passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword()));
         if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
-            System.out.println("잘못된 로그인2");
             throw new BadCredentialsException("잘못된 계정정보입니다.");
         }
         TokenDto token = new TokenDto();
-        System.out.println("토큰" + token);
-        token.setAccessToken(tokenProvider.createToken(user.getUserId()));
-        System.out.println("지나왔어");
+        token.setAccessToken(tokenProvider.createAccessToken(user.getUserId()));
+        token.setRefreshToken(tokenProvider.createRefreshToken(user.getUserId()));
         userInfo.put("token", token);
         userInfo.put("userNo", user.getUserNo());
         userInfo.put("userName", user.getUserName());
@@ -288,6 +281,15 @@ public class UserService {
         userInfo.put("userId", user.getUserId());
         userInfo.put("userInfo", user.getUserInfo());
         return userInfo;
+    }
+
+    // refresh 토큰으로 access, refresh 토큰 재발급
+    public TokenDto refresh(TokenDto tokenDto) {
+        TokenDto token = tokenProvider.validateRefreshToken(tokenDto.getRefreshToken());
+        if(token == null){
+            throw new IllegalStateException("만료된 토큰입니다.");
+        }
+        return token;
     }
 
     // 카카오 로그인 시 이메일로 사용자 정보 비어있는 지 검사
@@ -507,7 +509,7 @@ public class UserService {
     // 강사 학위 전체 출력
     public List<EduDto> eduList(User userNo) {
 
-        List<EduCareer> eduList = eduRepository.findAllByUserNo(userNo);
+        List<EduCareer> eduList = eduRepository.findAllByUserNoOrderByEduStartDateAsc(userNo);
 
         List<EduDto> eduDtoList = new ArrayList<>();
 
@@ -534,7 +536,7 @@ public class UserService {
     // 강사 경력 전체 출력
     public List<JobDto> jobList(User userNo) {
 
-        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNo(userNo);
+        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNoOrderByHireStartDateAsc(userNo);
 
 
         List<JobDto> jobDtoList = new ArrayList<>();
@@ -603,5 +605,6 @@ public class UserService {
 
 
     }
+
 
 }

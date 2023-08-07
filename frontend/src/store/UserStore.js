@@ -21,11 +21,14 @@ export const UserStore = createSlice({
             state.isLogin = true
         },
         logOutUser: (state) => {
+            console.log("로그아웃됐니?")
             state.userNo = "";
             state.userType = "";
             state.userId = "";
             state.userName = "";
             state.isLogin = false;
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
         },
     },
 });

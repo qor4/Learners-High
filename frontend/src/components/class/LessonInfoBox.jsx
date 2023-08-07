@@ -3,17 +3,51 @@
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { HiOutlineHeart } from "react-icons/hi";
 import styled from "styled-components";
-
 import axios from "axios";
-import { url } from "../../api/APIPath";
+
+import { Container } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { url } from "../../api/APIPath";
+import { HiOutlineHeart } from "react-icons/hi";
 import LessonStatusBox from "../common/LessonStatusBox";
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import UserLogIn from "../auth/UserLogIn";
 
+// 강의 wrap
+const ImgInfoWrap = styled.div`
+    padding: 3rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+// image styled
+const StyledThumbnail = styled.img`
+    width: 40%;
+    border-radius: 1.25rem;
+`;
+
+// info wrap
+const InfoWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 55%;
+
+    & > *:not(:first-child) {
+        margin-top: 1rem;
+    }
+`;
+
+const FlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+// 하단바 styled
 const StyledBottomBar = styled.div`
     position: fixed;
     text-align: center;
@@ -25,7 +59,16 @@ const StyledBottomBar = styled.div`
     z-index: 1;
 `;
 
-const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
+const BottomBarContents = styled.div`
+    width: 65%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
     const lessonNo = useParams();
@@ -55,118 +98,153 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange }) => {
     console.log(lessonStateDataSet, typeof lessonStateDataSet);
 
     return (
-        <>
+        <Container maxWidth="md">
             {lessonInfo && (
                 <>
-                    <div>
-                        <div>
-                            <img
-                                src={lessonInfo.lessonThumbnailImg}
-                                alt="thumbnail-img"
-                            />
-                        </div>
-                        <span>{lessonInfo.userName}</span>
-                        <LessonStatusBox>
-                            {lessonInfo.lessonTypeName}
-                        </LessonStatusBox>
-                        <LessonStatusBox>
-                            총 {lessonInfo.lessonTotalRound}회차
-                        </LessonStatusBox>
-                        <span>
-                            {lessonInfo.lessonStartDate} ~{" "}
-                            {lessonInfo.lessonEndDate}
-                        </span>
-                        <span>{lessonInfo.lessonName}</span>
-                        <span>{lessonInfo.lessonPrice}원</span>
-                        <span>{lessonInfo.userName}</span>
-                        <span>{lessonInfo.lessonThumbnailInfo}</span>
+                    <ImgInfoWrap>
+                        <StyledThumbnail
+                            src={
+                                lessonInfo.lessonThumbnailImg
+                                    ? lessonInfo.lessonThumbnailImg
+                                    : "/assets/bannerimg.jpg"
+                            }
+                            alt="thumbnail-img"
+                        />
+                        <InfoWrap>
+                            <FlexWrap>
+                                <div>
+                                    <LessonStatusBox $point>
+                                        {lessonInfo.lessonTypeName}
+                                    </LessonStatusBox>
+                                    <LessonStatusBox $point>
+                                        총 {lessonInfo.lessonTotalRound}회차
+                                    </LessonStatusBox>
+                                </div>
+                                <div>
+                                    {lessonInfo.lessonStartDate} ~{" "}
+                                    {lessonInfo.lessonEndDate}
+                                </div>
+                            </FlexWrap>
+                            <FlexWrap>
+                                <h3>{lessonInfo.lessonName}</h3>
+                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
+                            </FlexWrap>
+                            <div>{lessonInfo.userName}</div>
+                            <div>{lessonInfo.lessonThumbnailInfo}</div>
 
-                        {/* 수강신청을 한 경우 */}
-                        {lessonStateDataSet === -1 && (
-                            <Button disabled>
-                                이미 수강신청을 하셨습니다.
-                            </Button>
-                        )}
-
-                        {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
-                        {!userType && (
-                            <>
-                                <Button onClick={handleLoginButtonClick}>
-                                    로그인을 해주세요!
-                                </Button>
-
-                                {/* 로그인 모달창 */}
-                                <Modal
-                                    title="로그인"
-                                    show={showLoginModal}
-                                    onClose={handleCloseModal}
-                                >
-                                    <UserLogIn onClose={handleCloseModal} />
-                                </Modal>
-                            </>
-                        )}
-
-                        {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
-                        {userType === "T" && (
-                            <Button disabled>수강신청 불가</Button>
-                        )}
-
-                        {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
-                        {userType === "S" && lessonStateDataSet === 0 && (
-                            <>
-                                <Button onClick={handleApplyChange}>
-                                    수강 신청 ( {lessonInfo.totalStudent} /{" "}
-                                    {lessonInfo.maxStudent} 명 )
-                                </Button>
-                                <Button>
-                                    <HiOutlineHeart />
-                                </Button>
-                            </>
-                        )}
-                    </div>
-
-                    {/* 하단바 */}
-                    <StyledBottomBar>
-                        <div className="w-4/5 mx-auto">
-                            <span>{lessonInfo.lessonName}</span>
-                            <span>{lessonInfo.lessonPrice}원</span>
-
-                            {/* 수강신청을 한 경우 */}
-                            {lessonStateDataSet === -1 && (
-                                <Button disabled>
-                                    이미 수강신청을 하셨습니다.
-                                </Button>
-                            )}
-
-                            {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
-                            {!userType && (
-                                <Button onClick={handleLoginButtonClick}>
-                                    로그인을 해주세요!
-                                </Button>
-                            )}
-
-                            {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
-                            {userType === "T" && (
-                                <Button disabled>수강신청 불가</Button>
-                            )}
-
-                            {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
-                            {userType === "S" && lessonStateDataSet === 0 && (
+                            {$info && (
                                 <>
-                                    <Button onClick={handleApplyChange}>
-                                        수강 신청 ( {lessonInfo.totalStudent} /{" "}
-                                        {lessonInfo.maxStudent} 명 )
-                                    </Button>
+                                    {/* 수강신청을 한 경우 */}
+                                    {lessonStateDataSet === -1 && (
+                                        <Button disabled>
+                                            이미 수강신청을 하셨습니다.
+                                        </Button>
+                                    )}
+
+                                    {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
+                                    {!userType && (
+                                        <>
+                                            <Button
+                                                onClick={handleLoginButtonClick}
+                                            >
+                                                로그인을 해주세요!
+                                            </Button>
+
+                                            {/* 로그인 모달창 */}
+                                            <Modal
+                                                title="로그인"
+                                                show={showLoginModal}
+                                                onClose={handleCloseModal}
+                                            >
+                                                <UserLogIn
+                                                    onClose={handleCloseModal}
+                                                />
+                                            </Modal>
+                                        </>
+                                    )}
+
+                                    {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
+                                    {userType === "T" && (
+                                        <Button disabled>수강신청 불가</Button>
+                                    )}
+
+                                    {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
+                                    {userType === "S" &&
+                                        lessonStateDataSet === 0 && (
+                                            <>
+                                                <Button
+                                                    onClick={handleApplyChange}
+                                                >
+                                                    수강 신청 ({" "}
+                                                    {lessonInfo.totalStudent} /{" "}
+                                                    {lessonInfo.maxStudent} 명 )
+                                                </Button>
+                                                <Button>
+                                                    <HiOutlineHeart />
+                                                </Button>
+                                            </>
+                                        )}
+                                </>
+                            )}
+                            {$edu && (
+                                <>
+                                    <Button $point>강의 입장</Button>
                                     <Button>
                                         <HiOutlineHeart />
                                     </Button>
                                 </>
                             )}
-                        </div>
-                    </StyledBottomBar>
+                        </InfoWrap>
+                    </ImgInfoWrap>
+
+                    {/* 하단바 */}
+                    {$info && (
+                        <StyledBottomBar>
+                            <BottomBarContents>
+                                <span>
+                                    <strong>{lessonInfo.lessonName}</strong>
+                                </span>
+                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
+
+                                {/* 수강신청을 한 경우 */}
+                                {lessonStateDataSet === -1 && (
+                                    <Button disabled>
+                                        이미 수강신청을 하셨습니다.
+                                    </Button>
+                                )}
+
+                                {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
+                                {!userType && (
+                                    <Button onClick={handleLoginButtonClick}>
+                                        로그인을 해주세요!
+                                    </Button>
+                                )}
+
+                                {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
+                                {userType === "T" && (
+                                    <Button disabled>수강신청 불가</Button>
+                                )}
+
+                                {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
+                                {userType === "S" &&
+                                    lessonStateDataSet === 0 && (
+                                        <div>
+                                            <Button onClick={handleApplyChange}>
+                                                수강 신청 ({" "}
+                                                {lessonInfo.totalStudent} /{" "}
+                                                {lessonInfo.maxStudent} 명 )
+                                            </Button>
+                                            <Button>
+                                                <HiOutlineHeart />
+                                            </Button>
+                                        </div>
+                                    )}
+                            </BottomBarContents>
+                        </StyledBottomBar>
+                    )}
                 </>
             )}
-        </>
+        </Container>
     );
 };
 
