@@ -1,26 +1,20 @@
-import React, { useState } from "react";
-import { UserStatusOption } from "seeso";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useState } from "react"; // 내꺼.
+
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import UserModel from "../../models/user-model";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+
 import { url } from "../../api/APIPath";
+import axios from "axios";
 
-// openvidu
-import UserVideoComponent from "../../components/stream/UserVideoComponent";
+
+
+// OpenViduu
 import { OpenVidu } from "openvidu-browser";
-// import StreamComponent from "../../components/stream/StreamComponent";
+import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import ChatComponent from "../../components/chat/ChatComponent";
-import OpenViduLayout from "../../layout/openvidu-layout";
 
-// sesso
-import EasySeeSo from "seeso/easy-seeso";
-import { showGaze, hideGaze } from "./showGaze";
-
-const StudentLessonRoomPage = () => {
+const TeacherLessonRoomPage = () => {
     console.log("난 지금 들어왔어")
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
@@ -124,7 +118,7 @@ const StudentLessonRoomPage = () => {
         if (session) {
             axios
             .get(
-                `${url}/lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`
+                `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
                 ).then((res) => {
                     const token = res.data.resultMsg;
                     console.log(token);
@@ -193,6 +187,12 @@ const StudentLessonRoomPage = () => {
 
     return (
         <>
+        {/* 시소 테스트 하는 컴포넌트 */}
+        <div>
+            
+        </div>
+
+        {/* 시소 테스트 후 컴포넌트 */}
         <div>
             <h1>Room ID: {mySessionId}</h1>
             {session !== undefined ? (
@@ -245,4 +245,4 @@ const StudentLessonRoomPage = () => {
         </>
     );
 };
-export default StudentLessonRoomPage;
+export default TeacherLessonRoomPage;

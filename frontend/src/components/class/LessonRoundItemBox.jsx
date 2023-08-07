@@ -87,6 +87,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     )}`;
     const formattedEndDate = `${formatTime(endDatetime)}`;
 
+    const enterStudentRoom = () => {
+        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`)        
+    }
+
     return (
         <>
             <RoundDateWrap>
@@ -123,9 +127,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <StyledButtonWrap>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Link to={`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`} state={{lessonName}}>
-                        <Button $point>강의 입장</Button>
-                    </Link>
+                        <Button $point onClick={enterStudentRoom}>강의 입장</Button>
                 </StyledButtonWrap>
             )}
         </>
