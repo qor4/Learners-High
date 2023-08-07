@@ -30,7 +30,7 @@ const ClassRoundJoin = () => {
         // classRoundFileName: "", // S3 접근
         lessonRoundFileOriginName: "",
         lessonRoundStartDatetime: "",
-        lessonRoundEndDateTime: "",
+        lessonRoundEndDatetime: "",
         isHomework: false,
 
         lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
@@ -138,20 +138,15 @@ const ClassRoundJoin = () => {
     };
     // 강의 배열 길이 결정함. (이건 추후...)
     const handletotalTimeBlur = () => {
-        const lessonRoundDataSetCopy = new Array(lessonTotalRound).fill(
-            initialLessonRoundItem
-        );
-        const newDate = new Date(startDate);
-        newDate.setMinutes(newDate.getMinutes() + Number(lessonRunningTime));
-        lessonRoundDataSetCopy[0].lessonRoundEndDateTime = newDate;
-        console.log(
-            lessonRoundDataSetCopy[0].lessonRoundEndDateTime,
-            "끝난 시간"
-        );
-        console.log(lessonRoundDataSet, "여긴 바뀌는 곳");
-        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = lessonRunningTime;
-        setLessonRoundDataSet(lessonRoundDataSetCopy); // 여기서 추가했다!!!!
-    };
+        const lessonRoundDataSetCopy = new Array(lessonTotalRound).fill(initialLessonRoundItem)
+        const newDate = new Date(startDate)
+        newDate.setMinutes(newDate.getMinutes()+Number(lessonRunningTime))
+        lessonRoundDataSetCopy[0].lessonRoundEndDatetime = newDate
+        console.log(lessonRoundDataSetCopy[0].lessonRoundEndDatetime, "끝난 시간")
+        console.log(lessonRoundDataSet, "여긴 바뀌는 곳")
+        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = lessonRunningTime
+        setLessonRoundDataSet(lessonRoundDataSetCopy) // 여기서 추가했다!!!!
+    }
 
     const handleRunningTimeChange = (e) => {
         setLessonRunningTime(e.currentTarget.value);
@@ -242,22 +237,17 @@ const ClassRoundJoin = () => {
         console.log(lessonRoundDataSetCopy, "카피!");
     };
 
-    const getDateData = (
-        index,
-        newLessonRoundStartDatetime,
-        newLessonRoundEndDateTime
-    ) => {
-        const lessonRoundDataSetCopy = lessonRoundDataSet.map((item, idx) =>
-            idx === index
-                ? {
-                      ...item,
-                      lessonRoundStartDatetime: newLessonRoundStartDatetime,
-                      lessonRoundEndDateTime: newLessonRoundEndDateTime,
-                  }
-                : item
-        );
-        setLessonRoundDataSet(lessonRoundDataSetCopy);
-    };
+    const getDateData = (index, newLessonRoundStartDatetime, newLessonRoundEndDateTime) => {
+        const lessonRoundDataSetCopy = lessonRoundDataSet.map((item, idx) => 
+            idx === index ? {
+                ...item, 
+                lessonRoundStartDatetime: newLessonRoundStartDatetime,
+                lessonRoundEndDatetime: newLessonRoundEndDateTime
+            }: item
+            )
+        setLessonRoundDataSet(lessonRoundDataSetCopy)
+    }
+
 
     const getLessonData = (roundData, idx) => {
         const { lessonRoundTitle, lessonRoundFileOriginName } = roundData;
@@ -320,34 +310,36 @@ const ClassRoundJoin = () => {
     const handleClickRegisterLesson = () => {
         // lessonData.lessonStatus = "강의 전"
         // lessonData.lessonTotalRound = lessonTotalRound
-        lessonData.lessonStatus = "강의 전";
-        console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?");
-        axios
-            .post(
-                `${url}/lesson/join`, // 강의 데이터 갑니다.
-                lessonData,
-                { headers: { "Content-Type": "application/json" } }
+        lessonData.lessonStatus = "강의 전"
+        // console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?")
+        axios.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
+        lessonData,
+        {headers: {"Content-Type": 'application/json'}}
+        )
+        .then((res)=> {
+            console.log(res.data.result, "개별강의 #### 등록!!")
+            console.log(res.data.result.lessonNo, "개별강의 #### 등록!!")
+            lessonRoundDataSet.map(item => {
+                item.lessonNo = res.data.result.lessonNo
+            })
+            return lessonRoundDataSet
+            }
+        )
+        .then(lessonRoundDataSet => {
+            axios.post(`${url}/lesson/join/round`,
+            lessonRoundDataSet,
+            {headers: {"Content-Type": 'application/json'}}
             )
-            .then((res) => {
-                console.log(res, "개별강의 #### 등록!!");
+            .then(res=> {
+                console.log(res)
             })
-
-            .catch((err) => {
-                console.log(err);
-            });
-        // 개별 강의 회차 갑니다.
-        axios
-            .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
-                headers: { "Content-Type": "application/json" },
-            })
-            .then((res) => {
-                console.log(res, "강의회차");
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        navigate("/");
-    };
+            .catch(err=>console.log(err))
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+        navigate("/")
+    }
 
     return (
         <>

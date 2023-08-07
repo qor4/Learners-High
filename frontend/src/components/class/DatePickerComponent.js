@@ -26,16 +26,21 @@ const DatePickerComponent = (
   
   useEffect(()=> {
     setClassRoundDate(initialDate)
-    setClassRunningTimeState(classRunningTime)
-    const newDate = new Date(classRoundDate)
-    newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
-    setClassRoundEndDateTime(newDate)
-  }, [initialDate, miniDisabledDate, maxDisabledDate, classRunningTime])
+    // setClassRunningTimeState(classRunningTime)
+    // const newDate = new Date(classRoundDate)
+    // console.log(newDate)
+    // newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
+    // setClassRoundEndDateTime(newDate)
+  }, [initialDate, miniDisabledDate, maxDisabledDate])
   
 
   const handleButtonClick = () => {
-    onDataChange(idx, classRoundDate, classRoundEndDateTime)
-    console.log(classRoundEndDateTime, "끝시간")
+    const newDate = new Date(classRoundDate)
+    console.log(newDate)
+    newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
+    setClassRoundEndDateTime(newDate)
+    onDataChange(idx, classRoundDate, newDate)
+    // console.log(classRoundEndDateTime, "끝시간")
   }
   const miniLimitDay = miniDisabledDate ? new Date(miniDisabledDate) : new Date()
   const maxLimitDay = maxDisabledDate ? new Date(maxDisabledDate) : null
@@ -55,7 +60,7 @@ const DatePickerComponent = (
       dateFormat="yyyy.MM.dd aa h:mm"
       // onBlur={handleButtonClick}
     />
-    { classRunningTime ? <> 
+    {/* { classRunningTime ? <>  */}
     <span>진행시간</span>
     <input 
     type="number"
@@ -63,8 +68,8 @@ const DatePickerComponent = (
     value={classRunningTimeState}
     onChange={handleClassRunningTimeChange}
     />
-    </> : null
-    }
+    {/* </> : null
+    } */}
     
     
     <button onClick={handleButtonClick}>날짜 입력</button>

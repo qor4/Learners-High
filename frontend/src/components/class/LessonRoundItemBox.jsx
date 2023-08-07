@@ -10,7 +10,7 @@ import Button from "../common/Button";
 import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
-import VideoRoomComponent from "../VideoRoomComponent";
+import { useNavigate } from "react-router-dom";
 
 const StyledButtonWrap = styled.div`
     text-align: right;
@@ -42,21 +42,22 @@ const RoundDateWrap = styled.div`
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
+    const userName = useSelector((state)=> state.user.userName)
+    const [bool, setBool] = useState(false);
+    const navigate = useNavigate()
+
     console.log(userType, "userType");
     // const userType = "T";
     console.log(lessonInfo);
-    const [bool, setBool] = useState(false);
     // const [token, setToken] = useState("")
     const handleEnter = () => {
         setBool(true);
-
-        // axios.get(`${url}/lesson/lessonId/3/15/2`)
-        // .then(res=> {
-        //     setToken(res.data.token)
-        // })
+        navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`)
     };
-    const lessonNo = "1"; // 임시
-    const lessonRoundNo = "2"; // 임시
+    const lessonNo = lessonInfo.lessonNo;
+    const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
+    const lessonName = lessonInfo.lessonName;
+
 
     // 날짜 format
     const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
@@ -110,14 +111,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <StyledButtonWrap>
                     <Button>과제 일괄 다운</Button>
-                    <Link
-                        to={`/lessonroom/${lessonNo}/${lessonRoundNo}/teacher`}
-                        state=""
-                    >
-                        <Button $point onClick={handleEnter}>
-                            강의룸 만들기
-                        </Button>
-                    </Link>
+                    {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
+                    state={userName}> */}
+                    <Button $point onClick={handleEnter}>강의룸 만들기</Button>
+                    {/* </Link> */}
                 </StyledButtonWrap>
             )}
 
@@ -126,7 +123,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <StyledButtonWrap>
                     <Button>학습 자료 다운</Button>
                     <Button>과제 제출</Button>
-                    <Link to={`/lessonroom/${lessonNo}/${lessonRoundNo}/wait`}>
+                    <Link to={`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`} state={{lessonName}}>
                         <Button $point>강의 입장</Button>
                     </Link>
                 </StyledButtonWrap>

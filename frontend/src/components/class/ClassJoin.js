@@ -169,10 +169,10 @@ const ClassJoin = () => {
             .catch((err) => console.log(err, "에러")); // 여기에 강의개설 실패 메시지
     };
     const nextPage = () => {
-        sendDataToServer();
-        console.log(data, "classJoin임");
-        navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
-    };
+        // sendDataToServer()
+        console.log(data, "classJoin임")
+        navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
+    }
     const data = {
         lessonInfo: lessonInfo,
         lessonName: lessonName,

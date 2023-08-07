@@ -37,12 +37,15 @@ const UserLogIn = (props) => {
     };
 
     const userLogIn = () => {
+        console.log(logInForm, "로그인")
         axios
             .post(`${url}/user/login`, logInForm, {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data, "나는 로그인데이터!");
+                console.log(res.data.result, "나는 로그인데이터!");
+                console.log(res.data, "데이터")
+                console.log(res.data.result, "데이터!")
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
@@ -60,7 +63,11 @@ const UserLogIn = (props) => {
                 } else {
                     alert("로그인 실패!");
                 }
-            });
+            })
+            .catch((err)=> {
+                alert("로그인이 실패했습니다.")
+            })
+            ;
     };
 
     const handleKeyPress = (e) => {

@@ -18,9 +18,13 @@ import TeacherProfilePage from "./pages/TeacherProfilePage";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
-import StudentWaitLessonRoomPage from "./pages/room/StudentWaitLessonRoomPage";
-import StudentRealLessonRoomPage from "./pages/room/StudentRealLessonRoomPage";
-import TeacherRealLessonRoomPage from "./pages/room/TeacherRealLessonRoomPage";
+import StudentWaitLessonRoomPage from "./pages/room/StudentWaitLessonRoomPage"
+import TeacherLessonRoomPage from "./pages/room/TeacherLessonRoomPage"
+
+import { useLocation } from "react-router-dom";
+
+// test용
+// import DropTable from "./components/common/Table/DropTable"
 
 // test용
 import StudentMain from "./components/main/StudentMain";
@@ -48,6 +52,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+    const location = useLocation()
+    const hideComponetStudent = location.pathname.startsWith("/lessonroom/student")
+    const hideComponetTeacher = location.pathname.startsWith("/lessonroom/teacher")
+    const hideComponetWait = location.pathname.startsWith("/lessonroom/wait")
     return (
         <>
             <GlobalStyle />
@@ -101,24 +109,26 @@ function App() {
                         path="/edu/student/:userNo/:lessonNo"
                         element={<EduStudentLessonPage />}
                     ></Route>
-                    <Route
-                        path="/lessonroom/:lessonNo/:lessonRoundNo/wait"
-                        element={<StudentWaitLessonRoomPage />}
-                    />
-                    <Route
-                        path="/lessonroom/:lessonNo/:lessonRoundNo/student"
-                        element={<StudentRealLessonRoomPage />}
-                    />
-                    <Route
-                        path="/lessonroom/:lessonNo/:lessonRoundNo/teacher"
-                        element={<TeacherRealLessonRoomPage />}
-                    />
+                <Route 
+                    path="/lessonroom/wait/:lessonNo/:lessonRoundNo"
+                    element={<StudentWaitLessonRoomPage/>}
+                />
+                {/* <Route 
+                    path="/lessonroom/student/:lessonNo/:lessonRoundNo"
+                    element={<StudentLessonRoomPage/>}
+                /> */}
+                <Route 
+                    path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
+                    element={<TeacherLessonRoomPage/>}
+                />
+                {/* <Route path="/test" element={<DropTable/>}/> */}
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
-                <Footer />
+                {(!hideComponetWait && (!hideComponetStudent || !hideComponetTeacher)) && <Footer/> }
             </div>
         </>
+
     );
 }
 
