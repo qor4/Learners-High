@@ -38,12 +38,17 @@ const EmailWrap = styled.div`
         align-items: center;
     }
 
+    & > div {
+        width: 70%;
+    }
+
     & > div > Button {
         margin-left: 0.5rem;
     }
 `;
 
 const StyledInput = styled.input`
+    width: 71%;
     border: 1px solid #000;
     border-radius: 0.75rem;
     box-sizing: border-box;
@@ -58,7 +63,7 @@ const TextareaWrap = styled.div`
     justify-content: space-between;
 `;
 const StyledTextarea = styled.textarea`
-    width: 65%;
+    width: 64%;
     height: 3rem;
     padding: 1rem;
     border: 1px solid #000;
@@ -69,6 +74,14 @@ const StyledTextarea = styled.textarea`
 const StyledMessage = styled.div`
     font-size: 0.75rem;
     text-align: right;
+    color: #db0000;
+`;
+
+// 성공 메시지 박스
+const StyledSuccess = styled.div`
+    font-size: 0.75rem;
+    text-align: right;
+    color: #008f5b;
 `;
 
 const ImgWrap = styled.div`
@@ -102,6 +115,7 @@ const ButtonWrap = styled.div`
 `;
 
 const UserJoin = () => {
+    const navigate = useNavigate();
     const [userType, setUserType] = useState("S");
     const [userId, setUserId] = useState(""); // 유저 아이디 : varchar(20)
     const [userName, setUserName] = useState(""); // 사용자 이름: < varchar(30) / 3 >
@@ -112,7 +126,23 @@ const UserJoin = () => {
     const [userInfo, setUserInfo] = useState(""); // varchar(150) // 3 한마디 소개 (학생과 강사에 따라 달라짐)
     const [profileImg, setProfileImg] = useState(null); // null 허용 & 강사만 들어갈 것.
 
+    const [eduInputList, setEduInputList] = useState([]); // eduInputList를 담아와서 넣어줄 변수
+    const [jobInputList, setJobInputList] = useState([]); // eduInputList를 담아와서 넣어줄 변수
+
     const [userNo, setUserNo] = useState(0); // 받을 거야!
+
+    // 자식의 eduInputList를 가져옴
+    const handleChildEduChange = (updatedEduInputList) => {
+        setEduInputList(updatedEduInputList);
+    };
+
+    // 자식의 jobInputList를 가져옴
+    const handleChildJobChange = (updatedJobInputList) => {
+        setJobInputList(updatedJobInputList);
+    };
+
+    console.log("학력이에욥~~~!!!", eduInputList);
+    console.log("경력이에욥~~~!!!", jobInputList);
 
     // 경력 및 학력 입력 버튼을 누를 때,
     const [openAddInfo, setOpenAddInfo] = useState(false);
@@ -129,6 +159,7 @@ const UserJoin = () => {
     // 공백 자체를 입력 안 시키기 ~ 추후 과제
 
     const [idMSG, setIdMSG] = useState("");
+    const [idSuccessMSG, setIdSuccessMSG] = useState("");
     const [idValidCheck, setIdValidCheck] = useState(false);
     const idCheck = (e) => {
         let tmpId = e.currentTarget.value;
@@ -159,23 +190,29 @@ const UserJoin = () => {
             console.log(response);
             if (response.data.resultCode !== 0) {
                 setIdMSG("중복된 아이디입니다.");
+                setIdSuccessMSG("");
                 setIdValidCheck(false);
                 return;
             }
         });
         setIdMSG("");
+        setIdSuccessMSG("사용 가능한 아이디입니다.");
         setIdValidCheck(true);
     };
 
     const [passwordMSG, setPasswordMSG] = useState("");
+    const [passwordSuccessMSG, setPasswordSuccessMSG] = useState("");
+    const [passwordValidFirstCheck, setPasswordVailidFirstCheck] =
+        useState(false);
     const [passwordValidCheck, setPasswordVailidCheck] = useState(false);
     const passwordFormCheck = (e) => {
         const pattern1 = /[0-9]/;
         const pattern2 = /[a-zA-Z]/;
         const pattern3 = /[~!@#$%^&*()-_+|<>?:{}]/;
         if (userPassword.length === 0) {
+            setPasswordSuccessMSG("");
             setPasswordMSG("공백 제외하고 비밀번호를 입력해 주세요.");
-            setPasswordVailidCheck(false);
+            setPasswordVailidFirstCheck(false);
             return;
         } else if (
             !pattern1.test(userPassword) ||
@@ -184,12 +221,17 @@ const UserJoin = () => {
             userPassword.length < 9 ||
             userPassword.length > 16
         ) {
+            setPasswordSuccessMSG("");
             setPasswordMSG(
                 "비밀번호는 숫자, 특수문자 포함 9~16자로 작성해주세요."
             );
-            setPasswordVailidCheck(false);
+            setPasswordVailidFirstCheck(false);
             return;
         }
+        // else if (userPassword === userPasswordCheck) {
+        //     setPasswordSuccessMSG("사용 가능한 비밀번호입니다.");
+        // }
+        setPasswordVailidFirstCheck(true);
         setPasswordMSG("");
     };
     const passwordDuplicateCheck = (e) => {
@@ -197,8 +239,15 @@ const UserJoin = () => {
             setPasswordMSG("비밀번호가 일치하지 않습니다.");
             setPasswordVailidCheck(false);
             return;
+        } else if (
+            userPassword === userPasswordCheck &&
+            passwordValidFirstCheck === true
+        ) {
+            setPasswordSuccessMSG("사용 가능한 비밀번호입니다.");
+            setPasswordVailidCheck(true);
         }
-        setPasswordVailidCheck(true);
+        // setPasswordMSG("");
+        // setPasswordVailidCheck(false);
     };
     const [userNameMSG, setUserNameMSG] = useState("");
     const [userNameValidCheck, setUserNameValidCheck] = useState(false);
@@ -263,7 +312,9 @@ const UserJoin = () => {
     };
     // 이메일 인증
     const [certEmailCode, setCertEmailCode] = useState("");
+    const [emailCerti, setEmailCerti] = useState(false);
     const certEmail = () => {
+        setEmailCerti(true);
         const data = { userEmail };
         axios
             .post(`${url}/user/cert/email?email=${userEmail}`, data, {
@@ -279,16 +330,19 @@ const UserJoin = () => {
     const [certEmailCheck, setCertEmailCheck] = useState("");
     const [certEmailValidCheck, setCertEmailValidCheck] = useState(false);
     const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("");
+    const [certEmailCheckSuccessMSG, setCertEmailCheckSuccessMSG] =
+        useState("");
     const certEmailFormCheck = () => {
         console.log(certEmailCheck, "이메일코드");
         console.log(certEmailCheck, "내가 입력");
         if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
             setCertEmailValidCheck(true);
-            setCertEmailCheckMSG("인증 성공!");
+            setCertEmailCheckMSG("");
+            setCertEmailCheckSuccessMSG("인증이 완료되었습니다.");
         } else {
             setCertEmailValidCheck(false);
-            setCertEmailCheckMSG("인증 요망");
-            // 문구 수정@@@
+            setCertEmailCheckMSG("인증번호가 다릅니다.");
+            setCertEmailCheckSuccessMSG("");
         }
     };
     const [userInfoMSG, setUserInfoMSG] = useState("");
@@ -343,7 +397,7 @@ const UserJoin = () => {
                 })
                 .then((res) => {
                     console.log(res.data, "응답");
-                    if (res.data.resultCode === 0) {
+                    if (res.data.userNo > 0) {
                         alert("회원가입 성공");
                         console.log(res.data.userNo);
                         setUserNo(res.data.userNo);
@@ -372,6 +426,31 @@ const UserJoin = () => {
                             .then((res) => console.log(res))
                             .catch((err) => console.log(err));
                     }
+
+                    if (eduInputList) {
+                        eduInputList.map((item) =>
+                            axios
+                                .post(`${url}/user/join/edu/${userNo}`, item, {
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                })
+                                .then((res) => console.log(res))
+                        );
+                    }
+
+                    if (jobInputList) {
+                        jobInputList.map((item) =>
+                            axios
+                                .post(`${url}/user/join/job/${userNo}`, item, {
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                })
+                                .then((res) => console.log(res))
+                        );
+                    }
+                    navigate(`/`);
                 });
         } else {
             alert("유효하지 않은 형식이 있습니다.");
@@ -388,6 +467,13 @@ const UserJoin = () => {
             setUserType("T");
         }
     };
+
+    // onBlur 두 개 이벤트
+    const handleBlurPwd = () => {
+        passwordFormCheck();
+        passwordDuplicateCheck();
+    };
+
     return (
         <>
             <Card>
@@ -440,7 +526,15 @@ const UserJoin = () => {
                                         ) : (
                                             ""
                                         )}
+                                        {idMSG === "" ? (
+                                            <StyledSuccess>
+                                                {idSuccessMSG}
+                                            </StyledSuccess>
+                                        ) : (
+                                            ""
+                                        )}
                                     </div>
+
                                     <Input
                                         label="비밀번호"
                                         type="password"
@@ -464,7 +558,7 @@ const UserJoin = () => {
                                         // value={userPassword}
                                         name="userPasswordCheck"
                                         id="userPasswordCheck"
-                                        placeholder=""
+                                        placeholder="동일한 비밀번호를 입력해 주세요."
                                         onChange={(e) =>
                                             setUserPasswordCheck(
                                                 removeAllEmpty(
@@ -472,12 +566,17 @@ const UserJoin = () => {
                                                 )
                                             )
                                         }
-                                        onBlur={passwordDuplicateCheck}
+                                        onBlur={handleBlurPwd}
                                     />
                                     <StyledMessage>
                                         {" "}
                                         {passwordMSG}{" "}
                                     </StyledMessage>
+                                    {passwordMSG === "" && (
+                                        <StyledSuccess>
+                                            {passwordSuccessMSG}
+                                        </StyledSuccess>
+                                    )}
                                 </div>
 
                                 <div>
@@ -490,7 +589,7 @@ const UserJoin = () => {
                                                 type="text"
                                                 name="userEmail"
                                                 id="userEmail"
-                                                placeholder="*@*"
+                                                placeholder="example@example.com"
                                                 onChange={(e) =>
                                                     setUserEmail(
                                                         removeAllEmpty(
@@ -501,7 +600,13 @@ const UserJoin = () => {
                                                 }
                                                 onBlur={userEmailFormCheck}
                                             />
-                                            <Button onClick={certEmail}>
+                                            <Button
+                                                onClick={certEmail}
+                                                disabled={
+                                                    userEmailValidCheck ===
+                                                    false
+                                                }
+                                            >
                                                 인증번호
                                             </Button>
                                         </div>
@@ -509,26 +614,33 @@ const UserJoin = () => {
                                     <StyledMessage>
                                         {userEmailMSG}
                                     </StyledMessage>
-
-                                    <Input
-                                        label="인증코드"
-                                        type="text"
-                                        name="certEmailCheck"
-                                        id="certEmailCheck"
-                                        placeholder="인증코드"
-                                        onChange={(e) =>
-                                            setCertEmailCheck(
-                                                removeAllEmpty(
-                                                    e.currentTarget.value
-                                                )
-                                            )
-                                        }
-                                        onBlur={certEmailFormCheck}
-                                    />
-                                    <StyledMessage>
-                                        {" "}
-                                        {certEmailCheckMSG}{" "}
-                                    </StyledMessage>
+                                    {emailCerti && (
+                                        <>
+                                            <Input
+                                                label="인증코드"
+                                                type="text"
+                                                name="certEmailCheck"
+                                                id="certEmailCheck"
+                                                placeholder="인증코드"
+                                                onChange={(e) =>
+                                                    setCertEmailCheck(
+                                                        removeAllEmpty(
+                                                            e.currentTarget
+                                                                .value
+                                                        )
+                                                    )
+                                                }
+                                                onBlur={certEmailFormCheck}
+                                            />
+                                            <StyledMessage>
+                                                {" "}
+                                                {certEmailCheckMSG}{" "}
+                                            </StyledMessage>
+                                            <StyledSuccess>
+                                                {certEmailCheckSuccessMSG}
+                                            </StyledSuccess>
+                                        </>
+                                    )}
                                 </div>
                                 <div>
                                     <Input
@@ -663,10 +775,12 @@ const UserJoin = () => {
                         <EduJobWrap>
                             {/* 학력 */}
                             <UserJoinTeacherEdu
+                                onEduChange={handleChildEduChange}
                                 userNo={userNo}
                             ></UserJoinTeacherEdu>
                             {/* 경력 */}
                             <UserJoinTeacherJob
+                                onJobChange={handleChildJobChange}
                                 userNo={userNo}
                             ></UserJoinTeacherJob>
                         </EduJobWrap>

@@ -3,11 +3,28 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import styled from "styled-components";
 import { Grid } from "@mui/material";
+import { HiOutlinePlusCircle } from "react-icons/hi";
 
 import { url } from "../../api/APIPath";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Button from "../common/Button";
+
+// 학력 추가 div 태그
+const StyledEduAdd = styled.div`
+    cursor: pointer;
+    & > div {
+        display: flex;
+        align-items: center;
+    }
+    & > div > *:not(:first-child) {
+        margin-left: 0.25rem;
+    }
+    :hover {
+        color: #293c81;
+        font-weight: bold;
+    }
+`;
 
 // input 태그 style한 것
 const StyledInput = styled.input`
@@ -77,23 +94,29 @@ const UserJoinTeacherEdu = (props) => {
     // const [hireEndDateYear, setHireEndDateYear] = useState('')
     // const [hireEndDateMonth, setHireEndDateMonth] = useState('')
 
-    const postTeacherEdu = () => {
-        // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
-        eduInputList.map((item) =>
-            axios
-                .post(`${url}/user/join/edu/${userNo}`, item, {
-                    headers: { "Content-Type": "application/json" },
-                })
-                .then((res) => console.log(res))
-        );
+    // const postTeacherEdu = () => {
+    //     // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
+    //     eduInputList.map((item) =>
+    //         axios
+    //             .post(`${url}/user/join/edu/${userNo}`, item, {
+    //                 headers: { "Content-Type": "application/json" },
+    //             })
+    //             .then((res) => console.log(res))
+    //     );
+    // };
+
+    const handleEduChange = () => {
+        const updatedEduInputList = [...eduInputList];
+        props.onEduChange(updatedEduInputList);
     };
 
+    console.log();
     return (
         <>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <LessonStatusBox $point>학력</LessonStatusBox>
+            <form onSubmit={(e) => e.preventDefault()} onBlur={handleEduChange}>
                 {eduInputList.map((item, index) => (
                     <div key={index}>
-                        <LessonStatusBox $point>학력</LessonStatusBox>
                         <Grid container columns={{ md: 15 }} spacing={2}>
                             <Grid item md={3}>
                                 <InputWrap>
@@ -153,7 +176,7 @@ const UserJoinTeacherEdu = (props) => {
                                         type="text"
                                         name="eduStartDate"
                                         id="eduStartDate"
-                                        placeholder="입학년월"
+                                        placeholder="yyyy-mm"
                                         className={`eduStartDate-${index}`}
                                         onChange={(e) => onChange(e, index)}
                                         value={item.eduStartDate}
@@ -169,7 +192,7 @@ const UserJoinTeacherEdu = (props) => {
                                         type="text"
                                         name="eduEndDate"
                                         id="eduEndDate"
-                                        placeholder="졸업년월"
+                                        placeholder="yyyy-mm"
                                         className={`eduEndDate-${index}`}
                                         onChange={(e) => onChange(e, index)}
                                         value={item.eduEndDate}
@@ -178,21 +201,24 @@ const UserJoinTeacherEdu = (props) => {
                             </Grid>
                         </Grid>
 
-                        <Button
-                            $point
-                            size="sm"
-                            onClick={() => deleteEduInputItem(item.id)}
-                        >
-                            삭제
-                        </Button>
+                        {eduInputList.length !== 1 && (
+                            <Button
+                                $point
+                                size="sm"
+                                onClick={() => deleteEduInputItem(item.id)}
+                            >
+                                삭제
+                            </Button>
+                        )}
                     </div>
                 ))}
             </form>
-            <Button onClick={addEduInputItem}>+</Button>
+            <StyledEduAdd onClick={addEduInputItem}>
+                <div>
+                    <HiOutlinePlusCircle /> <span>학력 추가</span>
+                </div>
+            </StyledEduAdd>
             <br />
-            <Button $point size="sm" onClick={postTeacherEdu}>
-                학력 등록
-            </Button>
         </>
     );
 };

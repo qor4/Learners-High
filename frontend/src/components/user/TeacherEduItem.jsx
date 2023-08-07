@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { url } from "../../api/APIPath";
 
-const TeacherJobItem = ({ item }) => {
-    const [jobItem, setJobItem] = useState(item);
+const TeacherEduItem = ({ item }) => {
+    const [eduItem, setEduItem] = useState(item);
     const [isEditing, setIsEditing] = useState(false);
 
     const userNo = useSelector((state) => state.user.userNo);
@@ -14,8 +14,14 @@ const TeacherJobItem = ({ item }) => {
     const userId = useSelector((state) => state.user.userId);
     const validCanModify = urlId === userId; // 수정 가능한지 체크
 
-    const { jobCareerNo, companyName, departName, hireStartDate, hireEndDate } =
-        jobItem;
+    const {
+        eduCareerNo,
+        universityName,
+        majorName,
+        degree,
+        eduStartDate,
+        eduEndDate,
+    } = eduItem;
 
     const handleOnClickUpdateStart = () => {
         setIsEditing(true);
@@ -23,7 +29,7 @@ const TeacherJobItem = ({ item }) => {
 
     // 수정 버튼
     const handleOnClickUpdateEnd = () => {
-        axios.put(`${url}/mypage/modify/job/${jobCareerNo}`, jobItem, {
+        axios.put(`${url}/mypage/modify/edu/${eduCareerNo}`, eduItem, {
             headers: { "Content-Type": "application/json" },
         });
         // 마이페이지로 리다이렉트해야할듯.
@@ -32,15 +38,15 @@ const TeacherJobItem = ({ item }) => {
 
     const onChange = (e) => {
         const { value, name } = e.currentTarget;
-        setJobItem({
-            ...jobItem,
+        setEduItem({
+            ...eduItem,
             [name]: value,
         });
     };
 
     // 삭제
     const handleOnClickDelete = () => {
-        axios.delete(`${url}/user/job/delete/${jobCareerNo}`, jobCareerNo, {
+        axios.delete(`${url}/user/job/delete/${eduCareerNo}`, eduCareerNo, {
             headers: { "Content-Type": "application/json" },
         });
     };
@@ -49,10 +55,10 @@ const TeacherJobItem = ({ item }) => {
         <>
             {!isEditing && !validCanModify ? (
                 <>
-                    <p> 직장명: {companyName} </p>
-                    <p> 부서명: {departName} </p>
-                    <p> 입사년월: {hireStartDate} </p>
-                    <p> 퇴사년월: {hireEndDate} </p>
+                    <span>{eduStartDate} - {eduEndDate}</span>
+                    <span>{universityName} </span>
+                    <span>{majorName} </span>
+                    <span>{degree} </span>
                     <button onClick={handleOnClickUpdateStart}>수정하기</button>
                 </>
             ) : (
@@ -60,39 +66,48 @@ const TeacherJobItem = ({ item }) => {
                     <div>
                         <p>경력</p>
 
-                        <span>직장명</span>
+                        <span>대학명</span>
                         <input
                             type="text"
-                            name="companyName"
-                            className="companyName"
+                            name="universityName"
+                            className="universityName"
                             onChange={(e) => onChange(e)}
-                            value={companyName}
+                            value={universityName}
                         />
 
-                        <span>부서/직무</span>
+                        <span>전공명</span>
                         <input
                             type="text"
-                            name="departName"
-                            className="departName"
+                            name="majorName"
+                            className="majorName"
                             onChange={(e) => onChange(e)}
-                            value={departName}
+                            value={majorName}
                         />
 
-                        <span>입사년월</span>
+                        <span>학위</span>
                         <input
                             type="text"
-                            name="hireStartDate"
-                            className="hireStartDate"
+                            name="degree"
+                            className="degree"
                             onChange={(e) => onChange(e)}
-                            value={hireStartDate}
+                            value={degree}
                         />
-                        <span>퇴사년월</span>
+
+                        <span>입학년월</span>
                         <input
                             type="text"
-                            name="hireEndDate"
-                            className="hireEndDate"
+                            name="eduStartDate"
+                            className="eduStartDate"
                             onChange={(e) => onChange(e)}
-                            value={hireEndDate}
+                            value={eduStartDate}
+                        />
+                        <span>졸업년월</span>
+                        <input
+                            type="text"
+                            name="eduEndDate"
+                            className="eduEndDate"
+                            onChange={(e) => onChange(e)}
+                            value={eduEndDate}
                         />
                     </div>
                     <button onClick={handleOnClickUpdateEnd}>수정완료</button>
@@ -104,4 +119,4 @@ const TeacherJobItem = ({ item }) => {
     );
 };
 
-export default TeacherJobItem;
+export default TeacherEduItem;
