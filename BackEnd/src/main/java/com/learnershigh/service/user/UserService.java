@@ -265,12 +265,10 @@ public class UserService {
     public HashMap<String, Object> userLogin(LoginDto loginDto) {
         HashMap<String, Object> userInfo = new HashMap<>();
         User user = userRepository.findByUserId(loginDto.getUserId());
-        if (user == null) {
+        if (user == null || !user.isActive() || !passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
             throw new BadCredentialsException("잘못된 계정정보입니다.");
         }
-        if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
-        }
+
         TokenDto token = new TokenDto();
         token.setAccessToken(tokenProvider.createAccessToken(user.getUserId()));
         token.setRefreshToken(tokenProvider.createRefreshToken(user.getUserId()));
@@ -286,7 +284,7 @@ public class UserService {
     // refresh 토큰으로 access, refresh 토큰 재발급
     public TokenDto refresh(TokenDto tokenDto) {
         TokenDto token = tokenProvider.validateRefreshToken(tokenDto.getRefreshToken());
-        if(token == null){
+        if (token == null) {
             throw new IllegalStateException("만료된 토큰입니다.");
         }
         return token;
