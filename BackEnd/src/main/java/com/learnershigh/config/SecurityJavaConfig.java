@@ -5,6 +5,7 @@ import com.learnershigh.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,26 +27,30 @@ import java.io.IOException;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class SecurityJavaConfig  {
+public class SecurityJavaConfig {
 
     private final TokenProvider tokenProvider;
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return web -> {
-            web.ignoring()
-                    .antMatchers(
-
-                            "/swagger-ui/index.js"
-                    );
-        };
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers(
+                /* swagger v2 */
+                "/v2/api-docs",
+                "/swagger-resources",
+                "/swagger-resources/**",
+                "/configuration/ui",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**",
+                /* swagger v3 */
+                "/v3/api-docs/**",
+                "/swagger-ui/**");
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 
     @Bean
@@ -56,8 +61,28 @@ public class SecurityJavaConfig  {
                 .formLogin().disable() // 기본 로그인 페이지 없애기
 
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/user/edujoin").permitAll()
+                .antMatchers(
+                        "/s3/profile-load",
+                        "/s3/thumbnail-load",
+                        "/s3/upload/profile/**"
+                ).permitAll()
+                .antMatchers(
+                        "/teacher/lesson/list/**",
+                        "/teacher/profile/**"
+                ).permitAll()
+                .antMatchers(
+                        HttpMethod.OPTIONS, "/**"
+                ).permitAll()
+                .antMatchers(
+                        "/s3/**",
+                        "/teacher/**",
+                        "/mypage/**",
+                        "/csat/create",
+                        "/user/delete/**",
+                        "/lesson/join/**", "/lesson/writing/**",
+                        "/lessonroom/**",
+                        "/notification/**",
+                        "/student/**").authenticated()
                 .and()
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
@@ -80,15 +105,10 @@ public class SecurityJavaConfig  {
                         response.setStatus(401);
                         response.setCharacterEncoding("utf-8");
                         response.setContentType("text/html; charset=UTF-8");
-                        response.getWriter().write("인증되지 않은 사용자.");
+                        response.getWriter().write("인증되지 않은 사용자입니다.");
                     }
                 });
 
         return http.build();
     }
-
-
-
-
-
 }
