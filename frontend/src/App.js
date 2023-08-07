@@ -18,14 +18,12 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
 import StudentWaitLessonRoomPage from "./pages/room/StudentWaitLessonRoomPage"
-// import StudentLessonRoomPage from "./pages/room/StudentLessonRoomPage"
 import TeacherLessonRoomPage from "./pages/room/TeacherLessonRoomPage"
 
 import { useLocation } from "react-router-dom";
 
 // test용
-import StudentMain from "./components/main/StudentMain";
-import DropTable from "./components/common/Table/DropTable"
+// import DropTable from "./components/common/Table/DropTable"
 
 function App() {
     const location = useLocation()
@@ -71,7 +69,7 @@ function App() {
                     path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                     element={<TeacherLessonRoomPage/>}
                 />
-                <Route path="/test" element={<DropTable/>}/>
+                {/* <Route path="/test" element={<DropTable/>}/> */}
                 <Route path="*" element={<MainPage/>}/>
             </Routes>
             {(!hideComponetWait && (!hideComponetStudent || !hideComponetTeacher)) && <Footer/> }

@@ -8,8 +8,8 @@ import { useEffect } from "react";
 
 // openvidu
 import { OpenVidu } from "openvidu-browser";
-import ChatComponent from "../../components/chat/ChatComponent";
-import StreamComponent from "../../components/stream/StreamComponent";
+// import StreamComponent from "../../components/stream/StreamComponent";
+
 import OpenViduLayout from "../../layout/openvidu-layout";
 // import ChatComponent from '../chat/ChatComponent';
 
@@ -663,43 +663,44 @@ const StudentLessonRoomPage = ({ token }) => {
     //   }
 
     return (
-        <>
-            <div id="layout" className="bounds">
-                {localUser !== undefined &&
-                    localUser.getStreamManager() !== undefined && (
-                        <div
-                            className="OT_root OT_publisher custom-class"
-                            id="localUser"
-                        >
-                            <StreamComponent
-                                user={localUser}
-                                handleNickname={userName}
-                            />
-                        </div>
-                    )}
-                {roomState.subscribers.map((sub, i) => (
-                    <div
-                        key={i}
-                        className="OT_root OT_publisher custom-class"
-                        id="remoteUsers"
-                    >
-                        <StreamComponent
-                            user={sub}
-                            streamId={sub.streamManager.stream.streamId}
-                        />
-                    </div>
-                ))}
-                <div
-                    className="OT_root OT_publisher custom-class"
-                    // style={chatDisplay}
-                >
-                    <ChatComponent
-                        user={localUser}
-                        messageReceived={checkNotification}
-                    />
-                </div>
-            </div>
-        </>
+        <></>
+        // <>
+        //     <div id="layout" className="bounds">
+        //         {localUser !== undefined &&
+        //             localUser.getStreamManager() !== undefined && (
+        //                 <div
+        //                     className="OT_root OT_publisher custom-class"
+        //                     id="localUser"
+        //                 >
+        //                     <StreamComponent
+        //                         user={localUser}
+        //                         handleNickname={userName}
+        //                     />
+        //                 </div>
+        //             )}
+        //         {roomState.subscribers.map((sub, i) => (
+        //             <div
+        //                 key={i}
+        //                 className="OT_root OT_publisher custom-class"
+        //                 id="remoteUsers"
+        //             >
+        //                 <StreamComponent
+        //                     user={sub}
+        //                     streamId={sub.streamManager.stream.streamId}
+        //                 />
+        //             </div>
+        //         ))}
+        //         <div
+        //             className="OT_root OT_publisher custom-class"
+        //             // style={chatDisplay}
+        //         >
+        //             <ChatComponent
+        //                 user={localUser}
+        //                 messageReceived={checkNotification}
+        //             />
+        //         </div>
+        //     </div>
+        // </>
     );
 };
 

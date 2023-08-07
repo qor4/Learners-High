@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
@@ -13,9 +13,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     const userName = useSelector((state)=> state.user.userName)
     // const userType = "T";
     const [bool, setBool] = useState(false);
-    
+    const navigate = useNavigate()
     const handleEnter =  () => {
         setBool(true);
+        navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`)
     }
     console.log(lessonInfo);
     const lessonNo = lessonInfo.lessonNo;
@@ -40,10 +41,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {userType === "T" && (
                 <div>
                     <Button>과제 일괄 다운</Button>
-                    <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
-                    state={userName}>
+                    {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
+                    state={userName}> */}
                     <Button $point onClick={handleEnter}>강의룸 만들기</Button>
-                    </Link>
+                    {/* </Link> */}
                 </div>
             )}
 

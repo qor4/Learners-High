@@ -7,7 +7,6 @@ import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
 import axios from "axios";
 import Button from "../../components/common/Button";
-import VideoRoomComponent from "../../components/VideoRoomComponent";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
@@ -210,16 +209,17 @@ const StudentWaitLessonRoomPage = () => {
                             //     lessonRoundNo={lessonRoundNo}
                             //     token={token}
                             // />
-                            <StudentLessonRoomPage                            
-                                userNo={userNo}
-                                userName={userName}
-                                userId={userId}
-                                lessonNo={lessonNo}
-                                lessonRoundNo={lessonRoundNo}
-                                token={token}
-                            />
-                            // <p>계속되니?</p>
-                        )}
+                            // <StudentLessonRoomPage                            
+                            //     userNo={userNo}
+                            //     userName={userName}
+                            //     userId={userId}
+                            //     lessonNo={lessonNo}
+                            //     lessonRoundNo={lessonRoundNo}
+                            //     token={token}
+                            // />
+                            <p>계속되니?</p>
+                        )
+                        }
                         <canvas
                             id="output"
                             style={{
