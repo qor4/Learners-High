@@ -507,7 +507,7 @@ public class UserService {
     // 강사 학위 전체 출력
     public List<EduDto> eduList(User userNo) {
 
-        List<EduCareer> eduList = eduRepository.findAllByUserNo(userNo);
+        List<EduCareer> eduList = eduRepository.findAllByUserNoOrderByEduStartDateAsc(userNo);
 
         List<EduDto> eduDtoList = new ArrayList<>();
 
@@ -534,7 +534,7 @@ public class UserService {
     // 강사 경력 전체 출력
     public List<JobDto> jobList(User userNo) {
 
-        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNo(userNo);
+        List<JobCareer> jobCareers = jobCareerRepository.findAllByUserNoOrderByHireStartDateAsc(userNo);
 
 
         List<JobDto> jobDtoList = new ArrayList<>();

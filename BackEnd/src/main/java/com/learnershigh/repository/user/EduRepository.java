@@ -15,5 +15,7 @@ public interface EduRepository extends JpaRepository<EduCareer, Long>{
 
     List<EduCareer> findAllByUserNo(User userNo);
 
+    List<EduCareer> findAllByUserNoOrderByEduStartDateAsc(User userNo);
+
 
 }
