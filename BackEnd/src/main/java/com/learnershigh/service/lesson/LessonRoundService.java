@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,6 +62,11 @@ public class LessonRoundService {
         }
         // 회차 정보를 통해 수업의 시작, 종료 날짜 설정
         Lesson lessonEntity = lessonRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
+        LocalDate now = LocalDate.now();
+        if(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate().isBefore(now.plusDays(6))){
+            lessonEntity.setLessonStatus("작성 중");
+            throw new IllegalStateException("수업 시작 일시는 현재 날짜에서 7일 이후부터 가능합니다.");
+        }
         lessonEntity.setLessonStartDate(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate());
         lessonEntity.setLessonEndDate(lessonRoundJoinDtoList.get(lessonRoundJoinDtoList.size() - 1).getLessonRoundStartDatetime().toLocalDate());
         lessonEntity.setLessonTotalRound(lessonRoundJoinDtoList.size());
