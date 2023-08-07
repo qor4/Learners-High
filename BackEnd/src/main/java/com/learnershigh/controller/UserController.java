@@ -1,6 +1,7 @@
 package com.learnershigh.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
@@ -10,6 +11,7 @@ import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,17 +147,17 @@ public class UserController {
     @GetMapping("/login/kakao/callback")
     @ApiOperation("카카오 로그인")
     @ResponseBody
-    public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code) throws JsonProcessingException{
+    public ResponseEntity<CustomResponseBody> userLogin(@RequestParam(required = false) String code) throws JsonProcessingException {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
         try {
             HashMap<String, Object> userInfo = userService.kakaoUserJoin(code);
 
             responseBody.setResult(userInfo);
-        }catch (IllegalStateException i){
+        } catch (IllegalStateException i) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(i.getMessage());
             return ResponseEntity.ok().body(responseBody);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseBody.setResultCode(-2);
             responseBody.setResultMsg(e.getMessage());
             return ResponseEntity.ok().body(responseBody);
@@ -170,15 +172,14 @@ public class UserController {
         BaseResponseBody baseResponseBody = new BaseResponseBody("정보들이 비어있습니다.");
         try {
             userService.kakaoEmailCheck(userEmail);
-                baseResponseBody.setResultCode(0);
-                return ResponseEntity.ok().body(baseResponseBody);
+            baseResponseBody.setResultCode(0);
+            return ResponseEntity.ok().body(baseResponseBody);
 
-        } catch (IllegalStateException i){
+        } catch (IllegalStateException i) {
             baseResponseBody.setResultCode(-1);
             baseResponseBody.setResultMsg(i.getMessage());
             return ResponseEntity.ok().body(baseResponseBody);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             baseResponseBody.setResultCode(-2);
             baseResponseBody.setResultMsg(e.getMessage());
             return ResponseEntity.ok().body(baseResponseBody);
@@ -196,12 +197,11 @@ public class UserController {
             baseResponseBody.setResultCode(0);
             return ResponseEntity.ok().body(baseResponseBody);
 
-        } catch (IllegalStateException i){
+        } catch (IllegalStateException i) {
             baseResponseBody.setResultCode(-1);
             baseResponseBody.setResultMsg(i.getMessage());
             return ResponseEntity.ok().body(baseResponseBody);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             baseResponseBody.setResultCode(-2);
             baseResponseBody.setResultMsg(e.getMessage());
             return ResponseEntity.ok().body(baseResponseBody);
@@ -244,11 +244,38 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     @ApiOperation("일반 로그인")
-//    @ApiOperation(value = "로그인", response = BaseResponseBody.lesson)
     public ResponseEntity<CustomResponseBody> userLogin(@RequestBody LoginDto loginDto) {
         CustomResponseBody responseBody = new CustomResponseBody<>("로그인 성공");
-        HashMap<String, Object> userInfo = userService.userLogin(loginDto);
-        responseBody.setResult(userInfo);
+        try {
+            HashMap<String, Object> userInfo = userService.userLogin(loginDto);
+            responseBody.setResult(userInfo);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @PostMapping("/refresh")
+    @ApiOperation("refresh 토큰으로 access 토큰 재발급")
+    public ResponseEntity<CustomResponseBody> refresh(@RequestBody TokenDto tokenDto) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("토큰 재발급");
+        try {
+            responseBody.setResult(userService.refresh(tokenDto));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
         return ResponseEntity.ok().body(responseBody);
     }
 

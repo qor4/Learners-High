@@ -1,5 +1,6 @@
 package com.learnershigh.security;
 
+import com.learnershigh.dto.user.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,10 @@ public class TokenProvider {
 
     private Key secretKey;
 
-    // 만료시간 : 1Hour
-    private final long exp = 1000L * 60;
+    // 만료시간 : 15분
+    private final long accessTokenValidTime = 1000L * 60 * 15;
+    // 만료시간 : 5시간
+    private final long refreshTokenValidTime = 1000L * 60 * 60 * 5;
 
     private final CustomUserDetailsService userDetailsService;
 
@@ -36,13 +39,25 @@ public class TokenProvider {
     }
 
     // 토큰 생성
-    public String createToken(String userId) {
+    public String createAccessToken(String userId) {
         Claims claims = Jwts.claims().setSubject(userId);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + exp))
+                .setExpiration(new Date(now.getTime() +  1000L * 10))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // 토큰 생성
+    public String createRefreshToken(String userId) {
+        Claims claims = Jwts.claims().setSubject(userId);
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + 1000L * 30))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -88,5 +103,23 @@ public class TokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public TokenDto validateRefreshToken(String refreshToken) {
+        try {
+            // 검증
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(refreshToken);
+            //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access, refresh 토큰을 생성
+            if (!claims.getBody().getExpiration().before(new Date())) {
+                TokenDto token = new TokenDto();
+                token.setAccessToken(createAccessToken(claims.getBody().get("sub").toString()));
+                token.setRefreshToken(createRefreshToken(claims.getBody().get("sub").toString()));
+                return token;
+            }
+        } catch (Exception e) {
+            //refresh 토큰이 만료되었을 경우, 로그인 필요
+            return null;
+        }
+        return null;
     }
 }
