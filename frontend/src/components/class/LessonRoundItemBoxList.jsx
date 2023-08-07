@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { url } from "../../api/APIPath";
+import tokenHttp, { url } from "../../api/APIPath";
 import styled from "styled-components";
 
 import LessonRoundItemBox from "./LessonRoundItemBox";
@@ -39,7 +39,7 @@ const LessonRoundItemBoxList = ({
 
     useEffect(() => {
         if (selectedDay && userType === "T") {
-            axios
+            tokenHttp
                 .get(`${url}/teacher/lesson/main/${userNo}`)
                 .then((response) => {
                     setDayLessonListDataSet(response.data.result);
@@ -51,7 +51,7 @@ const LessonRoundItemBoxList = ({
                     }
                 });
         } else if (selectedDay && userType === "S") {
-            axios
+            tokenHttp
                 .get(`${url}/student/lesson/main/${userNo}`)
                 .then((response) => {
                     setDayLessonListDataSet(response.data.result);
@@ -75,13 +75,14 @@ const LessonRoundItemBoxList = ({
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
                         <Link
+                            key={index}
                             to={
                                 userType === "T"
                                     ? `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
                                     : `/edu/student/${userNo}/${lessonItem.lessonNo}`
                             }
                         >
-                            <StyledBox $hover key={index}>
+                            <StyledBox $hover>
                                 <LessonRoundItemBox lessonInfo={lessonItem} />
                             </StyledBox>
                         </Link>

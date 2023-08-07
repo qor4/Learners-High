@@ -46,6 +46,14 @@ const UserLogIn = (props) => {
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
+                    localStorage.setItem(
+                        "accessToken",
+                        res.data.result.token.accessToken
+                    );
+                    localStorage.setItem(
+                        "refreshToken",
+                        res.data.result.token.refreshToken
+                    );
                     dispatch(logInUser(res.data.result));
                     navigate(`/`);
                     props.onClose();
