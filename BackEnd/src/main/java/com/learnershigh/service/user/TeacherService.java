@@ -36,7 +36,30 @@ public class TeacherService {
     private final StudentLessonListRepository studentLessonListRepository;
     private final LessonHomeworkRepository lessonHomeworkRepository;
 
+    public boolean isTeacher(User user) {
+        if (user == null) {
+            return false;
+        }
+        if (!user.getUserType().equals("T")) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isTeacherLesson(User user, Long lessonNo) {
+        Lesson lesson = lessonRepository.findByLessonNoAndUserNo(lessonNo, user);
+        if (lesson == null) {
+            return false;
+        }
+        return true;
+    }
+
+
     public HashMap<Integer, Object> showWeeklyLessonSchedule(Long userNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
         HashMap<Integer, Object> data = new HashMap<>();
         for (int i = 1; i <= 7; i++) {
             List<LessonRound> lessonRoundList = lessonRoundRepository.getWeeklyLessonRoundByTeacher(userNo, Integer.toString(i));
@@ -63,13 +86,12 @@ public class TeacherService {
     public List<LessonListDto> teacherLessonList(Long userNo, String status) {
         List<Lesson> lessonList = new ArrayList<>();
         List<LessonListDto> lessonListDtoList = new ArrayList<>();
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
         if (status.equals("전체")) { // 상태를 선택하지 않았을 경우
-            User user = userRepository.findByUserNo(userNo);
-            if (user == null) {
-                throw new IllegalStateException("유효하지 않은 사용자입니다.");
-            }
             lessonList = lessonRepository.findByUserNo(user);
-
         } else if (status.equals("강의 종료")) { // 상태가 강의 종료일 경우
             // 별점 포함 목록 출력
         } else if (status.equals("강의 중") || status.equals("강의 전")) { // 상태가 강의 전, 강의 중일경우
@@ -95,7 +117,14 @@ public class TeacherService {
 
     @Transactional
     public void joinHomeworkNotice(HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
-        Lesson lessonDomain = lessonRepository.findByLessonNoAndUserNo(homeworkNoticeJoinDto.getLessonNo(), userRepository.findByUserNo(homeworkNoticeJoinDto.getUserNo()));
+        User teacher = userRepository.findByUserNo(homeworkNoticeJoinDto.getUserNo());
+        if (!isTeacher(teacher)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if(!isTeacherLesson(teacher, homeworkNoticeJoinDto.getLessonNo())){
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
+        Lesson lessonDomain = lessonRepository.findByLessonNoAndUserNo(homeworkNoticeJoinDto.getLessonNo(), teacher);
         LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(homeworkNoticeJoinDto.getLessonRoundNo());
         if (lessonDomain == null) {
             throw new IllegalStateException("수업 정보와 사용자 정보가 일치하지 않습니다.");
@@ -113,17 +142,24 @@ public class TeacherService {
         List<StudentLessonList> studentLessonLists = studentLessonListRepository.findByLessonNo(homeworkNoticeJoinDto.getLessonNo());
         for (StudentLessonList studentLessonList : studentLessonLists) {
             LessonHomework lessonHomework = new LessonHomework();
-            User user = userRepository.findByUserNo(studentLessonList.getUserNo().getUserNo());
+            User student = userRepository.findByUserNo(studentLessonList.getUserNo().getUserNo());
             lessonHomework.setLessonNo(lessonDomain);
             lessonHomework.setLessonRoundNo(lessonRound);
-            lessonHomework.setUserNo(user);
+            lessonHomework.setUserNo(student);
             lessonHomework.setLessonHomeworkNoticeNo(saveHomeworkNotice);
             lessonHomework.setHomeworkStatus("미제출");
             lessonHomeworkRepository.save(lessonHomework);
         }
     }
 
-    public List<StudentAttendHomeworkDto> getStudentTabInfo(Long lessonNo) {
+    public List<StudentAttendHomeworkDto> getStudentTabInfo(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if(!isTeacherLesson(user, lessonNo)){
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
         // 강의를 수강하는 학생 List
         List<StudentLessonList> studentLessonLists = studentLessonListRepository.findByLessonNo(lessonNo);
         List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = new ArrayList<>();
@@ -139,11 +175,25 @@ public class TeacherService {
         return studentAttendHomeworkDtoList;
     }
 
-    public String getInfoTab(Long lessonNo) {
+    public String getInfoTab(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if(!isTeacherLesson(user, lessonNo)){
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
         return lessonRepository.getInfoTab(lessonNo);
     }
 
-    public List<LessonRoundHomeworkStatusDto> getHomeworkTabInfo(Long lessonNo) {
+    public List<LessonRoundHomeworkStatusDto> getHomeworkTabInfo(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if(!isTeacherLesson(user, lessonNo)){
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
         List<LessonRoundHomeworkStatusDto> lessonRoundHomeworkStatusDtoList = new ArrayList<>();
         // 수업의 강의 회차 정보
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonNo);
@@ -170,6 +220,9 @@ public class TeacherService {
 
     public TeacherProfileDto getTeacherProfile(Long userNo) {
         User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
         TeacherProfileDto teacherProfile = new TeacherProfileDto();
         teacherProfile.setUserNo(user.getUserNo());
         teacherProfile.setUserName(user.getUserName());
@@ -177,4 +230,5 @@ public class TeacherService {
         teacherProfile.setProfileImg(user.getProfileImg());
         return teacherProfile;
     }
+
 }

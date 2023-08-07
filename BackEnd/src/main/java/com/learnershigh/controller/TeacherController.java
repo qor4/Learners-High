@@ -46,7 +46,7 @@ public class TeacherController {
     }
 
     // 강사 강의 목록
-    @GetMapping("/lesson/{userNo}")
+    @GetMapping("/lesson/list/{userNo}")
     @ApiOperation("강사 강의 목록 조회")
     public ResponseEntity<CustomResponseBody> teacherLessonList(@PathVariable Long userNo, @RequestParam String status) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 " + status + " 목록 조회 완료");
@@ -97,18 +97,29 @@ public class TeacherController {
     @ApiOperation("과제 공지 등록")
     public ResponseEntity<BaseResponseBody> joinHomeworkNotice(@RequestBody HomeworkNoticeJoinDto homeworkNoticeJoinDto) {
         BaseResponseBody responseBody = new BaseResponseBody("과제 등록 성공");
-        teacherService.joinHomeworkNotice(homeworkNoticeJoinDto);
+        try {
+            teacherService.joinHomeworkNotice(homeworkNoticeJoinDto);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
         return ResponseEntity.ok().body(responseBody);
     }
 
     // 강사 수업 관리 학생 탭
-    @GetMapping("/lesson/{lessonNo}/student")
+    @GetMapping("/{userNo}/lesson/{lessonNo}/student")
     @ApiOperation("강사 수업 관리 학생 탭")
-    public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long lessonNo) {
+    public ResponseEntity<CustomResponseBody> getStudentTabInfo(@PathVariable Long userNo, @PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 학생 탭 조회 완료");
         try {
             List<LessonRoundDetailDto> lessonRoundDetailDtoList = lessonRoundService.getLessonRoundDetailByLessonNo(lessonNo);
-            List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = teacherService.getStudentTabInfo(lessonNo);
+            List<StudentAttendHomeworkDto> studentAttendHomeworkDtoList = teacherService.getStudentTabInfo(userNo, lessonNo);
             HashMap<String, Object> studentTabInfo = new HashMap<>();
             studentTabInfo.put("lessonRoundInfo", lessonRoundDetailDtoList);
             studentTabInfo.put("studentInfo", studentAttendHomeworkDtoList);
@@ -128,11 +139,11 @@ public class TeacherController {
 
     // 강사 수업 관리 소개 탭
     @ApiOperation("강사 수업 관리 소개 탭")
-    @GetMapping("/lesson/{lessonNo}/info")
-    public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long lessonNo) {
+    @GetMapping("/{userNo}/lesson/{lessonNo}/info")
+    public ResponseEntity<CustomResponseBody> getInfoTab(@PathVariable Long userNo, @PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
         try {
-            String lessonInfo = teacherService.getInfoTab(lessonNo);
+            String lessonInfo = teacherService.getInfoTab(userNo, lessonNo);
             HashMap<String, Object> InfoTab = new HashMap<>();
             InfoTab.put("lessonInfo", lessonInfo);
             responseBody.setResult(InfoTab);
@@ -151,11 +162,11 @@ public class TeacherController {
 
     // 강사 수업 관리 과제 탭
     @ApiOperation("강사 수업 관리 과제 탭")
-    @GetMapping("/lesson/{lessonNo}/homework")
-    public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long lessonNo) {
+    @GetMapping("/{userNo}/lesson/{lessonNo}/homework")
+    public ResponseEntity<CustomResponseBody> getHomeworkTabInfo(@PathVariable Long userNo, @PathVariable Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 과제 탭 조회 완료");
         try {
-            List<LessonRoundHomeworkStatusDto> lessonHomeworkInfo = teacherService.getHomeworkTabInfo(lessonNo);
+            List<LessonRoundHomeworkStatusDto> lessonHomeworkInfo = teacherService.getHomeworkTabInfo(userNo, lessonNo);
             responseBody.setResult(lessonHomeworkInfo);
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
