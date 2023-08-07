@@ -79,6 +79,7 @@ public class LessonService {
             lessonListDto.setLessonStartDate(lessonDomain.getLessonStartDate());
             lessonListDto.setLessonEndDate(lessonDomain.getLessonEndDate());
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
+            lessonListDto.setTotalStudent(lessonDomain.getTotalStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
             lessonListDtoList.add(lessonListDto);
         }
