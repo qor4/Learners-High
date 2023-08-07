@@ -7,9 +7,12 @@ import { useSelector } from "react-redux";
 import { url } from "../../api/APIPath";
 import axios from "axios";
 
+
+
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
+import ChatComponent from "../../components/chat/ChatComponent";
 
 const TeacherLessonRoomPage = () => {
     console.log("난 지금 들어왔어")
@@ -26,7 +29,6 @@ const TeacherLessonRoomPage = () => {
     // session, state 선언
     const [mySessionId, setMySessionId] = useState(undefined);
     const [myUserName, setMyUserName] = useState(userName);
-    const [myToken, setMyToken] = useState("");
     const [session, setSession] = useState(undefined)
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
@@ -150,7 +152,6 @@ const TeacherLessonRoomPage = () => {
             });
         }
     }, [session]);
-    
     // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
     const toggleVideo = () => {
         if (publisher) {
@@ -197,15 +198,24 @@ const TeacherLessonRoomPage = () => {
                                 </div>
                             ) : null}
                             
+                            {/* 여기서 강사 아닌 사람들만 */}
                             {subscribers.map((sub, i) => (
                                 <div key={`${i}-subscriber`}>
                                     <UserVideoComponent streamManager={ sub } />
                                 </div>
                             ))}
                         </div>
-
                     </div>
-                    
+
+                    <div>
+                      {console.log(session, "세션")}
+                      {console.log(session.connection, "세션 커넥션")}
+                      { mainStreamManager && <ChatComponent 
+                      userName={userName}
+                      streamManager={mainStreamManager}
+                      connectionId={session.connection.connectionId}
+                      />}
+                    </div>
                 </div>
             ) : null}
 
@@ -225,46 +235,6 @@ const TeacherLessonRoomPage = () => {
                 value="나가기"
             />
         </>
-
-
-
-        // <div className="container" id="container">
-        //     <div id="layout" className="bounds">
-        //     {/* 왼쪽 학생들 화면 */}
-        //     {roomState.subscribers.map((sub, i) => (
-        //         <div
-        //             key={i}
-        //             className="OT_root OT_publisher custom-class"
-        //             id="remoteUsers"
-        //         >
-                    
-        //             <StreamComponent
-        //                 user={sub}
-        //                 streamId={sub.streamManager.stream.streamId}
-        //             />
-        //         </div>
-        //     ))
-        //     }
-
-        //     {/* 가운데 선생님 화면 + 버튼들*/}
-        //     <div>
-        //       {console.log(localUser, "로컬 유저")}
-        //       {console.log(localUser.getStreamManager(), "로컬 유저1")}
-        //     {localUser !== undefined && localUser.getStreamManager() !== undefined 
-        //     && (
-        //                 <div className="OT_root OT_publisher custom-class" id="localUser">
-        //                     <StreamComponent user={localUser}/>
-        //                 </div>
-        //             )}
-        //     </div>
-
-        //     {/* 채팅 */}
-        //     <div></div>
-        //     </div>
-        // </div>
-
-        
     );
 };
-
 export default TeacherLessonRoomPage;

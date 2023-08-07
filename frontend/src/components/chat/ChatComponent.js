@@ -1,48 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './ChatComponent.css';
 import { useEffect } from "react";
 
-
 const ChatComponent = (props) => { 
-    const chatState = {
-        messageList : [],
-        message:""
-    }
-
-    // user를 받기
-    let user = props.user;
-    // messageReceived 메소드 받기
-    // function messageReceived(){
+    // const chatState = {
+    //     messageList : [],
+    //     message:""
     // }
-    const messageReceived = ()=>{
-        props.messageReceived();
-    }
+    const [messageList, setMessageList] = useState([])
+    const [chatMessage, setChatMessage] = useState("")
+    // user를 받기
+    const userName = props.userName;
+    const streamManager = props.streamManager;
+    const connectionId = props.connectionId;
+    console.log(connectionId, "connectionId")
+   
     const chatScroll = React.createRef();
 
     useEffect(() => {
-        user.getStreamManager().stream.session.on('signal:chat', (event) => {
+        streamManager.stream.session.on('signal:chat', (event) => {
             const data = JSON.parse(event.data);
-            let messageList = chatState.messageList;
-            messageList.push({ connectionId: event.from.connectionId, nickname: data.nickname, message: data.message });
-            const document = window.document;
+            let tmpMessageList = [...messageList, { connectionId: event.from.connectionId, nickname: data.nickname, message: data.message } ];
             setTimeout(() => {
-                const userImg = document.getElementById('userImg-' + (chatState.messageList.length - 1));
-                const video = document.getElementById('video-' + data.streamId);
-                const avatar = userImg.getContext('2d');
-                avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
-                messageReceived();
+                // 사용자 그림 
             }, 50);
-            chatState.messageList = messageList;
+            setMessageList([...tmpMessageList])
             scrollToBottom();
         });
         return () => {
             console.log('render 종료')
          };
-    }, []);
-
-    function handleChange(event) {
-        chatState.message= event.target.value;
-    }
+    }, [messageList]);
 
     function handlePressKey(event) {
         if (event.key === 'Enter') {
@@ -51,18 +39,18 @@ const ChatComponent = (props) => {
     }
 
     function sendMessage() {
-        console.log(chatState.message);
-        if (user && chatState.message) {
-            let message = chatState.message.replace(/ +(?= )/g, '');
+        console.log("send : ",chatMessage);
+        if (userName && chatMessage) {
+            let message = chatMessage.replace(/ +(?= )/g, '');
             if (message !== '' && message !== ' ') {
-                const data = { message: message, nickname: user.getNickname(), streamId: this.props.user.getStreamManager().stream.streamId };
-                user.getStreamManager().stream.session.signal({
+                const data = { message: message, nickname: userName, streamId: streamManager.stream.streamId };
+                streamManager.stream.session.signal({
                     data: JSON.stringify(data),
                     type: 'chat',
                 });
             }
         }
-        chatState.message='';
+        setChatMessage('');
     }
 
     function scrollToBottom() {
@@ -79,12 +67,12 @@ const ChatComponent = (props) => {
         <div id="chatContainer">
             <div id="chatComponent">
                 <div className="message-wrap" ref={chatScroll}>
-                    {chatState.messageList.map((data, i) => (
+                    {messageList.map((data, i) => (
                         <div
                             key={i}
                             id="remoteUsers"
                             className={
-                                'message' + (data.connectionId !== user.getConnectionId() ? ' left' : ' right')
+                                'message' + (data.connectionId !== connectionId ? ' left' : ' right')
                             }
                         >
                             {/* 유저 이미지 */}
@@ -105,11 +93,12 @@ const ChatComponent = (props) => {
                     <input
                         placeholder="Send a messge"
                         id="chatInput"
-                        value={chatState.message}
-                        onChange={handleChange}
-                        onKeyPress={handlePressKey}
+                        value={chatMessage}
+                        onChange={(e)=>setChatMessage(e.currentTarget.value)}
+                        onKeyDown={handlePressKey}
                     />
                     {/* 버튼 으로 대체  */}
+                    <button id="sendButton" onClick={sendMessage}>전송</button>
                     {/* <Tooltip title="Send message">
                         <Fab size="small" id="sendButton" onClick={sendMessage}>
                             <Send />
