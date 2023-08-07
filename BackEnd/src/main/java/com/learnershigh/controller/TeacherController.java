@@ -26,7 +26,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/teacher")
+@RequestMapping("/api/teacher")
 @Api(tags = {"강사에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")

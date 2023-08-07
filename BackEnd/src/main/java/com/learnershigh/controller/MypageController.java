@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/mypage")
+@RequestMapping("/api/mypage")
 @Api(tags = {"마이페이지에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")

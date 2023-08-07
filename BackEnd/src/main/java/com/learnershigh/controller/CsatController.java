@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/csat")
+@RequestMapping("/api/csat")
 @Api(tags = {"만족도에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")

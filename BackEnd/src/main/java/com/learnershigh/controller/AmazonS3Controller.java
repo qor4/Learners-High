@@ -16,16 +16,11 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/s3")
+@RequestMapping("/api/s3")
 @Api(tags = {"S3에 대한 API"})
 @CrossOrigin("*")
-
-
 public class AmazonS3Controller {
-
-
     private final S3Service s3Service;
-
     //  업로드 (lesson/수업no/Thumbnail)
     @PostMapping(value = "/upload/thumbnail/{lessonNo}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation("수업 썸네일 파일 업로드 (lesson/수업no/Thumbnail)")

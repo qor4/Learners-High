@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/lessonroom")
+@RequestMapping("/api/lessonroom")
 @Api(tags = {"실시간 수업에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")

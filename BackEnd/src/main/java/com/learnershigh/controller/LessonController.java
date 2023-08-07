@@ -20,7 +20,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/lesson")
+@RequestMapping("/api/lesson")
 @Api(tags = {"수업에 대한 API"})
 @RequiredArgsConstructor
 @CrossOrigin("*")
