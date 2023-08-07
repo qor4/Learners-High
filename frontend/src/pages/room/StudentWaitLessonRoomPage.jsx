@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 import { UserStatusOption } from "seeso";
-import EasySeeSo from "seeso/easy-seeso";
+import EasySeeso from "seeso/easy-seeso";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
-import axios from "axios";
 import Button from "../../components/common/Button";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,13 +14,57 @@ import StudentLessonRoomPage from "./StudentLessonRoomPage";
 const licenseKey = "dev_81af036sl2mwzmcbii6lfx2vi9cfhgzhaio8lxc9";
 const dotMaxSize = 10;
 const dotMinSize = 5;
-let userStatus = null;
 
-let isCalibrationMode = false;
-let eyeTracker = null;
-let currentX, currentY;
+const StudentWaitLessonRoomPage = () => {
+    // console.log("여기 왔어?")
+    let userStatus = useRef(null);
+    let isCalibrationMode = false;
+    const eyeTracker = useRef(null);
+    let currentX, currentY;
+    const navigate = useNavigate();
+    const { lessonNo, lessonRoundNo } = useParams();
+    const [ isSeesoInit, setSeesoInit ] = useState(false);
+    
+    useEffect(() => {   
+        console.log("1");
+        if (!eyeTracker.current) {
+            console.log("2");
+            eyeTracker.current = new EasySeeso();
+            userStatus.current = new UserStatusOption(true, false, false);
+            console.log("3  ");
+            (async ()=>{
+                await eyeTracker.current.init(
+                    licenseKey,
+                    async () => {
+                        await eyeTracker.current.startTracking(onGaze, onDebug);
+                        if (!eyeTracker.current.checkMobile()) {
+                            eyeTracker.current.setMonitorSize(14); // 14 inch
+                            eyeTracker.current.setFaceDistance(70);
+                            eyeTracker.current.setCameraPosition(
+                                window.outerWidth / 2,
+                                true
+                            );
+                            eyeTracker.current.setUserStatusCallback(
+                                onAttention,
+                                null,
+                                null
+                            );
+                            eyeTracker.current.setAttentionInterval(10);
+                        }
+                    }, // callback when init succeeded.
+                    () => console.log("callback when init failed."), // callback when init failed.
+                    userStatus.current
+                );
+                // 여기서 버튼 활성화
+                setSeesoInit(true);
+            })();
+            
+        }
+    }, []);
 
-// gaze callback.
+    
+
+    // gaze callback.
 function onGaze(gazeInfo) {
     if (!isCalibrationMode) {
         // do something with gaze info.
@@ -37,7 +80,7 @@ function onCalibrationNextPoint(pointX, pointY) {
     currentY = pointY;
     let ctx = clearCanvas();
     drawCircle(currentX, currentY, dotMinSize, ctx);
-    eyeTracker.startCollectSamples();
+    eyeTracker.current.startCollectSamples();
 }
 
 function onCalibrationProgress(progress) {
@@ -45,6 +88,11 @@ function onCalibrationProgress(progress) {
     let dotSize = dotMinSize + (dotMaxSize - dotMinSize) * progress;
     drawCircle(currentX, currentY, dotSize, ctx);
 }
+
+const onCalibrationFinished = useCallback((calibrationData) => {
+    clearCanvas();
+    isCalibrationMode = false;
+}, []);
 
 function drawCircle(x, y, dotSize, ctx) {
     ctx.fillStyle = "#FF0000";
@@ -72,48 +120,13 @@ function onAttention(timestampBegin, timestampEnd, score) {
         `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
     );
 }
-// async function main() {
-//     if(!eyeTracker) {
-//       eyeTracker = new EasySeeSo()
-//       userStatus = new UserStatusOption(true, false, false);
-//       await eyeTracker.init(licenseKey,
-//         async () => {
-//             await eyeTracker.startTracking(onGaze, onDebug)
-//             if(!eyeTracker.checkMobile()){
-//               eyeTracker.setMonitorSize(16); // 14 inch
-//               eyeTracker.setFaceDistance(60);
-//               eyeTracker.setCameraPosition(window.outerWidth / 2, true);
-//               eyeTracker.setUserStatusCallback(onAttention,null,null);
-//               eyeTracker.setAttentionInterval(10);
-//             }
-//         }, // callback when init succeeded.
-//         () => console.log("callback when init failed.") // callback when init failed.
-//         ,userStatus
-//       )
-//     }
-//   }
-
-//   (async () => {
-//     await main();
-//   })();
-const APPLICATION_SERVER_URL = 'https://i9b105.p.ssafy.io:7777/';
-
-const StudentWaitLessonRoomPage = () => {
-    // const userNo = useSelector((state) => state.user.userNo);
-    // const location = useLocation()
-    // const {lessonName} = location.state
-    const navigate = useNavigate();
-    const { lessonNo, lessonRoundNo } = useParams();
-
-    const [calData, setCalData] = useState(null);
-
     const tmpClick = useCallback(() => {
         if (!isCalibrationMode) {
             isCalibrationMode = true;
             hideGaze();
             setTimeout(function () {
-                console.log(eyeTracker);
-                eyeTracker.startCalibration(
+                console.log(eyeTracker.current);
+                eyeTracker.current.startCalibration(
                     onCalibrationNextPoint,
                     onCalibrationProgress,
                     onCalibrationFinished
@@ -122,63 +135,15 @@ const StudentWaitLessonRoomPage = () => {
         }
     }, []);
 
-    const onCalibrationFinished = useCallback((calibrationData) => {
-        clearCanvas();
-        isCalibrationMode = false;
-        setCalData(calibrationData);
-    }, []);
 
-    const main = useCallback(() => {
-        if (!eyeTracker) {
-            eyeTracker = new EasySeeSo();
-            userStatus = new UserStatusOption(true, false, false);
-            eyeTracker.init(
-                licenseKey,
-                async () => {
-                    await eyeTracker.startTracking(onGaze, onDebug);
-                    if (!eyeTracker.checkMobile()) {
-                        eyeTracker.setMonitorSize(16); // 14 inch
-                        eyeTracker.setFaceDistance(60);
-                        eyeTracker.setCameraPosition(
-                            window.outerWidth / 2,
-                            true
-                        );
-                        eyeTracker.setUserStatusCallback(
-                            onAttention,
-                            null,
-                            null
-                        );
-                        eyeTracker.setAttentionInterval(10);
-                    }
-                }, // callback when init succeeded.
-                () => console.log("callback when init failed."), // callback when init failed.
-                userStatus
-            );
-        }
-    }, []);
-    // main();
-
-    // function tmpClick() {
-
-    // }
-    // useEffect(()=> {
-
-    // },[])
+    
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
-    const [token, setToken] = useState("")
     const [enterRoom, setEnterRoom] = useState(false);
 
-    const enterTheLessonRoom = async () => {
-        // navigate(`/lessonroom/student/${lessonNo}/${lessonRoundNo}`)
-        await axios.get(APPLICATION_SERVER_URL + 
-            `lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`)
-            .then(res =>{
-                setToken(res.data.resultMsg)
-                setEnterRoom(true);
-            })
-            .catch(err=>console.log(err));
+    const enterTheLessonRoom =  () => {
+        setEnterRoom(true);
     };
     return (
         <>
@@ -186,6 +151,7 @@ const StudentWaitLessonRoomPage = () => {
                 <div style={{ position: "relative" }}>
                     <div className="Wrap-Cam-canvas">
                         {!enterRoom ? (
+                            <>
                             <Webcam
                                 style={{
                                     position: "absolute",
@@ -194,33 +160,8 @@ const StudentWaitLessonRoomPage = () => {
                                     overFit: "cover",
                                     margin: "auto",
                                 }}
-                            />
-                        ) : (
-                            // <VideoRoomComponent
-                            //     style={{
-                            //         position: "absolute",
-                            //         overFit: "cover",
-                            //         margin: "auto",
-                            //     }}
-                            //     userNo={userNo}
-                            //     userName={userName}
-                            //     userId={userId}
-                            //     lessonNo={lessonNo}
-                            //     lessonRoundNo={lessonRoundNo}
-                            //     token={token}
-                            // />
-                            // <StudentLessonRoomPage                            
-                            //     userNo={userNo}
-                            //     userName={userName}
-                            //     userId={userId}
-                            //     lessonNo={lessonNo}
-                            //     lessonRoundNo={lessonRoundNo}
-                            //     token={token}
-                            // />
-                            <p>계속되니?</p>
-                        )
-                        }
-                        <canvas
+                                />
+                                <canvas
                             id="output"
                             style={{
                                 position: "absolute",
@@ -229,10 +170,7 @@ const StudentWaitLessonRoomPage = () => {
                                 margin: "auto",
                             }}
                         />
-                    </div>
-
-                    {/* 추후 하나의 컴포넌트로 대체 */}
-                    <div
+                            <div
                         style={{
                             position: "relative",
                             top: "500px",
@@ -256,13 +194,20 @@ const StudentWaitLessonRoomPage = () => {
                             <Button onClick={enterTheLessonRoom}>
                                 실제 룸 입장
                             </Button>
-                            <button onClick={tmpClick}>테스트</button>
-                            {/* <input type="number" onChange={changeDistance}></input>
-                            <button onClick={()=> {
-                            eyeTracker.setFaceDistance(distance)
-                            }}>모니터 거리 조정</button> */}
+                            <button onClick={tmpClick} disabled={!isSeesoInit} >테스트</button>
                         </div>
                     </div>
+                            </>
+
+                        ) : (
+                            <StudentLessonRoomPage/>
+                        )
+                        }
+                        
+                    </div>
+
+                    {/* 추후 하나의 컴포넌트로 대체 */}
+                    
                 </div>
             </>
         </>

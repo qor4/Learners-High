@@ -7,8 +7,6 @@ import { useSelector } from "react-redux";
 import { url } from "../../api/APIPath";
 import axios from "axios";
 
-
-
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -187,6 +185,7 @@ const TeacherLessonRoomPage = () => {
 
     return (
         <>
+        <div>
             <h1>Room ID: {mySessionId}</h1>
             {session !== undefined ? (
                 <div> 
@@ -234,6 +233,7 @@ const TeacherLessonRoomPage = () => {
                 onClick={leaveSession}
                 value="나가기"
             />
+        </div>
         </>
     );
 };
