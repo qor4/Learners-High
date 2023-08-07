@@ -27,7 +27,6 @@ import { useLocation } from "react-router-dom";
 // import DropTable from "./components/common/Table/DropTable"
 
 // test용
-import StudentMain from "./components/main/StudentMain";
 import MyPagePage from "./pages/user/MyPagePage";
 import EduTeacherManagePage from "./pages/EduTeacherManagePage";
 import EduStudentManagePage from "./pages/EduStudentManagePage";
