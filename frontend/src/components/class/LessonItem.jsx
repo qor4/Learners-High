@@ -71,10 +71,12 @@ const LessonItem = (props) => {
             <FlexWrap>
                 <LessonStatusBox>{props.lessonTypeName}</LessonStatusBox>
 
-                <FlexWrap>
-                    <HiOutlineUserCircle />
-                    {`${props.totalStudent} / ${props.maxStudent}`}
-                </FlexWrap>
+                {!props.$popular && (
+                    <FlexWrap>
+                        <HiOutlineUserCircle />
+                        {`${props.totalStudent} / ${props.maxStudent}`}
+                    </FlexWrap>
+                )}
             </FlexWrap>
             <FlexWrap>
                 <Link to={`/lesson/info/${props.lessonNo}`}>
@@ -82,10 +84,14 @@ const LessonItem = (props) => {
                 </Link>
                 <span>{props.userName}</span>
             </FlexWrap>
-            <div>{props.lessonPrice.toLocaleString()}원</div>
-            <div>
-                {props.lessonStartDate} ~ {props.lessonEndDate}
-            </div>
+            {!props.$popular && (
+                <>
+                    <div>{props.lessonPrice.toLocaleString()}원</div>
+                    <div>
+                        {props.lessonStartDate} ~ {props.lessonEndDate}
+                    </div>
+                </>
+            )}
         </StyledItemWrap>
     );
 };

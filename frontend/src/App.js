@@ -32,6 +32,7 @@ import EduTeacherManagePage from "./pages/EduTeacherManagePage";
 import EduStudentManagePage from "./pages/EduStudentManagePage";
 import EduTeacherLessonPage from "./pages/EduTeacherLessonPage";
 import EduStudentLessonPage from "./pages/EduStudentLessonPage";
+import AlertTest from "./pages/room/AlertTest";
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -72,6 +73,8 @@ function App() {
                     <Route path="/" element={<MainPage />}></Route>
                     <Route path="/join" element={<UserJoinPage />}></Route>
                     <Route path="/lesson" element={<LessonPage />}></Route>
+                    {/* @@@ */}
+                    <Route path="/temp" element={<AlertTest />}></Route>
                     <Route
                         path="/lesson/join"
                         element={<ClassJoinPage />}

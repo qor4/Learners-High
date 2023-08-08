@@ -10,6 +10,7 @@ import { Container } from "@material-ui/core";
 import LessonRoundItemBoxList from "../class/LessonRoundItemBoxList";
 import Card from "../common/Card";
 import Button from "../common/Button";
+import { Link } from "react-router-dom";
 
 const NumberBox = styled.span`
     display: inline-block;
@@ -52,6 +53,11 @@ const MemberMain = () => {
 
     return (
         <Box sx={{ my: "4rem" }}>
+            {/* 임시 버튼 */}
+            <Link to="/temp">
+                <Button>페이지로 이동 버튼</Button>
+            </Link>
+
             <Container maxWidth="md">
                 {/* 일정 안내하는 공간 ex) 김강사님의 월요일 일정은, */}
                 <AlertScheduleBox>

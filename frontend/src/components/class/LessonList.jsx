@@ -4,12 +4,14 @@ import { Grid } from "@material-ui/core";
 
 import LessonItem from "./LessonItem";
 
-const LessonList = ({ items }) => {
+const LessonList = ({ items, $popular }) => {
     return (
         <Grid container spacing={3}>
             {items.map((data, index) => (
                 <Grid item xs={6} md={3} key={index}>
                     <LessonItem
+                        // 인기 강의
+                        $popular={$popular}
                         lessonName={data.lessonName}
                         userName={data.userName}
                         lessonThumbnailImg={data.lessonThumbnailImg}

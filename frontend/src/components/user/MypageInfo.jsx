@@ -25,6 +25,7 @@ const MypageInfo = ({ userNo }) => {
         tokenHttp.get(`${url}/mypage/${userNo}`).then((res) => {
             // resultCode로 확인 수정@@@ 0이 정상
             setMypageInfo(res.data.result);
+            console.log(res.data)
         });
         axios.get(`${url}/s3/profile-load/${userNo}`).then((res) => {
             console.log(res.data);
@@ -64,8 +65,7 @@ const MypageInfo = ({ userNo }) => {
                             <span>{userName} 강사님</span>
                             <div>
                                 <Link to={`/profile/${userNo}`}>
-                                    <Button>강사페이지</Button>
-                                </Link>
+                                <Button>강사페이지</Button></Link>
                                 <Button onClick={handleOnClickUpdateStart}>
                                     수정하기
                                 </Button>
