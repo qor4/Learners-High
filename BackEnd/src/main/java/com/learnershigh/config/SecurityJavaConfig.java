@@ -62,8 +62,8 @@ public class SecurityJavaConfig {
 
                 .authorizeRequests()
                 .antMatchers(
-                        "/s3/profile-load",
-                        "/s3/thumbnail-load",
+                        "/s3/profile-load/**",
+                        "/s3/thumbnail-load/**",
                         "/s3/upload/profile/**"
                 ).permitAll()
                 .antMatchers(
