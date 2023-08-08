@@ -3,7 +3,7 @@
 
 docker-compose -f docker-compose-prod.yml pull
 
-COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose-prod.yml up --build -d
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose-prod.yml up --build -d --no-cache
 
 result=$(docker images -f "dangling=true" -q)
                     if [ -n "$result" ]
