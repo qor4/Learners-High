@@ -69,27 +69,13 @@ const UserLogIn = (props) => {
     };
 
     const handleKeyPress = (e) => {
-        e.stopPropagation()
         if (e.key === "Enter") {
             userLogIn();
         }
     };
-    
-    // const getCode = (()=> {
-    //     const newCode = new URL(window.location.href).searchParams.get("code")
-    //     console.log(newCode)
-    //     // axios.get(`${url}/login/kakao/callback`, {headers: {newCode}})
-    // })
 
     const kakaoLogIn = (e) => {
-        e.stopPropagation()
-
-        // 인가코드를 받아서... 이걸 받아서.. useEffect를 써서.... 이걸 백으로 보내자....
         window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=http://localhost:3000/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`
-        // navigate('/test')
-        // axios.get(`${url}/login/kakao/callback`, {headers: {code}})
-        // console.log(name)
-        // getCode()
     }
     return (
         <>
@@ -115,14 +101,14 @@ const UserLogIn = (props) => {
                 />
 
                 <ButtonWrap>
-                    <Button type="submit" $fullWidth $point onClick={userLogIn}>
+                    <Button type="button" $fullWidth $point onClick={userLogIn}>
                         로그인
                     </Button>
-                    <Button type="submit" $fullWidth $kakao onClick={kakaoLogIn}>
+                    <Button type="button" $fullWidth $kakao onClick={kakaoLogIn}>
                         카카오로그인
                     </Button>
                     <Link to="/join">
-                        <Button onClick={props.onClose} $fullWidth $skyBlue>
+                        <Button type="button" onClick={props.onClose} $fullWidth $skyBlue>
                             회원가입
                         </Button>
                     </Link>

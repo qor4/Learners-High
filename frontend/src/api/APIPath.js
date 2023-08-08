@@ -3,8 +3,8 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 
-// export const url = "https://i9b105.p.ssafy.io/api"
-export const url = "http://192.168.31.200:7777/api";
+export const url = "https://i9b105.p.ssafy.io/api"
+// export const url = "http://192.168.31.200:7777/api";
 // const AUTH = "auth/"
 // const USER
 

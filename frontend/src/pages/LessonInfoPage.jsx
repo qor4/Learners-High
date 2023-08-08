@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../api/APIPath";
+import tokenHttp from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled } from "styled-components";
@@ -67,7 +68,6 @@ const LessonInfoPage = () => {
     const data = { lessonNo, userNo };
 
     const [showPayLessonModal, setShowPayLessonModal] = useState(false);
-    // 로그인 버튼 클릭 했을 때, 로그인 모달 창
 
     // 모달을 닫을 때
     const handleCloseModal = () => {
@@ -81,11 +81,11 @@ const LessonInfoPage = () => {
         console.log(data);
         setShowPayLessonModal(true);
         document.body.classList.add("overflow-hidden");
-        axios
-            .post(`${url}/student/apply`, data, {
-                headers: { "Content-Type": "application/json" },
-            })
-            .then((response) => alert(response.data.resultMsg));
+        // tokenHttp
+        //     .post(`${url}/student/apply`, data, {
+        //         headers: { "Content-Type": "application/json" },
+        //     })
+        //     .then((response) => alert(response.data.resultMsg));
     };
 
     console.log(data);
@@ -146,13 +146,15 @@ const LessonInfoPage = () => {
                     ))}
             </Container>
 
-            {/* 로그인 모달창 */}
+            {/* 결제 모달창 */}
             <Modal
-                title="로그인"
+                title="강의 결제"
                 show={showPayLessonModal}
                 onClose={handleCloseModal}
             >
-                <PayLesson onClose={handleCloseModal} />
+                <PayLesson 
+                lessonNo={lessonNo}
+                onClose={handleCloseModal} />
             </Modal>
         </div>
     );
