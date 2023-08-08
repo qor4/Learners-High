@@ -4,11 +4,12 @@ import styled, { createGlobalStyle } from "styled-components";
 
 // 컴포넌트
 import Main from "./Main";
-import UserJoin from "./components/auth/UserJoin";
 import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
 import UserLogIn from "./components/auth/UserLogIn";
+
 import UserJoinPage from "./pages/auth/UserJoinPage";
+import KakaoUserJoinPage from "./pages/auth/KakaoUserJoinPage";
 import MainPage from "./pages/MainPage";
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
@@ -24,7 +25,7 @@ import TeacherLessonRoomPage from "./pages/room/TeacherLessonRoomPage"
 import { useLocation } from "react-router-dom";
 
 // test용
-// import DropTable from "./components/common/Table/DropTable"
+import DropTable from "./components/common/table/DropTable"
 
 // test용
 import MyPagePage from "./pages/user/MyPagePage";
@@ -71,6 +72,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<MainPage />}></Route>
                     <Route path="/join" element={<UserJoinPage />}></Route>
+                    <Route path="/kakao/join" element={<KakaoUserJoinPage />}></Route>
                     <Route path="/lesson" element={<LessonPage />}></Route>
                     <Route
                         path="/lesson/join"
@@ -120,7 +122,7 @@ function App() {
                     path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                     element={<TeacherLessonRoomPage/>}
                 />
-                {/* <Route path="/test" element={<DropTable/>}/> */}
+                <Route path="/test" element={<DropTable/>}/>
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>

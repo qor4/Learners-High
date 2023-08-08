@@ -10,6 +10,7 @@ import { Container } from '@mui/material';
 
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Card from "../components/common/Card";
+import Modal from "../components/common/Modal";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonStatusBox from "../components/common/LessonStatusBox";
 
