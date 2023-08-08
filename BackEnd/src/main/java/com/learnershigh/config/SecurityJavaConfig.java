@@ -62,27 +62,30 @@ public class SecurityJavaConfig {
 
                 .authorizeRequests()
                 .antMatchers(
-                        "/s3/profile-load",
-                        "/s3/thumbnail-load",
-                        "/s3/upload/profile/**"
+                        "/api/s3/profile-load/**",
+                        "/api/s3/thumbnail-load/**",
+                        "/api/s3/upload/profile/**"
                 ).permitAll()
                 .antMatchers(
-                        "/teacher/lesson/list/**",
-                        "/teacher/profile/**"
+                        "/api/student/**/lesson/**/state"
+                ).permitAll()
+                .antMatchers(
+                        "/api/teacher/lesson/list/**",
+                        "/api/teacher/profile/**"
                 ).permitAll()
                 .antMatchers(
                         HttpMethod.OPTIONS, "/**"
                 ).permitAll()
                 .antMatchers(
-                        "/s3/**",
-                        "/teacher/**",
-                        "/mypage/**",
-                        "/csat/create",
-                        "/user/delete/**",
-                        "/lesson/join/**", "/lesson/writing/**",
-                        "/lessonroom/**",
-                        "/notification/**",
-                        "/student/**").authenticated()
+                        "/api/s3/**",
+                        "/api/teacher/**",
+                        "/api/mypage/**",
+                        "/api/csat/create",
+                        "/api/user/delete/**",
+                        "/api/lesson/join/**", "/api/lesson/writing/**",
+                        "/api/lessonroom/**",
+//                        "/api/notification/**",
+                        "/api/student/**").authenticated()
                 .and()
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)

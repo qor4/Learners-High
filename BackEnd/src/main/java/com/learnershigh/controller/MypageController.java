@@ -52,9 +52,11 @@ public class MypageController {
     // 마이페이지에서 보일 사용자 정보 추출하기
     @GetMapping("/{userNo}")
     @ApiOperation("사용자 정보 추출하기 (마이페이지)")
-    public JoinDto mypageUser(@PathVariable("userNo") Long userNo) {
-
-        return userService.mypageUser(userNo);
+    public ResponseEntity<CustomResponseBody> mypageUser(@PathVariable("userNo") Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("사용자 정보 출력");
+        JoinDto joinDto = userService.mypageUser(userNo);
+        responseBody.setResult(joinDto);
+        return ResponseEntity.ok().body(responseBody);
 
     }
 
@@ -78,18 +80,22 @@ public class MypageController {
     // 강사 학위 all 출력
     @GetMapping("/edu/list/{userNo}")
     @ApiOperation("강사 학위 모두 출력")
-    public List<EduDto> eduList(@PathVariable("userNo") User userNo) {
-        return userService.eduList(userNo);
+    public ResponseEntity<CustomResponseBody> eduList(@PathVariable("userNo") User userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 학위 출력");
+        List<EduDto> eduDtoList = userService.eduList(userNo);
+        responseBody.setResult(eduDtoList);
+        return ResponseEntity.ok().body(responseBody);
     }
 
 
     // 강사 경력 all 출력
     @GetMapping("/job/list/{userNo}")
     @ApiOperation("강사 경력 모두 출력")
-    public List<JobDto> jobList(@PathVariable("userNo") User userNo) {
-
-        return userService.jobList(userNo);
-
+    public ResponseEntity<CustomResponseBody> jobList(@PathVariable("userNo") User userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("강사 경력 출력");
+        List<JobDto> jobDtoList = userService.jobList(userNo);
+        responseBody.setResult(jobDtoList);
+        return ResponseEntity.ok().body(responseBody);
     }
 
 

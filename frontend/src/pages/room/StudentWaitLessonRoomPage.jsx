@@ -26,12 +26,16 @@ const StudentWaitLessonRoomPage = () => {
     const [ isSeesoInit, setSeesoInit ] = useState(false);
     
     useEffect(() => {   
+        
+    }, []);
+
+    function main(){
         console.log("1");
         if (!eyeTracker.current) {
             console.log("2");
             eyeTracker.current = new EasySeeso();
             userStatus.current = new UserStatusOption(true, false, false);
-            console.log("3  ");
+            console.log("3");
             (async ()=>{
                 await eyeTracker.current.init(
                     licenseKey,
@@ -44,12 +48,7 @@ const StudentWaitLessonRoomPage = () => {
                                 window.outerWidth / 2,
                                 true
                             );
-                            eyeTracker.current.setUserStatusCallback(
-                                onAttention,
-                                null,
-                                null
-                            );
-                            eyeTracker.current.setAttentionInterval(10);
+                            
                         }
                     }, // callback when init succeeded.
                     () => console.log("callback when init failed."), // callback when init failed.
@@ -60,10 +59,7 @@ const StudentWaitLessonRoomPage = () => {
             })();
             
         }
-    }, []);
-
-    
-
+    }
     // gaze callback.
 function onGaze(gazeInfo) {
     if (!isCalibrationMode) {
@@ -92,6 +88,12 @@ function onCalibrationProgress(progress) {
 const onCalibrationFinished = useCallback((calibrationData) => {
     clearCanvas();
     isCalibrationMode = false;
+    eyeTracker.current.setUserStatusCallback(
+        onAttention,
+        null,
+        null
+    );
+    eyeTracker.current.setAttentionInterval(10);
 }, []);
 
 function drawCircle(x, y, dotSize, ctx) {
@@ -152,6 +154,7 @@ function onAttention(timestampBegin, timestampEnd, score) {
                     <div className="Wrap-Cam-canvas">
                         {!enterRoom ? (
                             <>
+                            {console.log(55555555555555)}
                             <Webcam
                                 style={{
                                     position: "absolute",
@@ -210,6 +213,8 @@ function onAttention(timestampBegin, timestampEnd, score) {
                     
                 </div>
             </>
+            {main()}
+
         </>
     );
 };
