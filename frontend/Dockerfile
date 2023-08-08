@@ -2,6 +2,7 @@ FROM node:18
 WORKDIR ./
 COPY package*.json .
 RUN npm install --force
+RUN npm install react-app-rewired --save-dev
 COPY . .
 RUN npm run build
 EXPOSE 3000
