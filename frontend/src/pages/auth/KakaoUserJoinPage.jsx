@@ -11,8 +11,12 @@ import { url } from "../../api/APIPath";
 import axios from 'axios'
 import { useNavigate } from "react-router";
 
+import { logInUser } from "../../store/UserStore";
+import { useDispatch } from "react-redux";
+
 const KakaoUserJoinPage = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [kakaoUser, setKakaoUser] = useState(false)
     const [kakaoUserInfo, setKakaoUserInfo] = useState({})
     useEffect(()=> {
@@ -23,10 +27,12 @@ const KakaoUserJoinPage = () => {
             console.log(res)
             if(res.data.resultCode < 0) {
                 alert("회원가입에 실패했습니다.")
+                // 기존 회원
             } else if (res.data.resultCode === 0 && res.data.result.userInfo !== null) {
                 // JWT
                 localStorage.setItem("accessToken", res.data.result.token.accessToken)
                 localStorage.setItem("refreshToken", res.data.result.token.refreshToken)
+                dispatch(logInUser(res.data.result))
                 navigate('/')
             } else if (res.data.resultCode === 0 && res.data.result.userInfo === null) {
                 localStorage.setItem("accessToken", res.data.result.token.accessToken)

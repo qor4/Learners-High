@@ -6,13 +6,14 @@ import { url } from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled } from "styled-components";
-import { Container } from '@mui/material';
+import { Container } from "@mui/material";
 
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Card from "../components/common/Card";
 import Modal from "../components/common/Modal";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonStatusBox from "../components/common/LessonStatusBox";
+import PayLesson from "../components/class/PayLesson";
 
 const FlexWrap = styled.div`
     display: flex;
@@ -65,10 +66,21 @@ const LessonInfoPage = () => {
 
     const data = { lessonNo, userNo };
 
+    const [showPayLessonModal, setShowPayLessonModal] = useState(false);
+    // 로그인 버튼 클릭 했을 때, 로그인 모달 창
+
+    // 모달을 닫을 때
+    const handleCloseModal = () => {
+        setShowPayLessonModal(false);
+        document.body.classList.remove("overflow-hidden");
+    };
+
     // 수강신청 버튼 클릭했을 때
     const handleApplyChange = () => {
         console.log("수강신청 버튼을 클릭했습니다.");
         console.log(data);
+        setShowPayLessonModal(true);
+        document.body.classList.add("overflow-hidden");
         axios
             .post(`${url}/student/apply`, data, {
                 headers: { "Content-Type": "application/json" },
@@ -133,6 +145,15 @@ const LessonInfoPage = () => {
                         </Card>
                     ))}
             </Container>
+
+            {/* 로그인 모달창 */}
+            <Modal
+                title="로그인"
+                show={showPayLessonModal}
+                onClose={handleCloseModal}
+            >
+                <PayLesson onClose={handleCloseModal} />
+            </Modal>
         </div>
     );
 };
