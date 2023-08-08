@@ -84,7 +84,7 @@ public class SecurityJavaConfig {
                         "/api/user/delete/**",
                         "/api/lesson/join/**", "/api/lesson/writing/**",
                         "/api/lessonroom/**",
-                        "/api/notification/**",
+//                        "/api/notification/**",
                         "/api/student/**").authenticated()
                 .and()
                 // JWT 인증 필터 적용
