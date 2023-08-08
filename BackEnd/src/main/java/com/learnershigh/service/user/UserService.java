@@ -151,6 +151,9 @@ public class UserService {
     @Transactional
     public HashMap<String, Object> kakaoUserJoin(String code) throws JsonProcessingException {
 
+
+        System.out.println("들어오냐?");
+        System.out.println(code);
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -161,7 +164,7 @@ public class UserService {
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", "b6858c19fc043da6c74478b610af98a0");
-        params.add("redirect_uri", "http://localhost:7777/user/login/kakao/callback");
+        params.add("redirect_uri", "http://localhost:3000/kakao/join");
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
@@ -278,6 +281,7 @@ public class UserService {
         userInfo.put("userType", user.getUserType());
         userInfo.put("userId", user.getUserId());
         userInfo.put("userInfo", user.getUserInfo());
+        userInfo.put("userEmail", user.getUserEmail());
         return userInfo;
     }
 
@@ -305,6 +309,7 @@ public class UserService {
     @Transactional
     public User kakaoPlus(KakaoInfo kakaoInfo, String userEmail) {
 
+        System.out.println("들어왔냐?");
         User user = userRepository.findByUserEmail(userEmail);
 
         // 전화번호 유효성 검사
