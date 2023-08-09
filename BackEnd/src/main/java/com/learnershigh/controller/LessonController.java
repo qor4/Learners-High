@@ -108,6 +108,15 @@ public class LessonController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 작성 중인 강의 이어쓰기 안함
+    @DeleteMapping("/delete/{lessonNo}")
+    @ApiOperation("작성 중인 강의를 이어쓰지 않을 때 보내는 요청")
+    public ResponseEntity<BaseResponseBody> deleteLesson(@PathVariable Long lessonNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("강의 삭제 완료");
+        lessonService.deleteLesson(lessonNo);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
     // 수업 정보 작성 페이지 조회
     @GetMapping("/writing/info/{lessonNo}")
     @ApiOperation("수업 정보 작성 페이지 조회")
