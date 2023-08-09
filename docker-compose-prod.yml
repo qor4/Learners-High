@@ -1,0 +1,30 @@
+version: "3"
+services:
+  server:
+    image: learnershigh-springboot:latest
+    container_name: learnershigh-springboot
+    build:
+      context: ./BackEnd
+      args:
+        SERVER_MODE: prod
+    ports:
+        - 7777:7777
+    environment:
+        - TZ=Asia/Seoul
+    networks:
+      - learnershigh_network
+  client:
+    image: learnershigh-react:latest
+    container_name: learnershigh-react
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    networks:
+        - learnershigh_network
+networks:
+  learnershigh_network:
+    driver: bridge
