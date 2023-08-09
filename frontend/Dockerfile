@@ -18,7 +18,7 @@ COPY . /usr/src/app
 RUN npm run build
 FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/conf.d
+COPY nginx /etc/nginx/conf.d
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
