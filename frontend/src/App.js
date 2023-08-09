@@ -41,8 +41,15 @@ import StudentWaitRoomFrame from "./pages/room/StudentWaitRoomFrame";
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
+    @font-face {
+        font-family: 'Pretendard-Regular';
+        src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+    }
+
     * {
-        font-family: "Nanum Gothic", sans-serif;
+        font-family: "Pretendard-Regular", sans-serif;
         margin: 0;
         padding: 0;
     }

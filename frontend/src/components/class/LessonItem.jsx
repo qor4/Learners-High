@@ -7,6 +7,7 @@ import LessonStatusBox from "../common/LessonStatusBox";
 
 // react-icon import
 import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 const StyledItemWrap = styled.div`
     & > *:not(:first-child) {
@@ -44,6 +45,8 @@ const ImageIconWrap = styled.div`
 `;
 
 const LessonItem = (props) => {
+    const userType = useSelector((state) => state.user.userType);
+
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -63,9 +66,13 @@ const LessonItem = (props) => {
                         {props.lessonStatus}
                     </LessonStatusBox>
                 )}
-                <span>
-                    <HiOutlineHeart />
-                </span>
+                
+                {/* 학생일 때만 찜(하트) 아이콘이 보이도록 처리 */}
+                {userType === "S" && (
+                    <span>
+                        <HiOutlineHeart />
+                    </span>
+                )}
             </ImageIconWrap>
 
             <FlexWrap>

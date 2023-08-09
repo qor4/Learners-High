@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { url } from "../../api/APIPath";
+import tokenHttp, { url } from "../../api/APIPath";
 
 const TeacherEduItem = ({ item }) => {
     const [eduItem, setEduItem] = useState(item);
@@ -29,7 +29,7 @@ const TeacherEduItem = ({ item }) => {
 
     // 수정 버튼
     const handleOnClickUpdateEnd = () => {
-        axios.put(`${url}/mypage/modify/edu/${eduCareerNo}`, eduItem, {
+        tokenHttp.put(`${url}/mypage/modify/edu/${eduCareerNo}`, eduItem, {
             headers: { "Content-Type": "application/json" },
         });
         // 마이페이지로 리다이렉트해야할듯.
@@ -46,16 +46,22 @@ const TeacherEduItem = ({ item }) => {
 
     // 삭제
     const handleOnClickDelete = () => {
-        axios.delete(`${url}/user/job/delete/${eduCareerNo}`, eduCareerNo, {
-            headers: { "Content-Type": "application/json" },
-        });
+        tokenHttp.delete(
+            `${url}/mypage/edu/delete/${eduCareerNo}`,
+            eduCareerNo,
+            {
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     };
 
     return (
         <>
             {!isEditing && !validCanModify ? (
                 <>
-                    <span>{eduStartDate} - {eduEndDate}</span>
+                    <span>
+                        {eduStartDate} - {eduEndDate}
+                    </span>
                     <span>{universityName} </span>
                     <span>{majorName} </span>
                     <span>{degree} </span>

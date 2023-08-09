@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { url } from "../../api/APIPath";
+import tokenHttp, { url } from "../../api/APIPath";
 
 const TeacherJobItem = ({ item }) => {
     const [jobItem, setJobItem] = useState(item);
@@ -23,7 +23,7 @@ const TeacherJobItem = ({ item }) => {
 
     // 수정 버튼
     const handleOnClickUpdateEnd = () => {
-        axios.put(`${url}/mypage/modify/job/${jobCareerNo}`, jobItem, {
+        tokenHttp.put(`${url}/mypage/modify/job/${jobCareerNo}`, jobItem, {
             headers: { "Content-Type": "application/json" },
         });
         // 마이페이지로 리다이렉트해야할듯.
@@ -40,9 +40,13 @@ const TeacherJobItem = ({ item }) => {
 
     // 삭제
     const handleOnClickDelete = () => {
-        axios.delete(`${url}/user/job/delete/${jobCareerNo}`, jobCareerNo, {
-            headers: { "Content-Type": "application/json" },
-        });
+        tokenHttp.delete(
+            `${url}/mypage/job/delete/${jobCareerNo}`,
+            jobCareerNo,
+            {
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     };
 
     return (
