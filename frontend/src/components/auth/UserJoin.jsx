@@ -28,7 +28,8 @@ const FirstJoinWrap = styled.div`
     }
 `;
 
-const EmailWrap = styled.div`
+const InputButtonWrap = styled.div`
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,11 +44,12 @@ const EmailWrap = styled.div`
     }
 
     & > div > Button {
+        width: 30%;
         margin-left: 0.5rem;
     }
 `;
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
     width: 71%;
     border: 1px solid #000;
     border-radius: 0.75rem;
@@ -77,7 +79,7 @@ const StyledMessage = styled.div`
     color: #db0000;
 `;
 
-// 성공 메시지 박스
+/** 성공 메시지 박스 컴포넌트 */
 const StyledSuccess = styled.div`
     font-size: 0.75rem;
     text-align: right;
@@ -589,7 +591,7 @@ const UserJoin = () => {
                                 </div>
 
                                 <div>
-                                    <EmailWrap>
+                                    <InputButtonWrap>
                                         <label htmlFor="userEmail">
                                             이메일
                                         </label>
@@ -619,7 +621,7 @@ const UserJoin = () => {
                                                 인증번호
                                             </Button>
                                         </div>
-                                    </EmailWrap>
+                                    </InputButtonWrap>
                                     <StyledMessage>
                                         {userEmailMSG}
                                     </StyledMessage>

@@ -5,6 +5,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { Container } from "@material-ui/core";
 
 import { url } from "../../api/APIPath";
 
@@ -12,7 +13,11 @@ import axios from "axios";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
-import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
+import {
+    ImgWrap,
+    StyledImg,
+    StyledImgInput,
+} from "../auth/UserJoin";
 
 const ClassJoin = () => {
     const navigate = useNavigate();
@@ -58,11 +63,11 @@ const ClassJoin = () => {
         setSubjectName(event.target.value);
     };
 
-    // 과목 이름 검색 버튼 클릭했을 때
+    /** 과목 이름 검색 버튼 클릭 => 한 글자라도 포함되어 있으면 검색 */
     const handleSearchClick = () => {
         const filteredResults = lessonTypeList.filter((item) => {
             console.log(item, "클릭");
-            return item.lessonTypeName === subjectName;
+            return item.lessonTypeName.includes(subjectName);
         });
         setSearchResults(filteredResults);
         setSearchClicked(true);
@@ -191,37 +196,31 @@ const ClassJoin = () => {
     return (
         <>
             <MenuCard title="기본 정보 입력">
-                <div>
-                    <Input
-                        label="강의 이름"
-                        type="text"
-                        value={lessonName}
-                        name="lessonName"
-                        id="lessonName"
-                        placeholder="강의명 ( 30글자 이내 )"
-                        onChange={handleLessonChange}
-                    />
-                    <Input
-                        label="과목 이름"
-                        type="text"
-                        value={subjectName}
-                        name="subjectName"
-                        id="subjectName"
-                        placeholder="과목명"
-                        onChange={handleSubjectChange}
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="subjectName">과목 이름</label>
-                    <span>
-                        <input
+                <Container maxWidth="md">
+                    <div>
+                        <Input
+                            label="강의 이름"
                             type="text"
-                            id="subjectName"
-                            value={subjectName}
-                            placeholder="과목명"
-                            onChange={handleSubjectChange}
+                            value={lessonName}
+                            name="lessonName"
+                            id="lessonName"
+                            placeholder="강의명 ( 30글자 이내 )"
+                            onChange={handleLessonChange}
                         />
+
+                        <div>
+                            <Input
+                                label="과목명"
+                                type="text"
+                                value={subjectName}
+                                name="subjectName"
+                                id="subjectName"
+                                placeholder="과목명"
+                                onChange={handleSubjectChange}
+                            />
+
+                            <Button onClick={handleSearchClick}>검색</Button>
+                        </div>
                         <ul>
                             {searchClicked && searchResults.length > 0
                                 ? searchResults.map((result) => {
@@ -241,119 +240,123 @@ const ClassJoin = () => {
                                 <li>검색한 과목이 없습니다.</li>
                             )}
                         </ul>
-                    </span>
-                    <button onClick={handleSearchClick}>검색</button>
-                    <br />
-                    <span>{searchClicked ? subjectName : null}</span>
-                </div>
-
-                <div>
-                    <label htmlFor="maxStudent">최대 학생 수</label>
-                    <input
-                        type="number"
-                        id="maxStudent"
-                        min={0}
-                        max={50}
-                        onFocus={() =>
-                            handleFocusChange(setMaxStudent, maxStudent)
-                        }
-                        value={maxStudent}
-                        onChange={handleMaxStudentChange}
-                    />
-                    <span>명</span>
-                </div>
-
-                <div>
-                    <label htmlFor="price">가격</label>
-                    <input
-                        type="number"
-                        id="price"
-                        min={0}
-                        onFocus={() =>
-                            handleFocusChange(setLessonPrice, lessonPrice)
-                        }
-                        value={lessonPrice}
-                        onChange={handlePriceChange}
-                    />
-                    <span>원</span>
-                </div>
-                <div>
-                    <ImgWrap>
-                        <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
-                        {lessonThumbnailImg ? (
-                            <StyledImg src={thumbnailURL} alt="썸네일 사진" />
-                        ) : (
-                            <StyledImg
-                                src="/assets/bannerimg.jpg"
-                                alt="임시 썸네일 사진"
-                            />
-                        )}
-                        <StyledImgInput
-                            id="lessonThumbnailImg"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                        />
-                    </ImgWrap>
-                </div>
-
-                <div>
-                    <label htmlFor="lessonIntroduce">수업 소개</label>
-                    <textarea
-                        id="lessonIntroduce"
-                        value={lessonThumbnailInfo}
-                        placeholder="수업 소개를 100자 이내로 작성해 주세요."
-                        onChange={handleIntroChange}
-                        maxLength={100}
-                    ></textarea>
-                    <span>{lessonThumbnailInfo.length}/100</span>
-                </div>
-
-                <div>
-                    <span>수업 상세 소개</span>
-                    {/* 수업 상세 소개 내용 수정@@@ */}
-                    <div>
-                        학생들이 수업에 대해 상세하게 알 수 있도록, 강사님께서
-                        수업에 대한 내용을 상세히 입력해 주세요.
-                        <br />
-                        해당 내용은 학생들에게 직접적으로 보여지며, 수업 상세
-                        목록의 소개에서도 볼 수 있는 내용입니다. 강사님이 원하는
-                        대로 해당 내용을 추가하거나, 꾸밀 수 있습니다. 강사님의
-                        수업을 상세히 소개해 주세요!
                     </div>
-                    {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
-                    <CKEditor
-                        editor={ClassicEditor}
-                        value={lessonInfo}
-                        // toolbar 설정
-                        config={{
-                            toolbar: {
-                                items: [
-                                    "heading",
-                                    "|",
-                                    "bold",
-                                    "italic",
-                                    "link",
-                                    "bulletedList",
-                                    "numberedList",
-                                    "|",
-                                    "blockQuote",
-                                    "insertTable",
-                                    "undo",
-                                    "redo",
-                                ],
-                            },
-                            table: {
-                                contentToolbar: [
-                                    "tableColumn",
-                                    "tableRow",
-                                    "mergeTableCells",
-                                ],
-                            },
-                        }}
-                        onBlur={handleEditorChange}
-                    />
-                </div>
+
+                    <div></div>
+
+                    <div>
+                        <label htmlFor="maxStudent">최대 학생 수</label>
+                        <input
+                            type="number"
+                            id="maxStudent"
+                            min={0}
+                            max={50}
+                            onFocus={() =>
+                                handleFocusChange(setMaxStudent, maxStudent)
+                            }
+                            value={maxStudent}
+                            onChange={handleMaxStudentChange}
+                        />
+                        <span>명</span>
+                    </div>
+
+                    <div>
+                        <label htmlFor="price">가격</label>
+                        <input
+                            type="number"
+                            id="price"
+                            min={0}
+                            onFocus={() =>
+                                handleFocusChange(setLessonPrice, lessonPrice)
+                            }
+                            value={lessonPrice}
+                            onChange={handlePriceChange}
+                        />
+                        <span>원</span>
+                    </div>
+                    <div>
+                        <ImgWrap>
+                            <label htmlFor="lessonThumbnailImg">
+                                강의 썸네일
+                            </label>
+                            {lessonThumbnailImg ? (
+                                <StyledImg
+                                    src={thumbnailURL}
+                                    alt="썸네일 사진"
+                                />
+                            ) : (
+                                <StyledImg
+                                    src="/assets/bannerimg.jpg"
+                                    alt="임시 썸네일 사진"
+                                />
+                            )}
+                            <StyledImgInput
+                                id="lessonThumbnailImg"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                        </ImgWrap>
+                    </div>
+
+                    <div>
+                        <label htmlFor="lessonIntroduce">수업 소개</label>
+                        <textarea
+                            id="lessonIntroduce"
+                            value={lessonThumbnailInfo}
+                            placeholder="수업 소개를 100자 이내로 작성해 주세요."
+                            onChange={handleIntroChange}
+                            maxLength={100}
+                        ></textarea>
+                        <span>{lessonThumbnailInfo.length}/100</span>
+                    </div>
+
+                    <div>
+                        <span>수업 상세 소개</span>
+                        {/* 수업 상세 소개 내용 수정@@@ */}
+                        <div>
+                            학생들이 수업에 대해 상세하게 알 수 있도록,
+                            강사님께서 수업에 대한 내용을 상세히 입력해 주세요.
+                            <br />
+                            해당 내용은 학생들에게 직접적으로 보여지며, 수업
+                            상세 목록의 소개에서도 볼 수 있는 내용입니다.
+                            강사님이 원하는 대로 해당 내용을 추가하거나, 꾸밀 수
+                            있습니다. 강사님의 수업을 상세히 소개해 주세요!
+                        </div>
+                        {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
+                        <CKEditor
+                            editor={ClassicEditor}
+                            value={lessonInfo}
+                            // toolbar 설정
+                            config={{
+                                toolbar: {
+                                    items: [
+                                        "heading",
+                                        "|",
+                                        "bold",
+                                        "italic",
+                                        "link",
+                                        "bulletedList",
+                                        "numberedList",
+                                        "|",
+                                        "blockQuote",
+                                        "insertTable",
+                                        "undo",
+                                        "redo",
+                                    ],
+                                },
+                                table: {
+                                    contentToolbar: [
+                                        "tableColumn",
+                                        "tableRow",
+                                        "mergeTableCells",
+                                    ],
+                                },
+                            }}
+                            onBlur={handleEditorChange}
+                        />
+                    </div>
+                </Container>
             </MenuCard>
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>

@@ -100,7 +100,7 @@ const LessonRoundItemBoxList = ({
                         // </Link>
                     ))
                 ) : (
-                    <StyledBox>{dayName}요일 수업 없음</StyledBox>
+                    <StyledBox>수업 없음</StyledBox>
                 )}
             </Card>
         </>
