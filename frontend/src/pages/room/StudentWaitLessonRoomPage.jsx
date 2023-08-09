@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
 
-const licenseKey = "dev_81af036sl2mwzmcbii6lfx2vi9cfhgzhaio8lxc9";
+import { licenseKey } from "../../api/Ignore";
+
 const dotMaxSize = 10;
 const dotMinSize = 5;
 
