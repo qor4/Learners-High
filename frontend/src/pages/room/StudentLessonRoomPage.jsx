@@ -1,24 +1,16 @@
 import React, { useState } from "react";
-import { UserStatusOption } from "seeso";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import UserModel from "../../models/user-model";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { url } from "../../api/APIPath";
+import tokenHttp, { url } from "../../api/APIPath";
 
 // openvidu
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import { OpenVidu } from "openvidu-browser";
-// import StreamComponent from "../../components/stream/StreamComponent";
-import ChatComponent from "../../components/chat/ChatComponent";
-import OpenViduLayout from "../../layout/openvidu-layout";
 
-// sesso
-import EasySeeSo from "seeso/easy-seeso";
-import { showGaze, hideGaze } from "./showGaze";
+import ChatComponent from "../../components/chat/ChatComponent";
 
 const StudentLessonRoomPage = () => {
     console.log("난 지금 들어왔어");
@@ -39,6 +31,8 @@ const StudentLessonRoomPage = () => {
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
     const [subscribers, setSubscribers] = useState([]);
+    const [token, setToken] = useState("");
+
 
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
@@ -123,19 +117,16 @@ const StudentLessonRoomPage = () => {
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
-        console.log(session, "session");
-        if (session) {
-            axios
+        if (session && !token) {
+            tokenHttp
                 .get(
                     `${url}/lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`
                 )
                 .then((res) => {
-                    const token = res.data.resultMsg;
-                    console.log(token);
-                    console.log("token : ", token);
+                    setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
                     session
-                        .connect(token, { clientData: userNo })
+                        .connect(res.data.resultMsg, { clientData: userNo })
                         .then(async () => {
                             // Get your own camera stream ---
                             // publisher 객체 생성
@@ -159,10 +150,13 @@ const StudentLessonRoomPage = () => {
                             setMainStreamManager(publisher);
                         })
                         .catch((error) => {
-                            console.log(error);
+                            console.error(error);
                             alert("세션 연결 오류");
                             navigate("/");
                         });
+                }).catch((error) => {
+                    alert(error.response.data);
+                    navigate("/");
                 });
         }
     }, [session]);
@@ -184,41 +178,27 @@ const StudentLessonRoomPage = () => {
         }
     };
 
-    // 알림
-    useEffect(() => {
-        const sse = new EventSource(
-            `${url}/notification/subscribe/${userId}`
-        );
+    // // 알림
+    // useEffect(() => {
+    //     const sse = new EventSource(
+    //         `${url}/notification/subscribe/${userId}`
+    //     );
 
-        sse.onopen = () => {
-            console.log("SSEONOPEN==========", sse);
-        };
+    //     sse.onopen = () => {
+    //         console.log("SSEONOPEN==========", sse);
+    //     };
 
-        sse.onmessage = async (event) => {
-            const res = await event.data;
-            const parseData = JSON.parse(res);
-            console.log("SSEONMESSAGE==========", parseData);
-        };
+    //     sse.onmessage = async (event) => {
+    //         const res = await event.data;
+    //         const parseData = JSON.parse(res);
+    //         console.log("SSEONMESSAGE==========", parseData);
+    //     };
 
-        sse.addEventListener("Request", function (event) {
-            console.log("ADDEVENTLISTENER==========", event.data);
-        });
-    }, []);
+    //     sse.addEventListener("Request", function (event) {
+    //         console.log("ADDEVENTLISTENER==========", event.data);
+    //     });
+    // }, []);
 
-    const getToken = async () => {
-        await axios
-            .get(
-                `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
-            )
-            .then((res) => {
-                console.log(res.data.resultMsg + " token1");
-                console.log(res);
-                return res;
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    };
 
     return (
         <>
@@ -248,8 +228,6 @@ const StudentLessonRoomPage = () => {
                         </div>
 
                         <div>
-                            {console.log(session, "세션")}
-                            {console.log(session.connection, "세션 커넥션")}
                             {mainStreamManager && (
                                 <ChatComponent
                                     userName={userName}

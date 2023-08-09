@@ -23,33 +23,47 @@ public class LessonroomController {
     // 수업 생성 및 출석
     @GetMapping("/teacher/{lessonNo}/{lessonRoundNo}/{userNo}")
     @ApiOperation("수업 생성 및 출석")
-    public ResponseEntity<BaseResponseBody> createLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo,@PathVariable Long userNo) {
+    public ResponseEntity<?> createLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo,@PathVariable Long userNo) {
         BaseResponseBody responseBody = new BaseResponseBody("수업 생성 완료");
         try {
             lessonroomService.checkTeacher(userNo,lessonNo);
-            openviduService.createSession(lessonNo,lessonRoundNo);
-            String token = openviduService.createConnection(lessonNo,lessonRoundNo);
+            String token = openviduService.createLessonRoom(lessonNo,lessonRoundNo,userNo);
+            responseBody.setResultCode(200);
             responseBody.setResultMsg(token);
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
-            responseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("강의룸 생성 중 에러 발생 ");
         }
     }
 
     @GetMapping("/student/{lessonNo}/{lessonRoundNo}/{userNo}")
     @ApiOperation("수업 입장 및 출석")
-    public ResponseEntity<BaseResponseBody> enterLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable Long userNo) {
+    public ResponseEntity<?> enterLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable Long userNo) {
         BaseResponseBody responseBody = new BaseResponseBody("asd");
         try {
             lessonroomService.checkStudent(userNo,lessonNo);
-            String token = openviduService.createConnection(lessonNo,lessonRoundNo);
+            String token = openviduService.EnterLessonRoom(lessonNo,lessonRoundNo,userNo);
 //            lessonroomService.Attend(lessonRoundNo, userNo);
+            responseBody.setResultCode(200);
             responseBody.setResultMsg(token);
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
-            responseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("해당 방이 존재하지 않습니다.");
         }
     }
+    @DeleteMapping("/teacher/{lessonNo}/{lessonRoundNo}/{userNo}")
+    @ApiOperation("수업 종료 및 분석")
+    public ResponseEntity<?> deleteLessonroom(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable Long userNo) {
+        BaseResponseBody responseBody = new BaseResponseBody("asd");
+        try {
+            lessonroomService.checkTeacher(userNo,lessonNo);
+            openviduService.deleteLessonRoom(lessonNo,lessonRoundNo,userNo);
+            responseBody.setResultCode(200);
+            responseBody.setResultMsg("수업을 종료하였습니다.");
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수업을 종료 중 에러가 발생하였습니다.");
+        }
+    }
+    
 }
