@@ -153,9 +153,18 @@ function onAttention(timestampBegin, timestampEnd, score) {
             <>
                 <div style={{ position: "relative" }}>
                     <div className="Wrap-Cam-canvas">
+                    <canvas
+                            id="output"
+                            style={{
+                                position: "absolute",
+                                height: "500px",
+                                width: "100%",
+                                margin: "auto",
+                                zIndex:9999
+                            }}
+                        />
                         {!enterRoom ? (
                             <>
-                            {console.log(55555555555555)}
                             <Webcam
                                 style={{
                                     position: "absolute",
@@ -164,16 +173,8 @@ function onAttention(timestampBegin, timestampEnd, score) {
                                     overFit: "cover",
                                     margin: "auto",
                                 }}
-                                />
-                                <canvas
-                            id="output"
-                            style={{
-                                position: "absolute",
-                                height: "500px",
-                                width: "100%",
-                                margin: "auto",
-                            }}
-                        />
+                                /> 
+                                
                             <div
                         style={{
                             position: "relative",

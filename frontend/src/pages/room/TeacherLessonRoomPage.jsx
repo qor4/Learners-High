@@ -4,13 +4,14 @@ import { useState } from "react"; // 내꺼.
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { url } from "../../api/APIPath";
-import axios from "axios";
+import tokenHttp, { url } from "../../api/APIPath";
+
 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import ChatComponent from "../../components/chat/ChatComponent";
+import { error } from "jquery";
 
 const TeacherLessonRoomPage = () => {
     console.log("난 지금 들어왔어")
@@ -50,6 +51,7 @@ const TeacherLessonRoomPage = () => {
         window.addEventListener('beforeunload', onBeforeUnload); 
         joinSession();  // 세션 입장
         return () => {
+            console.log("Teacher LessonRoom Render End")
             // 윈도우 객체에 화면 종료 이벤트 제거
             window.removeEventListener('beforeunload', onBeforeUnload);
             leaveSession(); // 세션 나가기
@@ -58,9 +60,16 @@ const TeacherLessonRoomPage = () => {
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
-
         if (session) {
             session.disconnect();
+            await tokenHttp.delete(`${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`)
+                            .then((res)=>{
+                                if(res.data.resultCode !== 200){
+                                    console.log(res.data.resultMsg);
+                                }
+                            }).catch(err=>{
+                                console.error(err);
+                            });
         }
         // session, state 초기화
         setOV(null);
@@ -89,14 +98,14 @@ const TeacherLessonRoomPage = () => {
             const subscriber = mySession.subscribe(event.stream, undefined);
             setSubscribers((subscribers) => [...subscribers, subscriber]);  // 새 구독자에 대한 상태 업데이트
             console.log('사용자가 입장하였습니다.')
-            // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
+            // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
         });
 
         // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on('streamDestroyed', (event) => {
             setSubscribers((preSubscribers) => preSubscribers.filter((subscriber) => subscriber !== event.stream.streamManager))
             console.log('사용자가 나갔습니다.')
-            // console.log(JSON.parse(event.stream.connection.data).clientData, "님이 접속을 종료했습니다.")
+            // console.log(JSON.parse(event.stream.connection.data.clientData), "님이 접속을 종료했습니다.")
         });
 
         // 서버 측에서 예기치 않은 비동기 오류가 발생할 때 Session 개체에 의해 트리거 되는 이벤트
@@ -114,15 +123,16 @@ const TeacherLessonRoomPage = () => {
     useEffect(() => {
         console.log(session, "session")
         if (session) {
-            axios
+            tokenHttp
             .get(
                 `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
                 ).then((res) => {
+                    if(res.data.resultCode !== 200) throw res.data.resultMsg;
                     const token = res.data.resultMsg;
                     console.log(token);
                     console.log("token : ",token);
                 // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                session.connect(token, { clientData: userNo })
+                session.connect(token, { clientData: String(userNo) })
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
@@ -143,8 +153,7 @@ const TeacherLessonRoomPage = () => {
                     setMainStreamManager(publisher);
                 })
                 .catch ((error) => {
-                    console.log(error);
-                    alert("세션 연결 오류");
+                    alert(error.response.data);
                     navigate("/");
                 });
             });
@@ -167,21 +176,6 @@ const TeacherLessonRoomPage = () => {
             publisher.publishAudio(enabled);
         }
     };
-
-    const getToken= async () => {
-        await axios
-            .get(
-                `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
-                )
-                .then((res) => {
-                    console.log(res.data.resultMsg + " token1");
-                    console.log(res);
-                    return res;
-                })
-            .catch((err) => {
-                console.error(err);
-            });
-    }
 
     return (
         <>
