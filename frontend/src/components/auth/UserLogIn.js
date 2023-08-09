@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import { url } from "../../api/APIPath";
+import { clientId } from "../../api/Ignore";
+
 import { logInUser } from "../../store/UserStore";
 import Input from "../common/Input";
 import Button from "../common/Button";
@@ -22,7 +24,6 @@ const UserLogIn = (props) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     console.log(user);
-
     const [logInForm, setLogInForm] = useState({
         userId: "",
         userPassword: "",
@@ -43,9 +44,6 @@ const UserLogIn = (props) => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data.result, "나는 로그인데이터!");
-                console.log(res.data, "데이터")
-                console.log(res.data.result, "데이터!")
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
                     alert("로그인!"); // 여기 꼭 확인하기!!
@@ -67,7 +65,7 @@ const UserLogIn = (props) => {
             .catch((err)=> {
                 alert("로그인이 실패했습니다.")
             })
-            ;
+
     };
 
     const handleKeyPress = (e) => {
@@ -75,6 +73,10 @@ const UserLogIn = (props) => {
             userLogIn();
         }
     };
+
+    const kakaoLogIn = (e) => {
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=http://localhost:3000/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`
+    }
     return (
         <>
             <form onSubmit={(e) => e.preventDefault()}>
@@ -99,19 +101,21 @@ const UserLogIn = (props) => {
                 />
 
                 <ButtonWrap>
-                    <Button $fullWidth $kakao>
-                        카카오톡 로그인
-                    </Button>
-                    <Button $fullWidth $point onClick={userLogIn}>
+                    <Button type="button" $fullWidth $point onClick={userLogIn}>
                         로그인
                     </Button>
+                    <Button type="button" $fullWidth $kakao onClick={kakaoLogIn}>
+                        카카오로그인
+                    </Button>
                     <Link to="/join">
-                        <Button onClick={props.onClose} $fullWidth $skyBlue>
+                        <Button type="button" onClick={props.onClose} $fullWidth $skyBlue>
                             회원가입
                         </Button>
                     </Link>
                 </ButtonWrap>
             </form>
+
+            {/* <KakaoPassing code={code}/> */}
         </>
     );
 };
