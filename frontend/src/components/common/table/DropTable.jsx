@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
+import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { Container } from '@mui/material';
 import axios from 'axios'
 import { url } from '../../../api/APIPath';
@@ -65,7 +67,7 @@ function Row(props) {
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <HiChevronUp /> : <HiChevronDown />}
           </IconButton>
         </TableCell>
       </TableRow>

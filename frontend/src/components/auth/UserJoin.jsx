@@ -326,7 +326,16 @@ const UserJoin = () => {
             })
             .catch((err) => console.log(err));
     };
+    // 타이머해야 함
+    // const [certTime, setCertTime] = useState(null)
+    // const [startTimer, setStartTimer] = useState(false)
+    // useEffect(()=> {
+    //     const timer = setTimeout(()=> {
+    //         setStartTimer(true)
+    //     }, certTime)
 
+    //     return () => clearTimeout(timer)
+    // }, [certTime])
     const [certEmailCheck, setCertEmailCheck] = useState("");
     const [certEmailValidCheck, setCertEmailValidCheck] = useState(false);
     const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("");
