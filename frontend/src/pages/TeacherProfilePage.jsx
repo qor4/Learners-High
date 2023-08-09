@@ -19,14 +19,28 @@ const StyledTeacherInfoWrap = styled.div`
 `;
 
 const TeacherProfilePage = () => {
-    const { userNo } = useParams();
+    const { userNo } = useParams(); // teacherNo
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
+    const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
+    const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
     const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체");
 
     useEffect(() => {
         // 강사 프로필 GET 요청
         axios.get(`${url}/teacher/profile/${userNo}`).then((response) => {
             setTeacherInfoDataSet(response.data.result);
+        });
+
+        // 강사의 모든 수업 총 만족도 GET 요청
+        axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
+            console.log(response.data.result);
+            setTeacherCsatLesson(response.data.result);
+        });
+
+        // 강사에 대한 모든 총 만족도 GET 요청
+        axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
+            console.log(response.data.result);
+            setTeacherCsatTeacher(response.data.result);
         });
     }, [userNo]);
 
@@ -46,8 +60,10 @@ const TeacherProfilePage = () => {
                 {/* 분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간 */}
                 <Card>
                     {/* 수업 만족도, 총 강사 만족도 GET 요청으로 받아오기@@@ */}
-
-                    분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간입니다!
+                    분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간입니다!{" "}
+                    <br />
+                    수업 총 만족도 : {teacherCsatLesson} <br />
+                    강사 총 만족도 : {teacherCsatTeacher}
                 </Card>
 
                 {/* 탭바 (전체 강의 / 수업 예정 / 진행 중 / 종료) */}

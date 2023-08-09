@@ -2,9 +2,19 @@ import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { url } from "../../api/APIPath";
+import { Grid } from "@mui/material";
+
 import Input from "../common/Input";
 import Button from "../common/Button";
 import LessonStatusBox from "../common/LessonStatusBox";
+import { HiOutlinePlusCircle, HiMinusCircle } from "react-icons/hi";
+
+import {
+    InputWrap,
+    StyledInfoAdd,
+    StyledInput,
+    StyledTextRight,
+} from "./UserJoinTeacherEdu";
 
 const UserJoinTeacherJob = (props) => {
     const nextId = useRef(1);
@@ -75,65 +85,95 @@ const UserJoinTeacherJob = (props) => {
 
     return (
         <>
+            <LessonStatusBox size="lg" $point $round>
+                경력
+            </LessonStatusBox>
             <form onSubmit={(e) => e.preventDefault()} onBlur={handleJobChange}>
                 {jobInputList.map((item, index) => (
                     <div key={index}>
-                        <LessonStatusBox $point>경력</LessonStatusBox>
-
-                        <Input
-                            label="직장명"
-                            type="text"
-                            name="companyName"
-                            id="companyName"
-                            placeholder="직장명"
-                            className={`companyName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.companyName}
-                        />
-
-                        <Input
-                            label="부서 / 직무"
-                            type="text"
-                            name="departName"
-                            id="departName"
-                            placeholder="부서 / 직무"
-                            className={`departName-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.departName}
-                        />
-
-                        <Input
-                            label="입사년월"
-                            type="text"
-                            name="hireStartDate"
-                            id="hireStartDate"
-                            placeholder="입사년월"
-                            className={`hireStartDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.hireStartDate}
-                        />
-
-                        <Input
-                            label="퇴사년월"
-                            type="text"
-                            name="hireEndDate"
-                            id="hireEndDate"
-                            placeholder="퇴사년월"
-                            className={`hireEndDate-${index}`}
-                            onChange={(e) => onChange(e, index)}
-                            value={item.hireEndDate}
-                        />
-                        <Button
-                            size="sm"
-                            $point
-                            onClick={() => deleteJobInputItem(item.id)}
-                        >
-                            삭제
-                        </Button>
+                        <Grid container spacing={2} marginY={2}>
+                            <Grid item md={4}>
+                                <InputWrap>
+                                    <label htmlFor="companyName">직장명</label>
+                                    <StyledInput
+                                        type="text"
+                                        name="companyName"
+                                        id="companyName"
+                                        placeholder="직장명"
+                                        className={`companyName-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.companyName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={4}>
+                                <InputWrap>
+                                    <label htmlFor="departName">
+                                        부서 / 직무
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="departName"
+                                        id="departName"
+                                        placeholder="부서 / 직무"
+                                        className={`departName-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.departName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="hireStartDate">
+                                        입사년월
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="hireStartDate"
+                                        id="hireStartDate"
+                                        placeholder="yyyy-mm"
+                                        className={`hireStartDate-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.hireStartDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="hireEndDate">
+                                        퇴사년월
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="hireEndDate"
+                                        id="hireEndDate"
+                                        placeholder="yyyy-mm"
+                                        className={`hireEndDate-${index}`}
+                                        onChange={(e) => onChange(e, index)}
+                                        value={item.hireEndDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                        </Grid>
+                        {jobInputList.length !== 1 && (
+                            <StyledTextRight>
+                                <StyledInfoAdd
+                                    onClick={() => deleteJobInputItem(item.id)}
+                                >
+                                    <div>
+                                        <HiMinusCircle /> <span>삭제</span>
+                                    </div>
+                                </StyledInfoAdd>
+                            </StyledTextRight>
+                        )}
                     </div>
                 ))}
             </form>
-            <Button onClick={addJobInputItem}>+</Button>
+            <StyledInfoAdd onClick={addJobInputItem}>
+                <div>
+                    <HiOutlinePlusCircle /> <span>경력 추가</span>
+                </div>
+            </StyledInfoAdd>
         </>
     );
 };

@@ -10,6 +10,7 @@ import { Container, Typography } from "@mui/material";
 import Banner from "../common/Banner";
 import Button from "../common/Button";
 import LessonList from "../class/LessonList";
+import { StyledThumbnail } from "../class/LessonItem";
 
 // 배너 내용 (텍스트, 버튼)
 const BannerContents = styled.div`
@@ -126,7 +127,7 @@ const GuestMain = () => {
                     </Container>
 
                     <FlexWrap>
-                        <img
+                        <StyledThumbnail
                             src="assets/item-banner.png"
                             alt="강사장점이미지"
                         />
@@ -175,7 +176,7 @@ const GuestMain = () => {
                                 실로 교향악이다.
                             </Typography>
                         </div>
-                        <img
+                        <StyledThumbnail
                             src="assets/item-banner.png"
                             alt="학생장점이미지"
                         />

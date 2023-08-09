@@ -4,6 +4,7 @@ import { Container, Grid } from "@material-ui/core";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
+import { Typography } from "@mui/material";
 
 // 강사 wrap
 const ImgInfoWrap = styled.div`
@@ -79,12 +80,17 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
 
                     {/* 강사 이름 */}
                     <span>
-                        <strong>{teacherInfo && teacherInfo.userName}</strong>{" "}
-                        강사님
+                        <Typography fontWeight={"bold"} fontSize={20}>
+                            {teacherInfo && teacherInfo.userName} 강사님
+                        </Typography>
                     </span>
 
                     {/* 강사 한 마디 */}
-                    {$profile && <Card>{teacherInfo.userInfo}</Card>}
+                    {$profile && (
+                        <Card style={{ textAlign: "center" }}>
+                            {teacherInfo.userInfo}
+                        </Card>
+                    )}
 
                     {/* 학력과 경력이 들어가는 공간 */}
                     {eduInfo && eduInfo.length > 0 && (
@@ -94,12 +100,14 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
                     {eduInfo &&
                         eduInfo.map((eduItem, index) => (
-                            <Card key={index}>
+                            <Card key={index} style={{ textAlign: "center" }}>
                                 <Grid container>
-                                    <Grid item xs={3}>
-                                        {eduItem.universityName}
-                                    </Grid>
                                     <Grid item xs={2}>
+                                        <strong>
+                                            {eduItem.universityName}
+                                        </strong>
+                                    </Grid>
+                                    <Grid item xs={3}>
                                         {eduItem.majorName}
                                     </Grid>
                                     <Grid item xs={2}>
@@ -120,10 +128,10 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
                     {jobInfo &&
                         jobInfo.map((jobItem, index) => (
-                            <Card key={index}>
+                            <Card key={index} style={{ textAlign: "center" }}>
                                 <Grid container>
                                     <Grid item xs={3}>
-                                        {jobItem.companyName}
+                                        <strong>{jobItem.companyName}</strong>
                                     </Grid>
                                     <Grid item xs={4}>
                                         {jobItem.departName}

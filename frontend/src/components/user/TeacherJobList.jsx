@@ -16,6 +16,7 @@ const TeacherJobList = ({ userNo }) => {
         });
     }, []);
 
+    console.log(teacherJobList)
     return (
         <>
             <Card>

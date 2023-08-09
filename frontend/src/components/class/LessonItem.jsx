@@ -14,7 +14,7 @@ const StyledItemWrap = styled.div`
     }
 `;
 
-const StyledThumbnail = styled.img`
+export const StyledThumbnail = styled.img`
     width: 100%;
     border-radius: 1.25rem;
     /* position: relative; */
