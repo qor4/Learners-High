@@ -42,10 +42,10 @@ const PayLessonSuccessPage = () => {
 
   return (
     <>
-    {
+    {/* {
       couplingWithServer &&
       <PayLessonSuccess/>
-    }
+    } */}
     </>
 
   )
