@@ -4,6 +4,8 @@ import { Container, Grid } from "@material-ui/core";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
+import { Typography } from "@mui/material";
+import { useState } from "react";
 
 // 강사 wrap
 const ImgInfoWrap = styled.div`
@@ -45,10 +47,14 @@ const FlexWrap = styled.div`
 `;
 
 const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
+    const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
+    const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
+    
     // 강사 만족도, 수업 만족도 GET 요청@@@
-
+    const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
     const jobInfo = teacherInfo.jobInfos;
+
     return (
         <Container maxWidth="md">
             <ImgInfoWrap>
@@ -68,23 +74,28 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                             {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
                             <div>
                                 <strong>수업 만족도</strong>
-                                <span>😍 5.0</span>
+                                <span>😍 {teacherCsatLesson}</span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
-                                <span>😍 5.0</span>
+                                <span>😍 {teacherCsatTeacher}</span>
                             </div>
                         </FlexWrap>
                     )}
 
                     {/* 강사 이름 */}
                     <span>
-                        <strong>{teacherInfo && teacherInfo.userName}</strong>{" "}
-                        강사님
+                        <Typography fontWeight={"bold"} fontSize={20}>
+                            {teacherInfo && teacherInfo.userName} 강사님
+                        </Typography>
                     </span>
 
                     {/* 강사 한 마디 */}
-                    {$profile && <Card>{teacherInfo.userInfo}</Card>}
+                    {$profile && (
+                        <Card style={{ textAlign: "center" }}>
+                            {teacherInfo.userInfo}
+                        </Card>
+                    )}
 
                     {/* 학력과 경력이 들어가는 공간 */}
                     {eduInfo && eduInfo.length > 0 && (
@@ -94,12 +105,14 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
                     {eduInfo &&
                         eduInfo.map((eduItem, index) => (
-                            <Card key={index}>
+                            <Card key={index} style={{ textAlign: "center" }}>
                                 <Grid container>
-                                    <Grid item xs={3}>
-                                        {eduItem.universityName}
-                                    </Grid>
                                     <Grid item xs={2}>
+                                        <strong>
+                                            {eduItem.universityName}
+                                        </strong>
+                                    </Grid>
+                                    <Grid item xs={3}>
                                         {eduItem.majorName}
                                     </Grid>
                                     <Grid item xs={2}>
@@ -120,10 +133,10 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
                     {jobInfo &&
                         jobInfo.map((jobItem, index) => (
-                            <Card key={index}>
+                            <Card key={index} style={{ textAlign: "center" }}>
                                 <Grid container>
                                     <Grid item xs={3}>
-                                        {jobItem.companyName}
+                                        <strong>{jobItem.companyName}</strong>
                                     </Grid>
                                     <Grid item xs={4}>
                                         {jobItem.departName}

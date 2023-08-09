@@ -25,6 +25,7 @@ const MypageInfo = ({ userNo }) => {
         tokenHttp.get(`${url}/mypage/${userNo}`).then((res) => {
             // resultCode로 확인 수정@@@ 0이 정상
             setMypageInfo(res.data.result);
+            console.log(res.data);
         });
         axios.get(`${url}/s3/profile-load/${userNo}`).then((res) => {
             console.log(res.data);
@@ -47,7 +48,7 @@ const MypageInfo = ({ userNo }) => {
 
     // 수정 버튼
     const handleOnClickUpdateEnd = () => {
-        axios.put(`${url}/mypage/modify/${userNo}`, mypageInfo, {
+        tokenHttp.put(`${url}/mypage/modify/${userNo}`, mypageInfo, {
             headers: { "Content-Type": "application/json" },
         });
         // 마이페이지로 리다이렉트해야할듯.
@@ -61,11 +62,13 @@ const MypageInfo = ({ userNo }) => {
                     <img src={profileImg} alt="img" />
                     <div>
                         <div>
-                            <span>{userName} 강사님</span>
+                            <span>{userName} 님</span>
                             <div>
-                                <Link to={`/profile/${userNo}`}>
-                                    <Button>강사페이지</Button>
-                                </Link>
+                                {userType === "T" && (
+                                    <Link to={`/profile/${userNo}`}>
+                                        <Button>강사페이지</Button>
+                                    </Link>
+                                )}
                                 <Button onClick={handleOnClickUpdateStart}>
                                     수정하기
                                 </Button>

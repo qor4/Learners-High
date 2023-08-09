@@ -1,17 +1,18 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import styled from "styled-components";
-import { Grid } from "@mui/material";
-import { HiOutlinePlusCircle } from "react-icons/hi";
-
 import { url } from "../../api/APIPath";
 
+import styled from "styled-components";
+import { Grid } from "@mui/material";
+import { HiOutlinePlusCircle, HiMinusCircle } from "react-icons/hi";
+
 import LessonStatusBox from "../common/LessonStatusBox";
-import Button from "../common/Button";
 
 // 학력 추가 div 태그
-const StyledEduAdd = styled.div`
+export const StyledInfoAdd = styled.div`
+    display: inline-block;
+    margin-bottom: 2rem;
     cursor: pointer;
     & > div {
         display: flex;
@@ -27,7 +28,7 @@ const StyledEduAdd = styled.div`
 `;
 
 // input 태그 style한 것
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
     border: 1px solid #000;
     border-radius: 0.75rem;
     box-sizing: border-box;
@@ -36,9 +37,13 @@ const StyledInput = styled.input`
     margin: 0.5rem 0;
 `;
 
-const InputWrap = styled.div`
+export const InputWrap = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+export const StyledTextRight = styled.div`
+    text-align: right;
 `;
 
 const UserJoinTeacherEdu = (props) => {
@@ -113,12 +118,19 @@ const UserJoinTeacherEdu = (props) => {
     console.log();
     return (
         <>
-            <LessonStatusBox $point>학력</LessonStatusBox>
+            <LessonStatusBox size="lg" $point $round>
+                학력
+            </LessonStatusBox>
             <form onSubmit={(e) => e.preventDefault()} onBlur={handleEduChange}>
                 {eduInputList.map((item, index) => (
                     <div key={index}>
-                        <Grid container columns={{ md: 15 }} spacing={2}>
-                            <Grid item md={3}>
+                        <Grid
+                            container
+                            columns={{ md: 15 }}
+                            spacing={2}
+                            marginY={2}
+                        >
+                            <Grid item md={4}>
                                 <InputWrap>
                                     <label htmlFor="universityName">
                                         학교명
@@ -134,7 +146,7 @@ const UserJoinTeacherEdu = (props) => {
                                     />
                                 </InputWrap>
                             </Grid>
-                            <Grid item md={3}>
+                            <Grid item md={4}>
                                 <InputWrap>
                                     <label htmlFor="majorName">전공명</label>
                                     <StyledInput
@@ -166,7 +178,7 @@ const UserJoinTeacherEdu = (props) => {
                                 </InputWrap>
                             </Grid>
 
-                            <Grid item md={3}>
+                            <Grid item md={2}>
                                 <InputWrap>
                                     <label htmlFor="eduStartDate">
                                         입학년월
@@ -184,7 +196,7 @@ const UserJoinTeacherEdu = (props) => {
                                 </InputWrap>
                             </Grid>
 
-                            <Grid item md={3}>
+                            <Grid item md={2}>
                                 <InputWrap>
                                     <label htmlFor="eduEndDate">졸업년월</label>
                                     <StyledInput
@@ -200,24 +212,25 @@ const UserJoinTeacherEdu = (props) => {
                                 </InputWrap>
                             </Grid>
                         </Grid>
-
                         {eduInputList.length !== 1 && (
-                            <Button
-                                $point
-                                size="sm"
-                                onClick={() => deleteEduInputItem(item.id)}
-                            >
-                                삭제
-                            </Button>
+                            <StyledTextRight>
+                                <StyledInfoAdd
+                                    onClick={() => deleteEduInputItem(item.id)}
+                                >
+                                    <div>
+                                        <HiMinusCircle /> <span>삭제</span>
+                                    </div>
+                                </StyledInfoAdd>
+                            </StyledTextRight>
                         )}
                     </div>
                 ))}
             </form>
-            <StyledEduAdd onClick={addEduInputItem}>
+            <StyledInfoAdd onClick={addEduInputItem}>
                 <div>
                     <HiOutlinePlusCircle /> <span>학력 추가</span>
                 </div>
-            </StyledEduAdd>
+            </StyledInfoAdd>
             <br />
         </>
     );

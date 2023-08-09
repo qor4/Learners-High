@@ -7,6 +7,7 @@ import LessonStatusBox from "../common/LessonStatusBox";
 
 // react-icon import
 import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 const StyledItemWrap = styled.div`
     & > *:not(:first-child) {
@@ -14,7 +15,7 @@ const StyledItemWrap = styled.div`
     }
 `;
 
-const StyledThumbnail = styled.img`
+export const StyledThumbnail = styled.img`
     width: 100%;
     border-radius: 1.25rem;
     /* position: relative; */
@@ -44,6 +45,8 @@ const ImageIconWrap = styled.div`
 `;
 
 const LessonItem = (props) => {
+    const userType = useSelector((state) => state.user.userType);
+
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -63,18 +66,24 @@ const LessonItem = (props) => {
                         {props.lessonStatus}
                     </LessonStatusBox>
                 )}
-                <span>
-                    <HiOutlineHeart />
-                </span>
+                
+                {/* 학생일 때만 찜(하트) 아이콘이 보이도록 처리 */}
+                {userType === "S" && (
+                    <span>
+                        <HiOutlineHeart />
+                    </span>
+                )}
             </ImageIconWrap>
 
             <FlexWrap>
                 <LessonStatusBox>{props.lessonTypeName}</LessonStatusBox>
 
-                <FlexWrap>
-                    <HiOutlineUserCircle />
-                    {`${props.totalStudent} / ${props.maxStudent}`}
-                </FlexWrap>
+                {!props.$popular && (
+                    <FlexWrap>
+                        <HiOutlineUserCircle />
+                        {`${props.totalStudent} / ${props.maxStudent}`}
+                    </FlexWrap>
+                )}
             </FlexWrap>
             <FlexWrap>
                 <Link to={`/lesson/info/${props.lessonNo}`}>
@@ -82,10 +91,14 @@ const LessonItem = (props) => {
                 </Link>
                 <span>{props.userName}</span>
             </FlexWrap>
-            <div>{props.lessonPrice.toLocaleString()}원</div>
-            <div>
-                {props.lessonStartDate} ~ {props.lessonEndDate}
-            </div>
+            {!props.$popular && (
+                <>
+                    <div>{props.lessonPrice.toLocaleString()}원</div>
+                    <div>
+                        {props.lessonStartDate} ~ {props.lessonEndDate}
+                    </div>
+                </>
+            )}
         </StyledItemWrap>
     );
 };
