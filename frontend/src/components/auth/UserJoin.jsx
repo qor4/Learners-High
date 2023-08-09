@@ -84,17 +84,17 @@ const StyledSuccess = styled.div`
     color: #008f5b;
 `;
 
-const ImgWrap = styled.div`
+export const ImgWrap = styled.div`
     display: flex;
     justify-content: space-between;
 `;
 
-const StyledImg = styled.img`
+export const StyledImg = styled.img`
     width: 40%;
     border-radius: 0.75rem;
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
 `;
-const StyledImgInput = styled.input`
+export const StyledImgInput = styled.input`
     width: 35%;
 `;
 const EduJobWrap = styled.div`

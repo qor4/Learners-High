@@ -11,6 +11,8 @@ import { url } from "../../api/APIPath";
 import axios from "axios";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
+import Input from "../common/Input";
+import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 
 const ClassJoin = () => {
     const navigate = useNavigate();
@@ -170,9 +172,9 @@ const ClassJoin = () => {
     };
     const nextPage = () => {
         // sendDataToServer()
-        console.log(data, "classJoin임")
-        navigate('/lesson/round/join') // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
-    }
+        console.log(data, "classJoin임");
+        navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
+    };
     const data = {
         lessonInfo: lessonInfo,
         lessonName: lessonName,
@@ -190,13 +192,23 @@ const ClassJoin = () => {
         <>
             <MenuCard title="기본 정보 입력">
                 <div>
-                    <label htmlFor="lessonName">강의 이름</label>
-                    <input
+                    <Input
+                        label="강의 이름"
                         type="text"
-                        id="lessonName"
                         value={lessonName}
+                        name="lessonName"
+                        id="lessonName"
                         placeholder="강의명 ( 30글자 이내 )"
                         onChange={handleLessonChange}
+                    />
+                    <Input
+                        label="과목 이름"
+                        type="text"
+                        value={subjectName}
+                        name="subjectName"
+                        id="subjectName"
+                        placeholder="과목명"
+                        onChange={handleSubjectChange}
                     />
                 </div>
 
@@ -236,20 +248,53 @@ const ClassJoin = () => {
                 </div>
 
                 <div>
-                    <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
-                    <div>
-                        {lessonThumbnailImg ? (
-                            <img src={thumbnailURL} alt="Thumbnail" />
-                        ) : (
-                            <img src="#" alt="썸네일 없을 때 보이는 사진" />
-                        )}
-                    </div>
+                    <label htmlFor="maxStudent">최대 학생 수</label>
                     <input
-                        type="file"
-                        id="lessonThumbnailImg"
-                        accept="image/*"
-                        onChange={handleFileChange}
+                        type="number"
+                        id="maxStudent"
+                        min={0}
+                        max={50}
+                        onFocus={() =>
+                            handleFocusChange(setMaxStudent, maxStudent)
+                        }
+                        value={maxStudent}
+                        onChange={handleMaxStudentChange}
                     />
+                    <span>명</span>
+                </div>
+
+                <div>
+                    <label htmlFor="price">가격</label>
+                    <input
+                        type="number"
+                        id="price"
+                        min={0}
+                        onFocus={() =>
+                            handleFocusChange(setLessonPrice, lessonPrice)
+                        }
+                        value={lessonPrice}
+                        onChange={handlePriceChange}
+                    />
+                    <span>원</span>
+                </div>
+                <div>
+                    <ImgWrap>
+                        <label htmlFor="lessonThumbnailImg">강의 썸네일</label>
+                        {lessonThumbnailImg ? (
+                            <StyledImg src={thumbnailURL} alt="썸네일 사진" />
+                        ) : (
+                            <StyledImg
+                                src="/assets/bannerimg.jpg"
+                                alt="임시 썸네일 사진"
+                            />
+                        )}
+                        <StyledImgInput
+                            id="lessonThumbnailImg"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+                    </ImgWrap>
                 </div>
 
                 <div>
@@ -308,37 +353,6 @@ const ClassJoin = () => {
                         }}
                         onBlur={handleEditorChange}
                     />
-                </div>
-
-                <div>
-                    <label htmlFor="maxStudent">최대 학생 수</label>
-                    <input
-                        type="number"
-                        id="maxStudent"
-                        min={0}
-                        max={50}
-                        onFocus={() =>
-                            handleFocusChange(setMaxStudent, maxStudent)
-                        }
-                        value={maxStudent}
-                        onChange={handleMaxStudentChange}
-                    />
-                    <span>명</span>
-                </div>
-
-                <div>
-                    <label htmlFor="price">가격</label>
-                    <input
-                        type="number"
-                        id="price"
-                        min={0}
-                        onFocus={() =>
-                            handleFocusChange(setLessonPrice, lessonPrice)
-                        }
-                        value={lessonPrice}
-                        onChange={handlePriceChange}
-                    />
-                    <span>원</span>
                 </div>
             </MenuCard>
             {/* 버튼 모음 => 이후 수정@@@ */}
