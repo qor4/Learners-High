@@ -1,6 +1,7 @@
 package com.learnershigh.service.lesson;
 
 import com.learnershigh.domain.lesson.Lesson;
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lesson.LessonType;
 import com.learnershigh.domain.lessonhub.StudentLessonList;
 import com.learnershigh.domain.user.User;
@@ -10,6 +11,7 @@ import com.learnershigh.dto.lesson.LessonListDto;
 import com.learnershigh.dto.lesson.LessonTypeDto;
 import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
 import com.learnershigh.repository.lesson.LessonRepository;
+import com.learnershigh.repository.lesson.LessonRoundRepository;
 import com.learnershigh.repository.lesson.LessonTypeRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import com.learnershigh.repository.user.UserRepository;
@@ -26,6 +28,7 @@ import java.util.List;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
+    private final LessonRoundRepository lessonRoundRepository;
     private final UserRepository userRepository;
     private final LessonTypeRepository lessonTypeRepository;
     private final StudentLessonListRepository studentLessonListRepository;
@@ -104,7 +107,13 @@ public class LessonService {
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
         return lessonJoin;
     }
-
+    @Transactional
+    public void deleteLesson(Long lessonNo) {
+        Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
+        List<LessonRound> lessonRoundList =  lessonRoundRepository.findByLessonNo(lessonNo);
+        lessonRoundRepository.deleteAll(lessonRoundList);
+        lessonRepository.delete(lesson);
+    }
     @Transactional
     public void apply(StudentLessonActionDto studentLessonActionDto) {
         StudentLessonList studentLessonList = new StudentLessonList();
@@ -212,4 +221,6 @@ public class LessonService {
         }
         return returnlist;
     }
+
+
 }
