@@ -693,7 +693,7 @@ const UserJoin = () => {
                                             id="userInfo"
                                             placeholder={
                                                 userType === "T"
-                                                    ? "100자 이내로 본인을 소개해 주세요!"
+                                                    ? "50자 이내로 본인을 소개해 주세요!"
                                                     : "목표 및 다짐을 50자 이내로 적어보세요!"
                                             }
                                             onChange={(e) =>

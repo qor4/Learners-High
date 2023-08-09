@@ -33,6 +33,7 @@ const Input = (props) => {
         disabled,
         onKeyPress,
         onBlur,
+        readOnly,
     } = props;
     return (
             <StyledInputWrap>
@@ -47,6 +48,7 @@ const Input = (props) => {
                     disabled={disabled}
                     onKeyPress={onKeyPress}
                     onBlur={onBlur}
+                    readOnly={readOnly}
                 />
             </StyledInputWrap>
     );

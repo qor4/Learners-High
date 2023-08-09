@@ -9,7 +9,7 @@ import styled from "styled-components";
 
 import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StyledBox = styled.div`
     background-color: #fff;
@@ -36,6 +36,7 @@ const LessonRoundItemBoxList = ({
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
     const [dayLessonListDataSet, setDayLessonListDataSet] = useState([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (selectedDay && userType === "T") {
@@ -74,18 +75,29 @@ const LessonRoundItemBoxList = ({
             <Card $skyBlue>
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
-                        <Link
-                            key={index}
-                            to={
-                                userType === "T"
-                                    ? `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
-                                    : `/edu/student/${userNo}/${lessonItem.lessonNo}`
-                            }
-                        >
-                            <StyledBox $hover>
+                        // <Link
+                        //     key={index}
+                        //     to={
+                        //         userType === "T"
+                        //             ? `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
+                        //             : `/edu/student/${userNo}/${lessonItem.lessonNo}`
+                        //     }
+                        // >
+                            <StyledBox $hover 
+                            onClick={(e)=> {
+                                console.log(e.target.className, "넌 뭐니")
+                                if (e.target.className!=='singleEvent') {
+                                    if (userType==="T") {
+                                        
+                                        navigate(`/edu/teacher/${userNo}/${lessonItem.lessonNo}`)
+                                    } else {
+                                        navigate(`/edu/student/${userNo}/${lessonItem.lessonNo}`)
+                                    }
+                                }
+                            }}>
                                 <LessonRoundItemBox lessonInfo={lessonItem} />
                             </StyledBox>
-                        </Link>
+                        // </Link>
                     ))
                 ) : (
                     <StyledBox>{dayName}요일 수업 없음</StyledBox>

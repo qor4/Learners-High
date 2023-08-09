@@ -87,8 +87,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     )}`;
     const formattedEndDate = `${formatTime(endDatetime)}`;
 
-    const enterStudentRoom = () => {
+    const enterStudentRoom = (event) => {
+        event.stopPropagation()
         navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`)        
+
     }
 
     return (
@@ -114,10 +116,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
                 <StyledButtonWrap>
-                    <Button>과제 일괄 다운</Button>
+                    <Button><span className="singleEvent">과제 일괄 다운</span></Button>
                     {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}> */}
-                    <Button $point onClick={handleEnter}>강의룸 만들기</Button>
+                    <Button $point onClick={handleEnter}><span className="singleEvent">강의룸 만들기</span></Button>
                     {/* </Link> */}
                 </StyledButtonWrap>
             )}
@@ -125,9 +127,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 학생일 때 보일 버튼 */}
             {userType === "S" && (
                 <StyledButtonWrap>
-                    <Button>학습 자료 다운</Button>
-                    <Button>과제 제출</Button>
-                        <Button $point onClick={enterStudentRoom}>강의 입장</Button>
+                    <Button> <span className="singleEvent">학습 자료 다운</span></Button>
+                    <Button><span className="singleEvent">과제 제출</span></Button>
+                        <Button $point onClick={enterStudentRoom}><span className="singleEvent">강의 입장</span></Button>
                 </StyledButtonWrap>
             )}
         </>

@@ -72,8 +72,9 @@ const StyledButton = styled.button`
     ${(props) =>
         props.$kakao &&
         css`
-            background-color: #f9e000;
-            border: 1px solid #f9e000;
+            background-color: #fee500;
+            border: 1px solid #fee500;
+            color: #191919;
             &:not(:disabled):hover {
                 background: #f1d900;
                 color: #000;
