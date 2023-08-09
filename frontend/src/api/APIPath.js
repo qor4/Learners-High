@@ -3,8 +3,14 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 
-export const url = "https://i9b105.p.ssafy.io/api"
+// 서버
+// export const url = "https://i9b105.p.ssafy.io/api"
+
+// 허다은
 // export const url = "http://192.168.31.200:7777/api";
+
+// 유혜빈
+export const url = "http://192.168.31.200:7777/api";
 // const AUTH = "auth/"
 // const USER
 
