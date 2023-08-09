@@ -24,3 +24,4 @@ yarn-error.log*
 
 # 사적인 정보 파일
 /src/api/Ignore.js
+/src/api/APIPath.js
