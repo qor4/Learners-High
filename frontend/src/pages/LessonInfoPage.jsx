@@ -42,11 +42,14 @@ const LessonInfoPage = () => {
     const { lessonNo } = useParams();
     const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]);
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
-
+    const [lessonPrice, setLessonPrice] = useState(0)
+    const [lessonName, setLessonName] = useState(null)
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
             setLessonInfoDataSet(response.data.result);
+            setLessonPrice(response.data.result.lessonInfo.lessonPrice)
+            setLessonName(response.data.result.lessonInfo.lessonName)
         });
     }, [lessonNo]);
 
@@ -81,11 +84,6 @@ const LessonInfoPage = () => {
         console.log(data);
         setShowPayLessonModal(true);
         document.body.classList.add("overflow-hidden");
-        // tokenHttp
-        //     .post(`${url}/student/apply`, data, {
-        //         headers: { "Content-Type": "application/json" },
-        //     })
-        //     .then((response) => alert(response.data.resultMsg));
     };
 
     console.log(data);
@@ -100,7 +98,6 @@ const LessonInfoPage = () => {
                     $info
                 />
             </StyledLessonInfoWrap>
-
             <Container maxWidth="md">
                 {/* 강사 소개 */}
                 <FlexWrap>
@@ -145,17 +142,23 @@ const LessonInfoPage = () => {
                         </Card>
                     ))}
             </Container>
-
             {/* 결제 모달창 */}
-            <Modal
-                title="강의 결제"
-                show={showPayLessonModal}
-                onClose={handleCloseModal}
-            >
-                <PayLesson 
-                lessonNo={lessonNo}
-                onClose={handleCloseModal} />
-            </Modal>
+            {showPayLessonModal &&
+            lessonPrice > 0
+            && (
+                <Modal
+                    title="강의 결제"
+                    show={showPayLessonModal}
+                    onClose={handleCloseModal}
+                >
+                    <PayLesson
+                        lessonNo={lessonNo}
+                        lessonPrice={lessonPrice}
+                        lessonName={lessonName}
+                        onClose={handleCloseModal}
+                    />
+                </Modal>
+            )}
         </div>
     );
 };

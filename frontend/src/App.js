@@ -11,11 +11,18 @@ import UserLogIn from "./components/auth/UserLogIn";
 import UserJoinPage from "./pages/auth/UserJoinPage";
 import KakaoUserJoinPage from "./pages/auth/KakaoUserJoinPage";
 import MainPage from "./pages/MainPage";
+import TeacherProfilePage from "./pages/TeacherProfilePage";
+
+// 강의 관련
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
 import ClassRoundJoinPage from "./pages/class/ClassRoundJoinPage";
 import LessonInfoPage from "./pages/LessonInfoPage";
-import TeacherProfilePage from "./pages/TeacherProfilePage";
+import PayLessonSuccessPage from "./pages/class/PayLessonSuccessPage";
+import PayLessonFailPage from "./pages/class/PayLessonFailPage";
+import PayLessonCancelPage from "./pages/class/PayLessonCancelPage";
+
+// 스타일컴포넌트
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 
@@ -119,6 +126,18 @@ function App() {
                     <Route
                         path="/lesson/info/:lessonNo"
                         element={<LessonInfoPage />}
+                    ></Route>
+                    <Route
+                        path="api/kakaoPay/success"
+                        element={<PayLessonSuccessPage/>}
+                    ></Route>
+                    <Route
+                        path="api/kakaoPay/fail"
+                        element={<PayLessonFailPage/>}
+                    ></Route>
+                    <Route
+                        path="api/kakaoPay/cancel"
+                        element={<PayLessonCancelPage/>}
                     ></Route>
                     <Route
                         path="/profile/:userNo"
