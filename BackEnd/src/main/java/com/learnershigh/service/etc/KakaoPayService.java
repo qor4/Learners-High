@@ -26,7 +26,11 @@ public class KakaoPayService {
 
 
     // 결제 승인 요청
-    public KakaoPayDto kakaopayReady(){
+    public KakaoPayDto kakaopayReady(Long lessonNo, int lessonPrice, String lessonName){
+
+        String lessonNoString = Long.toString(lessonNo);
+
+        String lessonPriceString = Integer.toString(lessonPrice);
 
         System.out.println(admin_key);
 
@@ -42,13 +46,14 @@ public class KakaoPayService {
         parameters.add("cid", cid);
         parameters.add("partner_order_id", "가맹점 주문 번호");
         parameters.add("partner_user_id","가맹점 회원 ID");
-        parameters.add("item_name", "아이템 이름");
+        parameters.add("item_name", lessonName);
+        parameters.add("item_code", lessonNoString);
         parameters.add("quantity", "1");
-        parameters.add("total_amount","10000");
+        parameters.add("total_amount", lessonPriceString);
         parameters.add("tax_free_amount","0");
-        parameters.add("approval_url","http://localhost:8080/kakaoPay/success");
-        parameters.add("fail_url","http://localhost:8080/kakaoPay/fail");
-        parameters.add("cancel_url","http://localhost:8080/kakaoPay/cancle");
+        parameters.add("approval_url","http://localhost:3000/api/kakaoPay/success");
+        parameters.add("fail_url","http://localhost:3000/api/api/kakaoPay/fail?lessonNo=" + lessonNo);
+        parameters.add("cancel_url","http://localhost:3000/api/kakaoPay/cancel?lessonNo=" +lessonNo);
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, headers);
 
@@ -64,6 +69,8 @@ public class KakaoPayService {
 
     // 결제 승인
     public KakaoPayApproveDto kakaoApprove(String pgToken){
+
+        System.out.println("결제 성공했니?");
         // 카카오 요청
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", cid);
