@@ -1,6 +1,6 @@
 // 메인 페이지에서 사용되는 수업 회차별 박스
 // 들어가는 내용 : 현재 회차, 일시, 수업 이름, 회차 제목, 강사 이름, 과제 일괄 다운, 강의룸 만들기
-import { useState } from "react"; // 내꺼.
+import { useEffect, useState } from "react"; // 내꺼.
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -62,6 +62,17 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     // 날짜 format
     const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
     const endDatetime = new Date(lessonInfo.lessonRoundEndDatetime);
+    
+    // 오늘 날짜 아니라면 전부 disabled
+    const dayOfLesson = () => {
+        const today = new Date()
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        if (endDatetime.getFullYear() === today.getFullYear() && 
+        endDatetime.getMonth() === today.getMonth() && 
+        endDatetime.getDate() === today.getDate()) {
+            return false
+        } else return true
+    }
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -119,7 +130,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                     <Button><span className="singleEvent">과제 일괄 다운</span></Button>
                     {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}> */}
-                    <Button $point onClick={handleEnter}><span className="singleEvent">강의룸 만들기</span></Button>
+                    <Button $point onClick={handleEnter} disabled={dayOfLesson}><span className="singleEvent">강의룸 만들기</span></Button>
                     {/* </Link> */}
                 </StyledButtonWrap>
             )}
@@ -129,7 +140,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <StyledButtonWrap>
                     <Button> <span className="singleEvent">학습 자료 다운</span></Button>
                     <Button><span className="singleEvent">과제 제출</span></Button>
-                        <Button $point onClick={enterStudentRoom}><span className="singleEvent">강의 입장</span></Button>
+                        <Button $point onClick={enterStudentRoom} disabled={dayOfLesson}><span className="singleEvent">강의 입장</span></Button>
                 </StyledButtonWrap>
             )}
         </>
