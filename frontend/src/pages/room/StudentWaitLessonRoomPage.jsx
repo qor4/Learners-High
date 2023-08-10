@@ -12,7 +12,7 @@ import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
 import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
-import { seesoUrl } from "../../api/APIPath";
+// import { seesoUrl } from "../../api/APIPath";
 
 const dotMaxSize = 10;
 const dotMinSize = 5;
@@ -129,24 +129,24 @@ const StudentWaitLessonRoomPage = () => {
                 userNo : userNo,
                 rate: score});
             // mongodb server와 통신
-            axios.post(
-                `${seesoUrl}/seeso/attention-rate`,
-                {
-                  lessonRoundNo: Number(lessonRoundNo),
-                  lessonNo: Number(lessonNo),
-                  userNo: Number(userNo),
-                  rate: Number(score),
-                },
-                {
-                  headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-                }
-              )
-                .then((res) => {
-                  console.log(res, "ddd");
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
+            // axios.post(
+            //     `${seesoUrl}/seeso/attention-rate`,
+            //     {
+            //       lessonRoundNo: Number(lessonRoundNo),
+            //       lessonNo: Number(lessonNo),
+            //       userNo: Number(userNo),
+            //       rate: Number(score),
+            //     },
+            //     {
+            //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+            //     }
+            //   )
+            //     .then((res) => {
+            //       console.log(res, "ddd");
+            //     })
+            //     .catch((err) => {
+            //       console.error(err);
+            //     });
         }
     },[enterRoom]);
 
