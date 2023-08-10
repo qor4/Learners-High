@@ -33,21 +33,6 @@ const ClassJoinCheckModal = (props) => {
     const onDataChange = props.onDataChange
     const userNo = useSelector((state) => state.user.userNo);
 
-    // 수정 여부 확인 & 수정할거면 바꿀 것.
-    // const [isWriting, setIsWriting] = useState(false);
-    // useEffect(() => {
-    //     //  동민 수정 시작
-    //     tokenHttp.get(`${url}/lesson/writing/${userNo}`).then((res) => {
-    //         console.log(res, "수정여부 확인 결과값");
-    //         if (res.data.result.isWriting) {
-    //             setshowLessonModal(true);
-    //             setLessonNo(res.data.result.lessonNo);
-    //             return
-    //           }
-    //         navigate(`/lesson/join`)
-    //     });
-    //     // 동민 수정 종료
-    // }, []);
 
     // 모달을 닫을 때 -> 그냥 닫기 아니지... 아니지..!
     const handleCloseModal = () => {
@@ -61,7 +46,7 @@ const ClassJoinCheckModal = (props) => {
         console.log(lessonNo, "강의No")
         tokenHttp.get(`${url}/lesson/writing/info/${Number(lessonNo)}`).then((res) => {
             console.log(res);
-            navigate(`/lesson/join`, {state: {lessonNo, isUpdated: true, before:false}}, {replace: false})
+            navigate(`/lesson/join`, {state: {lessonNo, isUpdated: true}}, {replace: false})
         });
         sendData()}
     };
@@ -70,7 +55,7 @@ const ClassJoinCheckModal = (props) => {
         tokenHttp.delete(`${url}/lesson/writing/delete/${lessonNo}`);
         setshowLessonModal(false);
         document.body.classList.remove("overflow-hidden");
-        navigate('/lesson/join', {state: {lessonNo: null, isUpdated: false, before: false}}, {replace: false})
+        navigate('/lesson/join', {state: {lessonNo: null, isUpdated: false}}, {replace: false})
         sendData()}
     };
 
