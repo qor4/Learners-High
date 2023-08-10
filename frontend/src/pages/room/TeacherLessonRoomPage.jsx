@@ -32,6 +32,7 @@ const TeacherLessonRoomPage = () => {
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
     const [subscribers, setSubscribers] = useState([]);
+    const [token, setToken] = useState("");
     
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
@@ -122,21 +123,19 @@ const TeacherLessonRoomPage = () => {
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
         console.log(session, "session")
-        if (session) {
+        if (session && !token) {
             tokenHttp
             .get(
                 `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
                 ).then((res) => {
                     if(res.data.resultCode !== 200) throw res.data.resultMsg;
-                    const token = res.data.resultMsg;
-                    console.log(token);
-                    console.log("token : ",token);
+                    setToken(res.data.resultMsg);
                 // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                session.connect(token, { clientData: String(userNo) })
+                session.connect(res.data.resultMsg, { clientData: String(userNo) })
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
-                    let publisher = await OV.initPublisherAsync(undefined, {
+                    let publisher = await OV.initPublisherAsync("div", {
                         audioSource: undefined,     // The source of audio. If undefined default microphone
                         videoSource: undefined,     // The source of video. If undefined default webcam
                         publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
