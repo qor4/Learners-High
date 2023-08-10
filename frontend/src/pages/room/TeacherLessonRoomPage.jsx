@@ -1,28 +1,23 @@
 import React, { useEffect } from "react";
 import { useState } from "react"; // 내꺼.
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url } from "../../api/APIPath";
-
 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import ChatComponent from "../../components/chat/ChatComponent";
-import { error } from "jquery";
 
 const TeacherLessonRoomPage = () => {
-    console.log("난 지금 들어왔어")
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userType = useSelector((state) => state.user.userType);
     const userName = useSelector((state) => state.user.userName);
-    const location = useLocation();
     const { lessonNo, lessonRoundNo } = useParams();
-    console.log(lessonRoundNo, "params!!");
     const navigate = useNavigate()
 
     // session, state 선언
@@ -51,13 +46,11 @@ const TeacherLessonRoomPage = () => {
         setMyUserName(myUserName);
 
         // 윈도우 객체에 화면 종료 이벤트 추가
-        window.addEventListener('beforeunload', onBeforeUnload); 
         joinSession();  // 세션 입장
         return () => {
             console.log("Teacher LessonRoom Render End")
             // 윈도우 객체에 화면 종료 이벤트 제거
-            window.removeEventListener('beforeunload', onBeforeUnload);
-            leaveSession(); // 세션 나가기
+            leaveSession();
         };
     }, []);
 
@@ -73,24 +66,20 @@ const TeacherLessonRoomPage = () => {
                             }).catch(err=>{
                                 console.error(err);
                             });
+                            // session, state 초기화
+            console.log("수업 종료")
+            setOV(null);
+            setMySessionId(undefined);
+            setMyUserName('');
+            setSession(undefined);
+            setMainStreamManager(undefined);
+            setPublisher(undefined);
+            setSubscribers([]);
         }
-        // session, state 초기화
-        setOV(null);
-        setMySessionId(undefined);
-        setMyUserName('');
-        setSession(undefined);
-        setMainStreamManager(undefined);
-        setPublisher(undefined);
-        setSubscribers([]);
         
         // 메인화면 이동 필요
         navigate("/");
     };
-        // 페이지를 언로드하기 전에 leaveSession 메서드를 호출
-        const onBeforeUnload = () => {
-            leaveSession();
-        }
-
     // 세션 생성 및 세션에서 이벤트가 발생할 때의 동작을 지정 
     const joinSession = async () => {
         const newOV = new OpenVidu();
@@ -159,6 +148,7 @@ const TeacherLessonRoomPage = () => {
                 });
             });
         }
+        
     }, [session]);
     // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
     const toggleVideo = () => {
@@ -168,7 +158,7 @@ const TeacherLessonRoomPage = () => {
             publisher.publishVideo(enabled);
         }
     };
-
+    
     // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
     const toggleAudio = () => {
         if (publisher) {
@@ -179,17 +169,12 @@ const TeacherLessonRoomPage = () => {
     };
 
     const toggleShare = () => {
-        if(publisher){
-            const enabled = !shareEnabled;
-            setShareEnabled(enabled);
-            if(shareEnabled){
-                screenShare();
-                console.log("공유 시작  ")
-
-            }else{
-                stopScreenShare();
-                console.log("공유 종료")
-            }
+        if(shareEnabled){
+            console.log("공유 시작  ")
+            screenShare();
+        }else{
+            showCam();
+            console.log("공유 종료");
         }
     }
 
@@ -215,35 +200,23 @@ const TeacherLessonRoomPage = () => {
                 }
             },
         );
-
+        
         sharePublisher.once('accessAllowed', async () => {
-            sharePublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                console.log('User pressed the "Stop sharing" button');
-            });
-            await session.unpublish(publisher);
-            setPublisher(sharePublisher);
-            await session.publish(sharePublisher);
+            sharePublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', showCam);
         });
-
+        sharePublisher.once('streamPlaying', async () => {
+            setShareEnabled(!shareEnabled);
+        });
         publisher.once('accessDenied', (event) => {
             console.warn('ScreenShare: Access Denied');
         });
-        // publisher.once('accessAllowed', async () => {
-        //     console.log("화면 공유 허용 시작");
-        //     console.log("session1 :", session);
-        //     await session.unpublish(mainStreamManager);
-        //     console.log("session2 :", session);
-        //     setMainStreamManager(sharePublisher);
-        //     await session.publish(mainStreamManager).then(() => {
-        //         console.log("session3 :", session);
-        //     });
-        // });
-        // sharePublisher.on('streamPlaying', () => {
-        //     // 여기에 뭔지 모르겠음
-        //     console.log("session4 :", session);
-        // });
+
+        await session.unpublish(publisher);
+        setPublisher(sharePublisher);
+        await session.publish(sharePublisher);
     }
-    const stopScreenShare = async ()=> {
+
+    const showCam = async ()=> {
         let newPublisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,     // The source of audio. If undefined default microphone
             videoSource: undefined,     // The source of video. If undefined default webcam
@@ -254,15 +227,17 @@ const TeacherLessonRoomPage = () => {
             insertMode: 'APPEND',       // How the video is inserted in the target element 'video-container'
             mirror: true,               // Whether to mirror your local video or not
         });
+
         await session.unpublish(publisher);
         setPublisher(newPublisher);
         await session.publish(newPublisher);
+
+        setShareEnabled(!shareEnabled);
     }
 
     return (
         <>
         <div>
-            {console.log("화면 생성")}
             <h1>Room ID: {mySessionId}</h1>
             {session !== undefined && session.connection !== undefined ? (
                 <div> 
