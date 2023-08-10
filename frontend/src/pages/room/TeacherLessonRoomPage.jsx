@@ -1,28 +1,23 @@
 import React, { useEffect } from "react";
 import { useState } from "react"; // 내꺼.
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url } from "../../api/APIPath";
-
 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import ChatComponent from "../../components/chat/ChatComponent";
-import { error } from "jquery";
 
 const TeacherLessonRoomPage = () => {
-    console.log("난 지금 들어왔어")
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userType = useSelector((state) => state.user.userType);
     const userName = useSelector((state) => state.user.userName);
-    const location = useLocation();
     const { lessonNo, lessonRoundNo } = useParams();
-    console.log(lessonRoundNo, "params!!");
     const navigate = useNavigate()
 
     // session, state 선언
@@ -32,10 +27,12 @@ const TeacherLessonRoomPage = () => {
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
     const [subscribers, setSubscribers] = useState([]);
-    
+    const [token, setToken] = useState("");
+
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(true);
+    const [shareEnabled, setShareEnabled] = useState(false);
     
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
@@ -44,17 +41,16 @@ const TeacherLessonRoomPage = () => {
     useEffect( () => {
         setVideoEnabled(true);
         setAudioEnabled(true);
+        setShareEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
         // 윈도우 객체에 화면 종료 이벤트 추가
-        window.addEventListener('beforeunload', onBeforeUnload); 
         joinSession();  // 세션 입장
         return () => {
             console.log("Teacher LessonRoom Render End")
             // 윈도우 객체에 화면 종료 이벤트 제거
-            window.removeEventListener('beforeunload', onBeforeUnload);
-            leaveSession(); // 세션 나가기
+            leaveSession();
         };
     }, []);
 
@@ -70,24 +66,20 @@ const TeacherLessonRoomPage = () => {
                             }).catch(err=>{
                                 console.error(err);
                             });
+                            // session, state 초기화
+            console.log("수업 종료")
+            setOV(null);
+            setMySessionId(undefined);
+            setMyUserName('');
+            setSession(undefined);
+            setMainStreamManager(undefined);
+            setPublisher(undefined);
+            setSubscribers([]);
         }
-        // session, state 초기화
-        setOV(null);
-        setMySessionId(undefined);
-        setMyUserName('');
-        setSession(undefined);
-        setMainStreamManager(undefined);
-        setPublisher(undefined);
-        setSubscribers([]);
         
         // 메인화면 이동 필요
         navigate("/");
     };
-        // 페이지를 언로드하기 전에 leaveSession 메서드를 호출
-        const onBeforeUnload = () => {
-            leaveSession();
-        }
-
     // 세션 생성 및 세션에서 이벤트가 발생할 때의 동작을 지정 
     const joinSession = async () => {
         const newOV = new OpenVidu();
@@ -122,17 +114,15 @@ const TeacherLessonRoomPage = () => {
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
         console.log(session, "session")
-        if (session) {
+        if (session && !token) {
             tokenHttp
             .get(
                 `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
                 ).then((res) => {
                     if(res.data.resultCode !== 200) throw res.data.resultMsg;
-                    const token = res.data.resultMsg;
-                    console.log(token);
-                    console.log("token : ",token);
+                    setToken(res.data.resultMsg);
                 // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                session.connect(token, { clientData: String(userNo) })
+                session.connect(res.data.resultMsg, { clientData: String(userNo) })
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
@@ -158,6 +148,7 @@ const TeacherLessonRoomPage = () => {
                 });
             });
         }
+        
     }, [session]);
     // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
     const toggleVideo = () => {
@@ -167,7 +158,7 @@ const TeacherLessonRoomPage = () => {
             publisher.publishVideo(enabled);
         }
     };
-
+    
     // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
     const toggleAudio = () => {
         if (publisher) {
@@ -177,15 +168,82 @@ const TeacherLessonRoomPage = () => {
         }
     };
 
+    const toggleShare = () => {
+        if(shareEnabled){
+            console.log("공유 시작  ")
+            screenShare();
+        }else{
+            showCam();
+            console.log("공유 종료");
+        }
+    }
+
+    const screenShare = async () => {
+        const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
+        const sharePublisher = await OV.initPublisher(
+            undefined,
+            {
+                videoSource: videoSource,
+                publishAudio: audioEnabled,
+                publishVideo: videoEnabled,
+                mirror: false,
+            },
+            (error) => {
+                if (error && error.name === 'SCREEN_EXTENSION_NOT_INSTALLED') {
+                    alert('SCREEN_EXTENSION_NOT_INSTALLED');
+                } else if (error && error.name === 'SCREEN_SHARING_NOT_SUPPORTED') {
+                    alert('Your browser does not support screen sharing');
+                } else if (error && error.name === 'SCREEN_EXTENSION_DISABLED') {
+                    alert('You need to enable screen sharing extension');
+                } else if (error && error.name === 'SCREEN_CAPTURE_DENIED') {
+                    alert('You need to choose a window or application to share');
+                }
+            },
+        );
+        
+        sharePublisher.once('accessAllowed', async () => {
+            sharePublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', showCam);
+        });
+        sharePublisher.once('streamPlaying', async () => {
+            setShareEnabled(!shareEnabled);
+        });
+        publisher.once('accessDenied', (event) => {
+            console.warn('ScreenShare: Access Denied');
+        });
+
+        await session.unpublish(publisher);
+        setPublisher(sharePublisher);
+        await session.publish(sharePublisher);
+    }
+
+    const showCam = async ()=> {
+        let newPublisher = await OV.initPublisherAsync(undefined, {
+            audioSource: undefined,     // The source of audio. If undefined default microphone
+            videoSource: undefined,     // The source of video. If undefined default webcam
+            publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
+            publishVideo: videoEnabled, // Whether you want to start publishing with your video enabled or not
+            resolution: '640x480',      // The resolution of your video
+            frameRate: 30,              // The frame rate of your video
+            insertMode: 'APPEND',       // How the video is inserted in the target element 'video-container'
+            mirror: true,               // Whether to mirror your local video or not
+        });
+
+        await session.unpublish(publisher);
+        setPublisher(newPublisher);
+        await session.publish(newPublisher);
+
+        setShareEnabled(!shareEnabled);
+    }
+
     return (
         <>
         <div>
             <h1>Room ID: {mySessionId}</h1>
-            {session !== undefined ? (
+            {session !== undefined && session.connection !== undefined ? (
                 <div> 
                     <div>
                         <div>
-                            {publisher !== undefined ? (
+                            {publisher !== undefined && mainStreamManager !== undefined ? (
                                 <div >
                                     <UserVideoComponent streamManager={ publisher }/>
                                 </div>
@@ -200,7 +258,7 @@ const TeacherLessonRoomPage = () => {
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       {console.log(session, "세션")}
                       {console.log(session.connection, "세션 커넥션")}
                       { mainStreamManager && <ChatComponent 
@@ -208,10 +266,14 @@ const TeacherLessonRoomPage = () => {
                       streamManager={mainStreamManager}
                       connectionId={session.connection.connectionId}
                       />}
-                    </div>
+                    </div> */}
                 </div>
             ) : null}
-
+            <input
+                type='button'
+                onClick={toggleShare}
+                value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
+            />
             <input
                 type='button'
                 onClick={toggleVideo}

@@ -2,6 +2,8 @@ package com.learnershigh.service.user;
 
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.lessonhub.LessonAttend;
+import com.learnershigh.domain.lessonhub.LessonHomework;
 import com.learnershigh.domain.lessonhub.StudentLessonList;
 import com.learnershigh.domain.lessonhub.StudentWishlist;
 import com.learnershigh.domain.user.User;
@@ -12,6 +14,7 @@ import com.learnershigh.dto.lessonhub.StudentAttendHomeworkDto;
 import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
+import com.learnershigh.repository.lessonhub.LessonAttendRepository;
 import com.learnershigh.repository.lessonhub.LessonHomeworkRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import com.learnershigh.repository.lessonhub.StudentWishlistRepository;
@@ -21,6 +24,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +41,27 @@ public class StudentService {
     private final LessonRoundRepository lessonRoundRepository;
     private final StudentLessonListRepository studentLessonListRepository;
     private final LessonHomeworkRepository lessonHomeworkRepository;
+    private final LessonAttendRepository lessonAttendRepository;
+
+    public boolean isStudent(User user) {
+        if (user == null) {
+            return false;
+        }
+        if (!user.getUserType().equals("S")) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isStudentLesson(User user, Long lessonNo) {
+        Lesson lesson = new Lesson();
+        lesson.setLessonNo(lessonNo);
+        StudentLessonList studentLessonList = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
+        if (studentLessonList == null) {
+            return false;
+        }
+        return true;
+    }
 
     @Transactional
     public void wish(StudentLessonActionDto studentLessonActionDto) {
@@ -112,9 +137,6 @@ public class StudentService {
         User user = userRepository.findByUserNo(userNo);
 
         List<StudentLessonList> userlessonlist = studentLessonListRepository.findAllByUserNo(user);
-
-        System.out.println(userlessonlist.toString());
-
         List<LessonListDto> clalist = new ArrayList<>();
 
         for (StudentLessonList lessonAll : userlessonlist) {
@@ -123,11 +145,12 @@ public class StudentService {
 
             cla.setLessonStartDate(lessonAll.getLessonNo().getLessonStartDate());
             cla.setLessonEndDate(lessonAll.getLessonNo().getLessonEndDate());
-            cla.setUserName(lessonAll.getLessonNo().getLessonName());
+            cla.setLessonName(lessonAll.getLessonNo().getLessonName());
+            cla.setUserName(lessonAll.getLessonNo().getUserNo().getUserName());
+            cla.setLessonNo(lessonAll.getLessonNo().getLessonNo());
 
             clalist.add(cla);
         }
-
         return clalist;
     }
 
@@ -175,5 +198,69 @@ public class StudentService {
         if (studentLesson != null) {
             throw new IllegalStateException("이미 수강 신청한 수업입니다.");
         }
+    }
+
+    public Object getAttendRate(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isStudentLesson(user, lessonNo)) {
+            throw new IllegalStateException("수강하지 않는 수업입니다.");
+        }
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNoAndLessonRoundEndTimeBefore(lessonNo, LocalDateTime.now());
+        List<LessonAttend> lessonAttendList = lessonAttendRepository.findByUserNoAndLessonRoundNoIn(user, lessonRoundList);
+
+        if (lessonAttendList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
+
+        double attendCnt = 0.0;
+        double absentCnt = 0.0;
+        for (LessonAttend lessonAttend : lessonAttendList) {
+            if (lessonAttend.getLessonAttendStatus().equals("출석")) {
+                attendCnt++;
+            } else {
+                absentCnt++;
+            }
+        }
+        double result = attendCnt / (absentCnt + attendCnt) * 100;
+        return result;
+    }
+
+    public Object getHomeworkRate(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isStudentLesson(user, lessonNo)) {
+            throw new IllegalStateException("수강하지 않는 수업입니다.");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNoAndLessonRoundEndTimeBefore(lessonNo, now);
+        if (lessonRoundList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNumberAndLessonRoundNumber(lessonNo, lessonRoundList.get(lessonRoundList.size() - 1).getLessonRoundNumber() + 1);
+        if (lessonRound != null && lessonRound.getLessonRoundStartDatetime().isBefore(now)) {
+            int deleteIndex = lessonRoundList.size() - 1;
+            lessonRoundList.remove(deleteIndex);
+        }
+        List<LessonHomework> lessonHomeworkList = lessonHomeworkRepository.findByUserNoAndLessonRoundNoIn(user, lessonRoundList);
+        double submissionCnt = 0.0;
+        double unsubmittedCnt = 0.0;
+        if (lessonHomeworkList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
+
+        for (LessonHomework lessonHomework : lessonHomeworkList) {
+            if (lessonHomework.getHomeworkStatus().equals("제출")) {
+                submissionCnt++;
+            } else {
+                unsubmittedCnt++;
+            }
+        }
+        double result = submissionCnt / (submissionCnt + unsubmittedCnt) * 100;
+        return result;
     }
 }

@@ -39,6 +39,10 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
+        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
+        if (writingLesson != null) {
+            lessonRepository.delete(writingLesson);
+        }
         if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
                 || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
@@ -100,6 +104,7 @@ public class LessonService {
         LessonJoinDto lessonJoin = new LessonJoinDto();
         lessonJoin.setUserNo(lessonDomain.getUserNo().getUserNo());
         lessonJoin.setLessonTypeNo(lessonDomain.getLessonTypeNo().getLessonTypeNo());
+        lessonJoin.setLessonTypeName(lessonDomain.getLessonTypeNo().getLessonTypeName());
         lessonJoin.setLessonName(lessonDomain.getLessonName());
         lessonJoin.setLessonInfo(lessonDomain.getLessonInfo());
         lessonJoin.setMaxStudent(lessonDomain.getMaxStudent());
