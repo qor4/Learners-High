@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { HiSearch } from "react-icons/hi";
 import { url } from "../api/APIPath";
-import { Grid, MenuItem, Select } from "@mui/material";
+import { Grid, MenuItem } from "@mui/material";
 import { Container } from "@mui/material";
 
 import LessonList from "../components/class/LessonList";
@@ -14,14 +14,21 @@ import Pagination from "../components/common/Pagination";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
+import { StyledInput } from "../components/auth/UserJoin";
 
 // 검색 부분
 const StyledSearch = styled.div`
-    margin-top: 3rem;
+    margin: 2rem 0 1rem 0;
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;
-
+    & > div {
+        display: flex;
+        align-items: center;
+    }
+    & > div > * {
+        margin-left: 0.75rem;
+    }
     & > select {
         width: 5rem;
         height: 3rem;
@@ -118,18 +125,18 @@ const LessonPage = () => {
                         </Grid>
                     </Grid>
                 </div>
-                <div>
-                    {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
-                    <StyledSearch>
-                        <select
-                            value={searchOption}
-                            onChange={(e) => setSearchOption(e.target.value)}
-                        >
-                            <option value="전체">전체</option>
-                            <option value="강사명">강사명</option>
-                            <option value="강의명">강의명</option>
-                        </select>
-                        <Input
+                {/* 강사명 / 강의명 선택해서 검색하는 공간 */}
+                <StyledSearch>
+                    <select
+                        value={searchOption}
+                        onChange={(e) => setSearchOption(e.target.value)}
+                    >
+                        <option value="전체">전체</option>
+                        <option value="강사명">강사명</option>
+                        <option value="강의명">강의명</option>
+                    </select>
+                    <div>
+                        <StyledInput
                             type="text"
                             placeholder="검색어를 입력해 주세요."
                             value={searchKeyword}
@@ -138,76 +145,72 @@ const LessonPage = () => {
                         <Button onClick={handleSearchChange}>
                             <HiSearch />
                         </Button>
-                    </StyledSearch>
+                    </div>
+                </StyledSearch>
 
-                    {/* MUI 셀렉트박스 */}
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={searchOption}
-                        onChange={(e) => setSearchOption(e.target.value)}
-                    >
-                        <MenuItem value={"전체"}>전체</MenuItem>
-                        <MenuItem value={"강사명"}>강사명</MenuItem>
-                        <MenuItem value={"강의명"}>강의명</MenuItem>
-                    </Select>
-
-                    {/* 과목 분류를 누르면 필터링되는 공간 */}
-                    <Card $skyBlue $MarginReset>
-                        <Button
-                            onClick={() => setSelectedLessonType("전체")}
-                            $point={selectedLessonType === "전체"}
-                            $white
-                            disabled={selectedLessonType === "전체"}
-                        >
-                            전체
-                        </Button>
+                {/* 과목 분류를 누르면 필터링되는 공간 */}
+                <Card $skyBlue $MarginReset>
+                    <Grid container spacing={2}>
+                        <Grid item md={2}>
+                            <Button
+                                onClick={() => setSelectedLessonType("전체")}
+                                $point={selectedLessonType === "전체"}
+                                $white
+                                $fullWidth
+                                disabled={selectedLessonType === "전체"}
+                            >
+                                전체
+                            </Button>
+                        </Grid>
                         {lessonTypeDataSet &&
                             lessonTypeDataSet.map((lessonType, index) => (
-                                <Button
-                                    key={index}
-                                    value={lessonType.lessonTypeNo}
-                                    onClick={() => {
-                                        setSelectedLessonType(
+                                <Grid item md={2}>
+                                    <Button
+                                        key={index}
+                                        value={lessonType.lessonTypeNo}
+                                        onClick={() => {
+                                            setSelectedLessonType(
+                                                lessonType.lessonTypeName
+                                            );
+                                        }}
+                                        $fullWidth
+                                        $white
+                                        $point={
+                                            selectedLessonType ===
                                             lessonType.lessonTypeName
-                                        );
-                                    }}
-                                    $white
-                                    $point={
-                                        selectedLessonType ===
-                                        lessonType.lessonTypeName
-                                    }
-                                    disabled={
-                                        selectedLessonType ===
-                                        lessonType.lessonTypeName
-                                    }
-                                >
-                                    {lessonType.lessonTypeName}
-                                </Button>
+                                        }
+                                        disabled={
+                                            selectedLessonType ===
+                                            lessonType.lessonTypeName
+                                        }
+                                    >
+                                        {lessonType.lessonTypeName}
+                                    </Button>
+                                </Grid>
                             ))}
-                    </Card>
+                    </Grid>
+                </Card>
 
-                    {/* 순서 정렬 기준 */}
-                    <FilterWrapper>
-                        <span>인기순</span>
-                        <span>강사 만족도순</span>
-                    </FilterWrapper>
-                    {/* 강의 목록 아이템이 보이는 공간 */}
-                    <div>
-                        <LessonList items={filteredLessonListData} />
-                    </div>
+                {/* 순서 정렬 기준 */}
+                <FilterWrapper>
+                    <span>인기순</span>
+                    <span>강사 만족도순</span>
+                </FilterWrapper>
+                {/* 강의 목록 아이템이 보이는 공간 */}
+                <div>
+                    <LessonList items={filteredLessonListData} />
+                </div>
 
-                    {/* 페이지네이션 */}
-                    <div>
-                        {lessonListDataSet && lessonListDataSet.length > 0 && (
-                            <Pagination
-                                total={lessonListDataSet.length}
-                                limit={limitItem}
-                                page={page}
-                                setPage={setPage}
-                            />
-                        )}
-                    </div>
+                {/* 페이지네이션 */}
+                <div>
+                    {lessonListDataSet && lessonListDataSet.length > 0 && (
+                        <Pagination
+                            total={lessonListDataSet.length}
+                            limit={limitItem}
+                            page={page}
+                            setPage={setPage}
+                        />
+                    )}
                 </div>
             </Container>
         </div>
