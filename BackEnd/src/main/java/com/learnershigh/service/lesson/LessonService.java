@@ -98,6 +98,7 @@ public class LessonService {
         LessonJoinDto lessonJoin = new LessonJoinDto();
         lessonJoin.setUserNo(lessonDomain.getUserNo().getUserNo());
         lessonJoin.setLessonTypeNo(lessonDomain.getLessonTypeNo().getLessonTypeNo());
+        lessonJoin.setLessonTypeName(lessonDomain.getLessonTypeNo().getLessonTypeName());
         lessonJoin.setLessonName(lessonDomain.getLessonName());
         lessonJoin.setLessonInfo(lessonDomain.getLessonInfo());
         lessonJoin.setMaxStudent(lessonDomain.getMaxStudent());
