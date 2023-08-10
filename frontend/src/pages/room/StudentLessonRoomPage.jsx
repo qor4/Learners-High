@@ -13,7 +13,6 @@ import { OpenVidu } from "openvidu-browser";
 import ChatComponent from "../../components/chat/ChatComponent";
 
 const StudentLessonRoomPage = () => {
-    console.log("난 지금 들어왔어");
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -21,7 +20,6 @@ const StudentLessonRoomPage = () => {
     const userName = useSelector((state) => state.user.userName);
     const location = useLocation();
     const { lessonNo, lessonRoundNo } = useParams();
-    console.log(lessonRoundNo, "params!!");
     const navigate = useNavigate();
 
     // session, state 선언
@@ -95,6 +93,7 @@ const StudentLessonRoomPage = () => {
 
         // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on("streamDestroyed", (event) => {
+            event.preventDefault();
             setSubscribers((preSubscribers) =>
                 preSubscribers.filter(
                     (subscriber) => subscriber !== event.stream.streamManager
@@ -112,8 +111,8 @@ const StudentLessonRoomPage = () => {
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-        console.log("join 완료");
     };
+
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
