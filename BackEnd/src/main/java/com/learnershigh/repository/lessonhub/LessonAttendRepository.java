@@ -11,5 +11,7 @@ public interface LessonAttendRepository extends JpaRepository<LessonAttend, Long
     LessonAttend findByLessonRoundNoAndUserNo(LessonRound lessonRound, User user);
 
     List<LessonAttend> findByLessonRoundNoIn(List<LessonRound> lessonRoundList);
+
+    List<LessonAttend> findByUserNoAndLessonRoundNoIn(User user, List<LessonRound> lessonRoundList);
 }
 

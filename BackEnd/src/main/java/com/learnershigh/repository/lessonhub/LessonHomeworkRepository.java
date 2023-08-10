@@ -32,5 +32,7 @@ public interface LessonHomeworkRepository extends JpaRepository<LessonHomework, 
     LessonHomework findByLessonHomeworkNo(Long lessonHomeworkNo);
 
     List<LessonHomework> findByLessonRoundNoIn(List<LessonRound> lessonRoundList);
+
+    List<LessonHomework> findByUserNoAndLessonRoundNoIn(User user, List<LessonRound> lessonRoundList);
 }
 
