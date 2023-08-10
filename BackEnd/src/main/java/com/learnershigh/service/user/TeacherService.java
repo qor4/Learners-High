@@ -274,9 +274,12 @@ public class TeacherService {
         }
         LocalDateTime now = LocalDateTime.now();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNoAndLessonRoundEndTimeBefore(lessonNo, now);
+        if (lessonRoundList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
         LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNumberAndLessonRoundNumber(lessonNo, lessonRoundList.get(lessonRoundList.size() - 1).getLessonRoundNumber() + 1);
-        if (lessonRound!=null &&lessonRound.getLessonRoundStartDatetime().isBefore(now)) {
-            int deleteIndex=lessonRoundList.size() - 1;
+        if (lessonRound != null && lessonRound.getLessonRoundStartDatetime().isBefore(now)) {
+            int deleteIndex = lessonRoundList.size() - 1;
             lessonRoundList.remove(deleteIndex);
         }
         List<LessonHomework> lessonHomeworkList = lessonHomeworkRepository.findByLessonRoundNoIn(lessonRoundList);
