@@ -9,40 +9,59 @@ import tokenHttp, { url } from "../../api/APIPath";
 
 const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
+    const userType = useSelector((state) => state.user.userType);
     const lessonNo = lessonInfo.lessonNo;
     const [teacherSat, setTeacherSat] = useState(0);
     const [lessonSat, setLessonSat] = useState(0);
     const [attendRate, setAttendRate] = useState(0);
     const [homeworkRate, setHomeworkRate] = useState(0);
     useEffect(() => {
-        tokenHttp.get(`${url}/csat/onelesson/${lessonNo}`).then((response) => {
-            setLessonSat(response.data);
-        });
-        tokenHttp.get(`${url}/csat/oneteacher/${lessonNo}`).then((response) => {
-            setTeacherSat(response.data);
-        });
-        tokenHttp
-            .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/rate`)
-            .then((response) => {
-                setAttendRate(response.data.result.attendRate);
-                setHomeworkRate(response.data.result.attendRate);
-            });
+        if (userType === "T") {
+            tokenHttp
+                .get(`${url}/csat/onelesson/${lessonNo}`)
+                .then((response) => {
+                    setLessonSat(response.data);
+                });
+            tokenHttp
+                .get(`${url}/csat/oneteacher/${lessonNo}`)
+                .then((response) => {
+                    setTeacherSat(response.data);
+                });
+            tokenHttp
+                .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/rate`)
+                .then((response) => {
+                    setAttendRate(response.data.result.attendRate);
+                    setHomeworkRate(response.data.result.attendRate);
+                });
+        } else if (userType === "S") {
+            tokenHttp
+                .get(`${url}/student/${userNo}/lesson/${lessonNo}/rate`)
+                .then((response) => {
+                    setAttendRate(response.data.result.attendRate);
+                    setHomeworkRate(response.data.result.attendRate);
+                });
+        }
     }, []);
     return (
         <>
             <Card>
-                lessonName: {lessonInfo.lessonName}
+                수업 명: {lessonInfo.lessonName}
                 <br />
-                lessonStartDate: {lessonInfo.lessonStartDate}
+                시작날짜: {lessonInfo.lessonStartDate}
                 <br />
-                lessonEndDate: {lessonInfo.lessonEndDate}
+                종료날짜: {lessonInfo.lessonEndDate}
                 <br />
-                userName: {lessonInfo.userName}
+                강사명: {lessonInfo.userName}
                 <br />
-                lessonTypeName: {lessonInfo.lessonTypeName}
+                수업타입이름: {lessonInfo.lessonTypeName}
                 <br />
-                강사 만족도:{teacherSat}
-                수업 만족도:{lessonSat}
+                {userType === "T" && (
+                    <>
+                        {/* 강사/수업 만족도 => 강사만 보이게 */}
+                        강사 만족도:{teacherSat}
+                        수업 만족도:{lessonSat}
+                    </>
+                )}
                 출석률 :{attendRate}
                 과제 제출률:{homeworkRate}
             </Card>

@@ -4,7 +4,11 @@ import { styled } from "styled-components";
 import { Container } from "@mui/material";
 
 import Button from "../components/common/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import tokenHttp, { url } from "../api/APIPath";
+import LessonItemBoxList from "../components/class/LessonItemBoxList";
+
 
 // 강의 wrap
 const StyledCsatInfoWrap = styled.div`
@@ -18,10 +22,22 @@ const StyledButtonWrap = styled.div`
     & > *:not(:first-child) {
         margin-left: 0.5rem;
     }
-`
+`;
 
 const EduStudentManagePage = () => {
-    const [selectedTabBar, setSelectedTabBar] = useState("수강 중인 강의")
+    const userNo = useSelector((state) => state.user.userNo);
+
+    const [selectedTabBar, setSelectedTabBar] = useState("수강 중인 강의");
+    const [studentLessonDataSet, setStudentLessonDataSet] = useState([]);
+
+    useEffect(() => {
+        tokenHttp
+            .get(`${url}/student/lesson/list/${userNo}`)
+            .then((response) => {
+                console.log(response.data);
+                setStudentLessonDataSet(response.data.result);
+            });
+    }, []);
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
@@ -43,6 +59,9 @@ const EduStudentManagePage = () => {
                 </StyledButtonWrap>
 
                 {/* 강의 목록들이 들어갈 공간 */}
+                <LessonItemBoxList
+                    lessonList={studentLessonDataSet}
+                ></LessonItemBoxList>
             </Container>
         </>
     );
