@@ -4,7 +4,6 @@ import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.dto.lesson.*;
-import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
 import com.learnershigh.service.lesson.LessonRoundService;
 import com.learnershigh.service.lesson.LessonService;
 import com.learnershigh.service.user.UserService;
@@ -28,7 +27,6 @@ public class LessonController {
 
     private final LessonService lessonService;
     private final LessonRoundService lessonRoundService;
-    private final UserService userService;
 
     // 강의 개설
     @PostMapping("/join")
@@ -99,10 +97,10 @@ public class LessonController {
         HashMap<String, Object> isWriting = new HashMap<>();
         Lesson lessonDomain = lessonService.isWritingByUserNo(userNo);
         if (lessonDomain != null) {
-            isWriting.put("isWriging", Boolean.TRUE);
+            isWriting.put("isWriting", Boolean.TRUE);
             isWriting.put("lessonNo", lessonDomain.getLessonNo());
         } else {
-            isWriting.put("isWriging", Boolean.FALSE);
+            isWriting.put("isWriting", Boolean.FALSE);
         }
         responseBody.setResult(isWriting);
         return ResponseEntity.ok().body(responseBody);
