@@ -61,6 +61,7 @@ const DatePickerComponent = (
       // onBlur={handleButtonClick}
     />
     {/* { classRunningTime ? <>  */}
+    { !initial ? <>
     <span>진행시간</span>
     <input 
     type="number"
@@ -68,6 +69,7 @@ const DatePickerComponent = (
     value={classRunningTimeState}
     onChange={handleClassRunningTimeChange}
     />
+    </> : null}
     {/* </> : null
     } */}
     

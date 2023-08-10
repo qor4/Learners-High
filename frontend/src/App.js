@@ -68,6 +68,9 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
         color: inherit;
     }
+    li {
+        list-style: none;
+    }
 `;
 
 function App() {
@@ -129,15 +132,15 @@ function App() {
                     ></Route>
                     <Route
                         path="api/kakaoPay/success"
-                        element={<PayLessonSuccessPage/>}
+                        element={<PayLessonSuccessPage />}
                     ></Route>
                     <Route
                         path="api/kakaoPay/fail"
-                        element={<PayLessonFailPage/>}
+                        element={<PayLessonFailPage />}
                     ></Route>
                     <Route
                         path="api/kakaoPay/cancel"
-                        element={<PayLessonCancelPage/>}
+                        element={<PayLessonCancelPage />}
                     ></Route>
                     <Route
                         path="/profile/:userNo"

@@ -321,6 +321,7 @@ const ClassRoundJoin = () => {
             console.log(res.data.result.lessonNo, "개별강의 #### 등록!!")
             lessonRoundDataSet.map(item => {
                 item.lessonNo = res.data.result.lessonNo
+                
             })
             return lessonRoundDataSet
             }

@@ -4,7 +4,6 @@ import { Container, Grid } from "@material-ui/core";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
-import { Typography } from "@mui/material";
 import { useState } from "react";
 
 // 강사 wrap
@@ -15,13 +14,13 @@ const ImgInfoWrap = styled.div`
     align-items: center;
 `;
 
-// image styled
+/** image styled 컴포넌트 */ 
 const StyledThumbnail = styled.img`
     width: 35%;
     border-radius: 50%;
 `;
 
-// info wrap
+/** info를 묶어주는 wrap 스타일 컴포넌트 */
 const InfoWrap = styled.div`
     display: flex;
     flex-direction: column;
@@ -85,9 +84,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
 
                     {/* 강사 이름 */}
                     <span>
-                        <Typography fontWeight={"bold"} fontSize={20}>
+                        <div>
                             {teacherInfo && teacherInfo.userName} 강사님
-                        </Typography>
+                        </div>
                     </span>
 
                     {/* 강사 한 마디 */}
