@@ -38,7 +38,9 @@ public class LessonService {
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
         Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
-        lessonRepository.delete(writingLesson);
+        if (writingLesson != null) {
+            lessonRepository.delete(writingLesson);
+        }
         if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
                 || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
@@ -110,19 +112,21 @@ public class LessonService {
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
         return lessonJoin;
     }
+
     @Transactional
     public void deleteLesson(Long lessonNo) {
         Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
-        List<LessonRound> lessonRoundList =  lessonRoundRepository.findByLessonNo(lessonNo);
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonNo);
         lessonRoundRepository.deleteAll(lessonRoundList);
         lessonRepository.delete(lesson);
     }
+
     @Transactional
     public void apply(StudentLessonActionDto studentLessonActionDto) {
         StudentLessonList studentLessonList = new StudentLessonList();
         User user = userRepository.findByUserNo(studentLessonActionDto.getUserNo());
 
-        if(user == null){
+        if (user == null) {
             throw new IllegalStateException("유효한 회원이 아닙니다.");
         }
         if (!user.getUserType().equals("S")) {
@@ -139,7 +143,7 @@ public class LessonService {
             throw new IllegalStateException("수강 인원이 모두 모집되었습니다.");
         }
         StudentLessonList studentLesson = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
-        if(studentLesson != null){
+        if (studentLesson != null) {
             throw new IllegalStateException("이미 수강 중인 과목입니다.");
         }
         studentLessonList.setUserNo(user);
