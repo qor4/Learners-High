@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -18,7 +17,6 @@ const StudentLessonRoomPage = () => {
     const userId = useSelector((state) => state.user.userId);
     const userType = useSelector((state) => state.user.userType);
     const userName = useSelector((state) => state.user.userName);
-    const location = useLocation();
     const { lessonNo, lessonRoundNo } = useParams();
     const navigate = useNavigate();
 
@@ -52,7 +50,6 @@ const StudentLessonRoomPage = () => {
         return () => {
             // 윈도우 객체에 화면 종료 이벤트 제거
             window.removeEventListener("beforeunload", onBeforeUnload);
-            leaveSession(); // 세션 나가기
         };
     }, []);
 
@@ -177,26 +174,26 @@ const StudentLessonRoomPage = () => {
         }
     };
 
-    // // 알림
-    // useEffect(() => {
-    //     const sse = new EventSource(
-    //         `${url}/notification/subscribe/${userId}`
-    //     );
+    // 알림
+    useEffect(() => {
+        const sse = new EventSource(
+            `${url}/notification/subscribe/${userId}`
+        );
 
-    //     sse.onopen = () => {
-    //         console.log("SSEONOPEN==========", sse);
-    //     };
+        sse.onopen = () => {
+            console.log("SSEONOPEN==========", sse);
+        };
 
-    //     sse.onmessage = async (event) => {
-    //         const res = await event.data;
-    //         const parseData = JSON.parse(res);
-    //         console.log("SSEONMESSAGE==========", parseData);
-    //     };
+        sse.onmessage = async (event) => {
+            const res = await event.data;
+            const parseData = JSON.parse(res);
+            console.log("SSEONMESSAGE==========", parseData);
+        };
 
-    //     sse.addEventListener("Request", function (event) {
-    //         console.log("ADDEVENTLISTENER==========", event.data);
-    //     });
-    // }, []);
+        sse.addEventListener("Request", function (event) {
+            console.log("ADDEVENTLISTENER==========", event.data);
+        });
+    }, []);
 
 
     return (
@@ -227,7 +224,7 @@ const StudentLessonRoomPage = () => {
                         </div>
 
                         <div>
-                            {mainStreamManager && (
+                            {/* {mainStreamManager && (
                                 <ChatComponent
                                     userName={userName}
                                     streamManager={mainStreamManager}
@@ -235,7 +232,7 @@ const StudentLessonRoomPage = () => {
                                         session.connection.connectionId
                                     }
                                 />
-                            )}
+                            )} */}
                         </div>
                     </div>
                 ) : null}
