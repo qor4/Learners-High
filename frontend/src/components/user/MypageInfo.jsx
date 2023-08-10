@@ -3,12 +3,53 @@
 import { useEffect, useState } from "react";
 import tokenHttp, { url } from "../../api/APIPath";
 
-import Button from "../common/Button";
-import Input from "../common/Input";
-import Card from "../common/Card";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { styled } from "styled-components";
+import { StyledInput } from "../auth/UserJoin";
+
+import {
+    ImgInfoWrap,
+    InfoWrap,
+    StyledThumbnail,
+} from "../class/TeacherIntroduceBox";
+
+import Button from "../common/Button";
+import Input from "../common/Input";
+import Card from "../common/Card";
+
+const FlexWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 1rem;
+`;
+
+const ButtonWrap = styled.div`
+    :not(:first-child) {
+        margin-left: 0.5rem;
+    }
+`;
+
+/** 45% wrap */
+export const FiftyWrap = styled.div`
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 1rem;
+`;
+
+/** textarea 스타일드 컴포넌트 */
+const StyledTextarea = styled.textarea`
+    width: 100%;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-sizing: border-box;
+`;
 
 const MypageInfo = ({ userNo }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -58,68 +99,97 @@ const MypageInfo = ({ userNo }) => {
     return (
         <>
             {!isEditing && !validCanModify ? (
-                <>
-                    <img src={profileImg} alt="img" />
-                    <div>
-                        <div>
+                <ImgInfoWrap>
+                    {/* 강사 이미지 */}
+                    <StyledThumbnail
+                        src={profileImg ? profileImg : "/assets/bannerimg.jpg"}
+                        alt="teacher-img"
+                    />
+                    <InfoWrap>
+                        <FlexWrap>
                             <span>{userName} 님</span>
-                            <div>
+                            <ButtonWrap>
                                 {userType === "T" && (
                                     <Link to={`/profile/${userNo}`}>
-                                        <Button>강사페이지</Button>
+                                        <Button size="sm">강사페이지</Button>
                                     </Link>
                                 )}
-                                <Button onClick={handleOnClickUpdateStart}>
+                                <Button
+                                    size="sm"
+                                    $point
+                                    onClick={handleOnClickUpdateStart}
+                                >
                                     수정하기
                                 </Button>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <span>아이디</span>
-                                <span>{userId}</span>
-                            </div>
-                            <div>
-                                <span>이메일</span>
-                                <span>{userEmail}</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span>전화번호</span>
-                            <span>{userTel}</span>
-                        </div>
-                        <Card>자기소개{userInfo}</Card>
-                    </div>
-                </>
+                            </ButtonWrap>
+                        </FlexWrap>
+                        <FlexWrap>
+                            <FiftyWrap>
+                                <strong>
+                                    <div>아이디</div>
+                                </strong>
+                                <div>{userId}</div>
+                            </FiftyWrap>
+                            <FiftyWrap>
+                                <strong>
+                                    <div>이메일</div>
+                                </strong>
+                                <div>{userEmail}</div>
+                            </FiftyWrap>
+                        </FlexWrap>
+                        <FiftyWrap>
+                            <strong>
+                                <div>전화번호</div>
+                            </strong>
+                            <div>{userTel}</div>
+                        </FiftyWrap>
+                        <Card $skyBlue style={{ textAlign: "center" }}>
+                            {userInfo}
+                        </Card>
+                    </InfoWrap>
+                </ImgInfoWrap>
             ) : (
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div>
-                        <span>이미지 수정@@@</span>
-
-                        <img src={profileImg} alt="img" />
-                        <div>
-                            <div>
-                                <span>{userName} 강사님</span>
-                                {/* <div>
-                                    <Button>강사페이지</Button>
-                                    <Button onClick={handleOnClickUpdateStart}>
-                                        수정하기
-                                    </Button>
-                                </div> */}
-                            </div>
-                            <div>
-                                <div>
-                                    <span>아이디</span>
-                                    <span>{userId}</span>
-                                </div>
-                                <div>
-                                    <span>이메일</span>
-                                    <span>{userEmail}</span>
-                                </div>
-                            </div>
-                            <div>
-                                <Input
-                                    label="전화번호"
+                    <ImgInfoWrap>
+                        {/* 이미지 변경 가능하도록 수정@@@ */}
+                        <StyledThumbnail
+                            src={
+                                profileImg
+                                    ? profileImg
+                                    : "/assets/bannerimg.jpg"
+                            }
+                            alt="teacher-img"
+                        />
+                        <InfoWrap>
+                            <FlexWrap>
+                                <span>{userName} 님</span>
+                                <Button
+                                    size="sm"
+                                    $point
+                                    onClick={handleOnClickUpdateEnd}
+                                >
+                                    수정완료
+                                </Button>
+                            </FlexWrap>
+                            <FlexWrap>
+                                <FiftyWrap>
+                                    <strong>
+                                        <div>아이디</div>
+                                    </strong>
+                                    <div>{userId}</div>
+                                </FiftyWrap>
+                                <FiftyWrap>
+                                    <strong>
+                                        <div>이메일</div>
+                                    </strong>
+                                    <div>{userEmail}</div>
+                                </FiftyWrap>
+                            </FlexWrap>
+                            <FlexWrap>
+                                <strong>
+                                    <label htmlFor="userTel">전화번호</label>
+                                </strong>
+                                <StyledInput
                                     type="text"
                                     name="userTel"
                                     id="userTel"
@@ -127,10 +197,9 @@ const MypageInfo = ({ userNo }) => {
                                     placeholder="숫자만 입력해 주세요. (01012345678)"
                                     onChange={(e) => onChange(e)}
                                 />
-                            </div>
-                            <Card>
-                                자기소개
-                                <textarea
+                            </FlexWrap>
+                            <Card $skyBlue style={{ textAlign: "center" }}>
+                                <StyledTextarea
                                     type="text"
                                     name="userInfo"
                                     id="userInfo"
@@ -143,9 +212,8 @@ const MypageInfo = ({ userNo }) => {
                                     onChange={(e) => onChange(e)}
                                 />
                             </Card>
-                        </div>
-                    </div>
-                    <button onClick={handleOnClickUpdateEnd}>수정완료</button>
+                        </InfoWrap>
+                    </ImgInfoWrap>
                 </form>
             )}
         </>

@@ -53,11 +53,6 @@ const MemberMain = () => {
 
     return (
         <Box sx={{ my: "4rem" }}>
-            {/* 임시 버튼 */}
-            <Link to="/temp">
-                <Button>페이지로 이동 버튼</Button>
-            </Link>
-
             <Container maxWidth="md">
                 {/* 일정 안내하는 공간 ex) 김강사님의 월요일 일정은, */}
                 <AlertScheduleBox>
