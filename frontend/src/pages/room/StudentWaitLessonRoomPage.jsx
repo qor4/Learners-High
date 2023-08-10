@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { UserStatusOption } from "seeso";
 import EasySeeso from "seeso/easy-seeso";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
@@ -10,46 +10,44 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
-
+import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
+import { seesoUrl } from "../../api/APIPath";
 
 const dotMaxSize = 10;
 const dotMinSize = 5;
+let test = false;
 
 const StudentWaitLessonRoomPage = () => {
+    const userNo = useSelector((state) => state.user.userNo);
+    const userId = useSelector((state) => state.user.userId);
+    const userName = useSelector((state) => state.userName);
+    const [enterRoom, setEnterRoom] = useState(false);
+
     // console.log("여기 왔어?")
     let userStatus = useRef(null);
-    let isCalibrationMode = false;
     const eyeTracker = useRef(null);
     let currentX, currentY;
     const navigate = useNavigate();
     const { lessonNo, lessonRoundNo } = useParams();
     const [ isSeesoInit, setSeesoInit ] = useState(false);
-    
+    console.log("start + " + enterRoom);
     useEffect(() => {   
-        
-    }, []);
-
-    function main(){
-        console.log("1");
         if (!eyeTracker.current) {
-            console.log("2");
             eyeTracker.current = new EasySeeso();
             userStatus.current = new UserStatusOption(true, false, false);
-            console.log("3");
             (async ()=>{
                 await eyeTracker.current.init(
                     licenseKey,
                     async () => {
                         await eyeTracker.current.startTracking(onGaze, onDebug);
                         if (!eyeTracker.current.checkMobile()) {
-                            eyeTracker.current.setMonitorSize(14); // 14 inch
+                            eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
                             eyeTracker.current.setCameraPosition(
                                 window.outerWidth / 2,
                                 true
                             );
-                            
                         }
                     }, // callback when init succeeded.
                     () => console.log("callback when init failed."), // callback when init failed.
@@ -58,95 +56,117 @@ const StudentWaitLessonRoomPage = () => {
                 // 여기서 버튼 활성화
                 setSeesoInit(true);
             })();
-            
+        }
+    }, []);
+    
+    // gaze callback.
+    function onGaze(gazeInfo) {
+        // do something with gaze info.
+        if (!isSeesoInit) {
+            showGaze(gazeInfo);
+        } else {
+            hideGaze();
         }
     }
-    // gaze callback.
-function onGaze(gazeInfo) {
-    if (!isCalibrationMode) {
-        // do something with gaze info.
-        showGaze(gazeInfo);
-    } else {
-        hideGaze();
+    
+    // calibration callback.
+    function onCalibrationNextPoint(pointX, pointY) {
+        currentX = pointX;
+        currentY = pointY;
+        let ctx = clearCanvas();
+        drawCircle(currentX, currentY, dotMinSize, ctx);
+        eyeTracker.current.startCollectSamples();
     }
-}
+    
+    // calibration callback.
+    function onCalibrationProgress(progress) {
+        let ctx = clearCanvas();
+        let dotSize = dotMinSize + (dotMaxSize - dotMinSize) * progress;
+        drawCircle(currentX, currentY, dotSize, ctx);
+    }
+    
+    // calibration callback.
+    const onCalibrationFinished = useCallback((calibrationData) => {
+        clearCanvas();
+        setSeesoInit(true);
+        eyeTracker.current.setUserStatusCallback(
+            onAttention,
+            null,
+            null
+            );
+            eyeTracker.current.setAttentionInterval(10);
+        }, []);
+        
+    function drawCircle(x, y, dotSize, ctx) {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(x, y, dotSize, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+        
+    function clearCanvas() {
+        let canvas = document.getElementById("output");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return ctx;
+    }
 
-// calibration callback.
-function onCalibrationNextPoint(pointX, pointY) {
-    currentX = pointX;
-    currentY = pointY;
-    let ctx = clearCanvas();
-    drawCircle(currentX, currentY, dotMinSize, ctx);
-    eyeTracker.current.startCollectSamples();
-}
+    // debug callback.
+    function onDebug(FPS, latency_min, latency_max, latency_avg) {
+        // do something with debug info.
+    }
+    
+    const onAttention = useCallback((timestampBegin, timestampEnd, score) =>{
+        console.log(
+        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}, enterRoom : ${enterRoom}`
+        );
 
-function onCalibrationProgress(progress) {
-    let ctx = clearCanvas();
-    let dotSize = dotMinSize + (dotMaxSize - dotMinSize) * progress;
-    drawCircle(currentX, currentY, dotSize, ctx);
-}
+        if(test){
+            console.log({lessonRoundNo : lessonRoundNo,
+                lessonNo : lessonNo,
+                userNo : userNo,
+                rate: score});
+            // mongodb server와 통신
+            axios.post(
+                // `${seesoUrl}/seeso/attention-rate`,
+                {
+                  lessonRoundNo: Number(lessonRoundNo),
+                  lessonNo: Number(lessonNo),
+                  userNo: Number(userNo),
+                  rate: Number(score),
+                },
+                {
+                  headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+                }
+              )
+                .then((res) => {
+                  console.log(res, "ddd");
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+        }
+    },[enterRoom]);
 
-const onCalibrationFinished = useCallback((calibrationData) => {
-    clearCanvas();
-    isCalibrationMode = false;
-    eyeTracker.current.setUserStatusCallback(
-        onAttention,
-        null,
-        null
-    );
-    eyeTracker.current.setAttentionInterval(10);
-}, []);
-
-function drawCircle(x, y, dotSize, ctx) {
-    ctx.fillStyle = "#FF0000";
-    ctx.beginPath();
-    ctx.arc(x, y, dotSize, 0, Math.PI * 2, true);
-    ctx.fill();
-}
-
-function clearCanvas() {
-    let canvas = document.getElementById("output");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    let ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return ctx;
-}
-
-// debug callback.
-function onDebug(FPS, latency_min, latency_max, latency_avg) {
-    // do something with debug info.
-}
-
-function onAttention(timestampBegin, timestampEnd, score) {
-    console.log(
-        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
-    );
-}
     const tmpClick = useCallback(() => {
-        if (!isCalibrationMode) {
-            isCalibrationMode = true;
-            hideGaze();
-            setTimeout(function () {
-                console.log(eyeTracker.current);
-                eyeTracker.current.startCalibration(
-                    onCalibrationNextPoint,
-                    onCalibrationProgress,
-                    onCalibrationFinished
+        setSeesoInit(true);
+        hideGaze();
+        setTimeout(function () {
+            eyeTracker.current.startCalibration(
+                onCalibrationNextPoint,
+                onCalibrationProgress,
+                onCalibrationFinished
                 );
             }, 2000);
-        }
     }, []);
 
 
-    
-    const userNo = useSelector((state) => state.user.userNo);
-    const userId = useSelector((state) => state.user.userId);
-    const userName = useSelector((state) => state.userName);
-    const [enterRoom, setEnterRoom] = useState(false);
-
     const enterTheLessonRoom =  () => {
         setEnterRoom(true);
+        test = true;
+        console.log(`dㅇㅇdjdjdjdjdjdjdjdjjdjdjd  ${enterRoom}`);
     };
     return (
         <>
@@ -215,8 +235,6 @@ function onAttention(timestampBegin, timestampEnd, score) {
                     
                 </div>
             </>
-            {main()}
-
         </>
     );
 };

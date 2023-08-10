@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -13,15 +12,12 @@ import { OpenVidu } from "openvidu-browser";
 import ChatComponent from "../../components/chat/ChatComponent";
 
 const StudentLessonRoomPage = () => {
-    console.log("난 지금 들어왔어");
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userType = useSelector((state) => state.user.userType);
     const userName = useSelector((state) => state.user.userName);
-    const location = useLocation();
     const { lessonNo, lessonRoundNo } = useParams();
-    console.log(lessonRoundNo, "params!!");
     const navigate = useNavigate();
 
     // session, state 선언
@@ -54,7 +50,6 @@ const StudentLessonRoomPage = () => {
         return () => {
             // 윈도우 객체에 화면 종료 이벤트 제거
             window.removeEventListener("beforeunload", onBeforeUnload);
-            leaveSession(); // 세션 나가기
         };
     }, []);
 
@@ -95,6 +90,7 @@ const StudentLessonRoomPage = () => {
 
         // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on("streamDestroyed", (event) => {
+            event.preventDefault();
             setSubscribers((preSubscribers) =>
                 preSubscribers.filter(
                     (subscriber) => subscriber !== event.stream.streamManager
@@ -112,8 +108,8 @@ const StudentLessonRoomPage = () => {
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-        console.log("join 완료");
     };
+
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
@@ -178,26 +174,26 @@ const StudentLessonRoomPage = () => {
         }
     };
 
-    // // 알림
-    // useEffect(() => {
-    //     const sse = new EventSource(
-    //         `${url}/notification/subscribe/${userId}`
-    //     );
+    // 알림
+    useEffect(() => {
+        const sse = new EventSource(
+            `${url}/notification/subscribe/${userId}`
+        );
 
-    //     sse.onopen = () => {
-    //         console.log("SSEONOPEN==========", sse);
-    //     };
+        sse.onopen = () => {
+            console.log("SSEONOPEN==========", sse);
+        };
 
-    //     sse.onmessage = async (event) => {
-    //         const res = await event.data;
-    //         const parseData = JSON.parse(res);
-    //         console.log("SSEONMESSAGE==========", parseData);
-    //     };
+        sse.onmessage = async (event) => {
+            const res = await event.data;
+            const parseData = JSON.parse(res);
+            console.log("SSEONMESSAGE==========", parseData);
+        };
 
-    //     sse.addEventListener("Request", function (event) {
-    //         console.log("ADDEVENTLISTENER==========", event.data);
-    //     });
-    // }, []);
+        sse.addEventListener("Request", function (event) {
+            console.log("ADDEVENTLISTENER==========", event.data);
+        });
+    }, []);
 
 
     return (
@@ -228,7 +224,7 @@ const StudentLessonRoomPage = () => {
                         </div>
 
                         <div>
-                            {mainStreamManager && (
+                            {/* {mainStreamManager && (
                                 <ChatComponent
                                     userName={userName}
                                     streamManager={mainStreamManager}
@@ -236,7 +232,7 @@ const StudentLessonRoomPage = () => {
                                         session.connection.connectionId
                                     }
                                 />
-                            )}
+                            )} */}
                         </div>
                     </div>
                 ) : null}

@@ -101,7 +101,7 @@ public class OpenviduService {
         } else {
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
                     .type(ConnectionType.WEBRTC)
-                    .role(OpenViduRole.SUBSCRIBER)
+                    .role(OpenViduRole.PUBLISHER)
                     .data(String.valueOf(studentNo))
                     .build();
             try{

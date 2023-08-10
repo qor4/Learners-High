@@ -1,5 +1,6 @@
 package com.learnershigh.repository.lessonhub;
 
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lessonhub.LessonHomework;
 import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.lessonhub.AttendHomeworkProjectionInterface;
@@ -30,8 +31,8 @@ public interface LessonHomeworkRepository extends JpaRepository<LessonHomework, 
 
     LessonHomework findByLessonHomeworkNo(Long lessonHomeworkNo);
 
-//    LessonHomework findByUserNoAndAndLessonRoundNo(Long userNo, Long lessonRoundNo);
+    List<LessonHomework> findByLessonRoundNoIn(List<LessonRound> lessonRoundList);
 
-
+    List<LessonHomework> findByUserNoAndLessonRoundNoIn(User user, List<LessonRound> lessonRoundList);
 }
 

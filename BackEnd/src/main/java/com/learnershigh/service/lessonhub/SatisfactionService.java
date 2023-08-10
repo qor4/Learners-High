@@ -2,6 +2,7 @@ package com.learnershigh.service.lessonhub;
 
 import com.learnershigh.domain.lessonhub.Satisfaction;
 import com.learnershigh.dto.lessonhub.SatiDto;
+import com.learnershigh.dto.lessonhub.SatiResultDto;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
 import com.learnershigh.repository.lessonhub.SatisfactionRepository;
@@ -45,10 +46,11 @@ public class SatisfactionService {
     }
 
     // 수업 총 만족도 뽑기
-    public double lessonAllSati(Long teacherNo) {
+    public SatiResultDto lessonAllSati(Long teacherNo) {
 
         double satiTotal = 0.0;
         double satiCnt = 0.0;
+
 
 
         List<Satisfaction> satiList = satisfactionRepository.findAllByTeacherNo(userRepository.findByUserNo(teacherNo));
@@ -59,14 +61,18 @@ public class SatisfactionService {
         }
         double result = satiTotal/satiCnt;
 
+
         System.out.println(result);
 
-        return result;
+
+        SatiResultDto satiResultDto = new SatiResultDto(result, satiCnt);
+
+        return satiResultDto;
 
     }
 
     // 강사 총 만족도 뽑기
-    public double teacherAllSati(Long teacherNo) {
+    public SatiResultDto teacherAllSati(Long teacherNo) {
 
         double satiTotal = 0.0;
         double satiCnt = 0.0;
@@ -82,7 +88,9 @@ public class SatisfactionService {
 
         System.out.println(result);
 
-        return result;
+        SatiResultDto satiResultDto = new SatiResultDto(result, satiCnt);
+
+        return satiResultDto;
 
     }
 

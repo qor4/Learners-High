@@ -30,6 +30,15 @@ public class LessonRoundService {
         List<HashMap<String, Object>> result = new ArrayList<>();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
         lessonRoundRepository.deleteAll(lessonRoundList);
+        if (lessonRoundJoinDtoList.size() == 0) {
+            throw new IllegalStateException("최소 하나 이상의 회차를 입력해주세요.");
+        }
+        Lesson lessonEntity = lessonRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
+        LocalDate now = LocalDate.now();
+        if(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate().isBefore(now.plusDays(6))){
+            lessonEntity.setLessonStatus("작성 중");
+            throw new IllegalStateException("수업 시작 일시는 현재 날짜에서 7일 이후부터 가능합니다.");
+        }
         for (LessonRoundJoinDto lessonRoundJoinDto : lessonRoundJoinDtoList) {
             LessonRound lessonRound = new LessonRound();
             if (lessonRepository.findByLessonNo(lessonRoundJoinDto.getLessonNo()) == null) {
@@ -61,12 +70,6 @@ public class LessonRoundService {
             result.add(hashMap);
         }
         // 회차 정보를 통해 수업의 시작, 종료 날짜 설정
-        Lesson lessonEntity = lessonRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
-        LocalDate now = LocalDate.now();
-        if(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate().isBefore(now.plusDays(6))){
-            lessonEntity.setLessonStatus("작성 중");
-            throw new IllegalStateException("수업 시작 일시는 현재 날짜에서 7일 이후부터 가능합니다.");
-        }
         lessonEntity.setLessonStartDate(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate());
         lessonEntity.setLessonEndDate(lessonRoundJoinDtoList.get(lessonRoundJoinDtoList.size() - 1).getLessonRoundStartDatetime().toLocalDate());
         lessonEntity.setLessonTotalRound(lessonRoundJoinDtoList.size());

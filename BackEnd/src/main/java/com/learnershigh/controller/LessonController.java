@@ -4,10 +4,8 @@ import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.dto.lesson.*;
-import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
 import com.learnershigh.service.lesson.LessonRoundService;
 import com.learnershigh.service.lesson.LessonService;
-import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ public class LessonController {
 
     private final LessonService lessonService;
     private final LessonRoundService lessonRoundService;
-    private final UserService userService;
 
     // 강의 개설
     @PostMapping("/join")
@@ -99,10 +96,10 @@ public class LessonController {
         HashMap<String, Object> isWriting = new HashMap<>();
         Lesson lessonDomain = lessonService.isWritingByUserNo(userNo);
         if (lessonDomain != null) {
-            isWriting.put("isWriging", Boolean.TRUE);
+            isWriting.put("isWriting", Boolean.TRUE);
             isWriting.put("lessonNo", lessonDomain.getLessonNo());
         } else {
-            isWriting.put("isWriging", Boolean.FALSE);
+            isWriting.put("isWriting", Boolean.FALSE);
         }
         responseBody.setResult(isWriting);
         return ResponseEntity.ok().body(responseBody);
@@ -189,6 +186,16 @@ public class LessonController {
     public ResponseEntity<CustomResponseBody> mainTop5() {
         CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
         responseBody.setResult(lessonService.mainTop5());
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 다중 검색 리스트 출력
+    @ApiOperation("다중 검색 리스트 출력")
+    @GetMapping("/search")
+    public ResponseEntity<CustomResponseBody> multiSearch(@RequestParam(required = false) String searchBar, @RequestParam(required = false) String searchWord) {
+        CustomResponseBody responseBody = new CustomResponseBody("다중 검색 강의리스트 출력");
+        System.out.println(lessonService.multiSearch(searchBar, searchWord));
+        responseBody.setResult(lessonService.multiSearch(searchBar, searchWord));
         return ResponseEntity.ok().body(responseBody);
     }
 
