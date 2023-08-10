@@ -313,6 +313,7 @@ const ClassJoin = () => {
                                 <StyledImg
                                     src={thumbnailURL}
                                     alt="썸네일 사진"
+                                    crossOrigin="anonymous"
                                 />
                             ) : (
                                 <StyledImg

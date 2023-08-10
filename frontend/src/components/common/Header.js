@@ -94,7 +94,10 @@ const Header = () => {
               }
             navigate(`/lesson/join`)
         })
-        .catch(err => navigate(`/lesson/join`))
+        .catch(err => {
+            console.log(err, "에러내용")
+            navigate(`/lesson/join`)
+        })
         ;
     }
     const initControllLessonJoin = () => {
