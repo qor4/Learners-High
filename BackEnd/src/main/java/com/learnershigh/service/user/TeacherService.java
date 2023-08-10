@@ -3,6 +3,7 @@ package com.learnershigh.service.user;
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonHomeworkNotice;
 import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.lessonhub.LessonAttend;
 import com.learnershigh.domain.lessonhub.LessonHomework;
 import com.learnershigh.domain.lessonhub.StudentLessonList;
 import com.learnershigh.domain.user.User;
@@ -12,6 +13,7 @@ import com.learnershigh.dto.lessonhub.*;
 import com.learnershigh.dto.user.TeacherProfileDto;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
+import com.learnershigh.repository.lessonhub.LessonAttendRepository;
 import com.learnershigh.repository.lessonhub.LessonHomeworkNoticeRepository;
 import com.learnershigh.repository.lessonhub.LessonHomeworkRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +39,7 @@ public class TeacherService {
     private final LessonHomeworkNoticeRepository lessonHomeworkNoticeRepository;
     private final StudentLessonListRepository studentLessonListRepository;
     private final LessonHomeworkRepository lessonHomeworkRepository;
+    private final LessonAttendRepository lessonAttendRepository;
 
     public boolean isTeacher(User user) {
         if (user == null) {
@@ -121,7 +126,7 @@ public class TeacherService {
         if (!isTeacher(teacher)) {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
-        if(!isTeacherLesson(teacher, homeworkNoticeJoinDto.getLessonNo())){
+        if (!isTeacherLesson(teacher, homeworkNoticeJoinDto.getLessonNo())) {
             throw new IllegalStateException("강의하지 않는 수업입니다.");
         }
         Lesson lessonDomain = lessonRepository.findByLessonNoAndUserNo(homeworkNoticeJoinDto.getLessonNo(), teacher);
@@ -157,7 +162,7 @@ public class TeacherService {
         if (!isTeacher(user)) {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
-        if(!isTeacherLesson(user, lessonNo)){
+        if (!isTeacherLesson(user, lessonNo)) {
             throw new IllegalStateException("강의하지 않는 수업입니다.");
         }
         // 강의를 수강하는 학생 List
@@ -180,7 +185,7 @@ public class TeacherService {
         if (!isTeacher(user)) {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
-        if(!isTeacherLesson(user, lessonNo)){
+        if (!isTeacherLesson(user, lessonNo)) {
             throw new IllegalStateException("강의하지 않는 수업입니다.");
         }
         return lessonRepository.getInfoTab(lessonNo);
@@ -191,7 +196,7 @@ public class TeacherService {
         if (!isTeacher(user)) {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
-        if(!isTeacherLesson(user, lessonNo)){
+        if (!isTeacherLesson(user, lessonNo)) {
             throw new IllegalStateException("강의하지 않는 수업입니다.");
         }
         List<LessonRoundHomeworkStatusDto> lessonRoundHomeworkStatusDtoList = new ArrayList<>();
@@ -231,4 +236,64 @@ public class TeacherService {
         return teacherProfile;
     }
 
+    public Object getAttendRate(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isTeacherLesson(user, lessonNo)) {
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNoAndLessonRoundEndTimeBefore(lessonNo, LocalDateTime.now());
+        List<LessonAttend> lessonAttendList = lessonAttendRepository.findByLessonRoundNoIn(lessonRoundList);
+
+        if (lessonAttendList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
+
+        double attendCnt = 0.0;
+        double absentCnt = 0.0;
+        for (LessonAttend lessonAttend : lessonAttendList) {
+            if (lessonAttend.getLessonAttendStatus().equals("출석")) {
+                attendCnt++;
+            } else {
+                absentCnt++;
+            }
+        }
+        double result = attendCnt / (absentCnt + attendCnt) * 100;
+        return result;
+    }
+
+    public Object getHomeworkRate(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isTeacher(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isTeacherLesson(user, lessonNo)) {
+            throw new IllegalStateException("강의하지 않는 수업입니다.");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNoAndLessonRoundEndTimeBefore(lessonNo, now);
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNumberAndLessonRoundNumber(lessonNo, lessonRoundList.get(lessonRoundList.size() - 1).getLessonRoundNumber() + 1);
+        if (lessonRound!=null &&lessonRound.getLessonRoundStartDatetime().isBefore(now)) {
+            int deleteIndex=lessonRoundList.size() - 1;
+            lessonRoundList.remove(deleteIndex);
+        }
+        List<LessonHomework> lessonHomeworkList = lessonHomeworkRepository.findByLessonRoundNoIn(lessonRoundList);
+        double submissionCnt = 0.0;
+        double unsubmittedCnt = 0.0;
+        if (lessonHomeworkList.size() == 0) {
+            return "아직 집계할 데이터가 없습니다.";
+        }
+
+        for (LessonHomework lessonHomework : lessonHomeworkList) {
+            if (lessonHomework.getHomeworkStatus().equals("제출")) {
+                submissionCnt++;
+            } else {
+                unsubmittedCnt++;
+            }
+        }
+        double result = submissionCnt / (submissionCnt + unsubmittedCnt) * 100;
+        return result;
+    }
 }
