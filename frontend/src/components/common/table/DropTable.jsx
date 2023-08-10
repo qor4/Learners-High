@@ -1,23 +1,72 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, {tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import {  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material'
 
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { Container } from '@mui/material';
 import axios from 'axios'
 import { url } from '../../../api/APIPath';
+import Button from '../Button';
+
+import styled from '@emotion/styled';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#E1E6F9",
+    color: 'black',
+    font: 'inherit'
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    font: 'inherit'
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&' : {
+    font: 'inherit'
+  },
+  
+  '&:nth-of-type(odd)': {
+    backgroundColor: "#F9FAFF",
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+const StyledSubTableRow = styled(TableRow)(({theme}) => ({
+  '&' : {
+    font: 'inherit',
+    fontSize: 14
+  },
+
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  // hide last border
+  '&:hover:not(disbled)' : {
+    background: '#bcc0d1',
+    color: '#bebbbb'
+
+  }
+
+}))
 
 // 하나의 행이다.
 // userName, lessonAttendRealStatus(실제 출결), lessonAttendTotalStatus(진행 수업), homeworkRealSubmit, homeworkTotalSubmit
@@ -48,20 +97,20 @@ function createData(name, calories, fat, carbs, protein, price) {
 
 function Row(props) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell component="th" scope="row">
+      <StyledTableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <StyledTableCell component="th" scope="row">
           {row.name}
-        </TableCell>
-        {/* <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell> */}
-        <TableCell/>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
-        <TableCell>
+        </StyledTableCell>
+        {/* <StyledTableCell align="right">{row.calories}</StyledTableCell>
+        <StyledTableCell align="right">{row.fat}</StyledTableCell> */}
+        <StyledTableCell/>
+        <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+        <StyledTableCell align="right">{row.protein}</StyledTableCell>
+        <StyledTableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -69,44 +118,44 @@ function Row(props) {
           >
             {open ? <HiChevronUp /> : <HiChevronDown />}
           </IconButton>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        </StyledTableCell>
+      </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               {/* <Typography variant="h6" gutterBottom component="div">
                 History
               </Typography> */}
-              <Table size="small" aria-label="purchases" >
+              <Table aria-label="detailInfo" >
                 {/* <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>Date</StyledTableCell>
+                    <StyledTableCell>Customer</StyledTableCell>
+                    <StyledTableCell align="right">Amount</StyledTableCell>
+                    <StyledTableCell align="right">Total price ($)</StyledTableCell>
+                  </StyledTableRow>
                 </TableHead> */}
                 <TableBody>
                   {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
+                    <StyledSubTableRow key={historyRow.date}>
+                      <StyledTableCell component="th" scope="row">
                         {historyRow.date}
-                      </TableCell>
-                      <TableCell >{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
+                      </StyledTableCell>
+                      <StyledTableCell >{historyRow.customerId}</StyledTableCell>
+                      <StyledTableCell align="right">{historyRow.amount}</StyledTableCell>
+                      <StyledTableCell align="right">
                         {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
-                      <TableCell/>
-                    </TableRow>
+                      </StyledTableCell>
+                      <StyledTableCell/>
+                    </StyledSubTableRow>
                   ))}
                 </TableBody>
               </Table>
             </Box>
           </Collapse>
-        </TableCell>
-      </TableRow>
+        </StyledTableCell>
+      </StyledTableRow>
     </React.Fragment>
   );
 }
@@ -152,15 +201,17 @@ export default function DropTable() {
     <Container>
     <TableContainer component={Paper} elevation={10} sx={{borderRadius: "15px" ,paddingTop: "1rem", paddingBottom: "1rem", marginTop: "2rem", marginBottom: "2rem"}}>
       <Table aria-label="collapsible table">
-        <TableHead style={{background: "#F9FAFF"}}>
-          <TableRow>
-            <TableCell align="left"> <span>학생명</span></TableCell>
-            <TableCell />
-            {/* <TableCell /> */}
-            <TableCell align="right"> <span>출석</span></TableCell>
-            <TableCell align="right"><span>과제</span></TableCell>
-            <TableCell align='right'/>
-          </TableRow>
+        <TableHead 
+        // style={{background: "#F9FAFF"}}
+        >
+          <StyledTableRow>
+            <StyledTableCell align="left"> <span>학생명</span></StyledTableCell>
+            <StyledTableCell />
+            {/* <StyledTableCell /> */}
+            <StyledTableCell align="right"> <span>출석</span></StyledTableCell>
+            <StyledTableCell align="right"><span>과제</span></StyledTableCell>
+            <StyledTableCell align='right'/>
+          </StyledTableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (

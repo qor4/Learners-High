@@ -85,8 +85,8 @@ const LessonRoundItemBoxList = ({
                         // >
                             <StyledBox $hover 
                             onClick={(e)=> {
-                                console.log(e.target.className, "넌 뭐니")
-                                if (e.target.className!=='singleEvent') {
+                                // Button에 SingleEvent가 포함되면 클릭하면 안된다.(false여야 상세강의 가기)
+                                if (!e.target.className.includes('singleEvent')) {
                                     if (userType==="T") {
                                         
                                         navigate(`/edu/teacher/${userNo}/${lessonItem.lessonNo}`)
