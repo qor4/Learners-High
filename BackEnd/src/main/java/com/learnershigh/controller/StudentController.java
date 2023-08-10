@@ -87,16 +87,18 @@ public class StudentController {
 
     @GetMapping("/lesson/list/{userNo}")
     @ApiOperation("학생 수강 목록")
-    public List<LessonListDto> userLessonAll(@PathVariable("userNo") Long userNo)
+    public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo)
     {
-        return studentService.userLessonAll(userNo);
+        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 목록 조회 완료");
+        responseBody.setResult(studentService.userLessonAll(userNo));
+        return ResponseEntity.ok().body(responseBody);
     }
 
     @GetMapping("/{userNo}/lesson/{lessonNo}")
     @ApiOperation("학생 수강 관리 현황 탭")
     public ResponseEntity<CustomResponseBody> getStudentLessonDashboardInfo(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo)
     {
-        CustomResponseBody responseBody = new CustomResponseBody("강사 수업 관리 소개 탭 조회 완료");
+        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 관리 현황 탭 조회 완료");
         try {
             StudentAttendHomeworkDto attendHomeworkInfo = studentService.getStudentAttendHomeworkInfo(userNo, lessonNo);
             List<HashMap<String, Object>> fileInfo = studentService.getLessonRoundFileInfo(lessonNo);
