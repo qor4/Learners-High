@@ -342,10 +342,6 @@ const ClassRoundJoin = () => {
         navigate("/")
     }
 
-    const beforePage = () => {
-        
-    }
-    
 
     return (
         <>
@@ -473,7 +469,7 @@ const ClassRoundJoin = () => {
 
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
-                <Button onClick={beforePage}>이전</Button>
+                <Button onClick={() => navigate(-1)}>이전</Button>
                 <Button onClick={handleClickTmpStore}>임시 저장</Button>
                 <Button onClick={handleClickRegisterLesson}>강의 등록</Button>
             </div>

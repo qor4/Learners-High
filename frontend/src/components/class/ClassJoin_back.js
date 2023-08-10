@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container } from "@material-ui/core";
 
 import { url } from "../../api/APIPath";
@@ -19,18 +19,49 @@ import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 import tokenHttp from "../../api/APIPath";
 import Modal from "../common/Modal";
 
+const ButtonWrap = styled.div`
+    margin: 0 auto;
+    width: 100%;
+    margin-top: 1rem;
+    & > * {
+        width: 47.5%;
+        margin-right: 5%;
+    }
+    & > *:last-child {
+        margin-right: 0;
+    }
+`;
+
 const ClassJoin = () => {
+    //  동민 추가
+    const [showLessonModal, setshowLessonModal] = useState(false);
+
+    // 모달을 닫을 때 -> 그냥 닫기 아니지... 아니지..!
+    const handleCloseModal = () => {
+        handleDeleteLesson()
+    };
+
+    const handleUpdateLesson = () => {
+        setshowLessonModal(false);
+        document.body.classList.remove("overflow-hidden");
+        tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
+        
+    }
+    const handleDeleteLesson = () => {
+        tokenHttp.delete(`${url}/lesson/writing/delete/${lessonNo}`)
+        setshowLessonModal(false);
+        setLessonNo("")
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    // 동민 추가 종료
     const navigate = useNavigate();
-    const location = useLocation();
-    // 업데이트 "다음"버튼 눌렀으면 그냥 "isUpdated를 false로 바꿔야 axios요청 안보낸다."
-    const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
-    console.log(isUpdated, "업데이트 할거")
     const userNo = useSelector((state) => state.user.userNo);
-    const [lessonNo, setLessonNo] = useState(location.state ? location.state.lessonNo : "");
+    const [lessonNo, setLessonNo] = useState("");
 
     const [lessonName, setLessonName] = useState("");
     const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
-    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState("");
+    const [lessonThumbnailInfo, setLessonIntro] = useState("");
     const [lessonInfo, setLessonInfo] = useState("");
 
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
@@ -47,37 +78,22 @@ const ClassJoin = () => {
     // const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([]);
+
+    const [isWriting, setIsWriting] = useState(false);
     useEffect(() => {
         axios.get(`${url}/lesson/type/`).then((res) => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
-
-        // 작성중인 정보가 있다!
-        if (isUpdated) {
-            tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
-            .then(res => {
-                console.log(res, "작성중인 정보")
-                const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
-                setChooseLessonTypeNo(lessonTypeNo)
-                setSubjectName(lessonTypeName)
-                setLessonName(lessonName)
-                setLessonInfo(lessonInfo)
-                setMaxStudent(maxStudent)
-                setLessonPrice(lessonPrice)
-                setLessonThumbnailImg(lessonThumbnailImg)
-                setLessonThumbnailInfo(lessonThumbnailInfo)
-                // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
-            })
-            .then(()=> {
-                tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
-                .then(res=> {
-                    console.log(res, "S3서버로 간다")
-                    setThumbnailURL(res.data.resultMsg)
-                    
-                })
-            })
-        }
+        //  동민 수정 시작
+        tokenHttp.get(`${url}/lesson/writing/${userNo}`).then((res) => {
+            console.log(res, "수정여부 확인 결과값")
+            if (res.data.result.isWriting) {
+                setshowLessonModal(true);
+                setLessonNo(res.data.result.lessonNo)
+            }
+        });
+        // 동민 수정 종료
     }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -127,7 +143,7 @@ const ClassJoin = () => {
         if (lessonThumbnailInfo.length >= 100) {
             return;
         }
-        setLessonThumbnailInfo(event.target.value);
+        setLessonIntro(event.target.value);
     };
 
     // html 에디터에 내용을 입력하고, 에디터에서 포커스가 빠져나왔을 때 (Blur)
@@ -189,7 +205,7 @@ const ClassJoin = () => {
                 if (lessonThumbnailImg) {
                     const formData = new FormData();
                     formData.append("multipartFile", lessonThumbnailImg);
-                    tokenHttp
+                    axios
                         .post(
                             `${url}/s3/upload/thumbnail/${lessonNo}`,
                             formData,
@@ -395,6 +411,28 @@ const ClassJoin = () => {
                     <Button onClick={nextPage}>다음</Button>
                 </Link>
             </div>
+
+            <Modal
+                title="이어서 작성하기"
+                show={showLessonModal}
+                onClose={handleCloseModal}
+            >
+                <div>
+                    "새로 작성하기"를 누를 시, 기존에 작성하던 강의는 삭제됩니다.
+                </div>
+                <ButtonWrap>
+                    <Button type="button"
+                    // 스타일링 필요
+                        $danger
+                        onClick={handleDeleteLesson}
+                    >
+                        새로 작성하기
+                    </Button>
+                    <Button type="button" $point onClick={handleUpdateLesson}>
+                        이어서 작성하기
+                    </Button>
+                </ButtonWrap>
+            </Modal>
         </>
     );
 };

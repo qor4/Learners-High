@@ -1,6 +1,6 @@
 // 공통 Header 컴포넌트
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { HiMenu, HiOutlineX } from "react-icons/hi";
@@ -8,6 +8,13 @@ import { HiMenu, HiOutlineX } from "react-icons/hi";
 import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
 import { UserLogOut } from "../auth/UserLogOut";
+
+import axios from "axios";
+
+// 강의 개설 확인 모달
+import ClassJoinCheckModal from "../class/ClassJoinCheckModal";
+import { url } from "../../api/APIPath";
+import tokenHttp from "../../api/APIPath";
 
 const NavStyle = styled(NavLink)`
     &:hover {
@@ -56,6 +63,8 @@ const HeaderCommonNav = styled.div`
 `;
 
 const Header = () => {
+    const navigate = useNavigate()
+
     const [showLoginModal, setShowLoginModal] = useState(false);
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
@@ -65,14 +74,36 @@ const Header = () => {
         setShowLoginModal(true);
         document.body.classList.add("overflow-hidden");
     };
-
+    const [lessonNo, setLessonNo] = useState("")
     // 모달을 닫을 때
     const handleCloseModal = () => {
         setShowLoginModal(false);
         document.body.classList.remove("overflow-hidden");
     };
 
+    const [controlLessonJoin, setControlLessonJoin] = useState(false)
+    // 강의 개설할 때
+    const goToLessonJoin = () => { 
+        console.log("실행?")
+        tokenHttp.get(`${url}/lesson/writing/${userNo}`).then((res) => {
+            console.log(res, "수정여부 확인 결과값");
+            if (res.data.result.isWriting) {
+                setControlLessonJoin(true);
+                setLessonNo(res.data.result.lessonNo);
+                return
+              }
+            navigate(`/lesson/join`)
+        })
+        .catch(err => navigate(`/lesson/join`))
+        ;
+    }
+    const initControllLessonJoin = () => {
+        setControlLessonJoin(false)
+        // setLessonNo("")
+    }
+
     return (
+        <>
         <StyledHeader>
             <StyledNav>
                 {/* 로그인이 안 되어있을 경우 */}
@@ -120,7 +151,7 @@ const Header = () => {
                             <NavStyle to={`/edu/teacher/${userNo}`}>
                                 수업 관리
                             </NavStyle>
-                            <NavStyle to="/lesson/join">강의 개설</NavStyle>
+                            <NavStyle onClick={goToLessonJoin}>강의 개설</NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
                             <NavHoverStyle to={`/`}>
@@ -130,6 +161,7 @@ const Header = () => {
                                 마이페이지
                             </NavStyle>
                         </HeaderCommonNav>
+
                     </>
                 )}
 
@@ -141,7 +173,7 @@ const Header = () => {
                                 <Img
                                     src="/assets/logo-temp.png"
                                     alt="logo-img"
-                                />
+                                    />
                             </NavStyle>
                             <NavStyle to="/lesson">전체 강의</NavStyle>
                             <NavStyle to={`/edu/student/${userNo}`}>
@@ -160,6 +192,8 @@ const Header = () => {
                 )}
             </StyledNav>
         </StyledHeader>
+        {controlLessonJoin ? <ClassJoinCheckModal isUpdated={controlLessonJoin} onDataChange={initControllLessonJoin} lessonNo={lessonNo ? lessonNo : null}/> : null}
+        </>
     );
 };
 
