@@ -4,6 +4,11 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
 
+import { Grid } from "@mui/material";
+import { StyledBox } from "../class/LessonRoundItemBoxList";
+import Button from "../common/Button";
+import { InputWrap, StyledInput } from "../auth/UserJoinTeacherEdu";
+
 const TeacherEduItem = ({ item }) => {
     const [eduItem, setEduItem] = useState(item);
     const [isEditing, setIsEditing] = useState(false);
@@ -56,72 +61,126 @@ const TeacherEduItem = ({ item }) => {
     };
 
     return (
-        <>
-            {!isEditing && !validCanModify ? (
-                <>
-                    <span>
-                        {eduStartDate} - {eduEndDate}
-                    </span>
-                    <span>{universityName} </span>
-                    <span>{majorName} </span>
-                    <span>{degree} </span>
-                    <button onClick={handleOnClickUpdateStart}>수정하기</button>
-                </>
-            ) : (
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <div>
-                        <p>경력</p>
-
-                        <span>대학명</span>
-                        <input
-                            type="text"
-                            name="universityName"
-                            className="universityName"
-                            onChange={(e) => onChange(e)}
-                            value={universityName}
-                        />
-
-                        <span>전공명</span>
-                        <input
-                            type="text"
-                            name="majorName"
-                            className="majorName"
-                            onChange={(e) => onChange(e)}
-                            value={majorName}
-                        />
-
-                        <span>학위</span>
-                        <input
-                            type="text"
-                            name="degree"
-                            className="degree"
-                            onChange={(e) => onChange(e)}
-                            value={degree}
-                        />
-
-                        <span>입학년월</span>
-                        <input
-                            type="text"
-                            name="eduStartDate"
-                            className="eduStartDate"
-                            onChange={(e) => onChange(e)}
-                            value={eduStartDate}
-                        />
-                        <span>졸업년월</span>
-                        <input
-                            type="text"
-                            name="eduEndDate"
-                            className="eduEndDate"
-                            onChange={(e) => onChange(e)}
-                            value={eduEndDate}
-                        />
-                    </div>
-                    <button onClick={handleOnClickUpdateEnd}>수정완료</button>
-                </form>
-            )}
-
-            <button onClick={handleOnClickDelete}>삭제</button>
-        </>
+        <StyledBox style={{ textAlign: "center" }}>
+            <Grid container columns={18} alignItems="center">
+                {!isEditing && !validCanModify ? (
+                    <>
+                        <Grid item xs={4}>
+                            {eduStartDate} - {eduEndDate}
+                        </Grid>{" "}
+                        <Grid item xs={4}>
+                            <strong>{universityName}</strong>
+                        </Grid>
+                        <Grid item xs={4}>
+                            {majorName}
+                        </Grid>
+                        <Grid item xs={2}>
+                            {degree}
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button
+                                size="sm"
+                                onClick={handleOnClickUpdateStart}
+                            >
+                                수정
+                            </Button>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button size="sm" onClick={handleOnClickDelete}>
+                                삭제
+                            </Button>
+                        </Grid>
+                    </>
+                ) : (
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <Grid
+                            container
+                            columns={16}
+                            spacing={2}
+                            alignItems="center"
+                        >
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="eduStartDate">
+                                        입학년월
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="eduStartDate"
+                                        className="eduStartDate"
+                                        onChange={(e) => onChange(e)}
+                                        value={eduStartDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="eduEndDate">졸업년월</label>
+                                    <StyledInput
+                                        type="text"
+                                        name="eduEndDate"
+                                        className="eduEndDate"
+                                        onChange={(e) => onChange(e)}
+                                        value={eduEndDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="universityName">
+                                        대학명
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="universityName"
+                                        className="universityName"
+                                        onChange={(e) => onChange(e)}
+                                        value={universityName}
+                                    />{" "}
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={3}>
+                                <InputWrap>
+                                    <label htmlFor="majorName">전공명</label>
+                                    <StyledInput
+                                        type="text"
+                                        name="majorName"
+                                        className="majorName"
+                                        onChange={(e) => onChange(e)}
+                                        value={majorName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="degree">학위</label>
+                                    <StyledInput
+                                        type="text"
+                                        name="degree"
+                                        className="degree"
+                                        onChange={(e) => onChange(e)}
+                                        value={degree}
+                                    />{" "}
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <Button
+                                    size="sm"
+                                    onClick={handleOnClickUpdateEnd}
+                                >
+                                    완료
+                                </Button>
+                            </Grid>
+                            <Grid item md={2}>
+                                <Button size="sm" onClick={handleOnClickDelete}>
+                                    삭제
+                                </Button>{" "}
+                            </Grid>
+                        </Grid>
+                    </form>
+                )}
+            </Grid>
+        </StyledBox>
     );
 };
 

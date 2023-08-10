@@ -1,19 +1,26 @@
 // 전체 마이 페이지
 
-import Button from "../../components/common/Button";
-import TeacherJobList from "../../components/user/TeacherJobList";
-import TeacherEduList from "../../components/user/TeacherEduList";
 import { useSelector } from "react-redux";
+
+import { Container } from "@material-ui/core";
+
 import MypageInfo from "../../components/user/MypageInfo";
+import TeacherEduList from "../../components/user/TeacherEduList";
+import TeacherJobList from "../../components/user/TeacherJobList";
 
 const MyPagePage = () => {
     const userNo = useSelector((state) => state.user.userNo);
+    const userType = useSelector((state) => state.user.userType);
     return (
-        <div>
+        <Container maxWidth="md">
             <MypageInfo userNo={userNo} />
-            <TeacherJobList userNo={userNo} />
-            <TeacherEduList userNo={userNo} />
-        </div>
+            {userType === "T" && (
+                <>
+                    <TeacherJobList userNo={userNo} />
+                    <TeacherEduList userNo={userNo} />
+                </>
+            )}
+        </Container>
     );
 };
 

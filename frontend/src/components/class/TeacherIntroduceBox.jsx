@@ -7,21 +7,21 @@ import Card from "../common/Card";
 import { useState } from "react";
 
 // 강사 wrap
-const ImgInfoWrap = styled.div`
+export const ImgInfoWrap = styled.div`
     padding: 3rem 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
 
-/** image styled 컴포넌트 */
-const StyledThumbnail = styled.img`
+/** image styled 컴포넌트 */ 
+export const StyledThumbnail = styled.img`
     width: 35%;
     border-radius: 50%;
 `;
 
 /** info를 묶어주는 wrap 스타일 컴포넌트 */
-const InfoWrap = styled.div`
+export const InfoWrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
