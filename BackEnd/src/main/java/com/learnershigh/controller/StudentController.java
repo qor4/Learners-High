@@ -94,6 +94,27 @@ public class StudentController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @GetMapping("/{userNo}/lesson/{lessonNo}/rate")
+    @ApiOperation("학생 수업 별 출석률/과제 제출률 조회 완료")
+    public ResponseEntity<CustomResponseBody> getAttendAndHomeworkRate(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo)
+    {
+        CustomResponseBody responseBody = new CustomResponseBody("수업 별 출석률/과제 제출률 조회 완료");
+        try {
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("attendRate", studentService.getAttendRate(userNo, lessonNo));
+            result.put("homeworkRate", studentService.getHomeworkRate(userNo, lessonNo));
+            responseBody.setResult(result);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);    }
+
     @GetMapping("/{userNo}/lesson/{lessonNo}")
     @ApiOperation("학생 수강 관리 현황 탭")
     public ResponseEntity<CustomResponseBody> getStudentLessonDashboardInfo(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo)
