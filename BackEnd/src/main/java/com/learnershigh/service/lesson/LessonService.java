@@ -37,6 +37,8 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
+        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
+        lessonRepository.delete(writingLesson);
         if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
                 || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");

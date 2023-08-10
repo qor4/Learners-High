@@ -34,8 +34,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @Query(value = "SELECT C.lessonInfo FROM Lesson C WHERE C.lessonNo = :lessonNo")
     String getInfoTab(@Param("lessonNo") Long lessonNo);
-
-    
 }
 
 
