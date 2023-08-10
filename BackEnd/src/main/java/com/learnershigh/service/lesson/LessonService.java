@@ -1,5 +1,6 @@
 package com.learnershigh.service.lesson;
 
+import com.learnershigh.LessonSpecification;
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lesson.LessonType;
@@ -16,6 +17,7 @@ import com.learnershigh.repository.lesson.LessonTypeRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import com.learnershigh.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,21 +107,25 @@ public class LessonService {
         lessonJoin.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonJoin.setLessonStatus(lessonDomain.getLessonStatus());
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
+        lessonJoin.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
+
         return lessonJoin;
     }
+
     @Transactional
     public void deleteLesson(Long lessonNo) {
         Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
-        List<LessonRound> lessonRoundList =  lessonRoundRepository.findByLessonNo(lessonNo);
+        List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonNo);
         lessonRoundRepository.deleteAll(lessonRoundList);
         lessonRepository.delete(lesson);
     }
+
     @Transactional
     public void apply(StudentLessonActionDto studentLessonActionDto) {
         StudentLessonList studentLessonList = new StudentLessonList();
         User user = userRepository.findByUserNo(studentLessonActionDto.getUserNo());
 
-        if(user == null){
+        if (user == null) {
             throw new IllegalStateException("유효한 회원이 아닙니다.");
         }
         if (!user.getUserType().equals("S")) {
@@ -136,7 +142,7 @@ public class LessonService {
             throw new IllegalStateException("수강 인원이 모두 모집되었습니다.");
         }
         StudentLessonList studentLesson = studentLessonListRepository.findByLessonNoAndUserNo(lesson, user);
-        if(studentLesson != null){
+        if (studentLesson != null) {
             throw new IllegalStateException("이미 수강 중인 과목입니다.");
         }
         studentLessonList.setUserNo(user);
@@ -220,6 +226,113 @@ public class LessonService {
 
         }
         return returnlist;
+    }
+
+    // 다중 검색 조건 강의리스트 출력
+    public List<LessonListDto> multiSearch(String searchBar, String searchWord) {
+
+        System.out.println("들어왔니 멀티에");
+
+        List<LessonListDto> reallist = new ArrayList<>();
+
+
+        if (searchBar.equals("강사명") && !searchWord.equals(null)) {
+
+            Specification<User> userspec;
+
+            userspec = Specification.where(LessonSpecification.equalUserNameandSearchWord(searchWord));
+
+            List<User> userlist = userRepository.findAll(userspec);
+
+            for (User u : userlist) {
+
+                List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
+
+                for(Lesson l : lessonlist){
+                    LessonListDto lessonListDto = new LessonListDto();
+
+                    lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
+                            l.getLessonName(), l.getLessonStartDate(), l.getLessonEndDate(), l.getMaxStudent(), l.getTotalStudent(),
+                            l.getLessonPrice(), l.getLessonStatus(), l.getLessonViewCount());
+
+                    reallist.add(lessonListDto);
+                }
+
+            }
+
+            return reallist;
+
+
+        } else if (searchBar.equals("강의명") && !searchWord.equals(null)) {
+
+            Specification<Lesson> spec;
+
+            spec = Specification.where(LessonSpecification.equallessonNameandSearchWord(searchWord));
+
+            List<Lesson> lessonlist = lessonRepository.findAll(spec);
+
+            for (Lesson l : lessonlist) {
+                LessonListDto lessonListDto = new LessonListDto();
+
+                lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
+                        l.getLessonName(), l.getLessonStartDate(), l.getLessonEndDate(), l.getMaxStudent(), l.getTotalStudent(),
+                        l.getLessonPrice(), l.getLessonStatus(), l.getLessonViewCount());
+
+                reallist.add(lessonListDto);
+
+            }
+
+            return reallist;
+
+
+        } else if (searchBar.equals("전체") && !searchWord.equals(null)) {
+
+            Specification<User> userspec;
+
+            userspec = Specification.where(LessonSpecification.equalUserNameandSearchWord(searchWord));
+
+            List<User> userlist = userRepository.findAll(userspec);
+
+            for (User u : userlist) {
+
+                List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
+
+                for(Lesson l : lessonlist){
+                    LessonListDto lessonListDto = new LessonListDto();
+
+                    lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
+                            l.getLessonName(), l.getLessonStartDate(), l.getLessonEndDate(), l.getMaxStudent(), l.getTotalStudent(),
+                            l.getLessonPrice(), l.getLessonStatus(), l.getLessonViewCount());
+
+                    reallist.add(lessonListDto);
+                }
+
+            }
+
+            //////////////////////////////////////////////
+
+            Specification<Lesson> spec;
+
+            spec = Specification.where(LessonSpecification.equallessonNameandSearchWord(searchWord));
+
+            List<Lesson> lessonlist = lessonRepository.findAll(spec);
+
+            for (Lesson l : lessonlist) {
+                LessonListDto lessonListDto = new LessonListDto();
+
+                lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
+                        l.getLessonName(), l.getLessonStartDate(), l.getLessonEndDate(), l.getMaxStudent(), l.getTotalStudent(),
+                        l.getLessonPrice(), l.getLessonStatus(), l.getLessonViewCount());
+
+                reallist.add(lessonListDto);
+
+            }
+
+            return reallist;
+        }
+
+
+        return upcomingLessonList();
     }
 
 

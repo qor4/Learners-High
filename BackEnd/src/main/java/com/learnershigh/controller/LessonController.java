@@ -6,7 +6,6 @@ import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.dto.lesson.*;
 import com.learnershigh.service.lesson.LessonRoundService;
 import com.learnershigh.service.lesson.LessonService;
-import com.learnershigh.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -187,6 +186,16 @@ public class LessonController {
     public ResponseEntity<CustomResponseBody> mainTop5() {
         CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
         responseBody.setResult(lessonService.mainTop5());
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 다중 검색 리스트 출력
+    @ApiOperation("다중 검색 리스트 출력")
+    @GetMapping("/search")
+    public ResponseEntity<CustomResponseBody> multiSearch(@RequestParam(required = false) String searchBar, @RequestParam(required = false) String searchWord) {
+        CustomResponseBody responseBody = new CustomResponseBody("다중 검색 강의리스트 출력");
+        System.out.println(lessonService.multiSearch(searchBar, searchWord));
+        responseBody.setResult(lessonService.multiSearch(searchBar, searchWord));
         return ResponseEntity.ok().body(responseBody);
     }
 
