@@ -154,7 +154,7 @@ const Header = () => {
                             <NavStyle to={`/edu/teacher/${userNo}`}>
                                 수업 관리
                             </NavStyle>
-                            <NavStyle onClick={goToLessonJoin}>강의 개설</NavStyle>
+                            <NavStyle onClick={goToLessonJoin}><span >강의 개설</span></NavStyle>
                         </HeaderCommonNav>
                         <HeaderCommonNav>
                             <NavHoverStyle to={`/`}>

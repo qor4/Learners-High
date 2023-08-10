@@ -354,9 +354,10 @@ const ClassJoin = () => {
                             강사님이 원하는 대로 해당 내용을 추가하거나, 꾸밀 수
                             있습니다. 강사님의 수업을 상세히 소개해 주세요!
                         </div>
-                        {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
+                        {/* html 에디터 =00000> 엔터 시, <p>태그 처리 수정@@@ */}
                         <CKEditor
                             editor={ClassicEditor}
+                            data={lessonInfo}
                             value={lessonInfo}
                             // toolbar 설정
                             config={{
