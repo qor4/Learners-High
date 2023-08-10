@@ -130,7 +130,7 @@ const StudentWaitLessonRoomPage = () => {
                 rate: score});
             // mongodb server와 통신
             axios.post(
-                `${seesoUrl}/seeso/attention-rate`,
+                // `${seesoUrl}/seeso/attention-rate`,
                 {
                   lessonRoundNo: Number(lessonRoundNo),
                   lessonNo: Number(lessonNo),
