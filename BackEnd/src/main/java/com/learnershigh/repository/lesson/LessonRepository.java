@@ -4,13 +4,16 @@ package com.learnershigh.repository.lesson;
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 import java.util.List;
 
 
-public interface LessonRepository extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecificationExecutor<Lesson> {
 
     Lesson findByLessonNo(Long lessonNo);
 
@@ -34,6 +37,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @Query(value = "SELECT C.lessonInfo FROM Lesson C WHERE C.lessonNo = :lessonNo")
     String getInfoTab(@Param("lessonNo") Long lessonNo);
+
 }
 
 

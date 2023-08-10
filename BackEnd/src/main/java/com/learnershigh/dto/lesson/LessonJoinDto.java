@@ -26,4 +26,6 @@ public class LessonJoinDto {
     private String lessonStatus;
     // 수업 총 회차
     private int lessonTotalRound;
+
+    private String lessonThumbnailImg;
 }

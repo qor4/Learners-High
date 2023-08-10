@@ -2,6 +2,7 @@ package com.learnershigh.controller;
 
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.lessonhub.SatiDto;
+import com.learnershigh.dto.lessonhub.SatiResultDto;
 import com.learnershigh.service.lessonhub.SatisfactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,7 +39,7 @@ public class CsatController {
     // 수업 총 만족도
     @ApiOperation("강사의 모든 수업 총 만족도 뽑기")
     @GetMapping("/lesson/{teacherNo}")
-    public double lessonSati(@PathVariable("teacherNo") Long teacherNo)
+    public SatiResultDto lessonSati(@PathVariable("teacherNo") Long teacherNo)
     {
         System.out.println(satisfactionService.lessonAllSati(teacherNo));
         return satisfactionService.lessonAllSati(teacherNo);
@@ -47,7 +48,7 @@ public class CsatController {
     // 강사 총 만족도
     @ApiOperation("강사 모든 총 만족도 뽑기")
     @GetMapping("/teacher/{teacherNo}")
-    public double teacherSati(@PathVariable("teacherNo") Long teacherNo)
+    public SatiResultDto teacherSati(@PathVariable("teacherNo") Long teacherNo)
     {
         System.out.println(satisfactionService.lessonAllSati(teacherNo));
         return satisfactionService.lessonAllSati(teacherNo);

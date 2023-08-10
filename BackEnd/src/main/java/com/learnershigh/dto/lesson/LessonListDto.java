@@ -46,4 +46,20 @@ public class LessonListDto {
 
     // 조회수
     private int viewCount;
+
+    public void list(Long lessonNo, String userName,String lessonTypeName,
+                      String lessonName, LocalDate lessonStartDate,LocalDate lessonEndDate
+            ,int maxStudent, int totalStudent, int lessonPrice, String lessonStatus, int viewCount){
+        this.lessonNo=lessonNo;
+        this.userName=userName;
+        this.lessonTypeName =lessonTypeName;
+        this.lessonName=lessonName;
+        this.lessonStartDate=lessonStartDate;
+        this.lessonEndDate=lessonEndDate;
+        this.maxStudent=maxStudent;
+        this.totalStudent=totalStudent;
+        this.lessonPrice=lessonPrice;
+        this.lessonStatus=lessonStatus;
+        this.viewCount=viewCount;
+    }
 }

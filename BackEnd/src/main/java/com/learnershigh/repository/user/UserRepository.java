@@ -1,8 +1,10 @@
 package com.learnershigh.repository.user;
 
 
+import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ import java.util.List;
 //}
 
 // -- 방법 2
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     // 아이디로 user 객체 리턴
 
