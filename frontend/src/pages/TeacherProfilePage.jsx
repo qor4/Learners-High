@@ -3,9 +3,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { url } from "../api/APIPath";
 import { styled } from "styled-components";
 import { Container } from "@material-ui/core";
+import tokenHttp, { url } from "../api/APIPath";
 
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonList from "../components/class/LessonList";
@@ -24,23 +24,32 @@ const TeacherProfilePage = () => {
     const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
     const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체");
+    const [teacherLessonDataSet, setTeacherLessonDataSet] = useState([]);
 
     useEffect(() => {
         // 강사 프로필 GET 요청
-        axios.get(`${url}/teacher/profile/${userNo}`).then((response) => {
+        tokenHttp.get(`${url}/teacher/profile/${userNo}`).then((response) => {
             setTeacherInfoDataSet(response.data.result);
         });
 
         // 강사의 모든 수업 총 만족도 GET 요청
-        axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
+        tokenHttp.get(`${url}/csat/lesson/${userNo}`).then((response) => {
             console.log(response.data.result);
             setTeacherCsatLesson(response.data.result);
         });
 
         // 강사에 대한 모든 총 만족도 GET 요청
-        axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
+        tokenHttp.get(`${url}/csat/teacher/${userNo}`).then((response) => {
             console.log(response.data.result);
             setTeacherCsatTeacher(response.data.result);
+        });
+
+        // 강사 수업 목록 GET 요청
+        tokenHttp
+        .get(`${url}/teacher/lesson/list/${userNo}?status=전체`)
+        .then((response) => {
+            console.log(response.data.result)
+            setTeacherLessonDataSet(response.data.result);
         });
     }, [userNo]);
 
@@ -74,7 +83,7 @@ const TeacherProfilePage = () => {
                     <Button>강의 전</Button>
                 </div>
                 {/* 상태에 따른 강사의 강의 목록 */}
-                {/* <LessonList /> */}
+                <LessonList items={teacherLessonDataSet}/>
 
                 {/* 페이지네이션 */}
             </Container>
