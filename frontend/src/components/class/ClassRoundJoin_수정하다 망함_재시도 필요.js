@@ -24,6 +24,22 @@ const ClassRoundJoin = () => {
     const lessonData = location.state?.data || null;
     console.log(lessonData, "classRoundJoin임");
 
+    // 만약 데이터 수정이라면... 그리고 이전으로 넘길 땐 isUpdated를 false로 바꾸기.
+    const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
+
+    useEffect(()=> {
+        if (isUpdated) {
+            tokenHttp.get(`${url}/lesson/writing/round/${Number(location.state.lessonNo)}`)
+            .then(res=> {
+                console.log(res, "강의 라운드 결과값")
+                setLessonRoundDataSet(res.data.result)
+                setIsUpdated(false)
+            })
+            .catch(err => console.log(err, "강의상세 초기 요청 실패"))
+        }
+
+    }, [])
+
     const initialLessonRoundItem = {
         lessonNo: "", // 임시
         lessonRoundNumber: "",
@@ -145,7 +161,9 @@ const ClassRoundJoin = () => {
         lessonRoundDataSetCopy[0].lessonRoundEndDatetime = newDate
         console.log(lessonRoundDataSetCopy[0].lessonRoundEndDatetime, "끝난 시간")
         console.log(lessonRoundDataSet, "여긴 바뀌는 곳")
-        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = lessonRunningTime
+        lessonRoundDataSetCopy[0].lessonRunningTimeForEnd = lessonRunningTime // 첫 시간만 이렇게 했다.
+        // 기본 수업 시간 추가하기
+        // lessonRoundDataSetCopy.map((item)=> item.lessonRunningTimeForEnd = lessonRunningTime)
         setLessonRoundDataSet(lessonRoundDataSetCopy) // 여기서 추가했다!!!!
     }
 
@@ -238,6 +256,7 @@ const ClassRoundJoin = () => {
         console.log(lessonRoundDataSetCopy, "카피!");
     };
 
+    // 강의 시간 및 변경된 시간 들어옴 (From DatePikerComponent)
     const getDateData = (index, newLessonRoundStartDatetime, newLessonRoundEndDateTime) => {
         const lessonRoundDataSetCopy = lessonRoundDataSet.map((item, idx) => 
             idx === index ? {
@@ -249,7 +268,7 @@ const ClassRoundJoin = () => {
         setLessonRoundDataSet(lessonRoundDataSetCopy)
     }
 
-
+    // 강의 회차 이름, 강의자료 들어옴(From 자식 컴포넌트-ClassRoundItem)
     const getLessonData = (roundData, idx) => {
         const { lessonRoundTitle, lessonRoundFileOriginName } = roundData;
 
@@ -290,7 +309,31 @@ const ClassRoundJoin = () => {
                 return res.data.result.lessonNo;
             })
             .then((lessonNo) => {
-                lessonData.lessonNo = lessonNo;
+                if (lessonData.lessonThumbnailImg) {
+                    console.log(lessonData, "lessonData 갔니")
+                    const formData = new FormData();
+                    formData.append("multipartFile", lessonData.lessonThumbnailImg);
+                    tokenHttp
+                        .post(
+                            `${url}/s3/upload/thumbnail/${lessonNo}`,
+                            formData,
+                            {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            }
+                        )
+                        .then((res) => console.log(res))
+                        .catch((err) => console.log(err));
+                }
+                return lessonNo
+            })
+            .then((lessonNo) => {
+                lessonRoundDataSet.map((item, idx) => {
+                    item.lessonNo = lessonNo
+                    item.lessonRoundNumber = idx+1
+                })
+                // lessonData.lessonNo = lessonNo;
                 tokenHttp
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
@@ -306,29 +349,49 @@ const ClassRoundJoin = () => {
                 console.log(err);
             });
         // 개별 강의 갑니다.
-        navigate("/");
+        // navigate("/");
     };
     const handleClickRegisterLesson = () => {
-        // lessonData.lessonStatus = "강의 전"
-        // lessonData.lessonTotalRound = lessonTotalRound
         lessonData.lessonStatus = "강의 전"
-        // console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?")
-        tokenHttp.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
+        tokenHttp
+        .post(`${url}/lesson/join`, // 강의 데이터 갑니다.
         lessonData,
         {headers: {"Content-Type": 'application/json'}}
         )
-        .then((res)=> {
-            console.log(res.data.result, "개별강의 #### 등록!!")
-            console.log(res.data.result.lessonNo, "개별강의 #### 등록!!")
-            lessonRoundDataSet.map(item => {
-                item.lessonNo = res.data.result.lessonNo
-                
+        .then((res) => {
+            console.log(res, "개별강의");
+            return res.data.result.lessonNo;
+        })
+        .then((lessonNo) => {
+            if (lessonData.lessonThumbnailImg) {
+                const formData = new FormData();
+                formData.append("multipartFile", lessonData.lessonThumbnailImg);
+                tokenHttp
+                    .post(
+                        `${url}/s3/upload/thumbnail/${lessonNo}`,
+                        formData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    )
+                    .then((res) => console.log(res))
+                    .catch((err) => console.log(err));
+            }
+            return lessonNo
+        })
+        .then((lessonNo)=> {
+            lessonRoundDataSet.map((item, idx) => {
+                item.lessonNo = lessonNo
+                item.lessonRoundNumber = idx+1
             })
             return lessonRoundDataSet
             }
         )
         .then(lessonRoundDataSet => {
-            tokenHttp.post(`${url}/lesson/join/round`,
+            tokenHttp
+            .post(`${url}/lesson/join/round`,
             lessonRoundDataSet,
             {headers: {"Content-Type": 'application/json'}}
             )
@@ -344,7 +407,7 @@ const ClassRoundJoin = () => {
     }
 
     const beforePage = () => {
-        
+        navigate('/lesson/join', {state: { lessonJoinDataSet: {lessonData}, isUpdated: false, lessonRoundDataSet, before: true}})
     }
     
 

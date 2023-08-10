@@ -61,7 +61,7 @@ const ClassJoinCheckModal = (props) => {
         console.log(lessonNo, "강의No")
         tokenHttp.get(`${url}/lesson/writing/info/${Number(lessonNo)}`).then((res) => {
             console.log(res);
-            navigate(`/lesson/join`, {state: {lessonNo, isUpdated: true}}, {replace: false})
+            navigate(`/lesson/join`, {state: {lessonNo, isUpdated: true, before:false}}, {replace: false})
         });
         sendData()}
     };
@@ -70,7 +70,7 @@ const ClassJoinCheckModal = (props) => {
         tokenHttp.delete(`${url}/lesson/writing/delete/${lessonNo}`);
         setshowLessonModal(false);
         document.body.classList.remove("overflow-hidden");
-        navigate('/lesson/join', {state: {lessonNo: null, isUpdated: false}}, {replace: false})
+        navigate('/lesson/join', {state: {lessonNo: null, isUpdated: false, before: false}}, {replace: false})
         sendData()}
     };
 
