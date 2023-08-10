@@ -112,9 +112,6 @@ public class StudentService {
         User user = userRepository.findByUserNo(userNo);
 
         List<StudentLessonList> userlessonlist = studentLessonListRepository.findAllByUserNo(user);
-
-        System.out.println(userlessonlist.toString());
-
         List<LessonListDto> clalist = new ArrayList<>();
 
         for (StudentLessonList lessonAll : userlessonlist) {
@@ -123,11 +120,12 @@ public class StudentService {
 
             cla.setLessonStartDate(lessonAll.getLessonNo().getLessonStartDate());
             cla.setLessonEndDate(lessonAll.getLessonNo().getLessonEndDate());
-            cla.setUserName(lessonAll.getLessonNo().getLessonName());
+            cla.setLessonName(lessonAll.getLessonNo().getLessonName());
+            cla.setUserName(lessonAll.getLessonNo().getUserNo().getUserName());
+            cla.setLessonNo(lessonAll.getLessonNo().getLessonNo());
 
             clalist.add(cla);
         }
-
         return clalist;
     }
 
