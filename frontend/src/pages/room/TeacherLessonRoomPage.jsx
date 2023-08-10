@@ -33,10 +33,11 @@ const TeacherLessonRoomPage = () => {
     const [publisher, setPublisher] = useState(undefined);
     const [subscribers, setSubscribers] = useState([]);
     const [token, setToken] = useState("");
-    
+
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(true);
+    const [shareEnabled, setShareEnabled] = useState(false);
     
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
@@ -45,6 +46,7 @@ const TeacherLessonRoomPage = () => {
     useEffect( () => {
         setVideoEnabled(true);
         setAudioEnabled(true);
+        setShareEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
@@ -135,7 +137,7 @@ const TeacherLessonRoomPage = () => {
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
-                    let publisher = await OV.initPublisherAsync("div", {
+                    let publisher = await OV.initPublisherAsync(undefined, {
                         audioSource: undefined,     // The source of audio. If undefined default microphone
                         videoSource: undefined,     // The source of video. If undefined default webcam
                         publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
@@ -176,15 +178,97 @@ const TeacherLessonRoomPage = () => {
         }
     };
 
+    const toggleShare = () => {
+        if(publisher){
+            const enabled = !shareEnabled;
+            setShareEnabled(enabled);
+            if(shareEnabled){
+                screenShare();
+                console.log("공유 시작  ")
+
+            }else{
+                stopScreenShare();
+                console.log("공유 종료")
+            }
+        }
+    }
+
+    const screenShare = async () => {
+        const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
+        const sharePublisher = await OV.initPublisher(
+            undefined,
+            {
+                videoSource: videoSource,
+                publishAudio: audioEnabled,
+                publishVideo: videoEnabled,
+                mirror: false,
+            },
+            (error) => {
+                if (error && error.name === 'SCREEN_EXTENSION_NOT_INSTALLED') {
+                    alert('SCREEN_EXTENSION_NOT_INSTALLED');
+                } else if (error && error.name === 'SCREEN_SHARING_NOT_SUPPORTED') {
+                    alert('Your browser does not support screen sharing');
+                } else if (error && error.name === 'SCREEN_EXTENSION_DISABLED') {
+                    alert('You need to enable screen sharing extension');
+                } else if (error && error.name === 'SCREEN_CAPTURE_DENIED') {
+                    alert('You need to choose a window or application to share');
+                }
+            },
+        );
+
+        sharePublisher.once('accessAllowed', async () => {
+            sharePublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                console.log('User pressed the "Stop sharing" button');
+            });
+            await session.unpublish(publisher);
+            setPublisher(sharePublisher);
+            await session.publish(sharePublisher);
+        });
+
+        publisher.once('accessDenied', (event) => {
+            console.warn('ScreenShare: Access Denied');
+        });
+        // publisher.once('accessAllowed', async () => {
+        //     console.log("화면 공유 허용 시작");
+        //     console.log("session1 :", session);
+        //     await session.unpublish(mainStreamManager);
+        //     console.log("session2 :", session);
+        //     setMainStreamManager(sharePublisher);
+        //     await session.publish(mainStreamManager).then(() => {
+        //         console.log("session3 :", session);
+        //     });
+        // });
+        // sharePublisher.on('streamPlaying', () => {
+        //     // 여기에 뭔지 모르겠음
+        //     console.log("session4 :", session);
+        // });
+    }
+    const stopScreenShare = async ()=> {
+        let newPublisher = await OV.initPublisherAsync(undefined, {
+            audioSource: undefined,     // The source of audio. If undefined default microphone
+            videoSource: undefined,     // The source of video. If undefined default webcam
+            publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
+            publishVideo: videoEnabled, // Whether you want to start publishing with your video enabled or not
+            resolution: '640x480',      // The resolution of your video
+            frameRate: 30,              // The frame rate of your video
+            insertMode: 'APPEND',       // How the video is inserted in the target element 'video-container'
+            mirror: true,               // Whether to mirror your local video or not
+        });
+        await session.unpublish(publisher);
+        setPublisher(newPublisher);
+        await session.publish(newPublisher);
+    }
+
     return (
         <>
         <div>
+            {console.log("화면 생성")}
             <h1>Room ID: {mySessionId}</h1>
-            {session !== undefined ? (
+            {session !== undefined && session.connection !== undefined ? (
                 <div> 
                     <div>
                         <div>
-                            {publisher !== undefined ? (
+                            {publisher !== undefined && mainStreamManager !== undefined ? (
                                 <div >
                                     <UserVideoComponent streamManager={ publisher }/>
                                 </div>
@@ -199,7 +283,7 @@ const TeacherLessonRoomPage = () => {
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       {console.log(session, "세션")}
                       {console.log(session.connection, "세션 커넥션")}
                       { mainStreamManager && <ChatComponent 
@@ -207,10 +291,14 @@ const TeacherLessonRoomPage = () => {
                       streamManager={mainStreamManager}
                       connectionId={session.connection.connectionId}
                       />}
-                    </div>
+                    </div> */}
                 </div>
             ) : null}
-
+            <input
+                type='button'
+                onClick={toggleShare}
+                value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
+            />
             <input
                 type='button'
                 onClick={toggleVideo}
