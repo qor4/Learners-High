@@ -86,7 +86,6 @@ const LessonPage = () => {
             );
             setLessonListDataSet(filteredData);
         }
-        setSearchKeyword("");
     };
 
     // 과목 분류를 눌렀을 때, 필터링

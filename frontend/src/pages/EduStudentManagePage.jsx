@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import tokenHttp, { url } from "../api/APIPath";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
+import LessonList from "../components/class/LessonList";
+import axios from "axios";
 
 // 강의 wrap
 const StyledCsatInfoWrap = styled.div`
@@ -27,6 +29,7 @@ const EduStudentManagePage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const [studentLessonDataSet, setStudentLessonDataSet] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("수강 중");
+    const [studentWishDataSet, setStudentWishDataSet] = useState([]);
 
     useEffect(() => {
         tokenHttp
@@ -35,7 +38,14 @@ const EduStudentManagePage = () => {
                 console.log(response.data);
                 setStudentLessonDataSet(response.data.result);
             });
+        tokenHttp
+            .get(`${url}/student/wish/list?userNo=${userNo}`)
+            .then((response) => {
+                console.log(response.data);
+                setStudentWishDataSet(response.data);
+            });
     }, []);
+
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
@@ -59,8 +69,20 @@ const EduStudentManagePage = () => {
                     >
                         수강 중
                     </Button>
-                    <Button>수강 예정</Button>
-                    <Button>수강 완료</Button>
+                    <Button
+                        onClick={() => setSelectedStatus("수강 예정")}
+                        $point={selectedStatus === "수강 예정"}
+                        disabled={selectedStatus === "수강 예정"}
+                    >
+                        수강 예정
+                    </Button>
+                    <Button
+                        onClick={() => setSelectedStatus("수강 완료")}
+                        $point={selectedStatus === "수강 완료"}
+                        disabled={selectedStatus === "수강 완료"}
+                    >
+                        수강 완료
+                    </Button>
                     <Button
                         onClick={() => setSelectedStatus("내가 찜한 강의")}
                         $point={selectedStatus === "내가 찜한 강의"}
@@ -77,9 +99,11 @@ const EduStudentManagePage = () => {
                     ></LessonItemBoxList>
                 )}
 
-                {/* 찜한 강의일 경우 */}
+                {/* 찜한 강의를 보여주는 공간 */}
                 {selectedStatus === "내가 찜한 강의" && (
-                    <h3>찜한 강의를 보여줌</h3>
+                    <>
+                        <LessonList items={studentWishDataSet} />
+                    </>
                 )}
             </Container>
         </>

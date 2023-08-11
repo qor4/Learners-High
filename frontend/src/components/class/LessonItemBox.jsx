@@ -21,11 +21,38 @@ const ColFlexWrap = styled.div`
     }
 `;
 
+/** 세로 flex */
+const RowFlexWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
 /** 카드 flex */
 const CardFlexWrap = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 1rem;
+
+    & > div > * {
+        margin: 1rem 0;
+    }
+`;
+
+/** 큰 사이즈 텍스트 20px bold */
+export const StyledTitleText = styled.div`
+    font-size: 1.25rem;
+    font-weight: bold;
+`;
+
+/** 회색 텍스트 */
+const NoneDataText = styled.div`
+    color: #ccc;
+    margin-left: 2rem;
+`;
+
+const DataText = styled.div`
+    margin-left: 2rem;
 `
 
 const LessonItemBox = ({ lessonInfo }) => {
@@ -67,33 +94,67 @@ const LessonItemBox = ({ lessonInfo }) => {
         <>
             <Card>
                 <CardFlexWrap>
-                    <div>
+                    <RowFlexWrap>
                         <ColFlexWrap>
+                            <LessonStatusBox>
+                                {lessonInfo.lessonTypeName}
+                            </LessonStatusBox>
                             <div>
                                 {lessonInfo.lessonStartDate} ~{" "}
                                 {lessonInfo.lessonEndDate}
                             </div>
-                            <LessonStatusBox>
-                                {lessonInfo.lessonTypeName}
-                            </LessonStatusBox>
                         </ColFlexWrap>
-                        <div>{lessonInfo.lessonName}</div>
-                        {/* 강사 이름 => 학생만 보이게 */}
-                        {userType === "S" && (
-                            <span>강사명: {lessonInfo.userName}</span>
-                        )}
-                    </div>
+                        <ColFlexWrap>
+                            <StyledTitleText>
+                                {lessonInfo.lessonName}
+                            </StyledTitleText>
+                            {/* 강사 이름 => 학생만 보이게 */}
+                            {userType === "S" && (
+                                <span>{lessonInfo.userName}</span>
+                            )}
+                        </ColFlexWrap>
+                    </RowFlexWrap>
                     {userType === "T" && (
-                        <div>
+                        <RowFlexWrap>
                             {/* 강사/수업 만족도 => 강사만 보이게 */}
-                            <div>강사 만족도:{teacherSat}</div>
-                            <div>수업 만족도:{lessonSat}</div>
-                        </div>
+                            <ColFlexWrap>
+                                <strong>
+                                    <div>강사 만족도</div>
+                                </strong>
+                                <div>{teacherSat}</div>
+                            </ColFlexWrap>
+                            <ColFlexWrap>
+                                <strong>
+                                    <div>수업 만족도</div>
+                                </strong>
+                                <div>{lessonSat}</div>
+                            </ColFlexWrap>
+                        </RowFlexWrap>
                     )}
-                    <div>
-                        <div>출석률 :{attendRate}</div>
-                        <div>과제 제출률:{homeworkRate}</div>
-                    </div>
+                    <RowFlexWrap>
+                        <CardFlexWrap>
+                            <strong>
+                                <div>출석률</div>
+                            </strong>
+
+                            {attendRate === "아직 집계할 데이터가 없습니다." ? (
+                                <NoneDataText>데이터 없음</NoneDataText>
+                            ) : (
+                                <DataText>{attendRate}</DataText>
+                            )}
+                        </CardFlexWrap>
+                        <CardFlexWrap>
+                            <strong>
+                                <div>과제 제출률</div>
+                            </strong>
+                            {homeworkRate ===
+                            "아직 집계할 데이터가 없습니다." ? (
+                                <NoneDataText>데이터 없음</NoneDataText>
+                            ) : (
+                                <DataText>{homeworkRate}</DataText>
+                            )}
+                        </CardFlexWrap>
+                    </RowFlexWrap>
                 </CardFlexWrap>
             </Card>
         </>

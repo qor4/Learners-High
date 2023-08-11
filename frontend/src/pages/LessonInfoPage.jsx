@@ -6,15 +6,21 @@ import { url } from "../api/APIPath";
 import tokenHttp from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 import { styled } from "styled-components";
 import { Container } from "@mui/material";
 
+import "../components/common/CustomEditorStyles.css";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Card from "../components/common/Card";
 import Modal from "../components/common/Modal";
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonStatusBox from "../components/common/LessonStatusBox";
 import PayLesson from "../components/class/PayLesson";
+import { StyledBox } from "../components/class/LessonRoundItemBoxList";
 
 const FlexWrap = styled.div`
     display: flex;
@@ -37,21 +43,31 @@ const HoverLink = styled(Link)`
     }
 `;
 
+/** 텍스트 정렬 (flex space-between) */
+const FlexTextWrap = styled.div`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+`;
+
 const LessonInfoPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const { lessonNo } = useParams();
     const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]);
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
-    const [lessonPrice, setLessonPrice] = useState(0)
-    const [lessonName, setLessonName] = useState(null)
+    const [lessonPrice, setLessonPrice] = useState(0);
+    const [lessonName, setLessonName] = useState(null);
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
             setLessonInfoDataSet(response.data.result);
-            setLessonPrice(response.data.result.lessonInfo.lessonPrice)
-            setLessonName(response.data.result.lessonInfo.lessonName)
+            setLessonPrice(response.data.result.lessonInfo.lessonPrice);
+            setLessonName(response.data.result.lessonInfo.lessonName);
         });
     }, [lessonNo]);
+
+    // 조회수 증가 요청
+    // axios.get(`${url}/lesson/viewcount/${userNo}`);
 
     // 강사 정보 가져오는 GET 요청
     useEffect(() => {
@@ -86,7 +102,7 @@ const LessonInfoPage = () => {
         document.body.classList.add("overflow-hidden");
     };
 
-    console.log(data);
+    console.log(lessonInfoDataSet);
 
     return (
         <div>
@@ -121,31 +137,45 @@ const LessonInfoPage = () => {
                     <h3>수업 소개</h3>
                 </FlexWrap>
                 <Card>
-                    {lessonInfoDataSet.lessonInfo &&
-                        lessonInfoDataSet.lessonInfo.lessonInfo}
+                    {lessonInfoDataSet.lessonInfo && (
+                        <div className="custom-editor">
+                            <CKEditor
+                                disabled
+                                config={{ toolbar: { items: [] } }}
+                                editor={ClassicEditor}
+                                data={lessonInfoDataSet.lessonInfo.lessonInfo}
+                            />
+                        </div>
+                    )}
                 </Card>
 
                 {/* 회차 소개 */}
                 <FlexWrap>
                     <h3>회차 소개</h3>
                 </FlexWrap>
-                {lessonRoundInfo &&
-                    lessonRoundInfo.map((round, index) => (
-                        <Card key={index}>
-                            <LessonStatusBox>
-                                {round.lessonRoundTitle}
-                            </LessonStatusBox>
-                            <span>
-                                {round.lessonRoundStartDatetime} ~{" "}
-                                {round.lessonRoundEndDatetime}
-                            </span>
-                        </Card>
-                    ))}
+                <Card $skyBlue>
+                    {lessonRoundInfo && lessonRoundInfo.length > 0 ? (
+                        lessonRoundInfo.map((round, index) => (
+                            <StyledBox key={index}>
+                                <FlexTextWrap>
+                                    <LessonStatusBox>
+                                        {round.lessonRoundNumber}회
+                                    </LessonStatusBox>
+                                    {round.lessonRoundTitle}
+                                    <span>
+                                        {round.lessonRoundStartDatetime} ~{" "}
+                                        {round.lessonRoundEndDatetime}
+                                    </span>
+                                </FlexTextWrap>
+                            </StyledBox>
+                        ))
+                    ) : (
+                        <StyledBox>등록된 회차가 없습니다.</StyledBox>
+                    )}
+                </Card>
             </Container>
             {/* 결제 모달창 */}
-            {showPayLessonModal &&
-            lessonPrice > 0
-            && (
+            {showPayLessonModal && lessonPrice > 0 && (
                 <Modal
                     title="강의 결제"
                     show={showPayLessonModal}
