@@ -27,8 +27,8 @@ public class SeesoService {
         attentionRateMetadataDto.setLessonRoundNo(saveAttentionRateDto.getLessonRoundNo());
         attentionRateMetadataDto.setUserNo(saveAttentionRateDto.getUserNo());
         lessonRoundAttentionRate.setMetadata(attentionRateMetadataDto);
-        lessonRoundAttentionRate.setRate(saveAttentionRateDto.getRate());
         lessonRoundAttentionRate.setTimestamp(LocalDateTime.now());
+        lessonRoundAttentionRate.setRate(saveAttentionRateDto.getRate());
         lessonRoundAttentionRateRepository.save(lessonRoundAttentionRate);
     }
 }
