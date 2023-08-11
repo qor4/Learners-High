@@ -42,9 +42,9 @@ const RoundDateWrap = styled.div`
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
-    const userName = useSelector((state)=> state.user.userName)
+    const userName = useSelector((state) => state.user.userName);
     const [bool, setBool] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     console.log(userType, "userType");
     // const userType = "T";
@@ -52,27 +52,24 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     // const [token, setToken] = useState("")
     const handleEnter = () => {
         setBool(true);
-        navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`)
+        const today = new Date();
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        if (
+            endDatetime.getFullYear() === today.getFullYear() &&
+            endDatetime.getMonth() === today.getMonth() &&
+            endDatetime.getDate() !== today.getDate()
+        ) {
+            // 여기!
+            navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`);
+        }
     };
     const lessonNo = lessonInfo.lessonNo;
     const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
     const lessonName = lessonInfo.lessonName;
 
-
     // 날짜 format
     const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
     const endDatetime = new Date(lessonInfo.lessonRoundEndDatetime);
-    
-    // 오늘 날짜 아니라면 전부 disabled
-    const dayOfLesson = () => {
-        const today = new Date()
-        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        if (endDatetime.getFullYear() === today.getFullYear() && 
-        endDatetime.getMonth() === today.getMonth() && 
-        endDatetime.getDate() === today.getDate()) {
-            return false
-        } else return true
-    }
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -99,10 +96,18 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     const formattedEndDate = `${formatTime(endDatetime)}`;
 
     const enterStudentRoom = (event) => {
-        event.stopPropagation()
-        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`)        
-
-    }
+        event.stopPropagation();
+        
+        const today = new Date();
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        if (
+            endDatetime.getFullYear() === today.getFullYear() &&
+            endDatetime.getMonth() === today.getMonth() &&
+            endDatetime.getDate() !== today.getDate() // 여기!
+        ) {
+            navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`);
+        }
+    };
 
     return (
         <>
@@ -116,7 +121,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             </RoundDateWrap>
             <LessonInfoWrap>
                 <FlexWrap>
-                    <Typography style={{ fontSize: "1.25rem", fontWeight: 600 }}>
+                    <Typography
+                        style={{ fontSize: "1.25rem", fontWeight: 600 }}
+                    >
                         {lessonInfo.lessonName}
                     </Typography>
                     <div>{lessonInfo.userName} 강사님</div>
@@ -127,10 +134,19 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
                 <StyledButtonWrap>
-                    <Button className={"singleEvent"}><span className="singleEvent">과제 일괄 다운</span></Button>
+                    <Button className={"singleEvent"}>
+                        <span className="singleEvent">과제 일괄 다운</span>
+                    </Button>
                     {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}> */}
-                    <Button $point onClick={handleEnter} disabled={dayOfLesson} className={"singleEvent"}><span className="singleEvent">강의룸 만들기</span></Button>
+                    <Button
+                        $point
+                        onClick={handleEnter}
+                        className={"singleEvent"}
+                        disabled={false}
+                    >
+                        <span className="singleEvent">강의룸 만들기</span>
+                    </Button>
                     {/* </Link> */}
                 </StyledButtonWrap>
             )}
@@ -138,9 +154,21 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 학생일 때 보일 버튼 */}
             {userType === "S" && (
                 <StyledButtonWrap>
-                    <Button className={"singleEvent"}> <span className="singleEvent">학습 자료 다운</span></Button>
-                    <Button className={"singleEvent"}><span className="singleEvent">과제 제출</span></Button>
-                        <Button $point onClick={enterStudentRoom} disabled={dayOfLesson} className={"singleEvent"}><span className="singleEvent">강의 입장</span></Button>
+                    <Button className={"singleEvent"}>
+                        {" "}
+                        <span className="singleEvent">학습 자료 다운</span>
+                    </Button>
+                    <Button className={"singleEvent"}>
+                        <span className="singleEvent">과제 제출</span>
+                    </Button>
+                    <Button
+                        $point
+                        onClick={enterStudentRoom}
+                        // disabled={dayOfLesson}
+                        className={"singleEvent"}
+                    >
+                        <span className="singleEvent">강의 입장</span>
+                    </Button>
                 </StyledButtonWrap>
             )}
         </>
