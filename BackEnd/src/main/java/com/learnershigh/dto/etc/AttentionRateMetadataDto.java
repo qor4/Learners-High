@@ -1,4 +1,4 @@
-package com.seeso.dto;
+package com.learnershigh.dto.etc;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
