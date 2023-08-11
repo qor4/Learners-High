@@ -489,7 +489,6 @@ const ClassJoin = () => {
 
                         {/* html editor */}
                         {/* 추가적인 height 수정@@@ */}
-                        <div style={{ minHeight: "14rem" }}>
                             <CKEditor
                                 editor={ClassicEditor}
                                 value={lessonInfo}
@@ -522,7 +521,6 @@ const ClassJoin = () => {
                                 onBlur={handleEditorChange}
                             />
                         </div>
-<<<<<<< HEAD
                         {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
                         <div style={{height:"700px"}}>
                         <CKEditor
@@ -554,12 +552,8 @@ const ClassJoin = () => {
                                     ],
                                 },
                             }}
-                            style={{ height: "500px", border: "1px solid #ccc", borderRadius: "4px" }}
                             onBlur={handleEditorChange}
                         />
-                        </div>
-=======
->>>>>>> 84af8169866fb966aab81d859ddaeaad667c7f83
                     </div>
                 </Container>
             </MenuCard>
