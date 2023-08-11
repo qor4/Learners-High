@@ -8,6 +8,7 @@ const LessonItemBoxList = ({ lessonList }) => {
             {lessonList.map((lessonInfo, index) => (
                 <LessonItemBox
                     // 수강 강의 목록
+                    key={index}
                     lessonInfo={lessonInfo}
                 />
             ))}

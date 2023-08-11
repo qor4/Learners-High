@@ -164,9 +164,8 @@ const LessonPage = () => {
                         </Grid>
                         {lessonTypeDataSet &&
                             lessonTypeDataSet.map((lessonType, index) => (
-                                <Grid item md={2}>
+                                <Grid item md={2} key={index}>
                                     <Button
-                                        key={index}
                                         value={lessonType.lessonTypeNo}
                                         onClick={() => {
                                             setSelectedLessonType(
