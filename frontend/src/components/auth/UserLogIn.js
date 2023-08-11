@@ -75,7 +75,7 @@ const UserLogIn = (props) => {
     };
 
     const kakaoLogIn = (e) => {
-        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=http://localhost:3000/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${url}/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`
     }
     return (
         <>

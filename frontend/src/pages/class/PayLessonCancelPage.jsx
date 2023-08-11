@@ -15,12 +15,13 @@ const PayLessonCancelPage = () => {
       console.log("취소 왔음?")
       const lessonNo = new URL(window.location.href).searchParams.get("lessonNo")
       console.log(lessonNo, '강의No')
-        axios
+      tokenHttp
             .get(`${url}/kakaoPay/cancel`)
             .then((res) => {
                 console.log(res);
                 alert("결제 취소")
-                navigate(`/lesson/info/${lessonNo}`)
+                // navigate(`/lesson/info/${lessonNo}`)
+                // navigate('/')
               })
             .catch(err=> console.log(err));
     }, []);
