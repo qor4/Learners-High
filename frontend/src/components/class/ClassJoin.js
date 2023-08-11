@@ -10,6 +10,8 @@ import { Container, Grid } from "@material-ui/core";
 import { url } from "../../api/APIPath";
 
 import axios from "axios";
+
+import "../common/CustomEditorStyles.css";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -108,7 +110,6 @@ const SevenWrap = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-bottom: 1rem;
 
     & > * {
         margin-left: 1rem;
@@ -490,37 +491,39 @@ const ClassJoin = () => {
                         {/* html editor */}
                         {/* 추가적인 height 수정@@@ */}
                         <div style={{ minHeight: "14rem" }}>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                value={lessonInfo}
-                                // toolbar 설정
-                                config={{
-                                    toolbar: {
-                                        items: [
-                                            "heading",
-                                            "|",
-                                            "bold",
-                                            "italic",
-                                            "link",
-                                            "bulletedList",
-                                            "numberedList",
-                                            "|",
-                                            "blockQuote",
-                                            "insertTable",
-                                            "undo",
-                                            "redo",
-                                        ],
-                                    },
-                                    table: {
-                                        contentToolbar: [
-                                            "tableColumn",
-                                            "tableRow",
-                                            "mergeTableCells",
-                                        ],
-                                    },
-                                }}
-                                onBlur={handleEditorChange}
-                            />
+                            <div className="custom-editor-height">
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    value={lessonInfo}
+                                    // toolbar 설정
+                                    config={{
+                                        toolbar: {
+                                            items: [
+                                                "heading",
+                                                "|",
+                                                "bold",
+                                                "italic",
+                                                "link",
+                                                "bulletedList",
+                                                "numberedList",
+                                                "|",
+                                                "blockQuote",
+                                                "insertTable",
+                                                "undo",
+                                                "redo",
+                                            ],
+                                        },
+                                        table: {
+                                            contentToolbar: [
+                                                "tableColumn",
+                                                "tableRow",
+                                                "mergeTableCells",
+                                            ],
+                                        },
+                                    }}
+                                    onBlur={handleEditorChange}
+                                />
+                            </div>
                         </div>
                     </div>
                 </Container>

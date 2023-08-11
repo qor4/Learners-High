@@ -21,36 +21,44 @@ const StyledTeacherInfoWrap = styled.div`
 const TeacherProfilePage = () => {
     const { userNo } = useParams(); // teacherNo
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
-    const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
-    const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
+
+    const [teacherCsatLesson, setTeacherCsatLesson] = useState(0); // 강의 총 만족도
+    const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
+    const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0); // 강사 총 만족도
+    const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
+
     const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체");
     const [teacherLessonDataSet, setTeacherLessonDataSet] = useState([]);
 
     useEffect(() => {
         // 강사 프로필 GET 요청
-        tokenHttp.get(`${url}/teacher/profile/${userNo}`).then((response) => {
+        axios.get(`${url}/teacher/profile/${userNo}`).then((response) => {
             setTeacherInfoDataSet(response.data.result);
         });
 
-        // 강사의 모든 수업 총 만족도 GET 요청
-        tokenHttp.get(`${url}/csat/lesson/${userNo}`).then((response) => {
-            console.log(response.data.result);
-            setTeacherCsatLesson(response.data.result);
-        });
 
-        // 강사에 대한 모든 총 만족도 GET 요청
-        tokenHttp.get(`${url}/csat/teacher/${userNo}`).then((response) => {
-            console.log(response.data.result);
-            setTeacherCsatTeacher(response.data.result);
-        });
+        // @@@ 수정
+        // // 강사의 모든 수업 총 만족도 GET 요청
+        // axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
+        //     console.log(response.data.result);
+        //     setTeacherCsatLesson(response.data.result);
+        //     setCsatLessonCount(response.data.satiCnt);
+        // });
+
+        // // 강사에 대한 모든 총 만족도 GET 요청
+        // axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
+        //     console.log(response);
+        //     setTeacherCsatTeacher(response.data.result);
+        //     setCsatTeacherCount(response.data.satiCnt);
+        // });
 
         // 강사 수업 목록 GET 요청
-        tokenHttp
-        .get(`${url}/teacher/lesson/list/${userNo}?status=전체`)
-        .then((response) => {
-            console.log(response.data.result)
-            setTeacherLessonDataSet(response.data.result);
-        });
+        axios
+            .get(`${url}/teacher/lesson/list/${userNo}?status=전체`)
+            .then((response) => {
+                console.log(response.data.result);
+                setTeacherLessonDataSet(response.data.result);
+            });
     }, [userNo]);
 
     // 강의 상태에 따른 데이터 GET 요청
@@ -71,8 +79,9 @@ const TeacherProfilePage = () => {
                     {/* 수업 만족도, 총 강사 만족도 GET 요청으로 받아오기@@@ */}
                     분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간입니다!{" "}
                     <br />
-                    수업 총 만족도 : {teacherCsatLesson} <br />
-                    강사 총 만족도 : {teacherCsatTeacher}
+                    수업 총 만족도 : {teacherCsatLesson} ( {csatLessonCount} ){" "}
+                    <br />
+                    강사 총 만족도 : {teacherCsatTeacher} ( {csatTeacherCount} )
                 </Card>
 
                 {/* 탭바 (전체 강의 / 수업 예정 / 진행 중 / 종료) */}
@@ -83,7 +92,7 @@ const TeacherProfilePage = () => {
                     <Button>강의 전</Button>
                 </div>
                 {/* 상태에 따른 강사의 강의 목록 */}
-                <LessonList items={teacherLessonDataSet}/>
+                <LessonList items={teacherLessonDataSet} />
 
                 {/* 페이지네이션 */}
             </Container>

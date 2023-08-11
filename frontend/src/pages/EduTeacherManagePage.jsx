@@ -1,10 +1,12 @@
 // 강사 수업 관리 목록 페이지
-import { styled } from "styled-components";
-import { Container } from "@mui/material";
-import Button from "../components/common/Button";
-
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+import { styled } from "styled-components";
+import { Container } from "@mui/material";
+
+import Button from "../components/common/Button";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
 import tokenHttp, { url } from "../api/APIPath";
 
@@ -84,7 +86,9 @@ const EduTeacherManagePage = () => {
                             종료
                         </Button>
                     </StyledButtonWrap>
-                    <Button $point>강의 개설</Button>
+                    <Link to="/lesson/join">
+                        <Button $point>강의 개설</Button>
+                    </Link>
                 </FlexButtonWrap>
 
                 {/* 강의 목록들이 들어갈 공간 */}

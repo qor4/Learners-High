@@ -7,6 +7,7 @@ import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled } from "styled-components";
+
 import { StyledInput } from "../auth/UserJoin";
 
 import {
@@ -14,6 +15,8 @@ import {
     InfoWrap,
     StyledThumbnail,
 } from "../class/TeacherIntroduceBox";
+import { StyledTitleText } from "../class/LessonItemBox"; 
+
 
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -107,7 +110,7 @@ const MypageInfo = ({ userNo }) => {
                     />
                     <InfoWrap>
                         <FlexWrap>
-                            <span>{userName} 님</span>
+                            <StyledTitleText>{userName} 님</StyledTitleText>
                             <ButtonWrap>
                                 {userType === "T" && (
                                     <Link to={`/profile/${userNo}`}>

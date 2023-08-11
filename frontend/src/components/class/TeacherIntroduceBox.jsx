@@ -1,10 +1,14 @@
 // 강사 소개 박스 (강의 상세 / 강사 페이지에서 사용될 박스)
+import { useEffect, useState } from "react";
+
 import styled from "styled-components";
 import { Container, Grid } from "@material-ui/core";
+import tokenHttp, { url } from "../../api/APIPath";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
-import { useState } from "react";
+import { StyledTitleText } from "./LessonItemBox";
+import axios from "axios";
 
 // 강사 wrap
 export const ImgInfoWrap = styled.div`
@@ -14,7 +18,7 @@ export const ImgInfoWrap = styled.div`
     align-items: center;
 `;
 
-/** image styled 컴포넌트 */ 
+/** image styled 컴포넌트 */
 export const StyledThumbnail = styled.img`
     width: 35%;
     border-radius: 50%;
@@ -48,11 +52,27 @@ const FlexWrap = styled.div`
 const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
+    const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
+    const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
 
-    // 강사 만족도, 수업 만족도 GET 요청@@@
     const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
     const jobInfo = teacherInfo.jobInfos;
+
+    // @@@ 수정
+    // useEffect(() => {
+    //     // 강사의 모든 수업 총 만족도 GET 요청
+    //     axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
+    //         setTeacherCsatLesson(response.data.result);
+    //         setCsatLessonCount(response.data.satiCnt);
+    //     });
+
+    //     // 강사에 대한 모든 총 만족도 GET 요청
+    //     axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
+    //         setTeacherCsatTeacher(response.data.result);
+    //         setCsatTeacherCount(response.data.satiCnt);
+    //     });
+    // }, [teacherNo]);
 
     return (
         <Container maxWidth="md">
@@ -73,18 +93,20 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                             {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
                             <div>
                                 <strong>수업 만족도</strong>
-                                <span>😍 {teacherCsatLesson}</span>
+                                <span>😍 {teacherCsatLesson} ( {csatLessonCount} )</span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
-                                <span>😍 {teacherCsatTeacher}</span>
+                                <span>😍 {teacherCsatTeacher} ( {csatTeacherCount} )</span>
                             </div>
                         </FlexWrap>
                     )}
 
                     {/* 강사 이름 */}
                     <span>
-                        <div>{teacherInfo && teacherInfo.userName} 강사님</div>
+                        <StyledTitleText>
+                            {teacherInfo && teacherInfo.userName} 강사님
+                        </StyledTitleText>
                     </span>
 
                     {/* 강사 한 마디 */}

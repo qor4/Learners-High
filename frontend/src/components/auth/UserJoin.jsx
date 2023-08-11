@@ -316,6 +316,7 @@ const UserJoin = () => {
 
         setUserEmailMSG("");
         setUserEmailVailidCheck(true);
+        certEmail();
     };
     // 이메일 인증
     const [certEmailCode, setCertEmailCode] = useState("");
@@ -614,13 +615,14 @@ const UserJoin = () => {
                                                         )
                                                     )
                                                 }
-                                                onBlur={userEmailFormCheck}
+                                                // onBlur={userEmailFormCheck}
                                             />
                                             <Button
-                                                onClick={certEmail}
+                                                // onClick={certEmail}
+                                                onClick={userEmailFormCheck}
                                                 disabled={
                                                     userEmailValidCheck ===
-                                                    false
+                                                    true
                                                 }
                                             >
                                                 인증번호
