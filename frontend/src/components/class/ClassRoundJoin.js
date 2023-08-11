@@ -14,7 +14,12 @@ import { url } from "../../api/APIPath";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 
-const ClassRoundJoin = () => {
+const ClassRoundJoin = ({changeChildPage}) => {
+
+    const beforePage = () => {
+        changeChildPage()
+    }
+
     const [lessonTotalRound, setLessonTotalRound] = useState(0);
 
     const navigate = useNavigate();
@@ -342,10 +347,6 @@ const ClassRoundJoin = () => {
             console.log(err)
         })
         navigate("/")
-    }
-
-    const beforePage = () => {
-        
     }
     
 

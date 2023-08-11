@@ -19,19 +19,23 @@ import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 import tokenHttp from "../../api/APIPath";
 import Modal from "../common/Modal";
 
-const ClassJoin = () => {
+const ClassJoin = ({changeChildPage}) => {
     const navigate = useNavigate();
     const location = useLocation();
     // 업데이트 "다음"버튼 눌렀으면 그냥 "isUpdated를 false로 바꿔야 axios요청 안보낸다."
     const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
-    console.log(isUpdated, "업데이트 할거")
     const userNo = useSelector((state) => state.user.userNo);
     const [lessonNo, setLessonNo] = useState(location.state ? location.state.lessonNo : "");
-
     const [lessonName, setLessonName] = useState("");
     const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
     const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState("");
     const [lessonInfo, setLessonInfo] = useState("");
+
+    const nextPage = () => {
+        changeChildPage()
+        // navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
+    };
+
 
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
 
@@ -39,12 +43,10 @@ const ClassJoin = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
     const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null);
-
     const [maxStudent, setMaxStudent] = useState(0);
     const [lessonPrice, setLessonPrice] = useState(0);
 
     // API가 완료되면 밑에 것들로 바꿀 것.
-    // const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([]);
     useEffect(() => {
@@ -53,31 +55,31 @@ const ClassJoin = () => {
             setLessonTypeList(res.data.result);
         });
 
-        // 작성중인 정보가 있다!
-        if (isUpdated) {
-            tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
-            .then(res => {
-                console.log(res, "작성중인 정보")
-                const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
-                setChooseLessonTypeNo(lessonTypeNo)
-                setSubjectName(lessonTypeName)
-                setLessonName(lessonName)
-                setLessonInfo(lessonInfo)
-                setMaxStudent(maxStudent)
-                setLessonPrice(lessonPrice)
-                setLessonThumbnailImg(lessonThumbnailImg)
-                setLessonThumbnailInfo(lessonThumbnailInfo)
-                // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
-            })
-            .then(()=> {
-                tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
-                .then(res=> {
-                    console.log(res, "S3서버로 간다")
-                    setThumbnailURL(res.data.resultMsg)
+        // // 작성중인 정보가 있다!
+        // if (isUpdated) {
+        //     tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
+        //     .then(res => {
+        //         console.log(res, "작성중인 정보")
+        //         const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
+        //         setChooseLessonTypeNo(lessonTypeNo)
+        //         setSubjectName(lessonTypeName)
+        //         setLessonName(lessonName)
+        //         setLessonInfo(lessonInfo)
+        //         setMaxStudent(maxStudent)
+        //         setLessonPrice(lessonPrice)
+        //         setLessonThumbnailImg(lessonThumbnailImg)
+        //         setLessonThumbnailInfo(lessonThumbnailInfo)
+        //         // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
+        //     })
+        //     .then(()=> {
+        //         tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
+        //         .then(res=> {
+        //             console.log(res, "S3서버로 간다")
+        //             setThumbnailURL(res.data.resultMsg)
                     
-                })
-            })
-        }
+        //         })
+        //     })
+        // }
     }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -204,11 +206,6 @@ const ClassJoin = () => {
                 }
             })
             .catch((err) => console.log(err, "에러")); // 여기에 강의개설 실패 메시지
-    };
-    const nextPage = () => {
-        // sendDataToServer()
-        console.log(data, "classJoin임");
-        navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
     };
     const data = {
         lessonInfo: lessonInfo,
@@ -393,9 +390,9 @@ const ClassJoin = () => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <Button onClick={sendDataToServer}>임시 저장</Button>
-                <Link to="/lesson/round/join" state={{ data }}>
+                {/* <Link to="/lesson/round/join" state={{ data }}> */}
                     <Button onClick={nextPage}>다음</Button>
-                </Link>
+                {/* </Link> */}
             </div>
         </>
     );
