@@ -19,7 +19,7 @@ const StyledInputWrap = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`
+`;
 
 const Input = (props) => {
     const {
@@ -34,23 +34,25 @@ const Input = (props) => {
         onKeyPress,
         onBlur,
         readOnly,
+        onFocus,
     } = props;
     return (
-            <StyledInputWrap>
-                <StyledLabel htmlFor={id}>{label}</StyledLabel>
-                <StyledInput
-                    id={id}
-                    name={name}
-                    value={value}
-                    type={type}
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    disabled={disabled}
-                    onKeyPress={onKeyPress}
-                    onBlur={onBlur}
-                    readOnly={readOnly}
-                />
-            </StyledInputWrap>
+        <StyledInputWrap>
+            <StyledLabel htmlFor={id}>{label}</StyledLabel>
+            <StyledInput
+                id={id}
+                name={name}
+                value={value}
+                type={type}
+                placeholder={placeholder}
+                onChange={onChange}
+                disabled={disabled}
+                onKeyPress={onKeyPress}
+                onBlur={onBlur}
+                readOnly={readOnly}
+                onFocus={onFocus}
+            />
+        </StyledInputWrap>
     );
 };
 

@@ -3,9 +3,30 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Card from "../common/Card";
 import { useState } from "react";
 import tokenHttp, { url } from "../../api/APIPath";
+
+import styled from "styled-components";
+
+import Card from "../common/Card";
+import LessonStatusBox from "../common/LessonStatusBox";
+
+/** 가로 flex */
+const ColFlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+
+    & > *:not(:last-child) {
+        margin-right: 1rem;
+    }
+`;
+
+/** 카드 flex */
+const CardFlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`
 
 const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
@@ -45,25 +66,35 @@ const LessonItemBox = ({ lessonInfo }) => {
     return (
         <>
             <Card>
-                수업 명: {lessonInfo.lessonName}
-                <br />
-                시작날짜: {lessonInfo.lessonStartDate}
-                <br />
-                종료날짜: {lessonInfo.lessonEndDate}
-                <br />
-                강사명: {lessonInfo.userName}
-                <br />
-                수업타입이름: {lessonInfo.lessonTypeName}
-                <br />
-                {userType === "T" && (
-                    <>
-                        {/* 강사/수업 만족도 => 강사만 보이게 */}
-                        강사 만족도:{teacherSat}
-                        수업 만족도:{lessonSat}
-                    </>
-                )}
-                출석률 :{attendRate}
-                과제 제출률:{homeworkRate}
+                <CardFlexWrap>
+                    <div>
+                        <ColFlexWrap>
+                            <div>
+                                {lessonInfo.lessonStartDate} ~{" "}
+                                {lessonInfo.lessonEndDate}
+                            </div>
+                            <LessonStatusBox>
+                                {lessonInfo.lessonTypeName}
+                            </LessonStatusBox>
+                        </ColFlexWrap>
+                        <div>{lessonInfo.lessonName}</div>
+                        {/* 강사 이름 => 학생만 보이게 */}
+                        {userType === "S" && (
+                            <span>강사명: {lessonInfo.userName}</span>
+                        )}
+                    </div>
+                    {userType === "T" && (
+                        <div>
+                            {/* 강사/수업 만족도 => 강사만 보이게 */}
+                            <div>강사 만족도:{teacherSat}</div>
+                            <div>수업 만족도:{lessonSat}</div>
+                        </div>
+                    )}
+                    <div>
+                        <div>출석률 :{attendRate}</div>
+                        <div>과제 제출률:{homeworkRate}</div>
+                    </div>
+                </CardFlexWrap>
             </Card>
         </>
     );

@@ -7,7 +7,7 @@ import Card from "../common/Card";
 import { useState } from "react";
 
 // 강사 wrap
-const ImgInfoWrap = styled.div`
+export const ImgInfoWrap = styled.div`
     padding: 3rem 0;
     display: flex;
     justify-content: space-between;
@@ -15,13 +15,13 @@ const ImgInfoWrap = styled.div`
 `;
 
 /** image styled 컴포넌트 */ 
-const StyledThumbnail = styled.img`
+export const StyledThumbnail = styled.img`
     width: 35%;
     border-radius: 50%;
 `;
 
 /** info를 묶어주는 wrap 스타일 컴포넌트 */
-const InfoWrap = styled.div`
+export const InfoWrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -48,7 +48,7 @@ const FlexWrap = styled.div`
 const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
-    
+
     // 강사 만족도, 수업 만족도 GET 요청@@@
     const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
@@ -84,9 +84,7 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
 
                     {/* 강사 이름 */}
                     <span>
-                        <div>
-                            {teacherInfo && teacherInfo.userName} 강사님
-                        </div>
+                        <div>{teacherInfo && teacherInfo.userName} 강사님</div>
                     </span>
 
                     {/* 강사 한 마디 */}
@@ -97,11 +95,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
 
                     {/* 학력과 경력이 들어가는 공간 */}
-                    {eduInfo && eduInfo.length > 0 && (
-                        <LessonStatusBox $point $round>
-                            학력
-                        </LessonStatusBox>
-                    )}
+                    <LessonStatusBox $point $round>
+                        학력
+                    </LessonStatusBox>
                     {eduInfo &&
                         eduInfo.map((eduItem, index) => (
                             <Card key={index} style={{ textAlign: "center" }}>
@@ -124,12 +120,13 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                                 </Grid>
                             </Card>
                         ))}
-
-                    {jobInfo && jobInfo.length > 0 && (
-                        <LessonStatusBox $point $round>
-                            경력
-                        </LessonStatusBox>
+                    {eduInfo && eduInfo.length === 0 && (
+                        <Card>등록된 학력이 존재하지 않습니다.</Card>
                     )}
+
+                    <LessonStatusBox $point $round>
+                        경력
+                    </LessonStatusBox>
                     {jobInfo &&
                         jobInfo.map((jobItem, index) => (
                             <Card key={index} style={{ textAlign: "center" }}>
@@ -147,6 +144,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                                 </Grid>
                             </Card>
                         ))}
+                    {jobInfo && jobInfo.length === 0 && (
+                        <Card>등록된 경력이 존재하지 않습니다.</Card>
+                    )}
                 </InfoWrap>
             </ImgInfoWrap>
         </Container>

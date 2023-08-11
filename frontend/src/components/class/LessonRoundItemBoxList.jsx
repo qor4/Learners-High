@@ -11,7 +11,7 @@ import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
 import { Link, useNavigate } from "react-router-dom";
 
-const StyledBox = styled.div`
+export const StyledBox = styled.div`
     background-color: #fff;
     border-radius: 1.25rem;
     padding: 1.25rem;

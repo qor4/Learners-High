@@ -131,15 +131,15 @@ function App() {
                         element={<LessonInfoPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/success"
+                        path="/kakaoPay/success"
                         element={<PayLessonSuccessPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/fail"
+                        path="/kakaoPay/fail"
                         element={<PayLessonFailPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/cancel"
+                        path="/kakaoPay/cancel"
                         element={<PayLessonCancelPage />}
                     ></Route>
                     <Route

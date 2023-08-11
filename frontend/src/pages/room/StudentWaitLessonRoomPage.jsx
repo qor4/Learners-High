@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { UserStatusOption } from "seeso";
 import EasySeeso from "seeso/easy-seeso";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
@@ -10,11 +10,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
-
+import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
+// import { seesoUrl } from "../../api/APIPath";
 
 const dotMaxSize = 10;
 const dotMinSize = 5;
+let test = false;
 
 const StudentWaitLessonRoomPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
@@ -24,13 +26,12 @@ const StudentWaitLessonRoomPage = () => {
 
     // console.log("여기 왔어?")
     let userStatus = useRef(null);
-    let isCalibrationMode = false;
     const eyeTracker = useRef(null);
     let currentX, currentY;
     const navigate = useNavigate();
     const { lessonNo, lessonRoundNo } = useParams();
     const [ isSeesoInit, setSeesoInit ] = useState(false);
-    
+    console.log("start + " + enterRoom);
     useEffect(() => {   
         if (!eyeTracker.current) {
             eyeTracker.current = new EasySeeso();
@@ -61,7 +62,7 @@ const StudentWaitLessonRoomPage = () => {
     // gaze callback.
     function onGaze(gazeInfo) {
         // do something with gaze info.
-        if (!isCalibrationMode) {
+        if (!isSeesoInit) {
             showGaze(gazeInfo);
         } else {
             hideGaze();
@@ -87,7 +88,7 @@ const StudentWaitLessonRoomPage = () => {
     // calibration callback.
     const onCalibrationFinished = useCallback((calibrationData) => {
         clearCanvas();
-        isCalibrationMode = false;
+        setSeesoInit(true);
         eyeTracker.current.setUserStatusCallback(
             onAttention,
             null,
@@ -117,29 +118,55 @@ const StudentWaitLessonRoomPage = () => {
         // do something with debug info.
     }
     
-    function onAttention(timestampBegin, timestampEnd, score) {
+    const onAttention = useCallback((timestampBegin, timestampEnd, score) =>{
         console.log(
-        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
+        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}, enterRoom : ${enterRoom}`
         );
-    }
+
+        if(test){
+            console.log({lessonRoundNo : lessonRoundNo,
+                lessonNo : lessonNo,
+                userNo : userNo,
+                rate: score});
+            // mongodb server와 통신
+            // axios.post(
+            //     `${seesoUrl}/seeso/attention-rate`,
+            //     {
+            //       lessonRoundNo: Number(lessonRoundNo),
+            //       lessonNo: Number(lessonNo),
+            //       userNo: Number(userNo),
+            //       rate: Number(score),
+            //     },
+            //     {
+            //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+            //     }
+            //   )
+            //     .then((res) => {
+            //       console.log(res, "ddd");
+            //     })
+            //     .catch((err) => {
+            //       console.error(err);
+            //     });
+        }
+    },[enterRoom]);
+
     const tmpClick = useCallback(() => {
-        if (!isCalibrationMode) {
-            isCalibrationMode = true;
-            hideGaze();
-            setTimeout(function () {
-                console.log(eyeTracker.current);
-                eyeTracker.current.startCalibration(
-                    onCalibrationNextPoint,
-                    onCalibrationProgress,
-                    onCalibrationFinished
+        setSeesoInit(true);
+        hideGaze();
+        setTimeout(function () {
+            eyeTracker.current.startCalibration(
+                onCalibrationNextPoint,
+                onCalibrationProgress,
+                onCalibrationFinished
                 );
             }, 2000);
-        }
     }, []);
 
 
     const enterTheLessonRoom =  () => {
         setEnterRoom(true);
+        test = true;
+        console.log(`dㅇㅇdjdjdjdjdjdjdjdjjdjdjd  ${enterRoom}`);
     };
     return (
         <>
