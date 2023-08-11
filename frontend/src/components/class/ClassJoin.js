@@ -324,6 +324,7 @@ const ClassJoin = () => {
                             있습니다. 강사님의 수업을 상세히 소개해 주세요!
                         </div>
                         {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
+                        <div style={{height:"700px"}}>
                         <CKEditor
                             editor={ClassicEditor}
                             value={lessonInfo}
@@ -353,8 +354,10 @@ const ClassJoin = () => {
                                     ],
                                 },
                             }}
+                            style={{ height: "500px", border: "1px solid #ccc", borderRadius: "4px" }}
                             onBlur={handleEditorChange}
                         />
+                        </div>
                     </div>
                 </Container>
             </MenuCard>
