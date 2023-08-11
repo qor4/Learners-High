@@ -11,7 +11,6 @@ import { url } from "../../api/APIPath";
 
 import axios from "axios";
 
-import "../common/CustomEditorStyles.css";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -491,7 +490,7 @@ const ClassJoin = () => {
                         {/* html editor */}
                         {/* 추가적인 height 수정@@@ */}
                         <div style={{ minHeight: "14rem" }}>
-                            <div className="custom-editor-height">
+                            <div className="ck">
                                 <CKEditor
                                     editor={ClassicEditor}
                                     value={lessonInfo}
@@ -525,39 +524,6 @@ const ClassJoin = () => {
                                 />
                             </div>
                         </div>
-                        {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
-                        <div style={{height:"700px"}}>
-                        <CKEditor
-                            editor={ClassicEditor}
-                            value={lessonInfo}
-                            // toolbar 설정
-                            config={{
-                                toolbar: {
-                                    items: [
-                                        "heading",
-                                        "|",
-                                        "bold",
-                                        "italic",
-                                        "link",
-                                        "bulletedList",
-                                        "numberedList",
-                                        "|",
-                                        "blockQuote",
-                                        "insertTable",
-                                        "undo",
-                                        "redo",
-                                    ],
-                                },
-                                table: {
-                                    contentToolbar: [
-                                        "tableColumn",
-                                        "tableRow",
-                                        "mergeTableCells",
-                                    ],
-                                },
-                            }}
-                            onBlur={handleEditorChange}
-                        />
                     </div>
                 </Container>
             </MenuCard>
