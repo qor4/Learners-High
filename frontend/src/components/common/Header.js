@@ -195,7 +195,7 @@ const Header = () => {
                 )}
             </StyledNav>
         </StyledHeader>
-        {controlLessonJoin ? <ClassJoinCheckModal isUpdated={controlLessonJoin} onDataChange={initControllLessonJoin} lessonNo={lessonNo ? lessonNo : null}/> : null}
+        {controlLessonJoin ? <ClassJoinCheckModal initControllLessonJoin={initControllLessonJoin} isUpdated={controlLessonJoin} lessonNo={lessonNo ? lessonNo : null}/> : null}
         </>
     );
 };

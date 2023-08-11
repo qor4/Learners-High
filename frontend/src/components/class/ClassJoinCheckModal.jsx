@@ -27,41 +27,49 @@ const ButtonWrap = styled.div`
 
 const ClassJoinCheckModal = (props) => {
     //  동민 추가
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [showLessonModal, setshowLessonModal] = useState(props.isUpdated);
     const [lessonNo, setLessonNo] = useState(props.lessonNo);
-    const onDataChange = props.onDataChange
     const userNo = useSelector((state) => state.user.userNo);
+    const initControllLessonJoin = props.initControllLessonJoin;
 
-
-    // 모달을 닫을 때 -> 그냥 닫기 아니지... 아니지..!
+    // 모달을 닫을 때 -> 그냥 닫기 아니지... 아니지..! -> 닫기
     const handleCloseModal = () => {
-        handleDeleteLesson();
+        setshowLessonModal(false);
+        initControllLessonJoin();
     };
 
     const handleUpdateLesson = () => {
-      if (lessonNo !== null) {
-        setshowLessonModal(false);
-        document.body.classList.remove("overflow-hidden");
-        console.log(lessonNo, "강의No")
-        tokenHttp.get(`${url}/lesson/writing/info/${Number(lessonNo)}`).then((res) => {
-            console.log(res);
-            navigate(`/lesson/join`, {state: {lessonNo, isUpdated: true}}, {replace: false})
-        });
-        sendData()}
+        if (lessonNo !== null) {
+            setshowLessonModal(false);
+            initControllLessonJoin();
+            document.body.classList.remove("overflow-hidden");
+            console.log(lessonNo, "강의No");
+            tokenHttp
+                .get(`${url}/lesson/writing/info/${Number(lessonNo)}`)
+                .then((res) => {
+                    console.log(res);
+                    navigate(
+                        `/lesson/join`,
+                        { state: { lessonNo, isUpdated: true } },
+                        { replace: false }
+                    );
+                });
+        }
     };
     const handleDeleteLesson = () => {
-      if (lessonNo !== null){
-        tokenHttp.delete(`${url}/lesson/writing/delete/${lessonNo}`);
-        setshowLessonModal(false);
-        document.body.classList.remove("overflow-hidden");
-        navigate('/lesson/join', {state: {lessonNo: null, isUpdated: false}}, {replace: false})
-        sendData()}
+        if (lessonNo !== null) {
+            tokenHttp.delete(`${url}/lesson/writing/delete/${lessonNo}`);
+            setshowLessonModal(false);
+            document.body.classList.remove("overflow-hidden");
+            navigate(
+                "/lesson/join",
+                { state: { lessonNo: null, isUpdated: false } },
+                { replace: false }
+            );
+        }
+        initControllLessonJoin();
     };
-
-    const sendData = () => {
-      onDataChange()
-    }
 
     // 동민 추가 종료
 
