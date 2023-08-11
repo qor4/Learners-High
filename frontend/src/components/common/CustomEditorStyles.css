@@ -8,6 +8,7 @@
     display: none; /* 툴바 숨기기 */
 }
 
-.custom-editor-height {
-    height: 100%;
-}
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    min-height: 400px;
+    margin-bottom: 20px;
+  }

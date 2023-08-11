@@ -138,7 +138,7 @@ const LessonInfoPage = () => {
                 </FlexWrap>
                 <Card>
                     {lessonInfoDataSet.lessonInfo && (
-                        <div className="custom-editor">
+                        <div className="custom-editor rr">
                             <CKEditor
                                 disabled
                                 config={{ toolbar: { items: [] } }}
