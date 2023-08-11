@@ -20,7 +20,7 @@ const PayLessonCancelPage = () => {
             .then((res) => {
                 console.log(res);
                 alert("결제 취소")
-                // navigate(`/lesson/info/${lessonNo}`)
+                navigate(`/lesson/info/${lessonNo}`)
                 // navigate('/')
               })
             .catch(err=> console.log(err));
