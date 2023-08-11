@@ -1,14 +1,12 @@
-package com.seeso.domain;
+package com.learnershigh.domain;
 
-import com.seeso.dto.AttentionRateMetadataDto;
+import com.learnershigh.dto.etc.AttentionRateMetadataDto;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.TimeSeries;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Getter
