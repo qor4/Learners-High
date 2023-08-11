@@ -525,6 +525,39 @@ const ClassJoin = () => {
                                 />
                             </div>
                         </div>
+                        {/* html 에디터 => 엔터 시, <p>태그 처리 수정@@@ */}
+                        <div style={{height:"700px"}}>
+                        <CKEditor
+                            editor={ClassicEditor}
+                            value={lessonInfo}
+                            // toolbar 설정
+                            config={{
+                                toolbar: {
+                                    items: [
+                                        "heading",
+                                        "|",
+                                        "bold",
+                                        "italic",
+                                        "link",
+                                        "bulletedList",
+                                        "numberedList",
+                                        "|",
+                                        "blockQuote",
+                                        "insertTable",
+                                        "undo",
+                                        "redo",
+                                    ],
+                                },
+                                table: {
+                                    contentToolbar: [
+                                        "tableColumn",
+                                        "tableRow",
+                                        "mergeTableCells",
+                                    ],
+                                },
+                            }}
+                            onBlur={handleEditorChange}
+                        />
                     </div>
                 </Container>
             </MenuCard>

@@ -33,7 +33,6 @@ const PayLessonSuccessPage = () => {
         });
         // 강의 상세 vs 수강목록
         navigate(`/lesson/info/${lessonNo}`)
-        // navigate(`/edu/student/${userNo}`)
       })
     .catch(err => console.log(err, "에러"))
 }, [])

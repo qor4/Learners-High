@@ -24,10 +24,10 @@ const PayLesson = ({lessonNo, lessonPrice, lessonName}) => {
       // 두개 보내면 ? -> & 이걸로 보내기
       tokenHttp.post(`${url}/kakaoPay/ready?lessonNo=${lessonNo}&lessonPrice=${lessonPrice}&lessonName=${lessonName}`)
       .then((res) => {
-          console.log(res.data);
+          console.log(res.data, "너니?");
           const redirectURL = res.data.next_redirect_pc_url;
-          // window.location.href = redirectURL
-          window.open(redirectURL)
+          window.location.href = redirectURL
+        //   window.open(redirectURL)
       })
       .catch(err=> console.log(err, "payLesson 에러"))
 
