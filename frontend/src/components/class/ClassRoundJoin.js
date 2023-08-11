@@ -324,6 +324,7 @@ const ClassRoundJoin = () => {
                 item.lessonNo = res.data.result.lessonNo
                 
             })
+            console.log(lessonRoundDataSet)
             return lessonRoundDataSet
             }
         )
