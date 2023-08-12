@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../api/APIPath";
-import tokenHttp from "../api/APIPath";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+// CKEditor
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -57,6 +57,16 @@ const LessonInfoPage = () => {
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
     const [lessonPrice, setLessonPrice] = useState(0);
     const [lessonName, setLessonName] = useState(null);
+
+    // 조회수 증가 요청
+    useEffect(() => {
+        axios
+            .put(`${url}/lesson/viewcount?lessonNo=${lessonNo}`)
+            .then((response) => {
+                console.log("viewCount +1 성공!");
+            });
+    }, []);
+
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
@@ -65,9 +75,6 @@ const LessonInfoPage = () => {
             setLessonName(response.data.result.lessonInfo.lessonName);
         });
     }, [lessonNo]);
-
-    // 조회수 증가 요청
-    // axios.get(`${url}/lesson/viewcount/${userNo}`);
 
     // 강사 정보 가져오는 GET 요청
     useEffect(() => {
@@ -100,6 +107,27 @@ const LessonInfoPage = () => {
         console.log(data);
         setShowPayLessonModal(true);
         document.body.classList.add("overflow-hidden");
+    };
+
+    // 날짜 format
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+
+    // 시간 format
+    const formatTime = (date) => {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours < 12 ? "오전" : "오후";
+        const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+        const formattedMinutes = minutes.toString().padStart(2, "0");
+
+        return `${ampm} ${formattedHours}시 ${formattedMinutes}분`;
     };
 
     console.log(lessonInfoDataSet);
@@ -138,7 +166,7 @@ const LessonInfoPage = () => {
                 </FlexWrap>
                 <Card>
                     {lessonInfoDataSet.lessonInfo && (
-                        <div className="custom-editor rr">
+                        <div className="custom-editor">
                             <CKEditor
                                 disabled
                                 config={{ toolbar: { items: [] } }}
@@ -163,8 +191,21 @@ const LessonInfoPage = () => {
                                     </LessonStatusBox>
                                     {round.lessonRoundTitle}
                                     <span>
-                                        {round.lessonRoundStartDatetime} ~{" "}
-                                        {round.lessonRoundEndDatetime}
+                                        {`${formatDate(
+                                            new Date(
+                                                round.lessonRoundStartDatetime
+                                            )
+                                        )} ${formatTime(
+                                            new Date(
+                                                round.lessonRoundStartDatetime
+                                            )
+                                        )}`}{" "}
+                                        ~{" "}
+                                        {formatTime(
+                                            new Date(
+                                                round.lessonRoundEndDatetime
+                                            )
+                                        )}
                                     </span>
                                 </FlexTextWrap>
                             </StyledBox>
@@ -174,6 +215,7 @@ const LessonInfoPage = () => {
                     )}
                 </Card>
             </Container>
+
             {/* 결제 모달창 */}
             {showPayLessonModal && lessonPrice > 0 && (
                 <Modal

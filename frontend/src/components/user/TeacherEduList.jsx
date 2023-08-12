@@ -22,8 +22,8 @@ const TeacherEduList = ({ userNo }) => {
                 <LessonStatusBox $point $round>
                     학력
                 </LessonStatusBox>
-                {teacherEduList.map((item) => (
-                    <div key={item?.classNo}>
+                {teacherEduList.map((item, index) => (
+                    <div key={`eduItem-${index}`}>
                         <TeacherEduItem item={item} />
                     </div>
                 ))}

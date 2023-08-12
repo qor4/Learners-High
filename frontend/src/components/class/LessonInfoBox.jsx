@@ -60,7 +60,7 @@ const StyledBottomBar = styled.div`
 `;
 
 const BottomBarContents = styled.div`
-    width: 65%;
+    width: 60%;
     height: 100%;
     margin: 0 auto;
     display: flex;
@@ -112,21 +112,19 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         document.body.classList.remove("overflow-hidden");
     };
 
-    /** 찜하기 버튼을 눌렀을 때 */
+    /** 찜하기 버튼을 눌렀을 때 @@@ */
     const handleWishChange = () => {
         console.log("찜하기를 눌렀어용", lessonNo.lessonNo, userNo);
-        const data = {
-            lessonNo: lessonNo.lessonNo,
-            userNo: userNo,
-        };
-        tokenHttp
-            .post(`${url}/student/wish`, data, {
-                headers: { "Content-Type": "application/json" },
-            })
-            .then((res) => console.log(res));
+        // const data = {
+        //     lessonNo: lessonNo.lessonNo,
+        //     userNo: userNo,
+        // };
+        // tokenHttp
+        //     .post(`${url}/student/wish`, data, {
+        //         headers: { "Content-Type": "application/json" },
+        //     })
+        //     .then((res) => console.log(res));
     };
-
-    console.log(lessonStateDataSet, typeof lessonStateDataSet);
 
     return (
         <Container maxWidth="md">

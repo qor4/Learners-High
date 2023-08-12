@@ -18,8 +18,8 @@ const StyledCsatInfoWrap = styled.div`
 `;
 
 // 탭바 버튼 wrap
-const StyledButtonWrap = styled.div`
-    margin-top: 2rem;
+export const StyledButtonWrap = styled.div`
+    margin: 2rem 0 1rem 0;
     & > *:not(:first-child) {
         margin-left: 0.5rem;
     }
