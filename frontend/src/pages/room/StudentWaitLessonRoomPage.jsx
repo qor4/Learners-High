@@ -3,7 +3,6 @@ import { UserStatusOption } from "seeso";
 import EasySeeso from "seeso/easy-seeso";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { showGaze, hideGaze } from "./showGaze";
 import Webcam from "react-webcam";
 import Button from "../../components/common/Button";
 import { useEffect } from "react";
@@ -16,14 +15,14 @@ import { licenseKey } from "../../api/Ignore";
 
 const dotMaxSize = 10;
 const dotMinSize = 5;
-let test = false;
 
 const StudentWaitLessonRoomPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
     const [enterRoom, setEnterRoom] = useState(false);
-
+    const videoRef = useRef(null);
+    
     // console.log("여기 왔어?")
     let userStatus = useRef(null);
     const eyeTracker = useRef(null);
@@ -31,16 +30,37 @@ const StudentWaitLessonRoomPage = () => {
     const navigate = useNavigate();
     const { lessonNo, lessonRoundNo } = useParams();
     const [ isSeesoInit, setSeesoInit ] = useState(false);
-    console.log("start + " + enterRoom);
-    useEffect(() => {   
+
+    const [attentionScore, setAttentionScore] = useState(0);
+    const [isFocus, setIsFocus] = useState(true);
+    const [isTest, setIsTest] = useState(false);
+    const [calibrationData, setCalibrationData] = useState(null);
+
+    useEffect(() => { 
+        window.addEventListener('blur',focusOutLessonRoom);  
+        window.addEventListener('focus',focusInLessonRoom);  
+        
+        (async () => {
+            try {
+              const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+              if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+              }
+            } catch (error) {
+              console.error('Error accessing webcam:', error);
+            }
+        })();
+
+
         if (!eyeTracker.current) {
             eyeTracker.current = new EasySeeso();
             userStatus.current = new UserStatusOption(true, false, false);
             (async ()=>{
                 await eyeTracker.current.init(
                     licenseKey,
-                    async () => {
-                        await eyeTracker.current.startTracking(onGaze, onDebug);
+                    () => {
+                        setSeesoInit(true);
+                        setIsTest(false);
                         if (!eyeTracker.current.checkMobile()) {
                             eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
@@ -53,21 +73,92 @@ const StudentWaitLessonRoomPage = () => {
                     () => console.log("callback when init failed."), // callback when init failed.
                     userStatus.current
                 );
-                // 여기서 버튼 활성화
-                setSeesoInit(true);
             })();
+        }
+        return ()=>{
+            window.removeEventListener('blur',focusOutLessonRoom);  
+            window.removeEventListener('focus',focusInLessonRoom);  
+
+            if (videoRef.current) {
+        const stream = videoRef.current.srcObject;
+        if (stream) {
+          const tracks = stream.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+      }
         }
     }, []);
     
-    // gaze callback.
-    function onGaze(gazeInfo) {
-        // do something with gaze info.
-        if (!isSeesoInit) {
-            showGaze(gazeInfo);
-        } else {
-            hideGaze();
+
+    // 다른 화면으로 변경 시 실행되는 callback 함수
+    const focusOutLessonRoom = useCallback(()=>{
+        console.log('다른 화면 봄');
+        setIsFocus(false);
+
+    });
+
+    // 강의실 화면으로 변경 시 실행되는 callback 함수
+    const focusInLessonRoom = useCallback(()=>{
+        console.log('강의룸으로 돌아 옴');
+        setIsFocus(true);
+    });
+
+    useEffect(()=>{
+        eyeTracker.current.startTracking(onGaze,onDebug);
+    },[isSeesoInit]);
+
+    useEffect(()=>{
+        saveAttentionScore(attentionScore);
+    },[attentionScore]);
+
+    // 화면을 보는지 안 보는 지를 파악하여 mongodb에 넣는 함수
+    const saveAttentionScore = useCallback((score)=>{
+            let currentScore = score;
+            if(!isFocus){
+                console.log("다른 화면 보는 중");
+                currentScore = 0;
+            }
+            // 조건
+            if(enterRoom){
+                console.log("AttentScore : ", currentScore);
+            }
+            // mongodb server와 통신
+            //     {
+            // axios.post(
+            //     `${seesoUrl}/seeso/attention-rate`,
+            //       lessonRoundNo: Number(lessonRoundNo),
+            //       lessonNo: Number(lessonNo),
+            //       userNo: Number(userNo),
+            //       rate: Number(score),
+            //     },
+            //     {
+            //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+            //     }
+            //   )
+            //     .then((res) => {
+            //       console.log(res, "ddd");
+            //     })
+            //     .catch((err) => {
+            //       console.error(err);
+            //     });
+    },[isFocus,enterRoom]);
+
+    const onAttention = useCallback((timestampBegin, timestampEnd, score) =>{
+        console.log(
+        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
+        );
+        setAttentionScore(score);
+    },[]);
+    useEffect(()=>{
+        if(calibrationData !== null){
+            
+            eyeTracker.current.startTracking(onGaze,onDebug);
+            eyeTracker.current.setCalibrationData(calibrationData);
+            console.log('test 함');
+        }else{
+            console.log('test 안함');
         }
-    }
+    },[enterRoom]);
     
     // calibration callback.
     function onCalibrationNextPoint(pointX, pointY) {
@@ -88,22 +179,22 @@ const StudentWaitLessonRoomPage = () => {
     // calibration callback.
     const onCalibrationFinished = useCallback((calibrationData) => {
         clearCanvas();
-        setSeesoInit(true);
         eyeTracker.current.setUserStatusCallback(
             onAttention,
             null,
             null
             );
-            eyeTracker.current.setAttentionInterval(10);
+        eyeTracker.current.setAttentionInterval(10);
+        setIsTest(false);
+        setCalibrationData(calibrationData);
         }, []);
-        
+
     function drawCircle(x, y, dotSize, ctx) {
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(x, y, dotSize, 0, Math.PI * 2, true);
         ctx.fill();
-    }
-        
+    }  
     function clearCanvas() {
         let canvas = document.getElementById("output");
         canvas.width = window.innerWidth;
@@ -112,67 +203,28 @@ const StudentWaitLessonRoomPage = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return ctx;
     }
-
-    // debug callback.
-    function onDebug(FPS, latency_min, latency_max, latency_avg) {
-        // do something with debug info.
-    }
-    
-    const onAttention = useCallback((timestampBegin, timestampEnd, score) =>{
-        console.log(
-        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}, enterRoom : ${enterRoom}`
-        );
-
-        if(test){
-            console.log({lessonRoundNo : lessonRoundNo,
-                lessonNo : lessonNo,
-                userNo : userNo,
-                rate: score});
-            // mongodb server와 통신
-            // axios.post(
-            //     `${seesoUrl}/seeso/attention-rate`,
-            //     {
-            //       lessonRoundNo: Number(lessonRoundNo),
-            //       lessonNo: Number(lessonNo),
-            //       userNo: Number(userNo),
-            //       rate: Number(score),
-            //     },
-            //     {
-            //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-            //     }
-            //   )
-            //     .then((res) => {
-            //       console.log(res, "ddd");
-            //     })
-            //     .catch((err) => {
-            //       console.error(err);
-            //     });
-        }
-    },[enterRoom]);
+    const onGaze = ((gazeInfo)=> { });
+    const onDebug = (FPS, latency_min, latency_max, latency_avg)=> { };
 
     const tmpClick = useCallback(() => {
-        setSeesoInit(true);
-        hideGaze();
+        setIsTest(true);
         setTimeout(function () {
             eyeTracker.current.startCalibration(
                 onCalibrationNextPoint,
                 onCalibrationProgress,
                 onCalibrationFinished
                 );
-            }, 2000);
+            }, 1000);
     }, []);
 
-
-    const enterTheLessonRoom =  () => {
+    const enterTheLessonRoom =  useCallback(() => {
         setEnterRoom(true);
-        test = true;
-        console.log(`dㅇㅇdjdjdjdjdjdjdjdjjdjdjd  ${enterRoom}`);
-    };
+    },[]);
+
     return (
         <>
-            <>
-                <div style={{ position: "relative" }}>
-                    <div className="Wrap-Cam-canvas">
+            <div style={{ position: "relative" }}>
+                <div className="Wrap-Cam-canvas">
                     <canvas
                             id="output"
                             style={{
@@ -185,15 +237,15 @@ const StudentWaitLessonRoomPage = () => {
                         />
                         {!enterRoom ? (
                             <>
-                            <Webcam
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                playsInline
                                 style={{
-                                    position: "absolute",
-                                    height: "500px",
-                                    width: "70%",
-                                    overFit: "cover",
-                                    margin: "auto",
+                                width: '100%',
+                                maxWidth: '500px',
                                 }}
-                                /> 
+                            />
                                 
                             <div
                         style={{
@@ -216,10 +268,10 @@ const StudentWaitLessonRoomPage = () => {
                             {/* <span> {lessonName} </span> */}
                         </div>
                         <div style={{ display: "flex", justifyContent: "end" }}>
-                            <Button onClick={enterTheLessonRoom}>
+                            <Button onClick={enterTheLessonRoom} disabled ={isTest}>
                                 실제 룸 입장
                             </Button>
-                            <button onClick={tmpClick} disabled={!isSeesoInit} >테스트</button>
+                            <button onClick={tmpClick} disabled={isTest} >테스트</button>
                         </div>
                     </div>
                             </>
@@ -228,13 +280,8 @@ const StudentWaitLessonRoomPage = () => {
                             <StudentLessonRoomPage/>
                         )
                         }
-                        
-                    </div>
-
-                    {/* 추후 하나의 컴포넌트로 대체 */}
-                    
                 </div>
-            </>
+            </div>
         </>
     );
 };

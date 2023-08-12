@@ -31,7 +31,7 @@ const TeacherLessonRoomPage = () => {
 
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
-    const [audioEnabled, setAudioEnabled] = useState(true);
+    const [audioEnabled, setAudioEnabled] = useState(false);
     const [shareEnabled, setShareEnabled] = useState(false);
     
     // 새로운 OpenVidu 객체 생성
@@ -40,7 +40,7 @@ const TeacherLessonRoomPage = () => {
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect( () => {
         setVideoEnabled(true);
-        setAudioEnabled(true);
+        setAudioEnabled(false);
         setShareEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
@@ -67,8 +67,6 @@ const TeacherLessonRoomPage = () => {
                             }).catch(err=>{
                                 console.error(err);
                             });
-                            // session, state 초기화
-            console.log("수업 종료")
             setOV(null);
             setMySessionId(undefined);
             setMyUserName('');
@@ -109,12 +107,10 @@ const TeacherLessonRoomPage = () => {
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-        console.log("join 완료")
     };
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
-        console.log(session, "session")
         if (session && !token) {
             tokenHttp
             .get(
@@ -123,7 +119,7 @@ const TeacherLessonRoomPage = () => {
                     if(res.data.resultCode !== 200) throw res.data.resultMsg;
                     setToken(res.data.resultMsg);
                 // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                session.connect(res.data.resultMsg, { clientData: String(userNo) })
+                session.connect(res.data.resultMsg, { clientData: userNo })
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
