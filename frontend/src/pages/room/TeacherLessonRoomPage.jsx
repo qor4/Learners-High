@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { useState } from "react"; // 내꺼.
+import { useState, useRef } from "react"; // 내꺼.
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url } from "../../api/APIPath";
@@ -14,8 +14,14 @@ import ChatComponent from "../../components/chat/ChatComponent";
 // 강사 강의룸 스타일링
 import styled from "styled-components";
 import { Typography } from "@mui/material";
+import "./TeacherLessonRoomPage.css"
 
-import { HiMicrophone, HiVideoCamera, HiDesktopComputer } from "react-icons/hi";
+import {
+    HiMicrophone,
+    HiVideoCamera,
+    HiDesktopComputer,
+    HiOutlineBell,
+} from "react-icons/hi";
 import Button from "../../components/common/Button";
 
 // 전체 Wrap (가로, 세로 100%)
@@ -48,9 +54,24 @@ const StudentScreenWrap = styled.div`
 export const StudentScreen = styled.div`
     width: 100%;
     // height auto로 변경하기@@@ (화면 들어왔을 때, 높이 자동 설정)
-    height: 10rem;
+    height: auto;
     border-radius: 0.75rem;
+    overflow: hidden;
     background-color: #ddd;
+    position: relative;
+`;
+
+const StudentName = styled.div`
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    border-radius: inherit;
+    width: 30%;
+    text-align: center;
+    background-color: #e1e6f9;
+    padding: 0.1rem;
+    box-sizing: border-box;
+    font-size: 0.75rem;
 `;
 
 // 수업 컨트롤 바, 화면 공유 Wrap
@@ -70,6 +91,7 @@ export const LessonControlBar = styled.div`
     padding: 0.75rem 1rem;
     box-sizing: border-box;
     border-radius: 1.25rem;
+
     margin-bottom: 0.75rem;
 `;
 
@@ -84,9 +106,16 @@ export const ControlButtonWrap = styled.div`
 export const ScreenShare = styled.div`
     width: 100%;
     height: calc(100vh - 6.75rem);
-    border-radius: 1.25rem;
 
-    background-color: #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+
+    border-radius: 1.25rem;
+    overflow: hidden;
+
+    background-color: #000;
 `;
 
 // 학생 상태 바, 채팅 컴포넌트 Wrap
@@ -110,13 +139,51 @@ const StateNotification = styled.div`
     overflow: scroll;
 `;
 
+// 학생 개인별 상태 바 (상태, 주의 버튼)
+const StateWrap = styled.div`
+    background-color: #fff;
+    width: 100%;
+    height: 4.5rem;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    border-radius: inherit;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+const StateFlex = styled.div`
+    display: flex;
+    align-items: center;
+
+    & > * {
+        margin-left: 0.75rem;
+    }
+`;
+const StateButton = styled.div`
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    border-radius: 0.75rem;
+    border: 1px solid #000;
+
+    :hover {
+        cursor: pointer;
+        background-color: #e1e6f9;
+    }
+`
+
 // 채팅 컴포넌트 Wrap
 const ChatWrap = styled.div`
+    position: relative;
     width: 100%;
     height: 40%;
 
+    overflow: hidden;
+
     border-radius: 1.25rem;
-    padding: 0.75rem;
+    // padding: 0.75rem;
     box-sizing: border-box;
 
     background-color: #e1e6f9;
@@ -130,6 +197,8 @@ const TeacherLessonRoomPage = () => {
     const userName = useSelector((state) => state.user.userName);
     const { lessonNo, lessonRoundNo } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const lessonName = location.state.lessonName;
 
     // session, state 선언
     const [mySessionId, setMySessionId] = useState(undefined);
@@ -395,9 +464,17 @@ const TeacherLessonRoomPage = () => {
                         <>
                             {/* 여기서 강사 아닌 사람들만 */}
                             {subscribers.map((sub, i) => (
-                                <StudentScreen key={`${i}-subscriber`}>
-                                    <UserVideoComponent streamManager={sub} />
-                                </StudentScreen>
+                                <>
+                            {console.log(sub, "sub!!")}
+                                    <StudentScreen key={`${i}-subscriber1`}>
+                                        <StudentName>
+                                            {sub.userName} "1"
+                                        </StudentName>
+                                        <UserVideoComponent
+                                            streamManager={sub}
+                                        />
+                                    </StudentScreen>
+                                </>
                             ))}
                         </>
                     ) : null}
@@ -409,7 +486,7 @@ const TeacherLessonRoomPage = () => {
                     <LessonControlBar>
                         {/* 수업 타이틀 @@@ */}
                         <Typography fontWeight={"bold"} color={"white"}>
-                            수업 타이틀 : {}
+                            수업 타이틀 : {lessonName}
                         </Typography>
                         {/* 우측 버튼 모음 */}
                         <ControlButtonWrap>
@@ -462,11 +539,31 @@ const TeacherLessonRoomPage = () => {
                     {/* 학생 상태 경고 바 */}
                     <StateNotification>
                         {/* 학생 개개인의 상태와 주의 표시 버튼을 나타낼 박스 */}
-                        <div></div>
+                        {subscribers.map((sub, idx) => (
+                            // 여기에 div Box 만들면 됩니다.
+                            <>
+                                <StateWrap>
+                                    <div>이름</div>
+                                    <StateFlex>
+                                        {/* 여기에 집중 여부에 따라 바꿀 것. */}
+                                        <div>상태</div>
+                                        <StateButton><HiOutlineBell /></StateButton>
+                                    </StateFlex>
+                                </StateWrap>
+                            </>
+                        ))}
                     </StateNotification>
 
                     {/* 채팅 컴포넌트 */}
-                    <ChatWrap></ChatWrap>
+                    <ChatWrap>
+                        {mainStreamManager && (
+                            <ChatComponent
+                                userName={userName}
+                                streamManager={mainStreamManager}
+                                connectionId={session.connection.connectionId}
+                            />
+                        )}
+                    </ChatWrap>
                 </StateChatWrap>
             </RoomFrameWrap>
         </>

@@ -1,9 +1,7 @@
 // 학생 강의룸 틀
 import styled from "styled-components";
 import { Typography } from "@mui/material";
-
 import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
-
 import {
     ControlButtonWrap,
     LessonControlBar,

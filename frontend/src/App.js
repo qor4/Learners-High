@@ -75,26 +75,22 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
     const location = useLocation();
-    const hideComponetStudent = location.pathname.startsWith(
-        "/lessonroom/student"
+    const hideComponent = location.pathname.startsWith(
+        "/lessonroom"
     );
-    const hideComponetTeacher = location.pathname.startsWith(
-        "/lessonroom/teacher"
-    );
-    const hideComponetWait = location.pathname.startsWith("/lessonroom/wait");
+    // const hideComponentTeacher = location.pathname.startsWith(
+    //     "/lessonroom/teacher"
+    // );
+    // const hideComponentWait = location.pathname.startsWith("/lessonroom/wait");
     return (
         <>
             <GlobalStyle />
             <div className="App">
+                { (!hideComponent && 
                 <Header />
-                {/* <TeacherJobItem/> */}
-                {/* <UserJoinTeacherJob/> */}
-                {/* <UserJoinTeacherEdu/> */}
-                {/* <UserLogIn/> */}
-                {/* <StudentMain/> */}
-                {/* <ClassRoundJoinPage/> */}
-                {/* <StudentWaitLessonRoomPage/> */}
-
+                    
+                    )}
+                
                 <Routes>
                     <Route path="/" element={<MainPage />}></Route>
                     <Route path="/join" element={<UserJoinPage />}></Route>
@@ -182,8 +178,8 @@ function App() {
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
-                {!hideComponetWait &&
-                    (!hideComponetStudent || !hideComponetTeacher) && (
+                {
+                    (!hideComponent) && (
                         <Footer />
                     )}
             </div>

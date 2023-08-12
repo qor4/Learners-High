@@ -57,10 +57,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         if (
             endDatetime.getFullYear() === today.getFullYear() &&
             endDatetime.getMonth() === today.getMonth() &&
-            endDatetime.getDate() !== today.getDate()
+            endDatetime.getDate() === today.getDate()
         ) {
             // 여기!
-            navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`);
+            navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {state: {lessonName}});
         }
     };
     const lessonNo = lessonInfo.lessonNo;
@@ -103,9 +103,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         if (
             endDatetime.getFullYear() === today.getFullYear() &&
             endDatetime.getMonth() === today.getMonth() &&
-            endDatetime.getDate() !== today.getDate() // 여기!
+            endDatetime.getDate() === today.getDate() // 여기!
         ) {
-            navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`);
+            navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
         }
     };
 

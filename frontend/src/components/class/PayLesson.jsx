@@ -26,8 +26,8 @@ const PayLesson = ({lessonNo, lessonPrice, lessonName}) => {
       .then((res) => {
           console.log(res.data);
           const redirectURL = res.data.next_redirect_pc_url;
-          // window.location.href = redirectURL
-          window.open(redirectURL)
+          window.location.href = redirectURL
+        //   window.open(redirectURL)
       })
       .catch(err=> console.log(err, "payLesson 에러"))
 
