@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import tokenHttp, { url } from "../../api/APIPath";
+import { Grid } from "@material-ui/core";
 
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { styled } from "styled-components";
-
-import tokenHttp, { url } from "../../api/APIPath";
-
-import TeacherJobItem from "./TeacherJobItem";
-import LessonStatusBox from "../common/LessonStatusBox";
-import Card from "../common/Card";
-import { Grid } from "@material-ui/core";
 import { InputWrap, StyledInput } from "../auth/UserJoinTeacherEdu";
-import Button from "../common/Button";
 import { StyledBox } from "../class/LessonRoundItemBoxList";
 
-const FlexListWrap = styled.div`
+import TeacherJobItem from "./TeacherJobItem";
+
+import LessonStatusBox from "../common/LessonStatusBox";
+import Card from "../common/Card";
+import Button from "../common/Button";
+
+export const FlexListWrap = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
 
-const StyledListAdd = styled.div`
+export const StyledListAdd = styled.div`
     display: inline-block;
     cursor: pointer;
     & > div {
@@ -55,6 +55,7 @@ const TeacherJobList = ({ userNo }) => {
 
     /** 완료 버튼을 눌렀을 때 */
     const handleOnClickSubmitEnd = () => {
+        console.log("완료! + @@@ axios 추가해줘야됨")
         // const data = {
         //     companyName: companyName,
         // };

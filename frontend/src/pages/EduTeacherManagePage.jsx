@@ -15,14 +15,13 @@ import TeacherLessonCsatBox from "../components/class/TeacherLessonCsatBox";
 
 // 탭바 버튼 wrap
 export const StyledButtonWrap = styled.div`
+    margin-top: 2rem;
     & > *:not(:first-child) {
         margin-left: 0.5rem;
     }
 `;
 
 const FlexButtonWrap = styled.div`
-    margin-top: 2rem;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -96,7 +95,10 @@ const EduTeacherManagePage = () => {
                 {teacherLessonDataSet.length > 0 ? (
                     <LessonItemBoxList lessonList={teacherLessonDataSet} />
                 ) : (
-                    <div>존재하는 강의 없음!!! ( 여기에 어떤 것을 넣어야할지 ,,,@@@ )</div>
+                    <div>
+                        존재하는 강의 없음!!! ( 여기에 어떤 것을 넣어야할지
+                        ,,,@@@ )
+                    </div>
                 )}
             </Container>
         </>
