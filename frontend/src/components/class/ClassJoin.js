@@ -19,32 +19,80 @@ import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 import tokenHttp from "../../api/APIPath";
 import Modal from "../common/Modal";
 
-const ClassJoin = ({changeChildPage}) => {
+const ClassJoin = ({
+    changeChildPage,
+    ParentLessonDataSet,
+    ParentLessonRoundDataSet,
+}) => {
     const navigate = useNavigate();
     const location = useLocation();
     // 업데이트 "다음"버튼 눌렀으면 그냥 "isUpdated를 false로 바꿔야 axios요청 안보낸다."
-    const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
+    const [isUpdated, setIsUpdated] = useState(
+        location.state ? location.state.isUpdated : false
+    );
     const userNo = useSelector((state) => state.user.userNo);
-    const [lessonNo, setLessonNo] = useState(location.state ? location.state.lessonNo : "");
-    const [lessonName, setLessonName] = useState("");
-    const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
-    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState("");
-    const [lessonInfo, setLessonInfo] = useState("");
+    const [lessonNo, setLessonNo] = useState(
+        location.state ? location.state.lessonNo : ""
+    );
+
+    // 초기 데이터에 들어갈 녀석들
+    const [lessonName, setLessonName] = useState(
+        ParentLessonDataSet.lessonName
+    );
+    const [lessonThumbnailImg, setLessonThumbnailImg] = useState(
+        ParentLessonDataSet.lessonThumbnailImg
+    );
+    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState(
+        ParentLessonDataSet.lessonThumbnailInfo
+    );
+    const [lessonInfo, setLessonInfo] = useState(
+        ParentLessonDataSet.lessonInfo
+    );
+    const [lessonTypeName, setLessonTypeName] = useState(
+        ParentLessonDataSet.lessonTypeName
+    );
+    const [lessonTypeNo, setLessonTypeNo] = useState(
+        ParentLessonDataSet.lessonTypeNo
+    );
+    const [maxStudent, setMaxStudent] = useState(
+        ParentLessonDataSet.maxStudent
+    );
+    const [lessonPrice, setLessonPrice] = useState(
+        ParentLessonDataSet.lessonPrice
+    );
+
+    useEffect(() => {
+        if (ParentLessonDataSet.lessonThumbnailImg) {
+            const imageURL = URL.createObjectURL(
+                ParentLessonDataSet.lessonThumbnailImg
+            );
+            setThumbnailURL(imageURL);
+        }
+    }, [ParentLessonDataSet.lessonThumbnailImg]);
 
     const nextPage = () => {
-        changeChildPage()
+        const data = {
+            lessonInfo: lessonInfo,
+            lessonName: lessonName,
+            lessonPrice: lessonPrice,
+            lessonStatus: "작성 중",
+            lessonThumbnailImg: lessonThumbnailImg,
+            lessonThumbnailInfo: lessonThumbnailInfo,
+            lessonTypeNo: lessonTypeNo,
+            lessonTypeName: lessonTypeName,
+            maxStudent: maxStudent,
+            userNo: userNo,
+            lessonNo: lessonNo,
+        };
+        console.log(data, "이게 데이터임");
+        changeChildPage(data);
         // navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
     };
 
-
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
 
-    const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
-    const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null);
-    const [maxStudent, setMaxStudent] = useState(0);
-    const [lessonPrice, setLessonPrice] = useState(0);
 
     // API가 완료되면 밑에 것들로 바꿀 것.
     //lessonTypeList 요청해서 담았다.
@@ -61,8 +109,8 @@ const ClassJoin = ({changeChildPage}) => {
         //     .then(res => {
         //         console.log(res, "작성중인 정보")
         //         const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
-        //         setChooseLessonTypeNo(lessonTypeNo)
-        //         setSubjectName(lessonTypeName)
+        //         setLessonTypeNo(lessonTypeNo)
+        //         setLessonTypeName(lessonTypeName)
         //         setLessonName(lessonName)
         //         setLessonInfo(lessonInfo)
         //         setMaxStudent(maxStudent)
@@ -76,7 +124,7 @@ const ClassJoin = ({changeChildPage}) => {
         //         .then(res=> {
         //             console.log(res, "S3서버로 간다")
         //             setThumbnailURL(res.data.resultMsg)
-                    
+
         //         })
         //     })
         // }
@@ -92,14 +140,13 @@ const ClassJoin = ({changeChildPage}) => {
 
     // 과목 이름 input 박스에 입력했을 때
     const handleSubjectChange = (event) => {
-        setSubjectName(event.target.value);
+        setLessonTypeName(event.target.value);
     };
 
     /** 과목 이름 검색 버튼 클릭 => 한 글자라도 포함되어 있으면 검색 */
     const handleSearchClick = () => {
         const filteredResults = lessonTypeList.filter((item) => {
-            console.log(item, "클릭");
-            return item.lessonTypeName.includes(subjectName);
+            return item.lessonTypeName.includes(lessonTypeName);
         });
         setSearchResults(filteredResults);
         setSearchClicked(true);
@@ -107,14 +154,13 @@ const ClassJoin = ({changeChildPage}) => {
 
     // 검색을 통해 나온 과목 li를 클릭했을 때
     const selectedResult = (rlt) => {
-        setSubjectName(rlt.lessonTypeName);
-        setChooseLessonTypeNo(rlt.lessonTypeNo);
-        // console.log(subjectName)
-        console.log(rlt, "이벤트"); // 이슈 해결! () => 함수(값)
+        setLessonTypeName(rlt.lessonTypeName);
+        setLessonTypeNo(rlt.lessonTypeNo);
+        // console.log(lessonTypeName)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
-    // 썸네일 이미지 넣는 URL
+    // 썸네일 이미지 넣는 URL -> 문제 1순위
     const [thumbnailURL, setThumbnailURL] = useState("");
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -171,7 +217,7 @@ const ClassJoin = ({changeChildPage}) => {
             lessonStatus: "작성 중",
             // lessonThumbnailImg: lessonThumbnailImg,
             lessonThumbnailInfo: lessonThumbnailInfo,
-            lessonTypeNo: chooseLessonTypeNo, // 미정
+            lessonTypeNo: lessonTypeNo, // 미정
             maxStudent: maxStudent,
             userNo: userNo, // 임시
         };
@@ -204,22 +250,50 @@ const ClassJoin = ({changeChildPage}) => {
                         .then((res) => console.log(res))
                         .catch((err) => console.log(err));
                 }
+                return lessonNo;
             })
-            .catch((err) => console.log(err, "에러")); // 여기에 강의개설 실패 메시지
+            // 강의 회차 갑니다.
+            .then((lessonNo) => {
+                ParentLessonRoundDataSet.map((item) => {
+                    item.lessonNo = lessonNo;
+                });
+                tokenHttp
+                    .post(
+                        `${url}/lesson/join/round`,
+                        ParentLessonRoundDataSet,
+                        { headers: { "Content-Type": "application/json" } }
+                    )
+                    .then((res) => {
+                        const lessonRoundNoDataSet = res.data.result;
+                        for (let i = 0; i < lessonRoundNoDataSet.length; i++) {
+                            if (
+                                ParentLessonRoundDataSet.lessonRoundFileOriginName
+                            ) {
+                                const formData = new FormData();
+                                formData.append(
+                                    "multipartFile",
+                                    ParentLessonRoundDataSet.lessonRoundFileName
+                                );
+                                tokenHttp.post(
+                                    `${url}/s3/upload/${lessonNo}/${lessonRoundNoDataSet[i].lessonRoundNo}`,
+                                    {
+                                        headers: {
+                                            "Content-Type":
+                                                "multipart/form-data",
+                                        },
+                                    }
+                                )
+                                .then(res=>console.log(res, "학습자료 전송 성공"))
+                                .catch(err => console.err(err, "학습자료 전송 실패"))
+                            }
+                        }
+                    });
+            })
+            .catch((err) => {
+                alert("임시저장 실패")
+                console.log(err, "종합 에러")
+            }); // 여기에 강의개설 실패 메시지
     };
-    const data = {
-        lessonInfo: lessonInfo,
-        lessonName: lessonName,
-        lessonPrice: lessonPrice,
-        lessonStatus: "작성 중",
-        lessonThumbnailImg: lessonThumbnailImg,
-        lessonThumbnailInfo: lessonThumbnailInfo,
-        lessonTypeNo: chooseLessonTypeNo,
-        maxStudent: maxStudent,
-        userNo: userNo ? userNo : 1, //
-        lessonNo: lessonNo,
-    };
-    console.log(data);
     return (
         <>
             <MenuCard title="기본 정보 입력">
@@ -239,9 +313,9 @@ const ClassJoin = ({changeChildPage}) => {
                             <Input
                                 label="과목명"
                                 type="text"
-                                value={subjectName}
-                                name="subjectName"
-                                id="subjectName"
+                                value={lessonTypeName}
+                                name="lessonTypeName"
+                                id="lessonTypeName"
                                 placeholder="과목명"
                                 onChange={handleSubjectChange}
                             />
@@ -390,9 +464,7 @@ const ClassJoin = ({changeChildPage}) => {
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
                 <Button onClick={sendDataToServer}>임시 저장</Button>
-                {/* <Link to="/lesson/round/join" state={{ data }}> */}
-                    <Button onClick={nextPage}>다음</Button>
-                {/* </Link> */}
+                <Button onClick={nextPage}>다음</Button>
             </div>
         </>
     );

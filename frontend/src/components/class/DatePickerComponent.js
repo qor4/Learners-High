@@ -4,55 +4,45 @@ import "react-datepicker/dist/react-datepicker.css"
 import {ko} from "date-fns/esm/locale"
 
 const DatePickerComponent = (
-  {onDataChange, initial, initialDate, idx, miniDisabledDate, maxDisabledDate, classRunningTime}
+  {onDataChange, initial, initialDate, idx, miniDisabledDate, maxDisabledDate}
   ) => {
+  const today = new Date()
+  today.setDate(today.getDate()+7)
   // const [startDate, setStartDate] = useState(new Date('2023-04-05 19:12'));
-  const standDay = initial? new Date() :(initialDate? new Date( initialDate) : new Date())
-  
+  // const standDay = initial? today  : new Date(initialDate)  
+  const standDay = initial? today : (initialDate? new Date( initialDate) : new Date())
 
-  const [classRoundDate, setClassRoundDate] = useState( standDay );
-  const [classRunningTimeState, setClassRunningTimeState] = useState(classRunningTime)
+
+
+  const [lessonRoundDate, setLessonRoundDate] = useState( standDay );
   // const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate) // 너야!!!!
   // const [maxDisabledDay, setMaxDisibleDay] = useState(maxDisabledDate)
   // new Date()로 감싸면 반영이 안되고,.,. 안 감싸니까 즉각 반응됨
 
-  const [classRoundEndDateTime, setClassRoundEndDateTime] = useState(0)
-  const handleClassRunningTimeChange = (e) => {
-    setClassRunningTimeState(e.currentTarget.value)
-    // console.log(newDate, "newDate-끝시간")
-    // console.log(e.currentTarget.value)
-
-  }
   
   useEffect(()=> {
-    setClassRoundDate(initialDate)
-    // setClassRunningTimeState(classRunningTime)
-    // const newDate = new Date(classRoundDate)
-    // console.log(newDate)
-    // newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
-    // setClassRoundEndDateTime(newDate)
+    setLessonRoundDate(initialDate) // 얘가 문제다.
   }, [initialDate, miniDisabledDate, maxDisabledDate])
   
+  // const changeLessonRoundDate = (date) => {
+  //   setLessonRoundDate(date)
+  //   onDataChange(idx, date)
+  // }
 
-  const handleButtonClick = () => {
-    const newDate = new Date(classRoundDate)
-    console.log(newDate)
-    newDate.setMinutes(newDate.getMinutes()+Number(classRunningTimeState))
-    setClassRoundEndDateTime(newDate)
-    onDataChange(idx, classRoundDate, newDate)
-    // console.log(classRoundEndDateTime, "끝시간")
-  }
   const miniLimitDay = miniDisabledDate ? new Date(miniDisabledDate) : new Date()
-  const maxLimitDay = maxDisabledDate ? new Date(maxDisabledDate) : null
+  const maxLimitDay = maxDisabledDate ? new Date(maxDisabledDate) : false
   return (
     <>
     <DatePicker
-      selected={classRoundDate}
-      minDate={miniLimitDay}
+      selected={lessonRoundDate}
+      minDate={initial? standDay :miniLimitDay}
       maxDate={maxLimitDay}
       closeOnScroll={true}
       locale={ko}
-      onChange={(date) => setClassRoundDate(date)}
+      onChange={(date) => {
+        setLessonRoundDate(date)
+        onDataChange(idx, date)
+      }}
       showTimeSelect
       timeFormat="HH:mm"
       timeIntervals={30}
@@ -61,7 +51,7 @@ const DatePickerComponent = (
       // onBlur={handleButtonClick}
     />
     {/* { classRunningTime ? <>  */}
-    { !initial ? <>
+    {/* { !initial ? <>
     <span>진행시간</span>
     <input 
     type="number"
@@ -69,12 +59,9 @@ const DatePickerComponent = (
     value={classRunningTimeState}
     onChange={handleClassRunningTimeChange}
     />
-    </> : null}
-    {/* </> : null
-    } */}
+    </> : null}    
     
-    
-    <button onClick={handleButtonClick}>날짜 입력</button>
+    <button onClick={handleButtonClick}>날짜 입력</button> */}
     </>
   );
 };
