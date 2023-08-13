@@ -11,7 +11,7 @@ import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
 import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
-// import { seesoUrl } from "../../api/APIPath";
+import { seesoUrl,homeurl } from "../../api/APIPath";
 
 // 스타일
 import styled from "styled-components";
@@ -78,13 +78,12 @@ const StudentWaitLessonRoomPage = () => {
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
     const [enterRoom, setEnterRoom] = useState(false);
-    const videoRef = useRef(null);
 
     const location = useLocation();
     const lessonName = location.state.lessonName
         ? location.state.lessonName
         : null;
-
+    
     let userStatus = useRef(null);
     const eyeTracker = useRef(null);
     let currentX, currentY;
@@ -95,46 +94,33 @@ const StudentWaitLessonRoomPage = () => {
     const [isFocus, setIsFocus] = useState(true);
     const [isTest, setIsTest] = useState(false);
     const [calibrationData, setCalibrationData] = useState(null);
+    const [isClose, setIsClose] = useState(false);
+        // 카메라 & 오디오 on/off
+        const [videoEnabled, setVideoEnabled] = useState(true);
+        const refVideo = useRef(null)
+        const [audioEnabled, setAudioEnabled] = useState(false);
+    
+        const toggleVideo = () => {
+            setVideoEnabled( prevState => !prevState);
+        };
+    
+        // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
+        const toggleAudio = () => {
+            setAudioEnabled(!audioEnabled);
+        };
+    useEffect(() => { 
+        window.addEventListener('blur',focusOutLessonRoom);  
+        window.addEventListener('focus',focusInLessonRoom); 
+        setSeesoInit(false);
 
-    // 카메라 & 오디오 on/off
-    const [videoEnabled, setVideoEnabled] = useState(true);
-    const refVideo = useRef(null)
-    const [audioEnabled, setAudioEnabled] = useState(false);
-
-    const toggleVideo = () => {
-        setVideoEnabled( prevState => !prevState);
-    };
-
-    // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
-    const toggleAudio = () => {
-        setAudioEnabled(!audioEnabled);
-    };
-
-    useEffect(() => {
-        window.addEventListener("blur", focusOutLessonRoom);
-        window.addEventListener("focus", focusInLessonRoom);
-        (async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
-            } catch (error) {
-                console.error("Error accessing webcam:", error);
-            }
-        })();
-
-        if (!eyeTracker.current) {
+        
+        if (!eyeTracker.current && !enterRoom && !isSeesoInit) {
             eyeTracker.current = new EasySeeso();
             userStatus.current = new UserStatusOption(true, false, false);
             (async () => {
                 await eyeTracker.current.init(
                     licenseKey,
                     () => {
-                        setSeesoInit(true);
-                        setIsTest(false);
                         if (!eyeTracker.current.checkMobile()) {
                             eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
@@ -143,47 +129,22 @@ const StudentWaitLessonRoomPage = () => {
                                 true
                             );
                         }
+
                     }, // callback when init succeeded.
                     () => console.log("callback when init failed."), // callback when init failed.
                     userStatus.current
                 );
             })();
+            setSeesoInit(true);
+            setIsTest(false);
         }
-        const beforeunloadEvent = () => {
-            console.log("너 실행됨?")
-            console.log(videoRef.current)
-            if (videoRef.current) {
-                const stream = videoRef.current.srcObject;
-                console.log("너 실행됨?", stream)
-                if (stream) {
-                    const tracks = stream.getTracks();
-                    tracks.forEach((track) => track.stop());
-                }
-            }
+                    
+        return ()=>{
+            window.removeEventListener('blur',focusOutLessonRoom);  
+            window.removeEventListener('focus',focusInLessonRoom); 
+           
         }
-        window.addEventListener("beforeunload", beforeunloadEvent)
 
-        return () => {
-            window.removeEventListener("blur", focusOutLessonRoom);
-            window.removeEventListener("focus", focusInLessonRoom);
-
-            beforeunloadEvent()
-            window.removeEventListener("beforeunload", beforeunloadEvent);
-
-            if (videoRef.current) {
-                const stream = videoRef.current.srcObject;
-                console.log("너 실행됨?", stream)
-                if (stream) {
-                    const tracks = stream.getTracks();
-                    tracks.forEach((track) => track.stop());
-                }
-            }
-
-            // if (webcam) {
-            //     const tracks = webcam.srcObject.getTracks()
-            //     tracks.forEach(track => track.stop())
-            // }
-        };
     }, []);
     // 다른 화면으로 변경 시 실행되는 callback 함수
     const focusOutLessonRoom = useCallback(() => {
@@ -197,9 +158,11 @@ const StudentWaitLessonRoomPage = () => {
         setIsFocus(true);
     });
 
-    useEffect(() => {
-        eyeTracker.current.startTracking(onGaze, onDebug);
-    }, [isSeesoInit]);
+    useEffect(()=>{
+        if(isSeesoInit){
+            eyeTracker.current.startTracking(onGaze,onDebug);
+        }
+    },[isSeesoInit]);
 
     useEffect(() => {
         saveAttentionScore(attentionScore);
@@ -216,29 +179,28 @@ const StudentWaitLessonRoomPage = () => {
             // 조건
             if (enterRoom) {
                 console.log("AttentScore : ", currentScore);
+                // mongodb server와 통신
+                //     {
+                // axios.post(
+                //     `${seesoUrl}/seeso/attention-rate`,
+                //       lessonRoundNo: Number(lessonRoundNo),
+                //       lessonNo: Number(lessonNo),
+                //       userNo: Number(userNo),
+                //       rate: Number(score),
+                //     },
+                //     {
+                //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+                //     }
+                //   )
+                //     .then((res) => {
+                //       console.log(res, "ddd");
+                //     })
+                //     .catch((err) => {
+                //       console.error(err);
+                //     });
             }
-            // mongodb server와 통신
-            //     {
-            // axios.post(
-            //     `${seesoUrl}/seeso/attention-rate`,
-            //       lessonRoundNo: Number(lessonRoundNo),
-            //       lessonNo: Number(lessonNo),
-            //       userNo: Number(userNo),
-            //       rate: Number(score),
-            //     },
-            //     {
-            //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-            //     }
-            //   )
-            //     .then((res) => {
-            //       console.log(res, "ddd");
-            //     })
-            //     .catch((err) => {
-            //       console.error(err);
-            //     });
-        },
-        [isFocus, enterRoom]
-    );
+
+    },[isFocus,enterRoom]);
 
     const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
         console.log(
@@ -315,6 +277,19 @@ const StudentWaitLessonRoomPage = () => {
         setEnterRoom(true);
     };
 
+
+    
+    const lessonRoomClose = ()=>{
+        setIsClose(true);
+    };
+
+    useEffect(()=>{
+        if(enterRoom && isClose){
+            eyeTracker.current = null;
+            window.location.href=homeurl;
+        }
+    },[enterRoom,isClose])
+
     return (
         <>
             <RoomFrameWrap>
@@ -345,7 +320,7 @@ const StudentWaitLessonRoomPage = () => {
                                     overFit:"cover",
                                     transform: "translate(-50%, -50%)"
                                 }}
-                                ref={videoRef}
+                                
                                 /> 
                             }
                             </WaitScreen>

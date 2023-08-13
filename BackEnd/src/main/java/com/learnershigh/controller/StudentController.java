@@ -87,10 +87,10 @@ public class StudentController {
 
     @GetMapping("/lesson/list/{userNo}")
     @ApiOperation("학생 수강 목록")
-    public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo)
+    public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo, @RequestParam String status)
     {
-        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 목록 조회 완료");
-        responseBody.setResult(studentService.userLessonAll(userNo));
+        CustomResponseBody responseBody = new CustomResponseBody("학생 "+status+" 수강 목록 조회 완료");
+        responseBody.setResult(studentService.userLessonAll(userNo, status));
         return ResponseEntity.ok().body(responseBody);
     }
 

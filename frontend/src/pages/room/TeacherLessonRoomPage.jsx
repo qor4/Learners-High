@@ -228,8 +228,6 @@ const TeacherLessonRoomPage = () => {
         // 윈도우 객체에 화면 종료 이벤트 추가
         joinSession(); // 세션 입장
         return () => {
-            console.log("Teacher LessonRoom Render End");
-            // 윈도우 객체에 화면 종료 이벤트 제거
             window.removeEventListener('beforeunload',leaveSession);
         };
     }, []);
@@ -253,8 +251,8 @@ const TeacherLessonRoomPage = () => {
             setMainStreamManager(undefined);
             setPublisher(undefined);
             setSubscribers([]);
+            setToken(undefined)
         }
-
         // 메인화면 이동 필요
         navigate("/");
     };
@@ -303,7 +301,7 @@ const TeacherLessonRoomPage = () => {
                     if (res.data.resultCode !== 200) throw res.data.resultMsg;
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                    session.connect(res.data.resultMsg, { clientData: userNo })
+                    session.connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName}) })
                 })
                 .then(async () => {
                     // Get your own camera stream ---
@@ -451,10 +449,9 @@ const TeacherLessonRoomPage = () => {
                             {/* 여기서 강사 아닌 사람들만 */}
                             {subscribers.map((sub, i) => (
                                 <>
-                            {console.log(sub, "sub!!")}
                                     <StudentScreen key={`${i}-subscriber1`}>
                                         <StudentName>
-                                            {sub.userName} "1"
+                                            {JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}
                                         </StudentName>
                                         <UserVideoComponent
                                             streamManager={sub}
@@ -529,7 +526,7 @@ const TeacherLessonRoomPage = () => {
                             // 여기에 div Box 만들면 됩니다.
                             <>
                                 <StateWrap>
-                                    <div>이름</div>
+                                    <div>{JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}</div>
                                     <StateFlex>
                                         {/* 여기에 집중 여부에 따라 바꿀 것. */}
                                         <div>상태</div>
