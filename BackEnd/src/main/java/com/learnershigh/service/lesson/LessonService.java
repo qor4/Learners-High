@@ -39,10 +39,6 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
-        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
-        if (writingLesson != null) {
-            lessonRepository.delete(writingLesson);
-        }
         if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
                 || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
@@ -60,6 +56,10 @@ public class LessonService {
         // 수업이 0원일 경우 어떻게 처리할 것인지
         if (lessonJoinDto.getLessonPrice() == 0) {
             throw new IllegalStateException("수업 가격을 올바르게 입력해주세요.");
+        }
+        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
+        if (writingLesson != null) {
+            lessonDomain = writingLesson;
         }
         // 강의 정보 저장
         lessonDomain.setLessonName(lessonJoinDto.getLessonName());
@@ -112,8 +112,6 @@ public class LessonService {
         lessonJoin.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonJoin.setLessonStatus(lessonDomain.getLessonStatus());
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
-        lessonJoin.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
-
         return lessonJoin;
     }
 
@@ -253,7 +251,7 @@ public class LessonService {
 
                 List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
 
-                for(Lesson l : lessonlist){
+                for (Lesson l : lessonlist) {
                     LessonListDto lessonListDto = new LessonListDto();
 
                     lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
@@ -302,7 +300,7 @@ public class LessonService {
 
                 List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
 
-                for(Lesson l : lessonlist){
+                for (Lesson l : lessonlist) {
                     LessonListDto lessonListDto = new LessonListDto();
 
                     lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
