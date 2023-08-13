@@ -79,33 +79,16 @@ const LessonRoundItemBoxList = ({
             <Card $skyBlue>
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
-<<<<<<< HEAD
-                        // <Link
-                        //     key={index}
-                        //     to={
-                        //         userType === "T"
-                        //             ? `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
-                        //             : `/edu/student/${userNo}/${lessonItem.lessonNo}`
-                        //     }
-                        // >
-                            <StyledBox $hover 
-                            onClick={(e)=> {
-                                // Button에 SingleEvent가 포함되면 클릭하면 안된다.(false여야 상세강의 가기)
-                                if (!e.target.className.includes('singleEvent')) {
-                                    if (userType==="T") {
-                                        
-                                        navigate(`/edu/teacher/${userNo}/${lessonItem.lessonNo}`)
-=======
+
                         <StyledBox
                             key={lessonItem.userNo}
                             $hover
                             onClick={(e) => {
-                                if (e.target.className !== "singleEvent") {
+                                if (!e.target.className.includes('singleEvent')) {
                                     if (userType === "T") {
                                         navigate(
                                             `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
                                         );
->>>>>>> df6fc8cae696ee2f076039a5a0aec91aa1376c21
                                     } else {
                                         navigate(
                                             `/edu/student/${userNo}/${lessonItem.lessonNo}`
