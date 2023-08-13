@@ -48,24 +48,19 @@ const JoinInput = styled.input`
 
 /** 검색한 결과물이 들어갈 wrap => 추가수정@@@ */
 const DataLists = styled.div`
-    ${({ searchClicked }) => {
-        return {
-            display: searchClicked === false && "none",
-            border: "none",
-        };
-    }}
     position: absolute;
     /* bottom: 0; */
     top: 0.5rem;
     background-color: #fff;
     flex-direction: column;
     z-index: 10;
-
     width: 13.35rem;
 
     border-radius: 0.75rem;
     border: 1px solid black;
     box-sizing: border-box;
+
+    display: ${({ show }) => (show ? "block" : "none")};
 
     & > ul > li {
         padding: 0rem 1rem;
@@ -312,7 +307,7 @@ const ClassJoin = () => {
         userNo: userNo ? userNo : 1, //
         lessonNo: lessonNo,
     };
-    console.log(data);
+    console.log(searchClicked);
     return (
         <>
             <MenuCard title="기본 정보 입력">
@@ -342,42 +337,42 @@ const ClassJoin = () => {
                                         placeholder="과목명"
                                         onChange={handleSubjectChange}
                                     />
-                                    <DataLists>
-                                        {searchClicked &&
-                                        searchResults.length > 0
-                                            ? searchResults.map((result) => {
-                                                  return (
-                                                      <ul>
-                                                          <li
-                                                              key={
-                                                                  result.lessonTypeNo
-                                                              }
-                                                              onClick={() =>
-                                                                  selectedResult(
-                                                                      result
-                                                                  )
-                                                              }
-                                                          >
-                                                              {
-                                                                  result.lessonTypeName
-                                                              }
-                                                          </li>
-                                                      </ul>
-                                                  );
-                                              })
-                                            : null}
-                                        {searchClicked &&
-                                            searchResults.length === 0 && (
-                                                <ul
-                                                    onClick={() =>
-                                                        setSearchClicked(false)
-                                                    }
-                                                >
-                                                    <div>
+                                    <DataLists show={searchClicked}>
+                                        <ul>
+                                            {searchClicked &&
+                                            searchResults.length > 0
+                                                ? searchResults.map(
+                                                      (result) => {
+                                                          return (
+                                                              <li
+                                                                  key={`result-${result.lessonTypeNo}`}
+                                                                  onClick={() =>
+                                                                      selectedResult(
+                                                                          result
+                                                                      )
+                                                                  }
+                                                              >
+                                                                  {
+                                                                      result.lessonTypeName
+                                                                  }
+                                                              </li>
+                                                          );
+                                                      }
+                                                  )
+                                                : null}
+                                            {searchClicked &&
+                                                searchResults.length === 0 && (
+                                                    <div
+                                                        onClick={() =>
+                                                            setSearchClicked(
+                                                                false
+                                                            )
+                                                        }
+                                                    >
                                                         검색한 과목이 없습니다.
                                                     </div>
-                                                </ul>
-                                            )}
+                                                )}
+                                        </ul>
                                     </DataLists>
                                 </div>
 

@@ -59,20 +59,22 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const eduInfo = teacherInfo.eduInfos;
     const jobInfo = teacherInfo.jobInfos;
 
-    // @@@ 수정
-    // useEffect(() => {
-    //     // 강사의 모든 수업 총 만족도 GET 요청
-    //     axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
-    //         setTeacherCsatLesson(response.data.result);
-    //         setCsatLessonCount(response.data.satiCnt);
-    //     });
+    useEffect(() => {
+        // teacherNo가 있을 때에만 실행
+        if (teacherNo) {
+            // 강사의 모든 수업 총 만족도 GET 요청
+            axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
+                setTeacherCsatLesson(response.data.result);
+                setCsatLessonCount(response.data.satiCnt);
+            });
 
-    //     // 강사에 대한 모든 총 만족도 GET 요청
-    //     axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
-    //         setTeacherCsatTeacher(response.data.result);
-    //         setCsatTeacherCount(response.data.satiCnt);
-    //     });
-    // }, [teacherNo]);
+            // 강사에 대한 모든 총 만족도 GET 요청
+            axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
+                setTeacherCsatTeacher(response.data.result);
+                setCsatTeacherCount(response.data.satiCnt);
+            });
+        }
+    }, [teacherNo]);
 
     return (
         <Container maxWidth="md">
@@ -93,11 +95,23 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                             {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
                             <div>
                                 <strong>수업 만족도</strong>
-                                <span>😍 {teacherCsatLesson} ( {csatLessonCount} )</span>
+                                <span>
+                                    😍{" "}
+                                    {isNaN(teacherCsatLesson)
+                                        ? "데이터 없음"
+                                        : teacherCsatLesson}{" "}
+                                    ( {csatLessonCount} )
+                                </span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
-                                <span>😍 {teacherCsatTeacher} ( {csatTeacherCount} )</span>
+                                <span>
+                                    😍{" "}
+                                    {isNaN(teacherCsatTeacher)
+                                        ? "데이터 없음"
+                                        : teacherCsatTeacher}{" "}
+                                    ( {csatTeacherCount} )
+                                </span>
                             </div>
                         </FlexWrap>
                     )}

@@ -25,7 +25,7 @@ const ColFlexWrap = styled.div`
 const RowFlexWrap = styled.div`
     display: flex;
     flex-direction: column;
-`
+`;
 
 /** 카드 flex */
 const CardFlexWrap = styled.div`
@@ -48,12 +48,12 @@ export const StyledTitleText = styled.div`
 /** 회색 텍스트 */
 const NoneDataText = styled.div`
     color: #ccc;
-    margin-left: 2rem;
+    margin-left: 1rem;
 `;
 
 const DataText = styled.div`
     margin-left: 2rem;
-`
+`;
 
 const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
@@ -121,13 +121,25 @@ const LessonItemBox = ({ lessonInfo }) => {
                                 <strong>
                                     <div>강사 만족도</div>
                                 </strong>
-                                <div>{teacherSat}</div>
+                                <div>
+                                    {isNaN(teacherSat) ? (
+                                        <NoneDataText>데이터 없음</NoneDataText>
+                                    ) : (
+                                        teacherSat
+                                    )}
+                                </div>
                             </ColFlexWrap>
                             <ColFlexWrap>
                                 <strong>
                                     <div>수업 만족도</div>
                                 </strong>
-                                <div>{lessonSat}</div>
+                                <div>
+                                    {isNaN(lessonSat) ? (
+                                        <NoneDataText>데이터 없음</NoneDataText>
+                                    ) : (
+                                        lessonSat
+                                    )}
+                                </div>
                             </ColFlexWrap>
                         </RowFlexWrap>
                     )}

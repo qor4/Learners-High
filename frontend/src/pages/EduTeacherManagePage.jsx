@@ -4,22 +4,24 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { styled } from "styled-components";
-import { Container } from "@mui/material";
+import { Card, Container } from "@mui/material";
 
 import Button from "../components/common/Button";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
 import tokenHttp, { url } from "../api/APIPath";
+import axios from "axios";
+import { StyledTeacherInfoWrap } from "./TeacherProfilePage";
+import TeacherLessonCsatBox from "../components/class/TeacherLessonCsatBox";
 
 // 탭바 버튼 wrap
-const StyledButtonWrap = styled.div`
+export const StyledButtonWrap = styled.div`
+    margin-top: 2rem;
     & > *:not(:first-child) {
         margin-left: 0.5rem;
     }
 `;
 
 const FlexButtonWrap = styled.div`
-    margin-top: 2rem;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,7 +33,7 @@ const EduTeacherManagePage = () => {
     const [selectedStatus, setSelectedStatus] = useState("전체");
 
     useEffect(() => {
-        tokenHttp
+        axios
             .get(
                 `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
             )
@@ -43,17 +45,15 @@ const EduTeacherManagePage = () => {
 
     return (
         <>
-            <h1>강사 수업 관리 목록 페이지</h1>
-
+            <StyledTeacherInfoWrap>
+                <Container maxWidth="md">
+                    {/* 수업 만족도 / 총 강사 만족도를 나타내주는 공간 */}
+                    <div>
+                        <TeacherLessonCsatBox userNo={userNo} />
+                    </div>
+                </Container>
+            </StyledTeacherInfoWrap>
             <Container maxWidth="md">
-                {/* 수업 만족도 / 총 강사 만족도를 나타내주는 공간 */}
-                <div>
-                    <h2>
-                        이후에 수업 만족도와 총 강사 만족도를 나타내줄
-                        공간입니다.
-                    </h2>
-                </div>
-
                 {/* 탭바 + 강의 개설 버튼 */}
                 <FlexButtonWrap>
                     <StyledButtonWrap>
@@ -92,9 +92,14 @@ const EduTeacherManagePage = () => {
                 </FlexButtonWrap>
 
                 {/* 강의 목록들이 들어갈 공간 */}
-                <LessonItemBoxList
-                    lessonList={teacherLessonDataSet}
-                ></LessonItemBoxList>
+                {teacherLessonDataSet.length > 0 ? (
+                    <LessonItemBoxList lessonList={teacherLessonDataSet} />
+                ) : (
+                    <div>
+                        존재하는 강의 없음!!! ( 여기에 어떤 것을 넣어야할지
+                        ,,,@@@ )
+                    </div>
+                )}
             </Container>
         </>
     );
