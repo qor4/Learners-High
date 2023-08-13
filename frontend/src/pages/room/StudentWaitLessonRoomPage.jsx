@@ -333,7 +333,7 @@ const StudentWaitLessonRoomPage = () => {
                             }}
                         />
                             {videoEnabled && 
-                            <video 
+                            <Webcam 
                                 style={{
                                     position: "absolute",
                                     // objectFit: "cover",
