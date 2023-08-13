@@ -11,9 +11,11 @@ import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonList from "../components/class/LessonList";
 import Card from "../components/common/Card";
 import Button from "../components/common/Button";
+import { StyledButtonWrap } from "./EduStudentManagePage";
+import TeacherLessonCsatBox from "../components/class/TeacherLessonCsatBox";
 
 // 선생님 wrap
-const StyledTeacherInfoWrap = styled.div`
+export const StyledTeacherInfoWrap = styled.div`
     width: 100%;
     background-color: #e1e6f9;
 `;
@@ -22,12 +24,7 @@ const TeacherProfilePage = () => {
     const { userNo } = useParams(); // teacherNo
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
 
-    const [teacherCsatLesson, setTeacherCsatLesson] = useState(0); // 강의 총 만족도
-    const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
-    const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0); // 강사 총 만족도
-    const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
-
-    const [selectedLessonStatus, setSelectedLessonStatus] = useState("전체");
+    const [selectedStatus, setSelectedStatus] = useState("전체");
     const [teacherLessonDataSet, setTeacherLessonDataSet] = useState([]);
 
     useEffect(() => {
@@ -36,30 +33,25 @@ const TeacherProfilePage = () => {
             setTeacherInfoDataSet(response.data.result);
         });
 
-
-        // @@@ 수정
-        // // 강사의 모든 수업 총 만족도 GET 요청
-        // axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
-        //     console.log(response.data.result);
-        //     setTeacherCsatLesson(response.data.result);
-        //     setCsatLessonCount(response.data.satiCnt);
-        // });
-
-        // // 강사에 대한 모든 총 만족도 GET 요청
-        // axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
-        //     console.log(response);
-        //     setTeacherCsatTeacher(response.data.result);
-        //     setCsatTeacherCount(response.data.satiCnt);
-        // });
-
         // 강사 수업 목록 GET 요청
         axios
-            .get(`${url}/teacher/lesson/list/${userNo}?status=전체`)
+            .get(
+                `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
+            )
             .then((response) => {
                 console.log(response.data.result);
                 setTeacherLessonDataSet(response.data.result);
             });
-    }, [userNo]);
+
+        axios
+            .get(
+                `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
+            )
+            .then((response) => {
+                console.log(response.data.result);
+                setTeacherLessonDataSet(response.data.result);
+            });
+    }, [userNo, selectedStatus]);
 
     // 강의 상태에 따른 데이터 GET 요청
 
@@ -76,21 +68,40 @@ const TeacherProfilePage = () => {
             <Container maxWidth="md">
                 {/* 분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간 */}
                 <Card>
-                    {/* 수업 만족도, 총 강사 만족도 GET 요청으로 받아오기@@@ */}
-                    분석 내용(수업 만족도, 총 강사 만족도)이 들어갈 공간입니다!{" "}
-                    <br />
-                    수업 총 만족도 : {teacherCsatLesson} ( {csatLessonCount} ){" "}
-                    <br />
-                    강사 총 만족도 : {teacherCsatTeacher} ( {csatTeacherCount} )
+                    <TeacherLessonCsatBox userNo={userNo} />
                 </Card>
 
                 {/* 탭바 (전체 강의 / 수업 예정 / 진행 중 / 종료) */}
-                <div>
-                    <Button>전체</Button>
-                    <Button>강의 중</Button>
-                    <Button>강의 종료</Button>
-                    <Button>강의 전</Button>
-                </div>
+                <StyledButtonWrap>
+                    <Button
+                        onClick={() => setSelectedStatus("전체")}
+                        $point={selectedStatus === "전체"}
+                        disabled={selectedStatus === "전체"}
+                    >
+                        전체
+                    </Button>
+                    <Button
+                        onClick={() => setSelectedStatus("강의 중")}
+                        $point={selectedStatus === "강의 중"}
+                        disabled={selectedStatus === "강의 중"}
+                    >
+                        진행 중
+                    </Button>
+                    <Button
+                        onClick={() => setSelectedStatus("강의 전")}
+                        $point={selectedStatus === "강의 전"}
+                        disabled={selectedStatus === "강의 전"}
+                    >
+                        수업 예정
+                    </Button>
+                    <Button
+                        onClick={() => setSelectedStatus("강의 종료")}
+                        $point={selectedStatus === "강의 종료"}
+                        disabled={selectedStatus === "강의 종료"}
+                    >
+                        종료
+                    </Button>
+                </StyledButtonWrap>
                 {/* 상태에 따른 강사의 강의 목록 */}
                 <LessonList items={teacherLessonDataSet} />
 

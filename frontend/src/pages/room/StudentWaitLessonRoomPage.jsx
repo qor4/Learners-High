@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { UserStatusOption } from "seeso";
 import EasySeeso from "seeso/easy-seeso";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Webcam from "react-webcam";
 import Button from "../../components/common/Button";
@@ -13,6 +13,62 @@ import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
 // import { seesoUrl } from "../../api/APIPath";
 
+// 스타일
+import styled from "styled-components";
+import { Container } from "@material-ui/core";
+import { Typography } from "@mui/material";
+
+import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
+
+import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
+
+// Canvas를 담아둘 공간
+const CanvasWrap = styled.div`
+    // position: fixed;
+    width: 80%;
+    height: calc(100vh - 6.75rem);
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 0.75rem;
+    background-color: red;
+    border-radius: 1.25rem;
+    margin: 0 auto;
+`;
+
+// 화면을 확인할 수 있는 공간
+const WaitScreen = styled.div`
+    width: 100%;
+    height: calc(100vh - 6.75rem);
+    border-radius: 1.25rem;
+    margin-bottom: 0.75rem;
+
+    background-color: #e1e6f9;
+
+    position: relative;
+`;
+
+// 하단 바 (강의명 박스 / 컨트롤 바)
+const BottomBarWrap = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+// 수업 컨트롤 바
+const WaitControlBar = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 70%;
+    height: 4.5rem;
+    background-color: #293c81;
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+    border-radius: 1.25rem;
+`;
+
 const dotMaxSize = 10;
 const dotMinSize = 5;
 
@@ -22,6 +78,11 @@ const StudentWaitLessonRoomPage = () => {
     const userName = useSelector((state) => state.userName);
     const [enterRoom, setEnterRoom] = useState(false);
     const videoRef = useRef(null);
+
+    const location = useLocation();
+    const lessonName = location.state.lessonName
+        ? location.state.lessonName
+        : null;
     
     // console.log("여기 왔어?")
     let userStatus = useRef(null);
@@ -50,11 +111,10 @@ const StudentWaitLessonRoomPage = () => {
             }
         })();
 
-
         if (!eyeTracker.current) {
             eyeTracker.current = new EasySeeso();
             userStatus.current = new UserStatusOption(true, false, false);
-            (async ()=>{
+            (async () => {
                 await eyeTracker.current.init(
                     licenseKey,
                     () => {
@@ -87,8 +147,6 @@ const StudentWaitLessonRoomPage = () => {
             }
         }
     }, []);
-    
-
     // 다른 화면으로 변경 시 실행되는 callback 함수
     const focusOutLessonRoom = useCallback(()=>{
         console.log('다른 화면 봄');
@@ -167,14 +225,14 @@ const StudentWaitLessonRoomPage = () => {
         drawCircle(currentX, currentY, dotMinSize, ctx);
         eyeTracker.current.startCollectSamples();
     }
-    
+
     // calibration callback.
     function onCalibrationProgress(progress) {
         let ctx = clearCanvas();
         let dotSize = dotMinSize + (dotMaxSize - dotMinSize) * progress;
         drawCircle(currentX, currentY, dotSize, ctx);
     }
-    
+
     // calibration callback.
     const onCalibrationFinished = useCallback((calibrationData) => {
         clearCanvas();
@@ -212,75 +270,132 @@ const StudentWaitLessonRoomPage = () => {
                 onCalibrationNextPoint,
                 onCalibrationProgress,
                 onCalibrationFinished
-                );
-            }, 1000);
+            );
+        }, 1000);
     }, []);
 
-    const enterTheLessonRoom =  useCallback(() => {
+    const enterTheLessonRoom = () => {
         setEnterRoom(true);
-    },[]);
+    };
+   
 
     return (
         <>
-            <div style={{ position: "relative" }}>
-                <div className="Wrap-Cam-canvas">
-                    <canvas
+            <RoomFrameWrap>
+                <Container maxWidth="md">
+                    {/* 화면을 확인할 수 있는 공간 */}
+                    <WaitScreen>
+                        <canvas
                             id="output"
                             style={{
                                 position: "absolute",
                                 height: "500px",
                                 width: "100%",
                                 margin: "auto",
-                                zIndex:9999
+                                zIndex: 9999,
                             }}
                         />
                         {!enterRoom ? (
                             <>
-                            <video
-                                ref={videoRef}
-                                autoPlay
-                                playsInline
-                                style={{
-                                width: '100%',
-                                maxWidth: '500px',
-                                }}
-                            />
-                                
-                            <div
-                                style={{
-                                    position: "relative",
-                                    top: "500px",
-                                    backgroundColor: "blue",
-                                    width: "1000px",
-                                    marginLeft: "10%",
-                                    paddingLeft: "auto",
-                                    borderRadius: "20px",
-                                }}
-                            >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "start",
-                                top: "50%",
-                            }}
-                        >
-                            {/* <span> {lessonName} </span> */}
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "end" }}>
-                            <Button onClick={enterTheLessonRoom} disabled ={isTest}>
-                                실제 룸 입장
-                            </Button>
-                            <button onClick={tmpClick} disabled={isTest} >테스트</button>
-                        </div>
-                    </div>
+                                <Webcam
+                                    style={{
+                                        position: "absolute",
+                                        height: "100%",
+                                        width: "100%",
+                                        overFit: "cover",
+                                        margin: "auto",
+                                    }}
+                                />
                             </>
+                        ) : null}
+                    </WaitScreen>
 
-                        ) : (
-                            <StudentLessonRoomPage/>
-                        )
-                        }
-                </div>
-            </div>
+                    {!enterRoom ? (
+                        <>
+                            {/* 하단 바 (강의명 박스 / 컨트롤 바) */}
+                            <BottomBarWrap>
+                                {/* 강의명 */}
+                                <Typography fontWeight={"bold"}>
+                                    강의명 들어올 칸
+                                </Typography>
+
+                                {/* 컨트롤 바 */}
+                                <WaitControlBar>
+                                    <ControlButtonWrap>
+                                        <Button>
+                                            <HiMicrophone />
+                                        </Button>
+                                        <Button>
+                                            <HiVideoCamera />
+                                        </Button>
+                                    </ControlButtonWrap>
+
+                                    <ControlButtonWrap>
+                                        <Button>테스트</Button>
+                                        <Button onClick={enterTheLessonRoom}>
+                                            강의 입장
+                                        </Button>
+                                    </ControlButtonWrap>
+                                </WaitControlBar>
+                            </BottomBarWrap>
+                        </>
+                    ) : null}
+
+                    <div style={{ position: "relative" }}>
+                        <div className="Wrap-Cam-canvas">
+                            {!enterRoom ? (
+                                <>
+                                    <div
+                                        style={{
+                                            position: "relative",
+                                            top: "500px",
+                                            backgroundColor: "blue",
+                                            width: "1000px",
+                                            marginLeft: "10%",
+                                            paddingLeft: "auto",
+                                            borderRadius: "20px",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "start",
+                                                top: "50%",
+                                            }}
+                                        >
+                                            {/* <span> {lessonName} </span> */}
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "end",
+                                            }}
+                                        >
+                                            <Button
+                                                onClick={enterTheLessonRoom}
+                                            >
+                                                실제 룸 입장
+                                            </Button>
+                                            <button
+                                                onClick={tmpClick}
+                                                disabled={!isSeesoInit}
+                                            >
+                                                테스트
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <StudentLessonRoomPage
+                                    lessonName={lessonName}
+                                />
+                            )}
+                        </div>
+
+                        {/* 추후 하나의 컴포넌트로 대체 */}
+                    </div>
+                </Container>
+            </RoomFrameWrap>
         </>
     );
 };

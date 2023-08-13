@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { Container, Grid } from "@material-ui/core";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Container } from "@material-ui/core";
 
 import { url } from "../../api/APIPath";
 
@@ -14,6 +14,9 @@ import axios from "axios";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
+
+import tokenHttp from "../../api/APIPath";
+import Modal from "../common/Modal";
 import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 import { styled } from "styled-components";
 import { StyledInput } from "../auth/UserJoinTeacherEdu";
@@ -48,24 +51,19 @@ const JoinInput = styled.input`
 
 /** 검색한 결과물이 들어갈 wrap => 추가수정@@@ */
 const DataLists = styled.div`
-    ${({ searchClicked }) => {
-        return {
-            display: searchClicked === false && "none",
-            border: "none",
-        };
-    }}
     position: absolute;
     /* bottom: 0; */
     top: 0.5rem;
     background-color: #fff;
     flex-direction: column;
     z-index: 10;
-
     width: 13.35rem;
 
     border-radius: 0.75rem;
     border: 1px solid black;
     box-sizing: border-box;
+
+    display: ${({ show }) => (show ? "block" : "none")};
 
     & > ul > li {
         padding: 0rem 1rem;
@@ -141,12 +139,16 @@ const StyledClassIntro = styled.div`
 
 const ClassJoin = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    // 업데이트 "다음"버튼 눌렀으면 그냥 "isUpdated를 false로 바꿔야 axios요청 안보낸다."
+    const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
+    console.log(isUpdated, "업데이트 할거")
     const userNo = useSelector((state) => state.user.userNo);
-    const [lessonNo, setLessonNo] = useState("");
+    const [lessonNo, setLessonNo] = useState(location.state ? location.state.lessonNo : "");
 
     const [lessonName, setLessonName] = useState("");
     const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
-    const [lessonThumbnailInfo, setLessonIntro] = useState("");
+    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState("");
     const [lessonInfo, setLessonInfo] = useState("");
 
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
@@ -168,6 +170,32 @@ const ClassJoin = () => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
+
+        // 작성중인 정보가 있다!
+        if (isUpdated) {
+            tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
+            .then(res => {
+                console.log(res, "작성중인 정보")
+                const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
+                setChooseLessonTypeNo(lessonTypeNo)
+                setSubjectName(lessonTypeName)
+                setLessonName(lessonName)
+                setLessonInfo(lessonInfo)
+                setMaxStudent(maxStudent)
+                setLessonPrice(lessonPrice)
+                setLessonThumbnailImg(lessonThumbnailImg)
+                setLessonThumbnailInfo(lessonThumbnailInfo)
+                // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
+            })
+            .then(()=> {
+                tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
+                .then(res=> {
+                    console.log(res, "S3서버로 간다")
+                    setThumbnailURL(res.data.resultMsg)
+                    
+                })
+            })
+        }
     }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -216,8 +244,9 @@ const ClassJoin = () => {
     // 수업 내용을 입력했을 때
     const handleIntroChange = (event) => {
         if (event.target.value.length <= 100) {
-            setLessonIntro(event.target.value);
+            setLessonThumbnailInfo(event.target.value);
         }
+        setLessonThumbnailInfo(event.target.value);
     };
 
     // html 에디터에 내용을 입력하고, 에디터에서 포커스가 빠져나왔을 때 (Blur)
@@ -264,7 +293,7 @@ const ClassJoin = () => {
             userNo: userNo, // 임시
         };
         console.log(data, "데이터");
-        axios
+        tokenHttp
             .post(`${url}/lesson/join`, data, {
                 headers: { "Content-Type": "application/json" },
             })
@@ -279,7 +308,7 @@ const ClassJoin = () => {
                 if (lessonThumbnailImg) {
                     const formData = new FormData();
                     formData.append("multipartFile", lessonThumbnailImg);
-                    axios
+                    tokenHttp
                         .post(
                             `${url}/s3/upload/thumbnail/${lessonNo}`,
                             formData,
@@ -312,7 +341,7 @@ const ClassJoin = () => {
         userNo: userNo ? userNo : 1, //
         lessonNo: lessonNo,
     };
-    console.log(data);
+    console.log(searchClicked);
     return (
         <>
             <MenuCard title="기본 정보 입력">
@@ -342,42 +371,42 @@ const ClassJoin = () => {
                                         placeholder="과목명"
                                         onChange={handleSubjectChange}
                                     />
-                                    <DataLists>
-                                        {searchClicked &&
-                                        searchResults.length > 0
-                                            ? searchResults.map((result) => {
-                                                  return (
-                                                      <ul>
-                                                          <li
-                                                              key={
-                                                                  result.lessonTypeNo
-                                                              }
-                                                              onClick={() =>
-                                                                  selectedResult(
-                                                                      result
-                                                                  )
-                                                              }
-                                                          >
-                                                              {
-                                                                  result.lessonTypeName
-                                                              }
-                                                          </li>
-                                                      </ul>
-                                                  );
-                                              })
-                                            : null}
-                                        {searchClicked &&
-                                            searchResults.length === 0 && (
-                                                <ul
-                                                    onClick={() =>
-                                                        setSearchClicked(false)
-                                                    }
-                                                >
-                                                    <div>
+                                    <DataLists show={searchClicked}>
+                                        <ul>
+                                            {searchClicked &&
+                                            searchResults.length > 0
+                                                ? searchResults.map(
+                                                      (result) => {
+                                                          return (
+                                                              <li
+                                                                  key={`result-${result.lessonTypeNo}`}
+                                                                  onClick={() =>
+                                                                      selectedResult(
+                                                                          result
+                                                                      )
+                                                                  }
+                                                              >
+                                                                  {
+                                                                      result.lessonTypeName
+                                                                  }
+                                                              </li>
+                                                          );
+                                                      }
+                                                  )
+                                                : null}
+                                            {searchClicked &&
+                                                searchResults.length === 0 && (
+                                                    <div
+                                                        onClick={() =>
+                                                            setSearchClicked(
+                                                                false
+                                                            )
+                                                        }
+                                                    >
                                                         검색한 과목이 없습니다.
                                                     </div>
-                                                </ul>
-                                            )}
+                                                )}
+                                        </ul>
                                     </DataLists>
                                 </div>
 
@@ -438,6 +467,7 @@ const ClassJoin = () => {
                                 <StyledImg
                                     src={thumbnailURL}
                                     alt="썸네일 사진"
+                                    crossOrigin="anonymous"
                                 />
                             ) : (
                                 <StyledImg
@@ -524,6 +554,39 @@ const ClassJoin = () => {
                                 />
                             </div>
                         </div>
+                        {/* html 에디터 =00000> 엔터 시, <p>태그 처리 수정@@@ */}
+                        <CKEditor
+                            editor={ClassicEditor}
+                            data={lessonInfo}
+                            value={lessonInfo}
+                            // toolbar 설정
+                            config={{
+                                toolbar: {
+                                    items: [
+                                        "heading",
+                                        "|",
+                                        "bold",
+                                        "italic",
+                                        "link",
+                                        "bulletedList",
+                                        "numberedList",
+                                        "|",
+                                        "blockQuote",
+                                        "insertTable",
+                                        "undo",
+                                        "redo",
+                                    ],
+                                },
+                                table: {
+                                    contentToolbar: [
+                                        "tableColumn",
+                                        "tableRow",
+                                        "mergeTableCells",
+                                    ],
+                                },
+                            }}
+                            onBlur={handleEditorChange}
+                        />
                     </div>
                 </Container>
             </MenuCard>

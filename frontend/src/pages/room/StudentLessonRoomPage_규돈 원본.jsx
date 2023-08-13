@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
@@ -8,49 +8,10 @@ import tokenHttp, { url } from "../../api/APIPath";
 // openvidu
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import { OpenVidu } from "openvidu-browser";
+
 import ChatComponent from "../../components/chat/ChatComponent";
-import { useCallback } from "react";
 
-// 강의룸 틀
-import styled from "styled-components";
-import { Typography } from "@mui/material";
-import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
-import {
-    ControlButtonWrap,
-    LessonControlBar,
-    RoomFrameWrap,
-    ScreenShare,
-    StudentScreen,
-} from "./TeacherRoomFrame";
-import Button from "../../components/common/Button";
-
-// 수업 컨트롤 바, 화면 공유 Wrap
-const ControlBarShareWrap = styled.div`
-    width: 75%;
-`;
-
-// 학생 상태 바, 채팅 컴포넌트 Wrap
-const StateChatWrap = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 23%;
-`;
-
-// 채팅 컴포넌트 Wrap
-const ChatWrap = styled.div`
-    position: relative;
-    width: 100%;
-    height: 60%;
-
-    border-radius: 1.25rem;
-    /* padding: 0.75rem; */
-    box-sizing: border-box;
-
-    background-color: #e1e6f9;
-`;
-
-const StudentLessonRoomPage = ({ lessonName }) => {
+const StudentLessonRoomPage = () => {
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -68,9 +29,10 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     const [subscribers, setSubscribers] = useState([]);
     const [token, setToken] = useState("");
 
+
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
-    const [audioEnabled, setAudioEnabled] = useState(false);
+    const [audioEnabled, setAudioEnabled] = useState(true);
 
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
@@ -78,7 +40,7 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
         setVideoEnabled(true);
-        setAudioEnabled(false);
+        setAudioEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
@@ -114,31 +76,13 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     };
 
     // 세션 생성 및 세션에서 이벤트가 발생할 때의 동작을 지정
-    const joinSession = useCallback(async () => {
+    const joinSession = async () => {
         const newOV = new OpenVidu();
         let mySession = newOV.initSession();
-
-        mySession.on('sessionDisconnected', event => {
-            if (event.reason === 'disconnect') {
-              // 여기에 강제 종료 시 실행할 코드 작성
-            } else {
-              console.log('세션이 기타 이유로 닫혔습니다.');
-              // 여기에 기타 이유로 인해 세션이 닫힐 때 실행할 코드 작성
-            }
-            navigate('/');
-          });
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
-            ///////////////// 여기서 선생 찾기
-            const rawData = event.stream.connection.data;
-            const start = rawData.indexOf('{"clientData":') + '{"clientData":'.length;
-            const end = rawData.indexOf('}', start);
-            const clientDataValue = rawData.substring(start, end);
-            console.log("Value of 'clientData':", clientDataValue);
-            /////////////////
-
             setSubscribers((subscribers) => [...subscribers, subscriber]); // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
@@ -164,7 +108,8 @@ const StudentLessonRoomPage = ({ lessonName }) => {
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-    },[]);
+    };
+
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
@@ -205,8 +150,7 @@ const StudentLessonRoomPage = ({ lessonName }) => {
                             alert("세션 연결 오류");
                             navigate("/");
                         });
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     alert(error.response.data);
                     navigate("/");
                 });
@@ -230,96 +174,81 @@ const StudentLessonRoomPage = ({ lessonName }) => {
         }
     };
 
-    // // 알림
-    // useEffect(() => {
-    //     const sse = new EventSource(
-    //         `${url}/notification/subscribe/${userId}`
-    //     );
+    // 알림
+    useEffect(() => {
+        const sse = new EventSource(
+            `${url}/notification/subscribe/${userId}`
+        );
 
-    //     sse.onopen = () => {
-    //         console.log("SSEONOPEN==========", sse);
-    //     };
+        sse.onopen = () => {
+            console.log("SSEONOPEN==========", sse);
+        };
 
-    //     sse.onmessage = async (event) => {
-    //         const res = await event.data;
-    //         const parseData = JSON.parse(res);
-    //         console.log("SSEONMESSAGE==========", parseData);
-    //     };
+        sse.onmessage = async (event) => {
+            const res = await event.data;
+            const parseData = JSON.parse(res);
+            console.log("SSEONMESSAGE==========", parseData);
+        };
 
-    //     sse.addEventListener("Request", function (event) {
-    //         console.log("ADDEVENTLISTENER==========", event.data);
-    //     });
-    // }, []);
+        sse.addEventListener("Request", function (event) {
+            console.log("ADDEVENTLISTENER==========", event.data);
+        });
+    }, []);
+
 
     return (
         <>
-            {/* 수업 컨트롤 바 / 화면 공유가 담길 div 박스 */}
-            <ControlBarShareWrap>
-                {/* 학생 수업 관리 바 */}
-                <LessonControlBar>
-                    {/* 수업 타이틀 @@@ */}
-                    <Typography fontWeight={"bold"} color={"white"}>
-                        수업 타이틀 : {lessonName}
-                    </Typography>
-
-                    <ControlButtonWrap>
-                        {/* 비디오 */}
-                        <Button
-                            type="button"
-                            onClick={toggleAudio}
-                            value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
-                        >
-                        <HiMicrophone />
-                        </Button>
-                        {/* 마이크 */}
-                        <Button
-                            type="button"
-                            onClick={toggleVideo}
-                            value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
-                        >
-                        <HiVideoCamera />
-                        </Button>
-                        {/* 수업 나가기 */}
-                        <Button
-                            type="button"
-                            onClick={leaveSession}
-                            value="나가기"
-                        >
-                            나가기
-                        </Button>
-                    </ControlButtonWrap>
-                </LessonControlBar>
-
-                {/* 화면 공유 박스, 여기가 맞다. 추후 선생님 찾아야 함. */}
-                {subscribers.map((sub, idx) => (
-                    <ScreenShare key={`${idx}-subscriber`}>
-                        <UserVideoComponent streamManager={sub} />
-                    </ScreenShare>
-                ))}
-            </ControlBarShareWrap>
-
-            {/* 학생 화면 / 채팅 컴포넌트가 담길 div 박스 */}
-            <StateChatWrap>
-                {/* 학생 본인의 화면 */}
-                <StudentScreen>
-                    {publisher !== undefined ? (
+            <div>
+                <h1>Room ID: {mySessionId}</h1>
+                {session !== undefined ? (
+                    <div>
                         <div>
-                            <UserVideoComponent streamManager={publisher} />
-                        </div>
-                    ) : null}
-                </StudentScreen>
+                            <div>
+                                {publisher !== undefined ? (
+                                    <div>
+                                        <UserVideoComponent
+                                            streamManager={publisher}
+                                        />
+                                    </div>
+                                ) : null}
 
-                {/* 채팅 컴포넌트 */}
-                <ChatWrap>
-                    {mainStreamManager && (
-                        <ChatComponent
-                            userName={userName}
-                            streamManager={mainStreamManager}
-                            connectionId={session.connection.connectionId}
-                        />
-                    )}
-                </ChatWrap>
-            </StateChatWrap>
+                                {/* 여기서 강사 아닌 사람들만 */}
+                                {subscribers.map((sub, i) => (
+                                    <div key={`${i}-subscriber`}>
+                                        <UserVideoComponent
+                                            streamManager={sub}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            {mainStreamManager && (
+                                <ChatComponent
+                                    userName={userName}
+                                    streamManager={mainStreamManager}
+                                    connectionId={
+                                        session.connection.connectionId
+                                    }
+                                />
+                            )}
+                        </div>
+                    </div>
+                ) : null}
+
+                <input
+                    type="button"
+                    onClick={toggleVideo}
+                    value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
+                />
+                <input
+                    type="button"
+                    onClick={toggleAudio}
+                    value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
+                />
+                <input type="button" onClick={leaveSession} value="나가기" />
+            </div>
         </>
     );
 };

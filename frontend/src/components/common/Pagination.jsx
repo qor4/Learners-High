@@ -1,6 +1,8 @@
 // 공통 Pagination 컴포넌트
 import styled from "styled-components";
 
+import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
+
 const Nav = styled.nav`
     display: flex;
     justify-content: center;
@@ -48,7 +50,7 @@ const Pagination = ({ total, limit, page, setPage }) => {
                     onClick={() => setPage(page - 1)}
                     disabled={page === 1}
                 >
-                    &lt;
+                    <HiOutlineChevronLeft />
                 </SytledButton>
                 {Array(numPages)
                     .fill()
@@ -65,7 +67,7 @@ const Pagination = ({ total, limit, page, setPage }) => {
                     onClick={() => setPage(page + 1)}
                     disabled={page === numPages}
                 >
-                    &gt;
+                    <HiOutlineChevronRight />
                 </SytledButton>
             </Nav>
         </>

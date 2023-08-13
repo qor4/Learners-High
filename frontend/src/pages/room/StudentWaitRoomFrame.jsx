@@ -17,6 +17,8 @@ const WaitScreen = styled.div`
     margin-bottom: 0.75rem;
 
     background-color: #ddd;
+
+    position: relative;
 `;
 
 // 하단 바 (강의명 박스 / 컨트롤 바)

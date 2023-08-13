@@ -79,11 +79,12 @@ const LessonRoundItemBoxList = ({
             <Card $skyBlue>
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
+
                         <StyledBox
                             key={lessonItem.userNo}
                             $hover
                             onClick={(e) => {
-                                if (e.target.className !== "singleEvent") {
+                                if (!e.target.className.includes('singleEvent')) {
                                     if (userType === "T") {
                                         navigate(
                                             `/edu/teacher/${userNo}/${lessonItem.lessonNo}`
