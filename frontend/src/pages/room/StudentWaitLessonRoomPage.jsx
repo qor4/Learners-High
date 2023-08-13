@@ -83,6 +83,7 @@ const StudentWaitLessonRoomPage = () => {
     const lessonName = location.state.lessonName
         ? location.state.lessonName
         : null;
+    const teacherNo = location.state.teacherNo
     
     let userStatus = useRef(null);
     const eyeTracker = useRef(null);
@@ -360,7 +361,7 @@ const StudentWaitLessonRoomPage = () => {
                     </>
                 )}
 
-                {enterRoom && <StudentLessonRoomPage lessonName={lessonName} />}
+                {enterRoom && <StudentLessonRoomPage lessonName={lessonName} teacherNo={teacherNo} />}
             </RoomFrameWrap>
         </>
     );

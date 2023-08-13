@@ -68,6 +68,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
     const lessonName = lessonInfo.lessonName;
 
+    // 선생님 no
+    const teacherNo = lessonInfo.userNo
+
     // 날짜 format
     const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
     const endDatetime = new Date(lessonInfo.lessonRoundEndDatetime);
@@ -106,7 +109,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         //     endDatetime.getDate() === today.getDate() // 여기!
         // ) {
         // }
-        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
+        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName, teacherNo}});
     };
 
     return (

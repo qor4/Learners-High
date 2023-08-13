@@ -50,7 +50,7 @@ const ChatWrap = styled.div`
     background-color: #e1e6f9;
 `;
 
-const StudentLessonRoomPage = ({ lessonName,closeRoom }) => {
+const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -129,7 +129,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom }) => {
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
             ///////////////// 여기서 선생 찾기
-            if(JSON.parse(JSON.parse(subscriber.stream.connection.data).clientData).userNo === 1){
+            if(JSON.parse(JSON.parse(subscriber.stream.connection.data).clientData).userNo === Number(teacherNo)){
                 setTeacher(subscriber);
             }
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
