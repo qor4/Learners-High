@@ -164,7 +164,7 @@ public class UserService {
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", "b6858c19fc043da6c74478b610af98a0");
-        params.add("redirect_uri", "http://localhost:3000/kakao/join");
+        params.add("redirect_uri", "https://i9b105.p.ssafy.io/kakao/join");
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);

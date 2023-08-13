@@ -3,9 +3,57 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Card from "../common/Card";
 import { useState } from "react";
 import tokenHttp, { url } from "../../api/APIPath";
+
+import styled from "styled-components";
+
+import Card from "../common/Card";
+import LessonStatusBox from "../common/LessonStatusBox";
+
+/** 가로 flex */
+const ColFlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+
+    & > *:not(:last-child) {
+        margin-right: 1rem;
+    }
+`;
+
+/** 세로 flex */
+const RowFlexWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+/** 카드 flex */
+const CardFlexWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+
+    & > div > * {
+        margin: 1rem 0;
+    }
+`;
+
+/** 큰 사이즈 텍스트 20px bold */
+export const StyledTitleText = styled.div`
+    font-size: 1.25rem;
+    font-weight: bold;
+`;
+
+/** 회색 텍스트 */
+export const NoneDataText = styled.div`
+    color: #ccc;
+    margin-left: 1rem;
+`;
+
+const DataText = styled.div`
+    margin-left: 2rem;
+`;
 
 const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
@@ -45,25 +93,81 @@ const LessonItemBox = ({ lessonInfo }) => {
     return (
         <>
             <Card>
-                수업 명: {lessonInfo.lessonName}
-                <br />
-                시작날짜: {lessonInfo.lessonStartDate}
-                <br />
-                종료날짜: {lessonInfo.lessonEndDate}
-                <br />
-                강사명: {lessonInfo.userName}
-                <br />
-                수업타입이름: {lessonInfo.lessonTypeName}
-                <br />
-                {userType === "T" && (
-                    <>
-                        {/* 강사/수업 만족도 => 강사만 보이게 */}
-                        강사 만족도:{teacherSat}
-                        수업 만족도:{lessonSat}
-                    </>
-                )}
-                출석률 :{attendRate}
-                과제 제출률:{homeworkRate}
+                <CardFlexWrap>
+                    <RowFlexWrap>
+                        <ColFlexWrap>
+                            <LessonStatusBox>
+                                {lessonInfo.lessonTypeName}
+                            </LessonStatusBox>
+                            <div>
+                                {lessonInfo.lessonStartDate} ~{" "}
+                                {lessonInfo.lessonEndDate}
+                            </div>
+                        </ColFlexWrap>
+                        <ColFlexWrap>
+                            <StyledTitleText>
+                                {lessonInfo.lessonName}
+                            </StyledTitleText>
+                            {/* 강사 이름 => 학생만 보이게 */}
+                            {userType === "S" && (
+                                <span>{lessonInfo.userName}</span>
+                            )}
+                        </ColFlexWrap>
+                    </RowFlexWrap>
+                    {userType === "T" && (
+                        <RowFlexWrap>
+                            {/* 강사/수업 만족도 => 강사만 보이게 */}
+                            <ColFlexWrap>
+                                <strong>
+                                    <div>강사 만족도</div>
+                                </strong>
+                                <div>
+                                    {isNaN(teacherSat) ? (
+                                        <NoneDataText>데이터 없음</NoneDataText>
+                                    ) : (
+                                        teacherSat
+                                    )}
+                                </div>
+                            </ColFlexWrap>
+                            <ColFlexWrap>
+                                <strong>
+                                    <div>수업 만족도</div>
+                                </strong>
+                                <div>
+                                    {isNaN(lessonSat) ? (
+                                        <NoneDataText>데이터 없음</NoneDataText>
+                                    ) : (
+                                        lessonSat
+                                    )}
+                                </div>
+                            </ColFlexWrap>
+                        </RowFlexWrap>
+                    )}
+                    <RowFlexWrap>
+                        <CardFlexWrap>
+                            <strong>
+                                <div>출석률</div>
+                            </strong>
+
+                            {attendRate === "아직 집계할 데이터가 없습니다." ? (
+                                <NoneDataText>데이터 없음</NoneDataText>
+                            ) : (
+                                <DataText>{attendRate}</DataText>
+                            )}
+                        </CardFlexWrap>
+                        <CardFlexWrap>
+                            <strong>
+                                <div>과제 제출률</div>
+                            </strong>
+                            {homeworkRate ===
+                            "아직 집계할 데이터가 없습니다." ? (
+                                <NoneDataText>데이터 없음</NoneDataText>
+                            ) : (
+                                <DataText>{homeworkRate}</DataText>
+                            )}
+                        </CardFlexWrap>
+                    </RowFlexWrap>
+                </CardFlexWrap>
             </Card>
         </>
     );

@@ -3,6 +3,10 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
+import { Grid } from "@mui/material";
+import { StyledBox } from "../class/LessonRoundItemBoxList";
+import Button from "../common/Button";
+import { InputWrap, StyledInput } from "../auth/UserJoinTeacherEdu";
 
 const TeacherJobItem = ({ item }) => {
     const [jobItem, setJobItem] = useState(item);
@@ -50,61 +54,117 @@ const TeacherJobItem = ({ item }) => {
     };
 
     return (
-        <>
-            {!isEditing && !validCanModify ? (
-                <>
-                    <p> 직장명: {companyName} </p>
-                    <p> 부서명: {departName} </p>
-                    <p> 입사년월: {hireStartDate} </p>
-                    <p> 퇴사년월: {hireEndDate} </p>
-                    <button onClick={handleOnClickUpdateStart}>수정하기</button>
-                </>
-            ) : (
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <div>
-                        <p>경력</p>
-
-                        <span>직장명</span>
-                        <input
-                            type="text"
-                            name="companyName"
-                            className="companyName"
-                            onChange={(e) => onChange(e)}
-                            value={companyName}
-                        />
-
-                        <span>부서/직무</span>
-                        <input
-                            type="text"
-                            name="departName"
-                            className="departName"
-                            onChange={(e) => onChange(e)}
-                            value={departName}
-                        />
-
-                        <span>입사년월</span>
-                        <input
-                            type="text"
-                            name="hireStartDate"
-                            className="hireStartDate"
-                            onChange={(e) => onChange(e)}
-                            value={hireStartDate}
-                        />
-                        <span>퇴사년월</span>
-                        <input
-                            type="text"
-                            name="hireEndDate"
-                            className="hireEndDate"
-                            onChange={(e) => onChange(e)}
-                            value={hireEndDate}
-                        />
-                    </div>
-                    <button onClick={handleOnClickUpdateEnd}>수정완료</button>
-                </form>
-            )}
-
-            <button onClick={handleOnClickDelete}>삭제</button>
-        </>
+        <StyledBox style={{ textAlign: "center" }}>
+            <Grid container columns={16} alignItems="center">
+                {!isEditing && !validCanModify ? (
+                    <>
+                        <Grid item xs={4}>
+                            {hireStartDate} ~ {hireEndDate}
+                        </Grid>
+                        <Grid item xs={4}>
+                            <strong>{companyName}</strong>
+                        </Grid>
+                        <Grid item xs={4}>
+                            {departName}
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button
+                                size="sm"
+                                onClick={handleOnClickUpdateStart}
+                            >
+                                수정
+                            </Button>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button size="sm" onClick={handleOnClickDelete}>
+                                삭제
+                            </Button>
+                        </Grid>
+                    </>
+                ) : (
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <Grid
+                            container
+                            columns={16}
+                            spacing={2}
+                            alignItems="center"
+                        >
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="hireStartDate">
+                                        입사년월
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="hireStartDate"
+                                        className="hireStartDate"
+                                        placeholder="yyyy-mm"
+                                        onChange={(e) => onChange(e)}
+                                        value={hireStartDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <InputWrap>
+                                    <label htmlFor="hireEndDate">
+                                        퇴사년월
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="hireEndDate"
+                                        className="hireEndDate"
+                                        placeholder="yyyy-mm"
+                                        onChange={(e) => onChange(e)}
+                                        value={hireEndDate}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={4}>
+                                <InputWrap>
+                                    <label htmlFor="companyName">직장명</label>
+                                    <StyledInput
+                                        type="text"
+                                        name="companyName"
+                                        className="companyName"
+                                        placeholder="직장명"
+                                        onChange={(e) => onChange(e)}
+                                        value={companyName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={4}>
+                                <InputWrap>
+                                    <label htmlFor="departName">
+                                        부서/직무
+                                    </label>
+                                    <StyledInput
+                                        type="text"
+                                        name="departName"
+                                        className="departName"
+                                        placeholder="부서 / 직무"
+                                        onChange={(e) => onChange(e)}
+                                        value={departName}
+                                    />
+                                </InputWrap>
+                            </Grid>
+                            <Grid item md={2}>
+                                <Button
+                                    size="sm"
+                                    onClick={handleOnClickUpdateEnd}
+                                >
+                                    완료
+                                </Button>
+                            </Grid>
+                            <Grid item md={2}>
+                                <Button size="sm" onClick={handleOnClickDelete}>
+                                    삭제
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                )}
+            </Grid>
+        </StyledBox>
     );
 };
 

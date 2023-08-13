@@ -42,6 +42,9 @@ const FilterWrapper = styled.div`
     display: flex;
     justify-content: right;
     margin: 1.5rem 0;
+    & > * {
+        margin-right: 1rem;
+    }
 `;
 
 const LessonPage = () => {
@@ -55,6 +58,9 @@ const LessonPage = () => {
 
     // 과목 선택별 필터링 (기본값 : 전체)
     const [selectedLessonType, setSelectedLessonType] = useState("전체");
+
+    // 인기순 / 강사 만족도순 필터링 (얘는 기본값이 있는것인지...?! @@@)
+    const [selectedFilterType, setSelectedFilterType] = useState("인기순");
 
     // 페이지네이션
     const limitItem = 12;
@@ -86,7 +92,6 @@ const LessonPage = () => {
             );
             setLessonListDataSet(filteredData);
         }
-        setSearchKeyword("");
     };
 
     // 과목 분류를 눌렀을 때, 필터링
@@ -164,9 +169,8 @@ const LessonPage = () => {
                         </Grid>
                         {lessonTypeDataSet &&
                             lessonTypeDataSet.map((lessonType, index) => (
-                                <Grid item md={2}>
+                                <Grid item md={2} key={index}>
                                     <Button
-                                        key={index}
                                         value={lessonType.lessonTypeNo}
                                         onClick={() => {
                                             setSelectedLessonType(

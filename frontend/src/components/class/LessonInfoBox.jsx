@@ -1,14 +1,14 @@
 // 강의 상세 페이지 상단에 있는 강의에 대한 세부 내용이 담긴 박스
 // 다른 곳에서도 강의 세부 내용 박스로 쓰일 컴포넌트
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 
 import { Container } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { url } from "../../api/APIPath";
+import { useNavigate, useParams } from "react-router-dom";
+import tokenHttp, { url } from "../../api/APIPath";
 import { HiOutlineHeart } from "react-icons/hi";
 import LessonStatusBox from "../common/LessonStatusBox";
 import Button from "../common/Button";
@@ -60,12 +60,29 @@ const StyledBottomBar = styled.div`
 `;
 
 const BottomBarContents = styled.div`
-    width: 65%;
+    width: 60%;
     height: 100%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+`;
+
+/** 상태 wrap */
+const LessonStatusWrap = styled.div`
+    & > * {
+        margin-right: 0.75rem;
+    }
+`;
+
+/** 버튼 Wrap */
+const LessonButtonWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    & > :first-child {
+        margin-right: 1rem;
+    }
 `;
 
 const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
@@ -74,6 +91,29 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
     const lessonNo = useParams();
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [lessonStateDataSet, setLessonStateDataSet] = useState(null);
+    const [isWish, setIsWish] = useState(1); // 찜 여부 (초기값 : 찜한 강의가 아닙니다.)
+
+    const navigate = useNavigate();
+
+    // 수강 가능한 상태인지 (학생일 경우!)
+    if (userType === "S") {
+        tokenHttp
+            .get(`${url}/student/${userNo}/lesson/${lessonNo.lessonNo}/state`)
+            .then((response) =>
+                setLessonStateDataSet(response.data.resultCode)
+            );
+    }
+
+    // 찜 여부 GET 요청
+    useEffect(() => {
+        if (userType === "S") {
+            tokenHttp
+                .get(`${url}/student/${userNo}/wish/${lessonNo.lessonNo}`)
+                .then((response) => {
+                    setIsWish(response.data.resultCode);
+                });
+        }
+    }, [isWish]);
 
     // 로그인 버튼 클릭 했을 때, 로그인 모달 창
     const handleLoginButtonClick = () => {
@@ -86,16 +126,38 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         document.body.classList.remove("overflow-hidden");
     };
 
-    // 수강 가능한 상태인지 (학생일 경우!)
-    if (userType === "S") {
-        axios
-            .get(`${url}/student/${userNo}/lesson/${lessonNo.lessonNo}/state`)
-            .then((response) =>
-                setLessonStateDataSet(response.data.resultCode)
-            );
-    }
+    /** 찜하기 버튼을 눌렀을 때 @@@ */
+    const handleWishChange = () => {
+        console.log("찜하기를 눌렀어용", lessonNo.lessonNo, userNo);
+        const data = {
+            lessonNo: lessonNo.lessonNo,
+            userNo: userNo,
+        };
+        tokenHttp
+            .post(`${url}/student/wish`, data, {
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res) => {
+                console.log(res);
+                setIsWish(0);
+            });
+    };
 
-    console.log(lessonStateDataSet, typeof lessonStateDataSet);
+    /** 찜하기 취소를 눌렀을 때 @@@ */
+    const handleWishDelete = () => {
+        tokenHttp
+            .delete(`${url}/student/wish/${userNo}/${lessonNo.lessonNo}`)
+            .then((response) => {
+                console.log(response);
+                setIsWish(1);
+            });
+    };
+
+    /** 강의룸 입장 */
+    const enterStudentRoom = (event) => {
+        // event.stopPropagation();
+        // navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
+    };
 
     return (
         <Container maxWidth="md">
@@ -106,20 +168,20 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                             src={
                                 lessonInfo.lessonThumbnailImg
                                     ? lessonInfo.lessonThumbnailImg
-                                    : "/assets/bannerimg.jpg"
+                                    : "/assets/item-banner.png"
                             }
                             alt="thumbnail-img"
                         />
                         <InfoWrap>
                             <FlexWrap>
-                                <div>
+                                <LessonStatusWrap>
                                     <LessonStatusBox $point>
                                         {lessonInfo.lessonTypeName}
                                     </LessonStatusBox>
                                     <LessonStatusBox $point>
                                         총 {lessonInfo.lessonTotalRound}회차
                                     </LessonStatusBox>
-                                </div>
+                                </LessonStatusWrap>
                                 <div>
                                     {lessonInfo.lessonStartDate} ~{" "}
                                     {lessonInfo.lessonEndDate}
@@ -127,7 +189,12 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                             </FlexWrap>
                             <FlexWrap>
                                 <h3>{lessonInfo.lessonName}</h3>
-                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
+                                {!$edu && (
+                                    <span>
+                                        {lessonInfo.lessonPrice.toLocaleString()}
+                                        원
+                                    </span>
+                                )}
                             </FlexWrap>
                             <div>{lessonInfo.userName}</div>
                             <div>{lessonInfo.lessonThumbnailInfo}</div>
@@ -171,27 +238,68 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                     {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
                                     {userType === "S" &&
                                         lessonStateDataSet === 0 && (
-                                            <>
+                                            <LessonButtonWrap>
                                                 <Button
+                                                    $fullWidth
                                                     onClick={handleApplyChange}
                                                 >
                                                     수강 신청 ({" "}
                                                     {lessonInfo.totalStudent} /{" "}
                                                     {lessonInfo.maxStudent} 명 )
                                                 </Button>
-                                                <Button>
-                                                    <HiOutlineHeart />
-                                                </Button>
-                                            </>
+                                                {/* 수강신청을 하지 않았을 때 */}
+                                                {isWish === 1 && (
+                                                    <Button
+                                                        onClick={
+                                                            handleWishChange
+                                                        }
+                                                    >
+                                                        <HiOutlineHeart />
+                                                    </Button>
+                                                )}
+
+                                                {/* 수강신청을 했을 때 */}
+                                                {isWish === 0 && (
+                                                    <Button
+                                                        $point
+                                                        onClick={
+                                                            handleWishDelete
+                                                        }
+                                                    >
+                                                        <HiOutlineHeart />
+                                                    </Button>
+                                                )}
+                                            </LessonButtonWrap>
                                         )}
                                 </>
                             )}
                             {$edu && (
                                 <>
-                                    <Button $point>강의 입장</Button>
-                                    <Button>
-                                        <HiOutlineHeart />
-                                    </Button>
+                                    <LessonButtonWrap>
+                                        <Button
+                                            $fullWidth
+                                            $point
+                                            onClick={enterStudentRoom}
+                                        >
+                                            강의 입장
+                                        </Button>
+
+                                        {/* 수강신청을 하지 않았을 때 */}
+                                        {isWish === 1 && (
+                                            <Button onClick={handleWishChange}>
+                                                <HiOutlineHeart />
+                                            </Button>
+                                        )}
+                                        {/* 수강신청을 했을 때 */}
+                                        {isWish === 0 && (
+                                            <Button
+                                                $point
+                                                onClick={handleWishDelete}
+                                            >
+                                                <HiOutlineHeart />
+                                            </Button>
+                                        )}
+                                    </LessonButtonWrap>
                                 </>
                             )}
                         </InfoWrap>
@@ -204,7 +312,9 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                 <span>
                                     <strong>{lessonInfo.lessonName}</strong>
                                 </span>
-                                <span>{lessonInfo.lessonPrice.toLocaleString()}원</span>
+                                <span>
+                                    {lessonInfo.lessonPrice.toLocaleString()}원
+                                </span>
 
                                 {/* 수강신청을 한 경우 */}
                                 {lessonStateDataSet === -1 && (
@@ -234,9 +344,24 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                                 {lessonInfo.totalStudent} /{" "}
                                                 {lessonInfo.maxStudent} 명 )
                                             </Button>
-                                            <Button>
-                                                <HiOutlineHeart />
-                                            </Button>
+
+                                            {/* 수강신청을 하지 않았을 때 */}
+                                            {isWish === 1 && (
+                                                <Button
+                                                    onClick={handleWishChange}
+                                                >
+                                                    <HiOutlineHeart />
+                                                </Button>
+                                            )}
+                                            {/* 수강신청을 했을 때 */}
+                                            {isWish === 0 && (
+                                                <Button
+                                                    $point
+                                                    onClick={handleWishDelete}
+                                                >
+                                                    <HiOutlineHeart />
+                                                </Button>
+                                            )}
                                         </div>
                                     )}
                             </BottomBarContents>

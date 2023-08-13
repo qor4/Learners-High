@@ -73,28 +73,37 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+// 콘텐츠의 양이 짧을 때, 하단에 푸터 고정하기 (보류)
+// const Wrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: space-between;
+//     height: 100vh;
+// `;
+
+// const ContentWrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+// `;
+
 function App() {
     const location = useLocation();
-    const hideComponetStudent = location.pathname.startsWith(
-        "/lessonroom/student"
+    const hideComponent = location.pathname.startsWith(
+        "/lessonroom"
     );
-    const hideComponetTeacher = location.pathname.startsWith(
-        "/lessonroom/teacher"
-    );
-    const hideComponetWait = location.pathname.startsWith("/lessonroom/wait");
+    // const hideComponentTeacher = location.pathname.startsWith(
+    //     "/lessonroom/teacher"
+    // );
+    // const hideComponentWait = location.pathname.startsWith("/lessonroom/wait");
     return (
         <>
             <GlobalStyle />
             <div className="App">
+                { (!hideComponent && 
                 <Header />
-                {/* <TeacherJobItem/> */}
-                {/* <UserJoinTeacherJob/> */}
-                {/* <UserJoinTeacherEdu/> */}
-                {/* <UserLogIn/> */}
-                {/* <StudentMain/> */}
-                {/* <ClassRoundJoinPage/> */}
-                {/* <StudentWaitLessonRoomPage/> */}
-
+                    
+                    )}
+                
                 <Routes>
                     <Route path="/" element={<MainPage />}></Route>
                     <Route path="/join" element={<UserJoinPage />}></Route>
@@ -131,15 +140,15 @@ function App() {
                         element={<LessonInfoPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/success"
+                        path="/kakaoPay/success"
                         element={<PayLessonSuccessPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/fail"
+                        path="/kakaoPay/fail"
                         element={<PayLessonFailPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/cancel"
+                        path="/kakaoPay/cancel"
                         element={<PayLessonCancelPage />}
                     ></Route>
                     <Route
@@ -182,8 +191,8 @@ function App() {
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
-                {!hideComponetWait &&
-                    (!hideComponetStudent || !hideComponetTeacher) && (
+                {
+                    (!hideComponent) && (
                         <Footer />
                     )}
             </div>

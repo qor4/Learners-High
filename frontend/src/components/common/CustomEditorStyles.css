@@ -1,0 +1,14 @@
+/* CustomEditorStyles.css */
+
+.custom-editor .ck-editor__editable {
+    border: none;
+    outline: none;
+}
+.custom-editor .ck-toolbar {
+    display: none; /* 툴바 숨기기 */
+}
+
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+    min-height: 400px;
+    margin-bottom: 20px;
+  }
