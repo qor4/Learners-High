@@ -25,7 +25,7 @@ const ClassJoinPage = () => {
     const userNo = useSelector(state => state.user.userNo)
     const [isLessonJoin, setIsLessonJoin] = useState(true)
 
-    const isLoading = useRef(false)
+    const isLoading = useRef(true)
     // const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(()=> {
         // 작성중인 정보가 있다!
@@ -56,7 +56,8 @@ const ClassJoinPage = () => {
             })
             .catch(err => console.log(err, "강의상세 초기 요청 실패"))
         }
-        isLoading.current = true
+        return () => {
+        }
     }, [])
 
     // isUpdated면 들어온 값을. 아니면 이걸로 -> useEffect
