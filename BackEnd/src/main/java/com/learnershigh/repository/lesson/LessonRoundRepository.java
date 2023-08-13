@@ -32,6 +32,11 @@ public interface LessonRoundRepository extends JpaRepository<LessonRound, Long> 
     @Query(value = "SELECT l FROM LessonRound l WHERE l.lessonNo.lessonNo = :lessonNo " +
             "AND l.lessonRoundNumber = :lessonRoundNumber")
     LessonRound findByLessonRoundNumberAndLessonRoundNumber(Long lessonNo, int lessonRoundNumber);
+
+    @Query(value = "SELECT l FROM LessonRound l WHERE l.lessonNo.lessonNo = :lessonNo " +
+            "AND date(l.lessonRoundStartDatetime) = date(curdate())")
+
+    LessonRound isEnterLessonroom(Long lessonNo);
 }
 
 
