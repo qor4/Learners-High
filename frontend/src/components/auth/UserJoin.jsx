@@ -28,11 +28,12 @@ const FirstJoinWrap = styled.div`
     }
 `;
 
-const InputButtonWrap = styled.div`
+export const InputButtonWrap = styled.div`
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 
     & > * {
         display: flex;
@@ -58,18 +59,21 @@ export const StyledInput = styled.input`
     height: 3rem;
     margin: 0.5rem 0;
 `;
-const TextareaWrap = styled.div`
+export const TextareaWrap = styled.div`
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: space-between;
 `;
-const StyledTextarea = styled.textarea`
+/** Textarea 스타일드 컴포넌트 */
+export const StyledTextarea = styled.textarea`
     width: 64%;
     height: 3rem;
     padding: 1rem;
     border: 1px solid #000;
     border-radius: 0.75rem;
+
+    /* position: relative; */
 `;
 
 // 추가 메시지
@@ -87,6 +91,7 @@ const StyledSuccess = styled.div`
 `;
 
 export const ImgWrap = styled.div`
+    margin-top: 2rem;
     display: flex;
     justify-content: space-between;
 `;
@@ -311,6 +316,7 @@ const UserJoin = () => {
 
         setUserEmailMSG("");
         setUserEmailVailidCheck(true);
+        certEmail();
     };
     // 이메일 인증
     const [certEmailCode, setCertEmailCode] = useState("");
@@ -609,13 +615,14 @@ const UserJoin = () => {
                                                         )
                                                     )
                                                 }
-                                                onBlur={userEmailFormCheck}
+                                                // onBlur={userEmailFormCheck}
                                             />
                                             <Button
-                                                onClick={certEmail}
+                                                // onClick={certEmail}
+                                                onClick={userEmailFormCheck}
                                                 disabled={
                                                     userEmailValidCheck ===
-                                                    false
+                                                    true
                                                 }
                                             >
                                                 인증번호

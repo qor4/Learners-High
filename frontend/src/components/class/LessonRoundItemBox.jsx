@@ -11,6 +11,7 @@ import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 import { useNavigate } from "react-router-dom";
+import { StyledTitleText } from "./LessonItemBox";
 
 const StyledButtonWrap = styled.div`
     text-align: right;
@@ -97,7 +98,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     const enterStudentRoom = (event) => {
         event.stopPropagation();
-        
         const today = new Date();
         // 종료시간과 오늘 날짜가 동일하면 비활성화하기
         // if (
@@ -121,11 +121,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             </RoundDateWrap>
             <LessonInfoWrap>
                 <FlexWrap>
-                    <Typography
-                        style={{ fontSize: "1.25rem", fontWeight: 600 }}
-                    >
-                        {lessonInfo.lessonName}
-                    </Typography>
+                    <StyledTitleText>{lessonInfo.lessonName}</StyledTitleText>
                     <div>{lessonInfo.userName} 강사님</div>
                 </FlexWrap>
                 <div>{lessonInfo.lessonRoundTitle}</div>
@@ -143,7 +139,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                         $point
                         onClick={handleEnter}
                         className={"singleEvent"}
-                        disabled={false}
                     >
                         <span className="singleEvent">강의룸 만들기</span>
                     </Button>
@@ -156,10 +151,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                 <StyledButtonWrap>
                     <Button className={"singleEvent"}>
                         {" "}
-                        <span className="singleEvent">학습 자료 다운</span>
+                        학습 자료 다운
                     </Button>
                     <Button className={"singleEvent"}>
-                        <span className="singleEvent">과제 제출</span>
+                        과제 제출
                     </Button>
                     <Button
                         $point
@@ -167,7 +162,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                         // disabled={dayOfLesson}
                         className={"singleEvent"}
                     >
-                        <span className="singleEvent">강의 입장</span>
+                        강의 입장
                     </Button>
                 </StyledButtonWrap>
             )}

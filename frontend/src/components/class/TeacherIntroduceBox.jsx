@@ -1,27 +1,31 @@
 // 강사 소개 박스 (강의 상세 / 강사 페이지에서 사용될 박스)
+import { useEffect, useState } from "react";
+
 import styled from "styled-components";
 import { Container, Grid } from "@material-ui/core";
+import tokenHttp, { url } from "../../api/APIPath";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
-import { useState } from "react";
+import { StyledTitleText } from "./LessonItemBox";
+import axios from "axios";
 
 // 강사 wrap
-const ImgInfoWrap = styled.div`
+export const ImgInfoWrap = styled.div`
     padding: 3rem 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
 
-/** image styled 컴포넌트 */ 
-const StyledThumbnail = styled.img`
+/** image styled 컴포넌트 */
+export const StyledThumbnail = styled.img`
     width: 35%;
     border-radius: 50%;
 `;
 
 /** info를 묶어주는 wrap 스타일 컴포넌트 */
-const InfoWrap = styled.div`
+export const InfoWrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -48,11 +52,29 @@ const FlexWrap = styled.div`
 const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const [teacherCsatLesson, setTeacherCsatLesson] = useState(0);
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0);
-    
-    // 강사 만족도, 수업 만족도 GET 요청@@@
+    const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
+    const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
+
     const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
     const jobInfo = teacherInfo.jobInfos;
+
+    useEffect(() => {
+        // teacherNo가 있을 때에만 실행
+        if (teacherNo) {
+            // 강사의 모든 수업 총 만족도 GET 요청
+            axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
+                setTeacherCsatLesson(response.data.result);
+                setCsatLessonCount(response.data.satiCnt);
+            });
+
+            // 강사에 대한 모든 총 만족도 GET 요청
+            axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
+                setTeacherCsatTeacher(response.data.result);
+                setCsatTeacherCount(response.data.satiCnt);
+            });
+        }
+    }, [teacherNo]);
 
     return (
         <Container maxWidth="md">
@@ -73,20 +95,32 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                             {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
                             <div>
                                 <strong>수업 만족도</strong>
-                                <span>😍 {teacherCsatLesson}</span>
+                                <span>
+                                    😍{" "}
+                                    {isNaN(teacherCsatLesson)
+                                        ? "데이터 없음"
+                                        : teacherCsatLesson}{" "}
+                                    ( {csatLessonCount} )
+                                </span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
-                                <span>😍 {teacherCsatTeacher}</span>
+                                <span>
+                                    😍{" "}
+                                    {isNaN(teacherCsatTeacher)
+                                        ? "데이터 없음"
+                                        : teacherCsatTeacher}{" "}
+                                    ( {csatTeacherCount} )
+                                </span>
                             </div>
                         </FlexWrap>
                     )}
 
                     {/* 강사 이름 */}
                     <span>
-                        <div>
+                        <StyledTitleText>
                             {teacherInfo && teacherInfo.userName} 강사님
-                        </div>
+                        </StyledTitleText>
                     </span>
 
                     {/* 강사 한 마디 */}
@@ -97,11 +131,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     )}
 
                     {/* 학력과 경력이 들어가는 공간 */}
-                    {eduInfo && eduInfo.length > 0 && (
-                        <LessonStatusBox $point $round>
-                            학력
-                        </LessonStatusBox>
-                    )}
+                    <LessonStatusBox $point $round>
+                        학력
+                    </LessonStatusBox>
                     {eduInfo &&
                         eduInfo.map((eduItem, index) => (
                             <Card key={index} style={{ textAlign: "center" }}>
@@ -124,12 +156,13 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                                 </Grid>
                             </Card>
                         ))}
-
-                    {jobInfo && jobInfo.length > 0 && (
-                        <LessonStatusBox $point $round>
-                            경력
-                        </LessonStatusBox>
+                    {eduInfo && eduInfo.length === 0 && (
+                        <Card>등록된 학력이 존재하지 않습니다.</Card>
                     )}
+
+                    <LessonStatusBox $point $round>
+                        경력
+                    </LessonStatusBox>
                     {jobInfo &&
                         jobInfo.map((jobItem, index) => (
                             <Card key={index} style={{ textAlign: "center" }}>
@@ -147,6 +180,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                                 </Grid>
                             </Card>
                         ))}
+                    {jobInfo && jobInfo.length === 0 && (
+                        <Card>등록된 경력이 존재하지 않습니다.</Card>
+                    )}
                 </InfoWrap>
             </ImgInfoWrap>
         </Container>

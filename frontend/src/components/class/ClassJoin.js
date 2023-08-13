@@ -10,14 +10,132 @@ import { Container } from "@material-ui/core";
 import { url } from "../../api/APIPath";
 
 import axios from "axios";
+
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
-import styled from "styled-components";
-import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 
 import tokenHttp from "../../api/APIPath";
 import Modal from "../common/Modal";
+import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
+import { styled } from "styled-components";
+import { StyledInput } from "../auth/UserJoinTeacherEdu";
+import { FiftyWrap } from "../user/MypageInfo";
+
+/** display:flex 줄 wrap */
+const FlexWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+/** 한 줄 스타일 */
+const ColumnWrap = styled.div`
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    & > * {
+        width: 45%;
+    }
+`;
+
+const JoinInput = styled.input`
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+    padding: 0.25rem 1rem;
+    height: 3rem;
+    margin: 0.5rem 0;
+    position: relative;
+`;
+
+/** 검색한 결과물이 들어갈 wrap => 추가수정@@@ */
+const DataLists = styled.div`
+    position: absolute;
+    /* bottom: 0; */
+    top: 0.5rem;
+    background-color: #fff;
+    flex-direction: column;
+    z-index: 10;
+    width: 13.35rem;
+
+    border-radius: 0.75rem;
+    border: 1px solid black;
+    box-sizing: border-box;
+
+    display: ${({ show }) => (show ? "block" : "none")};
+
+    & > ul > li {
+        padding: 0rem 1rem;
+        height: 3rem;
+        line-height: 3rem;
+        border-bottom: 1px solid #ccc;
+    }
+    & > ul > div {
+        padding: 0rem 1rem;
+        height: 3rem;
+        line-height: 3rem;
+    }
+    & > ul > li:hover {
+        cursor: pointer;
+        background-color: #e1e6f9;
+    }
+`;
+
+/** 버튼 wrap */
+const ButtonWrap = styled.div`
+    margin-top: 3rem;
+    width: 100%;
+    * {
+        width: 49%;
+        :first-child {
+            margin-left: 2%;
+        }
+    }
+`;
+
+const InputButton = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+`;
+
+const SevenWrap = styled.div`
+    width: 70%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    & > * {
+        margin-left: 1rem;
+    }
+`;
+
+const JoinTextarea = styled.textarea`
+    width: 100%;
+    height: 3rem;
+    padding: 1rem;
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+`;
+
+const JoinTextareaWrap = styled.div`
+    margin: 2rem 0;
+    display: flex;
+    justify-content: space-between;
+`;
+
+/** 수업 상세 소개 */
+const StyledClassIntro = styled.div`
+    margin: 1.5rem 0;
+    line-height: 1.5rem;
+    :first-child {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+`;
 
 const ClassJoin = () => {
     const navigate = useNavigate();
@@ -107,6 +225,7 @@ const ClassJoin = () => {
     const selectedResult = (rlt) => {
         setSubjectName(rlt.lessonTypeName);
         setChooseLessonTypeNo(rlt.lessonTypeNo);
+        setSearchClicked(false);
         // console.log(subjectName)
         console.log(rlt, "이벤트"); // 이슈 해결! () => 함수(값)
     };
@@ -124,8 +243,8 @@ const ClassJoin = () => {
 
     // 수업 내용을 입력했을 때
     const handleIntroChange = (event) => {
-        if (lessonThumbnailInfo.length >= 100) {
-            return;
+        if (event.target.value.length <= 100) {
+            setLessonThumbnailInfo(event.target.value);
         }
         setLessonThumbnailInfo(event.target.value);
     };
@@ -222,88 +341,123 @@ const ClassJoin = () => {
         userNo: userNo ? userNo : 1, //
         lessonNo: lessonNo,
     };
-    console.log(data);
+    console.log(searchClicked);
     return (
         <>
             <MenuCard title="기본 정보 입력">
                 <Container maxWidth="md">
-                    <div>
-                        <Input
-                            label="강의 이름"
-                            type="text"
-                            value={lessonName}
-                            name="lessonName"
-                            id="lessonName"
-                            placeholder="강의명 ( 30글자 이내 )"
-                            onChange={handleLessonChange}
-                        />
-
-                        <div>
-                            <Input
-                                label="과목명"
+                    <FlexWrap>
+                        <FiftyWrap>
+                            <label htmlFor="lessonName">강의 이름</label>
+                            <JoinInput
+                                label="강의 이름"
                                 type="text"
-                                value={subjectName}
-                                name="subjectName"
-                                id="subjectName"
-                                placeholder="과목명"
-                                onChange={handleSubjectChange}
+                                value={lessonName}
+                                name="lessonName"
+                                id="lessonName"
+                                placeholder="강의명 ( 30글자 이내 )"
+                                onChange={handleLessonChange}
                             />
+                        </FiftyWrap>
+                        <FiftyWrap>
+                            <InputButton>
+                                <label htmlFor="subjectName">과목 이름</label>
+                                <div>
+                                    <JoinInput
+                                        type="text"
+                                        value={subjectName}
+                                        name="subjectName"
+                                        id="subjectName"
+                                        placeholder="과목명"
+                                        onChange={handleSubjectChange}
+                                    />
+                                    <DataLists show={searchClicked}>
+                                        <ul>
+                                            {searchClicked &&
+                                            searchResults.length > 0
+                                                ? searchResults.map(
+                                                      (result) => {
+                                                          return (
+                                                              <li
+                                                                  key={`result-${result.lessonTypeNo}`}
+                                                                  onClick={() =>
+                                                                      selectedResult(
+                                                                          result
+                                                                      )
+                                                                  }
+                                                              >
+                                                                  {
+                                                                      result.lessonTypeName
+                                                                  }
+                                                              </li>
+                                                          );
+                                                      }
+                                                  )
+                                                : null}
+                                            {searchClicked &&
+                                                searchResults.length === 0 && (
+                                                    <div
+                                                        onClick={() =>
+                                                            setSearchClicked(
+                                                                false
+                                                            )
+                                                        }
+                                                    >
+                                                        검색한 과목이 없습니다.
+                                                    </div>
+                                                )}
+                                        </ul>
+                                    </DataLists>
+                                </div>
 
-                            <Button onClick={handleSearchClick}>검색</Button>
-                        </div>
-                        <ul>
-                            {searchClicked && searchResults.length > 0
-                                ? searchResults.map((result) => {
-                                      return (
-                                          <li
-                                              key={result.lessonTypeNo}
-                                              onClick={() =>
-                                                  selectedResult(result)
-                                              }
-                                          >
-                                              {result.lessonTypeName}
-                                          </li>
-                                      );
-                                  })
-                                : null}
-                            {searchClicked && searchResults.length === 0 && (
-                                <li>검색한 과목이 없습니다.</li>
-                            )}
-                        </ul>
-                    </div>
+                                <Button $point onClick={handleSearchClick}>
+                                    검색
+                                </Button>
+                            </InputButton>
+                        </FiftyWrap>{" "}
+                    </FlexWrap>
+                    <FlexWrap>
+                        <FiftyWrap>
+                            <label htmlFor="maxStudent">최대 학생 수</label>
+                            <SevenWrap>
+                                <JoinInput
+                                    type="number"
+                                    id="maxStudent"
+                                    min={0}
+                                    max={50}
+                                    onFocus={() =>
+                                        handleFocusChange(
+                                            setMaxStudent,
+                                            maxStudent
+                                        )
+                                    }
+                                    value={maxStudent}
+                                    onChange={handleMaxStudentChange}
+                                />
+                                <div>명</div>
+                            </SevenWrap>
+                        </FiftyWrap>
+                        <FiftyWrap>
+                            <label htmlFor="price">가격</label>
+                            <SevenWrap>
+                                <JoinInput
+                                    type="number"
+                                    id="price"
+                                    min={0}
+                                    onFocus={() =>
+                                        handleFocusChange(
+                                            setLessonPrice,
+                                            lessonPrice
+                                        )
+                                    }
+                                    value={lessonPrice}
+                                    onChange={handlePriceChange}
+                                />
+                                <div>원</div>
+                            </SevenWrap>
+                        </FiftyWrap>
+                    </FlexWrap>
 
-                    <div></div>
-
-                    <div>
-                        <label htmlFor="maxStudent">최대 학생 수</label>
-                        <input
-                            type="number"
-                            id="maxStudent"
-                            min={0}
-                            max={50}
-                            onFocus={() =>
-                                handleFocusChange(setMaxStudent, maxStudent)
-                            }
-                            value={maxStudent}
-                            onChange={handleMaxStudentChange}
-                        />
-                        <span>명</span>
-                    </div>
-
-                    <div>
-                        <label htmlFor="price">가격</label>
-                        <input
-                            type="number"
-                            id="price"
-                            min={0}
-                            onFocus={() =>
-                                handleFocusChange(setLessonPrice, lessonPrice)
-                            }
-                            value={lessonPrice}
-                            onChange={handlePriceChange}
-                        />
-                        <span>원</span>
-                    </div>
                     <div>
                         <ImgWrap>
                             <label htmlFor="lessonThumbnailImg">
@@ -317,7 +471,7 @@ const ClassJoin = () => {
                                 />
                             ) : (
                                 <StyledImg
-                                    src="/assets/bannerimg.jpg"
+                                    src="/assets/item-banner.png"
                                     alt="임시 썸네일 사진"
                                 />
                             )}
@@ -330,29 +484,75 @@ const ClassJoin = () => {
                         </ImgWrap>
                     </div>
 
-                    <div>
-                        <label htmlFor="lessonIntroduce">수업 소개</label>
-                        <textarea
-                            id="lessonIntroduce"
-                            value={lessonThumbnailInfo}
-                            placeholder="수업 소개를 100자 이내로 작성해 주세요."
-                            onChange={handleIntroChange}
-                            maxLength={100}
-                        ></textarea>
-                        <span>{lessonThumbnailInfo.length}/100</span>
-                    </div>
+                    <JoinTextareaWrap>
+                        <div>
+                            <label htmlFor="lessonIntroduce">수업 소개</label>
+                            <div>( {lessonThumbnailInfo.length} / 100 )</div>
+                        </div>
+                        <SevenWrap>
+                            <JoinTextarea
+                                id="lessonIntroduce"
+                                value={lessonThumbnailInfo}
+                                placeholder="수업 소개를 100자 이내로 작성해 주세요."
+                                onChange={handleIntroChange}
+                                maxLength={100}
+                            ></JoinTextarea>
+                        </SevenWrap>
+                    </JoinTextareaWrap>
 
                     <div>
-                        <span>수업 상세 소개</span>
-                        {/* 수업 상세 소개 내용 수정@@@ */}
-                        <div>
-                            학생들이 수업에 대해 상세하게 알 수 있도록,
-                            강사님께서 수업에 대한 내용을 상세히 입력해 주세요.
-                            <br />
-                            해당 내용은 학생들에게 직접적으로 보여지며, 수업
-                            상세 목록의 소개에서도 볼 수 있는 내용입니다.
-                            강사님이 원하는 대로 해당 내용을 추가하거나, 꾸밀 수
-                            있습니다. 강사님의 수업을 상세히 소개해 주세요!
+                        <StyledClassIntro>
+                            <span>수업 상세 소개</span>
+                            {/* 수업 상세 소개 내용 수정@@@ */}
+                            <div>
+                                학생들이 수업에 대해 상세하게 알 수 있도록,
+                                강사님께서 수업에 대한 내용을 상세히 입력해
+                                주세요.
+                                <br />
+                                해당 내용은 학생들에게 직접적으로 보여지며, 수업
+                                상세 목록의 소개에서도 볼 수 있는 내용입니다.
+                                강사님이 원하는 대로 해당 내용을 추가하거나,
+                                꾸밀 수 있습니다. 강사님의 수업을 상세히 소개해
+                                주세요!
+                            </div>
+                        </StyledClassIntro>
+
+                        {/* html editor */}
+                        {/* 추가적인 height 수정@@@ */}
+                        <div style={{ minHeight: "14rem" }}>
+                            <div className="ck">
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    value={lessonInfo}
+                                    // toolbar 설정
+                                    config={{
+                                        toolbar: {
+                                            items: [
+                                                "heading",
+                                                "|",
+                                                "bold",
+                                                "italic",
+                                                "link",
+                                                "bulletedList",
+                                                "numberedList",
+                                                "|",
+                                                "blockQuote",
+                                                "insertTable",
+                                                "undo",
+                                                "redo",
+                                            ],
+                                        },
+                                        table: {
+                                            contentToolbar: [
+                                                "tableColumn",
+                                                "tableRow",
+                                                "mergeTableCells",
+                                            ],
+                                        },
+                                    }}
+                                    onBlur={handleEditorChange}
+                                />
+                            </div>
                         </div>
                         {/* html 에디터 =00000> 엔터 시, <p>태그 처리 수정@@@ */}
                         <CKEditor
@@ -390,13 +590,17 @@ const ClassJoin = () => {
                     </div>
                 </Container>
             </MenuCard>
-            {/* 버튼 모음 => 이후 수정@@@ */}
-            <div>
-                <Button onClick={sendDataToServer}>임시 저장</Button>
-                <Link to="/lesson/round/join" state={{ data }}>
-                    <Button onClick={nextPage}>다음</Button>
-                </Link>
-            </div>
+
+            <Container maxWidth="xs">
+                <ButtonWrap>
+                    <Button onClick={sendDataToServer}>임시 저장</Button>
+                    <Link to="/lesson/round/join" state={{ data }}>
+                        <Button $point onClick={nextPage}>
+                            다음
+                        </Button>
+                    </Link>
+                </ButtonWrap>
+            </Container>
         </>
     );
 };

@@ -73,6 +73,19 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+// 콘텐츠의 양이 짧을 때, 하단에 푸터 고정하기 (보류)
+// const Wrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: space-between;
+//     height: 100vh;
+// `;
+
+// const ContentWrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+// `;
+
 function App() {
     const location = useLocation();
     const hideComponent = location.pathname.startsWith(
@@ -127,15 +140,15 @@ function App() {
                         element={<LessonInfoPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/success"
+                        path="/kakaoPay/success"
                         element={<PayLessonSuccessPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/fail"
+                        path="/kakaoPay/fail"
                         element={<PayLessonFailPage />}
                     ></Route>
                     <Route
-                        path="api/kakaoPay/cancel"
+                        path="/kakaoPay/cancel"
                         element={<PayLessonCancelPage />}
                     ></Route>
                     <Route

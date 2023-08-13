@@ -2,6 +2,7 @@
 import styled from "styled-components";
 
 const StyledFooter = styled.footer`
+    margin-top: 7rem;
     width: 100%;
     text-align: center;
     height: 8rem;

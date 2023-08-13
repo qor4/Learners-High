@@ -17,7 +17,7 @@ const PayLessonFailPage = () => {
     const lessonNo = new URL(window.location.href).searchParams.get("lessonNo")
     // const pg_token = new URL(window.location.href).searchParams.get("pg_token")
     // console.log(pg_token)
-    axios.get(`${url}/kakaoPay/fail`)
+    tokenHttp.get(`${url}/kakaoPay/fail`)
     .then(res=>{
         console.log(res, "Fail")
         alert("결제 실패")

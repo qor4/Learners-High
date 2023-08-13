@@ -230,7 +230,7 @@ const TeacherLessonRoomPage = () => {
         return () => {
             console.log("Teacher LessonRoom Render End");
             // 윈도우 객체에 화면 종료 이벤트 제거
-            leaveSession();
+            window.removeEventListener('beforeunload',leaveSession);
         };
     }, []);
 
