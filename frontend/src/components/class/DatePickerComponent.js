@@ -21,7 +21,10 @@ const DatePickerComponent = (
 
   
   useEffect(()=> {
-    setLessonRoundDate(initialDate) // 얘가 문제다.
+    return () =>
+    {
+      setLessonRoundDate(initialDate) // 얘가 문제다.
+    }
   }, [initialDate, miniDisabledDate, maxDisabledDate])
   
   // const changeLessonRoundDate = (date) => {

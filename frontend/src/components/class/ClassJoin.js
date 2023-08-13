@@ -264,18 +264,22 @@ const ClassJoin = ({
                         { headers: { "Content-Type": "application/json" } }
                     )
                     .then((res) => {
+                        console.log(res, "강의세부회차 성공")
                         const lessonRoundNoDataSet = res.data.result;
-                        for (let i = 0; i < lessonRoundNoDataSet.length; i++) {
+                        for (let i = 0; i < ParentLessonRoundDataSet.length; i++) {
                             if (
-                                ParentLessonRoundDataSet.lessonRoundFileOriginName
+                                ParentLessonRoundDataSet[i].lessonRoundFileOriginName
                             ) {
+                                console.log(lessonRoundNoDataSet[i], "회차정보")
                                 const formData = new FormData();
+                                console.log(ParentLessonRoundDataSet[i].lessonRoundFileName, "파일이니?")
                                 formData.append(
                                     "multipartFile",
-                                    ParentLessonRoundDataSet.lessonRoundFileName
+                                    ParentLessonRoundDataSet[i].lessonRoundFileName
                                 );
                                 tokenHttp.post(
-                                    `${url}/s3/upload/${lessonNo}/${lessonRoundNoDataSet[i].lessonRoundNo}`,
+                                    `${url}/s3/upload/data/${Number(lessonNo)}/${Number(lessonRoundNoDataSet[i].lessonRoundNo)}`,
+                                    formData,
                                     {
                                         headers: {
                                             "Content-Type":
@@ -284,7 +288,7 @@ const ClassJoin = ({
                                     }
                                 )
                                 .then(res=>console.log(res, "학습자료 전송 성공"))
-                                .catch(err => console.err(err, "학습자료 전송 실패"))
+                                .catch(err => console.log(err, "학습자료 전송 실패"))
                             }
                         }
                     });

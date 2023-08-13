@@ -126,9 +126,9 @@ const ClassRoundJoin = ({
     const handleStartDateChange = (idx, newStartDate) => {
         setStartDate(newStartDate);
     };
-    useEffect(() => {
-        console.log(lessonRoundDataSet, "실시간 반영");
-    }, [lessonRoundDataSet]);
+    // useEffect(() => {
+    //     console.log(lessonRoundDataSet, "실시간 반영");
+    // }, [lessonRoundDataSet]);
 
     const handleInsertLessonRoundTime = () => {
         console.log(lessonRoundDataSet, "회차 데이터셋")
@@ -362,6 +362,7 @@ const ClassRoundJoin = ({
                                 id={day.code}
                                 name={day.week}
                                 onChange={handleWeekChange}
+                                checked={day.isSelected}
                             />
                             <label htmlFor={day.code}>{day.week}</label>
                         </span>
