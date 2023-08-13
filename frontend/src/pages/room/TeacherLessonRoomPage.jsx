@@ -211,7 +211,7 @@ const TeacherLessonRoomPage = () => {
 
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
-    const [audioEnabled, setAudioEnabled] = useState(true);
+    const [audioEnabled, setAudioEnabled] = useState(false);
     const [shareEnabled, setShareEnabled] = useState(false);
 
     // 새로운 OpenVidu 객체 생성
@@ -220,7 +220,7 @@ const TeacherLessonRoomPage = () => {
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
         setVideoEnabled(true);
-        setAudioEnabled(true);
+        setAudioEnabled(false);
         setShareEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
@@ -238,20 +238,14 @@ const TeacherLessonRoomPage = () => {
     const leaveSession = async () => {
         if (session) {
             session.disconnect();
-            await tokenHttp
-                .delete(
-                    `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
-                )
-                .then((res) => {
-                    if (res.data.resultCode !== 200) {
-                        console.log(res.data.resultMsg);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-            // session, state 초기화
-            console.log("수업 종료");
+            await tokenHttp.delete(`${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`)
+                            .then((res)=>{
+                                if(res.data.resultCode !== 200){
+                                    console.log(res.data.resultMsg);
+                                }
+                            }).catch(err=>{
+                                console.error(err);
+                            });
             setOV(null);
             setMySessionId(undefined);
             setMyUserName("");
@@ -296,12 +290,10 @@ const TeacherLessonRoomPage = () => {
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-        console.log("join 완료");
     };
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
-        console.log(session, "session");
         if (session && !token) {
             tokenHttp
                 .get(
@@ -311,37 +303,31 @@ const TeacherLessonRoomPage = () => {
                     if (res.data.resultCode !== 200) throw res.data.resultMsg;
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                    session
-                        .connect(res.data.resultMsg, {
-                            clientData: String(userNo),
-                        })
-                        .then(async () => {
-                            // Get your own camera stream ---
-                            // publisher 객체 생성
-                            let publisher = await OV.initPublisherAsync(
-                                undefined,
-                                {
-                                    audioSource: undefined, // The source of audio. If undefined default microphone
-                                    videoSource: undefined, // The source of video. If undefined default webcam
-                                    publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
-                                    publishVideo: videoEnabled, // Whether you want to start publishing with your video enabled or not
-                                    resolution: "640x480", // The resolution of your video
-                                    frameRate: 30, // The frame rate of your video
-                                    insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-                                    mirror: true, // Whether to mirror your local video or not
-                                }
-                            );
-                            // Publish your stream ---
-                            session.publish(publisher);
-                            // Set the main video in the page to display our webcam and store our Publisher
-                            setPublisher(publisher);
-                            setMainStreamManager(publisher);
-                        })
-                        .catch((error) => {
-                            alert(error.response.data);
-                            navigate("/");
-                        });
-                });
+                    session.connect(res.data.resultMsg, { clientData: userNo })
+                })
+                .then(async () => {
+                    // Get your own camera stream ---
+                    // publisher 객체 생성
+                    let publisher = await OV.initPublisherAsync(undefined, {
+                        audioSource: undefined,     // The source of audio. If undefined default microphone
+                        videoSource: undefined,     // The source of video. If undefined default webcam
+                        publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
+                        publishVideo: videoEnabled, // Whether you want to start publishing with your video enabled or not
+                        resolution: '640x480',      // The resolution of your video
+                        frameRate: 30,              // The frame rate of your video
+                        insertMode: 'APPEND',       // How the video is inserted in the target element 'video-container'
+                        mirror: true,               // Whether to mirror your local video or not
+                    });
+                    // Publish your stream ---
+                    session.publish(publisher);
+                    // Set the main video in the page to display our webcam and store our Publisher
+                    setPublisher(publisher);
+                    setMainStreamManager(publisher);
+                })
+                .catch ((error) => {
+                    alert(error.response.data);
+                    navigate("/");
+            });
         }
     }, [session]);
     // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
