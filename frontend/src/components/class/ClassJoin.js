@@ -241,6 +241,7 @@ const ClassJoin = ({
             })
             // 강의 회차 갑니다.
             .then((lessonNo) => {
+                if (ParentLessonRoundDataSet.length === 0) return
                 ParentLessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
