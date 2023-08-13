@@ -47,10 +47,10 @@ public class StudentService {
         if (user == null) {
             return false;
         }
-        if (!user.getUserType().equals("S")) {
-            return false;
+        if (user.getUserType().equals("S")) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean isStudentLesson(User user, Long lessonNo) {
@@ -70,6 +70,19 @@ public class StudentService {
         studentWishlist.setLessonNo(lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo()));
 
         studentWishlistRepository.save(studentWishlist);
+    }
+
+    public boolean isWish(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        StudentWishlist studentWishlist = studentWishlistRepository.findByUserNoAndLessonNo(userNo, lessonNo);
+        if (studentWishlist != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Transactional
@@ -263,4 +276,6 @@ public class StudentService {
         double result = submissionCnt / (submissionCnt + unsubmittedCnt) * 100;
         return result;
     }
+
+
 }
