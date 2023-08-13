@@ -15,8 +15,7 @@ import {
     InfoWrap,
     StyledThumbnail,
 } from "../class/TeacherIntroduceBox";
-import { StyledTitleText } from "../class/LessonItemBox"; 
-
+import { StyledTitleText } from "../class/LessonItemBox";
 
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -72,7 +71,6 @@ const MypageInfo = ({ userNo }) => {
             console.log(res.data);
         });
         axios.get(`${url}/s3/profile-load/${userNo}`).then((res) => {
-            console.log(res.data);
             setProfileImg(res.data);
         });
     }, []);
@@ -99,14 +97,29 @@ const MypageInfo = ({ userNo }) => {
         setIsEditing(false);
     };
 
+    /** 전화번호 formatting */
+    const formatPhoneNumber = (phoneNumber) => {
+        const cleaned = ("" + phoneNumber).replace(/\D/g, ""); // 숫자만 추출
+        const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/); // 정규식으로 그룹 분할
+        if (match) {
+            return `${match[1]}-${match[2]}-${match[3]}`;
+        }
+        return null;
+    };
+
     return (
         <>
             {!isEditing && !validCanModify ? (
                 <ImgInfoWrap>
                     {/* 강사 이미지 */}
                     <StyledThumbnail
-                        src={profileImg ? profileImg : "/assets/bannerimg.jpg"}
+                        src={
+                            profileImg === "no"
+                                ? "/assets/bannerimg.jpg"
+                                : profileImg
+                        }
                         alt="teacher-img"
+                        crossOrigin="anonymous"
                     />
                     <InfoWrap>
                         <FlexWrap>
@@ -144,7 +157,7 @@ const MypageInfo = ({ userNo }) => {
                             <strong>
                                 <div>전화번호</div>
                             </strong>
-                            <div>{userTel}</div>
+                            <div>{formatPhoneNumber(userTel)}</div>
                         </FiftyWrap>
                         <Card $skyBlue style={{ textAlign: "center" }}>
                             {userInfo}
@@ -165,7 +178,7 @@ const MypageInfo = ({ userNo }) => {
                         />
                         <InfoWrap>
                             <FlexWrap>
-                                <span>{userName} 님</span>
+                                <StyledTitleText>{userName} 님</StyledTitleText>
                                 <Button
                                     size="sm"
                                     $point

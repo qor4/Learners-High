@@ -81,7 +81,7 @@ const LessonRoundItemBoxList = ({
                     selectedDayLessons.map((lessonItem, index) => (
 
                         <StyledBox
-                            key={lessonItem.userNo}
+                            key={`lessonRoundItem-${index}`}
                             $hover
                             onClick={(e) => {
                                 if (!e.target.className.includes('singleEvent')) {

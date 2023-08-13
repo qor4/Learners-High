@@ -46,7 +46,7 @@ export const StyledTitleText = styled.div`
 `;
 
 /** 회색 텍스트 */
-const NoneDataText = styled.div`
+export const NoneDataText = styled.div`
     color: #ccc;
     margin-left: 1rem;
 `;

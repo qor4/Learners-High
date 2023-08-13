@@ -64,7 +64,7 @@ const HeaderCommonNav = styled.div`
 `;
 
 const Header = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [showLoginModal, setShowLoginModal] = useState(false);
     const userType = useSelector((state) => state.user.userType);
@@ -75,128 +75,136 @@ const Header = () => {
         setShowLoginModal(true);
         document.body.classList.add("overflow-hidden");
     };
-    const [lessonNo, setLessonNo] = useState("")
+    const [lessonNo, setLessonNo] = useState("");
     // 모달을 닫을 때
     const handleCloseModal = () => {
         setShowLoginModal(false);
         document.body.classList.remove("overflow-hidden");
     };
 
-    const [controlLessonJoin, setControlLessonJoin] = useState(false)
+    const [controlLessonJoin, setControlLessonJoin] = useState(false);
     // 강의 개설할 때
-    const goToLessonJoin = () => { 
-        console.log("실행?")
-        tokenHttp.get(`${url}/lesson/writing/${userNo}`).then((res) => {
-            console.log(res, "수정여부 확인 결과값");
-            if (res.data.result.isWriting) {
-                setControlLessonJoin(true);
-                setLessonNo(res.data.result.lessonNo);
-                return
-              }
-            navigate(`/lesson/join`)
-        })
-        .catch(err => {
-            console.log(err, "에러내용")
-            navigate(`/lesson/join`)
-        })
-        ;
-    }
+    const goToLessonJoin = () => {
+        console.log("실행?");
+        tokenHttp
+            .get(`${url}/lesson/writing/${userNo}`)
+            .then((res) => {
+                console.log(res, "수정여부 확인 결과값");
+                if (res.data.result.isWriting) {
+                    setControlLessonJoin(true);
+                    setLessonNo(res.data.result.lessonNo);
+                    return;
+                }
+                navigate(`/lesson/join`);
+            })
+            .catch((err) => {
+                console.log(err, "에러내용");
+                navigate(`/lesson/join`);
+            });
+    };
     const initControllLessonJoin = () => {
-        setControlLessonJoin(false)
+        setControlLessonJoin(false);
         // setLessonNo("")
-    }
+    };
 
     return (
         <>
-        <StyledHeader>
-            <StyledNav>
-                {/* 로그인이 안 되어있을 경우 */}
-                {!userType && (
-                    <>
-                        <HeaderCommonNav>
-                            <NavStyle to="/">
-                                <Img
-                                    src="/assets/logo-temp.png"
-                                    alt="logo-img"
-                                />
-                            </NavStyle>
-                            <NavStyle to="/lesson">전체 강의</NavStyle>
-                        </HeaderCommonNav>
-
-                        <HeaderCommonNav>
-                            <NavStyle to="/join">회원가입</NavStyle>
-                            <NavHoverStyle onClick={handleLoginButtonClick}>
-                                로그인
-                            </NavHoverStyle>
-                        </HeaderCommonNav>
-
-                        {/* 로그인 모달창 */}
-                        <Modal
-                            title="로그인"
-                            show={showLoginModal}
-                            onClose={handleCloseModal}
-                        >
-                            <UserLogin onClose={handleCloseModal} />
-                        </Modal>
-                    </>
-                )}
-
-                {/* 로그인이 되어있고 선생님일 경우 */}
-                {userType === "T" && (
-                    <>
-                        <HeaderCommonNav>
-                            <NavStyle to="/">
-                                <Img
-                                    src="/assets/logo-temp.png"
-                                    alt="logo-img"
-                                />
-                            </NavStyle>
-                            <NavStyle to="/lesson">전체 강의</NavStyle>
-                            <NavStyle to={`/edu/teacher/${userNo}`}>
-                                수업 관리
-                            </NavStyle>
-                            <NavStyle onClick={goToLessonJoin}><span >강의 개설</span></NavStyle>
-                        </HeaderCommonNav>
-                        <HeaderCommonNav>
-                            <NavHoverStyle to={`/`}>
-                                <UserLogOut />
-                            </NavHoverStyle>
-                            <NavStyle to={`/user/${userNo}`}>
-                                마이페이지
-                            </NavStyle>
-                        </HeaderCommonNav>
-
-                    </>
-                )}
-
-                {/* 로그인이 되어있고 학생일 경우 */}
-                {userType === "S" && (
-                    <>
-                        <HeaderCommonNav>
-                            <NavStyle to="/">
-                                <Img
-                                    src="/assets/logo-temp.png"
-                                    alt="logo-img"
+            <StyledHeader>
+                <StyledNav>
+                    {/* 로그인이 안 되어있을 경우 */}
+                    {!userType && (
+                        <>
+                            <HeaderCommonNav>
+                                <NavStyle to="/">
+                                    <Img
+                                        src="/assets/logo-temp.png"
+                                        alt="logo-img"
                                     />
-                            </NavStyle>
-                            <NavStyle to="/lesson">전체 강의</NavStyle>
-                            <NavStyle to={`/edu/student/${userNo}`}>
-                                수강 목록
-                            </NavStyle>
-                        </HeaderCommonNav>
-                        <HeaderCommonNav>
-                            <NavHoverStyle to={`/`}>
-                                <UserLogOut />
-                            </NavHoverStyle>
-                            <NavStyle to={`/user/${userNo}`}>
-                                마이페이지
-                            </NavStyle>
-                        </HeaderCommonNav>
-                    </>
-                )}
-            </StyledNav>
-        </StyledHeader>
-        {controlLessonJoin ? <ClassJoinCheckModal isUpdated={controlLessonJoin} onDataChange={initControllLessonJoin} lessonNo={lessonNo ? lessonNo : null}/> : null}
+                                </NavStyle>
+                                <NavStyle to="/lesson">전체 강의</NavStyle>
+                            </HeaderCommonNav>
+
+                            <HeaderCommonNav>
+                                <NavStyle to="/join">회원가입</NavStyle>
+                                <NavHoverStyle onClick={handleLoginButtonClick}>
+                                    로그인
+                                </NavHoverStyle>
+                            </HeaderCommonNav>
+
+                            {/* 로그인 모달창 */}
+                            <Modal
+                                title="로그인"
+                                show={showLoginModal}
+                                onClose={handleCloseModal}
+                            >
+                                <UserLogin onClose={handleCloseModal} />
+                            </Modal>
+                        </>
+                    )}
+
+                    {/* 로그인이 되어있고 선생님일 경우 */}
+                    {userType === "T" && (
+                        <>
+                            <HeaderCommonNav>
+                                <NavStyle to="/">
+                                    <Img
+                                        src="/assets/logo-temp.png"
+                                        alt="logo-img"
+                                    />
+                                </NavStyle>
+                                <NavStyle to="/lesson">전체 강의</NavStyle>
+                                <NavStyle to={`/edu/teacher/${userNo}`}>
+                                    수업 관리
+                                </NavStyle>
+                                <NavStyle onClick={goToLessonJoin}>
+                                    <span>강의 개설</span>
+                                </NavStyle>
+                            </HeaderCommonNav>
+                            <HeaderCommonNav>
+                                <NavHoverStyle to={`/`}>
+                                    <UserLogOut />
+                                </NavHoverStyle>
+                                <NavStyle to={`/user/${userNo}`}>
+                                    마이페이지
+                                </NavStyle>
+                            </HeaderCommonNav>
+                        </>
+                    )}
+
+                    {/* 로그인이 되어있고 학생일 경우 */}
+                    {userType === "S" && (
+                        <>
+                            <HeaderCommonNav>
+                                <NavStyle to="/">
+                                    <Img
+                                        src="/assets/logo-temp.png"
+                                        alt="logo-img"
+                                    />
+                                </NavStyle>
+                                <NavStyle to="/lesson">전체 강의</NavStyle>
+                                <NavStyle to={`/edu/student/${userNo}`}>
+                                    수강 목록
+                                </NavStyle>
+                            </HeaderCommonNav>
+                            <HeaderCommonNav>
+                                <NavHoverStyle to={`/`}>
+                                    <UserLogOut />
+                                </NavHoverStyle>
+                                <NavStyle to={`/user/${userNo}`}>
+                                    마이페이지
+                                </NavStyle>
+                            </HeaderCommonNav>
+                        </>
+                    )}
+                </StyledNav>
+            </StyledHeader>
+            {controlLessonJoin ? (
+                <ClassJoinCheckModal
+                    isUpdated={controlLessonJoin}
+                    onDataChange={initControllLessonJoin}
+                    lessonNo={lessonNo ? lessonNo : null}
+                />
+            ) : null}
         </>
     );
 };
