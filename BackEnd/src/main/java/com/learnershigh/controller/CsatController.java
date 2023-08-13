@@ -1,8 +1,10 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.dto.lessonhub.SatiDto;
 import com.learnershigh.dto.lessonhub.SatiResultDto;
+import com.learnershigh.dto.user.TokenDto;
 import com.learnershigh.service.lessonhub.SatisfactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,32 +41,52 @@ public class CsatController {
     // 수업 총 만족도
     @ApiOperation("강사의 모든 수업 총 만족도 뽑기")
     @GetMapping("/lesson/{teacherNo}")
-    public SatiResultDto lessonSati(@PathVariable("teacherNo") Long teacherNo)
-    {
-        System.out.println(satisfactionService.lessonAllSati(teacherNo));
-        return satisfactionService.lessonAllSati(teacherNo);
+    public ResponseEntity<CustomResponseBody> lessonSati(@PathVariable("teacherNo") Long teacherNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("강사의 모든 수업 총 만족도 뽑기");
+        try {
+            responseBody.setResult(satisfactionService.lessonAllSati(teacherNo));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 
     // 강사 총 만족도
     @ApiOperation("강사 모든 총 만족도 뽑기")
     @GetMapping("/teacher/{teacherNo}")
-    public SatiResultDto teacherSati(@PathVariable("teacherNo") Long teacherNo)
-    {
-        System.out.println(satisfactionService.lessonAllSati(teacherNo));
-        return satisfactionService.lessonAllSati(teacherNo);
+    public ResponseEntity<CustomResponseBody> teacherSati(@PathVariable("teacherNo") Long teacherNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("한 수업당 강사 총 만족도 뽑기");
+        try {
+            responseBody.setResult(satisfactionService.lessonAllSati(teacherNo));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 
     // 수업 회차당 수업 만족도 보기
     @ApiOperation("수업 하나당 수업 만족도 보기")
     @GetMapping("/onelesson/{lessonNo}")
-    public double oneLessonLectureSati(@PathVariable("lessonNo") Long lessonNo){
+    public double oneLessonLectureSati(@PathVariable("lessonNo") Long lessonNo) {
         return satisfactionService.oneLessonLectureSati(lessonNo);
     }
 
     // 수업 회차당 강사 만족도 보기
     @ApiOperation("수업 하나당 강사 만족도 보기")
     @GetMapping("/oneteacher/{lessonNo}")
-    public double oneLessonTeacherSati(@PathVariable("lessonNo") Long lessonNo){
+    public double oneLessonTeacherSati(@PathVariable("lessonNo") Long lessonNo) {
         return satisfactionService.oneLessonTeacherSati(lessonNo);
     }
 }
