@@ -8,7 +8,6 @@ import ClassRoundTime from "./ClassRoundTime";
 
 import DatePickerComponent from "./DatePickerComponent";
 import axios from "axios";
-import tokenHttp from "../../api/APIPath";
 
 import { url } from "../../api/APIPath";
 import MenuCard from "../common/MenuCard";
@@ -279,7 +278,7 @@ const ClassRoundJoin = () => {
 
     const handleClickTmpStore = () => {
         // lessonData.lessonTotalRound = lessonTotalRound
-        tokenHttp
+        axios
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
                 lessonData,
@@ -287,11 +286,11 @@ const ClassRoundJoin = () => {
             )
             .then((res) => {
                 console.log(res, "개별강의");
-                return res.data.result.lessonNo;
+                return res.data.lessonNo;
             })
             .then((lessonNo) => {
                 lessonData.lessonNo = lessonNo;
-                tokenHttp
+                axios
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
                     })
@@ -313,7 +312,7 @@ const ClassRoundJoin = () => {
         // lessonData.lessonTotalRound = lessonTotalRound
         lessonData.lessonStatus = "강의 전"
         // console.log(lessonData, "따로 set안해도 lesson 상태 바뀌지?")
-        tokenHttp.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
+        axios.post(`${url}/lesson/join`, // 강의 데이터 갑니다.
         lessonData,
         {headers: {"Content-Type": 'application/json'}}
         )
@@ -328,7 +327,7 @@ const ClassRoundJoin = () => {
             }
         )
         .then(lessonRoundDataSet => {
-            tokenHttp.post(`${url}/lesson/join/round`,
+            axios.post(`${url}/lesson/join/round`,
             lessonRoundDataSet,
             {headers: {"Content-Type": 'application/json'}}
             )
@@ -343,10 +342,6 @@ const ClassRoundJoin = () => {
         navigate("/")
     }
 
-    const beforePage = () => {
-        
-    }
-    
 
     return (
         <>
@@ -474,7 +469,7 @@ const ClassRoundJoin = () => {
 
             {/* 버튼 모음 => 이후 수정@@@ */}
             <div>
-                <Button onClick={beforePage}>이전</Button>
+                <Button onClick={() => navigate(-1)}>이전</Button>
                 <Button onClick={handleClickTmpStore}>임시 저장</Button>
                 <Button onClick={handleClickRegisterLesson}>강의 등록</Button>
             </div>

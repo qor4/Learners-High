@@ -1,6 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import './ChatComponent.css';
 import { useEffect } from "react";
+import { PiPaperPlaneTiltBold } from "react-icons/pi";
+
+
 
 const ChatComponent = (props) => { 
     // const chatState = {
@@ -15,7 +18,8 @@ const ChatComponent = (props) => {
     const connectionId = props.connectionId;
     console.log(connectionId, "connectionId")
    
-    const chatScroll = React.createRef();
+    // const chatScroll = React.createRef(); // 규돈 버전
+    const chatScroll = useRef()
 
     useEffect(() => {
         streamManager.stream.session.on('signal:chat', (event) => {
@@ -48,6 +52,7 @@ const ChatComponent = (props) => {
                     data: JSON.stringify(data),
                     type: 'chat',
                 });
+                scrollToBottom()
             }
         }
         setChatMessage('');
@@ -91,14 +96,14 @@ const ChatComponent = (props) => {
                 </div>
              <div id="messageInput">
                     <input
-                        placeholder="Send a messge"
+                        placeholder="채팅 보내기"
                         id="chatInput"
                         value={chatMessage}
                         onChange={(e)=>setChatMessage(e.currentTarget.value)}
                         onKeyDown={handlePressKey}
                     />
                     {/* 버튼 으로 대체  */}
-                    <button id="sendButton" onClick={sendMessage}>전송</button>
+                    <div id="sendButton" onClick={sendMessage}><PiPaperPlaneTiltBold /></div>
                     {/* <Tooltip title="Send message">
                         <Fab size="small" id="sendButton" onClick={sendMessage}>
                             <Send />

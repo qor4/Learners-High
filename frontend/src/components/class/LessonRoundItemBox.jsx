@@ -1,6 +1,6 @@
 // 메인 페이지에서 사용되는 수업 회차별 박스
 // 들어가는 내용 : 현재 회차, 일시, 수업 이름, 회차 제목, 강사 이름, 과제 일괄 다운, 강의룸 만들기
-import { useState } from "react"; // 내꺼.
+import { useEffect, useState } from "react"; // 내꺼.
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -53,7 +53,16 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
     // const [token, setToken] = useState("")
     const handleEnter = () => {
         setBool(true);
-        navigate(`/lessonRoom/teacher/${lessonNo}/${lessonRoundNo}`);
+        const today = new Date();
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        // if (
+        //     // endDatetime.getFullYear() === today.getFullYear() &&
+        //     // endDatetime.getMonth() === today.getMonth() &&
+        //     // endDatetime.getDate() === today.getDate()
+        // ) {
+        //     // 여기!
+        // }
+        navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {state: {lessonName}});
     };
     const lessonNo = lessonInfo.lessonNo;
     const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
@@ -89,7 +98,15 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     const enterStudentRoom = (event) => {
         event.stopPropagation();
-        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`);
+        const today = new Date();
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        // if (
+        //     endDatetime.getFullYear() === today.getFullYear() &&
+        //     endDatetime.getMonth() === today.getMonth() &&
+        //     endDatetime.getDate() === today.getDate() // 여기!
+        // ) {
+        // }
+        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
     };
 
     return (
@@ -113,12 +130,16 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
                 <StyledButtonWrap>
-                    <Button>
+                    <Button className={"singleEvent"}>
                         <span className="singleEvent">과제 일괄 다운</span>
                     </Button>
                     {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}> */}
-                    <Button $point onClick={handleEnter}>
+                    <Button
+                        $point
+                        onClick={handleEnter}
+                        className={"singleEvent"}
+                    >
                         <span className="singleEvent">강의룸 만들기</span>
                     </Button>
                     {/* </Link> */}
@@ -128,15 +149,20 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 학생일 때 보일 버튼 */}
             {userType === "S" && (
                 <StyledButtonWrap>
-                    <Button>
+                    <Button className={"singleEvent"}>
                         {" "}
-                        <span className="singleEvent">학습 자료 다운</span>
+                        학습 자료 다운
                     </Button>
-                    <Button>
-                        <span className="singleEvent">과제 제출</span>
+                    <Button className={"singleEvent"}>
+                        과제 제출
                     </Button>
-                    <Button $point onClick={enterStudentRoom}>
-                        <span className="singleEvent">강의 입장</span>
+                    <Button
+                        $point
+                        onClick={enterStudentRoom}
+                        // disabled={dayOfLesson}
+                        className={"singleEvent"}
+                    >
+                        강의 입장
                     </Button>
                 </StyledButtonWrap>
             )}

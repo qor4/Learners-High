@@ -68,6 +68,17 @@ const StyledButton = styled.button`
                 color: #000;
             }
         `}
+    // danger
+    ${(props) =>
+        props.$danger &&
+        css`
+            background-color: #fff;
+            border: 1px solid #black   ;
+            &:not(:disabled):hover {
+                background: #FFeF00;
+                color: #000;
+            }
+        `}
     // kakao
     ${(props) =>
         props.$kakao &&
