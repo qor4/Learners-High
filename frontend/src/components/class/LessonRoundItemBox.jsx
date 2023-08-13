@@ -54,14 +54,14 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         setBool(true);
         const today = new Date();
         // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        if (
-            endDatetime.getFullYear() === today.getFullYear() &&
-            endDatetime.getMonth() === today.getMonth() &&
-            endDatetime.getDate() === today.getDate()
-        ) {
-            // 여기!
-            navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {state: {lessonName}});
-        }
+        // if (
+        //     // endDatetime.getFullYear() === today.getFullYear() &&
+        //     // endDatetime.getMonth() === today.getMonth() &&
+        //     // endDatetime.getDate() === today.getDate()
+        // ) {
+        //     // 여기!
+        // }
+        navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {state: {lessonName}});
     };
     const lessonNo = lessonInfo.lessonNo;
     const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
@@ -100,13 +100,13 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         
         const today = new Date();
         // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        if (
-            endDatetime.getFullYear() === today.getFullYear() &&
-            endDatetime.getMonth() === today.getMonth() &&
-            endDatetime.getDate() === today.getDate() // 여기!
-        ) {
-            navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
-        }
+        // if (
+        //     endDatetime.getFullYear() === today.getFullYear() &&
+        //     endDatetime.getMonth() === today.getMonth() &&
+        //     endDatetime.getDate() === today.getDate() // 여기!
+        // ) {
+        // }
+        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
     };
 
     return (

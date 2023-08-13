@@ -38,11 +38,12 @@ const StateChatWrap = styled.div`
 
 // 채팅 컴포넌트 Wrap
 const ChatWrap = styled.div`
+    position: relative;
     width: 100%;
     height: 60%;
 
     border-radius: 1.25rem;
-    padding: 0.75rem;
+    /* padding: 0.75rem; */
     box-sizing: border-box;
 
     background-color: #e1e6f9;
@@ -241,21 +242,21 @@ const StudentLessonRoomPage = ({ lessonName }) => {
                     </Typography>
 
                     <ControlButtonWrap>
-                        {/* 마이크 */}
-                        <Button
-                            type="button"
-                            onClick={toggleVideo}
-                            value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
-                        >
-                            <HiMicrophone />
-                        </Button>
                         {/* 비디오 */}
                         <Button
                             type="button"
                             onClick={toggleAudio}
                             value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                         >
-                            <HiVideoCamera />
+                        <HiMicrophone />
+                        </Button>
+                        {/* 마이크 */}
+                        <Button
+                            type="button"
+                            onClick={toggleVideo}
+                            value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
+                        >
+                        <HiVideoCamera />
                         </Button>
                         {/* 수업 나가기 */}
                         <Button
