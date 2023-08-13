@@ -23,6 +23,8 @@ const ClassJoin = ({
     changeChildPage,
     ParentLessonDataSet,
     ParentLessonRoundDataSet,
+    // ParentThumbnailURL,
+    ParentIsUpdated,
 }) => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -34,7 +36,7 @@ const ClassJoin = ({
     const [lessonNo, setLessonNo] = useState(
         location.state ? location.state.lessonNo : ""
     );
-
+    console.log(ParentLessonDataSet, "???");
     // 초기 데이터에 들어갈 녀석들
     const [lessonName, setLessonName] = useState(
         ParentLessonDataSet.lessonName
@@ -62,13 +64,24 @@ const ClassJoin = ({
     );
 
     useEffect(() => {
-        if (ParentLessonDataSet.lessonThumbnailImg) {
+        if (ParentLessonDataSet.lessonThumbnailImg && !ParentIsUpdated) {
             const imageURL = URL.createObjectURL(
                 ParentLessonDataSet.lessonThumbnailImg
             );
             setThumbnailURL(imageURL);
         }
     }, [ParentLessonDataSet.lessonThumbnailImg]);
+
+    useEffect(() => {
+        if (ParentIsUpdated) {
+            tokenHttp
+                .get(`${url}/s3/thumbnail-load/${lessonNo}`)
+                .then((res) => {
+                    console.log(res, "S3서버로 간다");
+                    setThumbnailURL(res.data.resultMsg);
+                });
+        }
+    }, []);
 
     const nextPage = () => {
         const data = {
@@ -102,32 +115,6 @@ const ClassJoin = ({
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
-
-        // // 작성중인 정보가 있다!
-        // if (isUpdated) {
-        //     tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
-        //     .then(res => {
-        //         console.log(res, "작성중인 정보")
-        //         const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
-        //         setLessonTypeNo(lessonTypeNo)
-        //         setLessonTypeName(lessonTypeName)
-        //         setLessonName(lessonName)
-        //         setLessonInfo(lessonInfo)
-        //         setMaxStudent(maxStudent)
-        //         setLessonPrice(lessonPrice)
-        //         setLessonThumbnailImg(lessonThumbnailImg)
-        //         setLessonThumbnailInfo(lessonThumbnailInfo)
-        //         // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
-        //     })
-        //     .then(()=> {
-        //         tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
-        //         .then(res=> {
-        //             console.log(res, "S3서버로 간다")
-        //             setThumbnailURL(res.data.resultMsg)
-
-        //         })
-        //     })
-        // }
     }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -264,38 +251,61 @@ const ClassJoin = ({
                         { headers: { "Content-Type": "application/json" } }
                     )
                     .then((res) => {
-                        console.log(res, "강의세부회차 성공")
+                        console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
-                        for (let i = 0; i < ParentLessonRoundDataSet.length; i++) {
+                        for (
+                            let i = 0;
+                            i < ParentLessonRoundDataSet.length;
+                            i++
+                        ) {
                             if (
-                                ParentLessonRoundDataSet[i].lessonRoundFileOriginName
+                                ParentLessonRoundDataSet[i]
+                                    .lessonRoundFileOriginName
                             ) {
-                                console.log(lessonRoundNoDataSet[i], "회차정보")
+                                console.log(
+                                    lessonRoundNoDataSet[i],
+                                    "회차정보"
+                                );
                                 const formData = new FormData();
-                                console.log(ParentLessonRoundDataSet[i].lessonRoundFileName, "파일이니?")
+                                console.log(
+                                    ParentLessonRoundDataSet[i]
+                                        .lessonRoundFileName,
+                                    "파일이니?"
+                                );
                                 formData.append(
                                     "multipartFile",
-                                    ParentLessonRoundDataSet[i].lessonRoundFileName
+                                    ParentLessonRoundDataSet[i]
+                                        .lessonRoundFileName
                                 );
-                                tokenHttp.post(
-                                    `${url}/s3/upload/data/${Number(lessonNo)}/${Number(lessonRoundNoDataSet[i].lessonRoundNo)}`,
-                                    formData,
-                                    {
-                                        headers: {
-                                            "Content-Type":
-                                                "multipart/form-data",
-                                        },
-                                    }
-                                )
-                                .then(res=>console.log(res, "학습자료 전송 성공"))
-                                .catch(err => console.log(err, "학습자료 전송 실패"))
+                                tokenHttp
+                                    .post(
+                                        `${url}/s3/upload/data/${Number(
+                                            lessonNo
+                                        )}/${Number(
+                                            lessonRoundNoDataSet[i]
+                                                .lessonRoundNo
+                                        )}`,
+                                        formData,
+                                        {
+                                            headers: {
+                                                "Content-Type":
+                                                    "multipart/form-data",
+                                            },
+                                        }
+                                    )
+                                    .then((res) =>
+                                        console.log(res, "학습자료 전송 성공")
+                                    )
+                                    .catch((err) =>
+                                        console.log(err, "학습자료 전송 실패")
+                                    );
                             }
                         }
                     });
             })
             .catch((err) => {
-                alert("임시저장 실패")
-                console.log(err, "종합 에러")
+                alert("임시저장 실패");
+                console.log(err, "종합 에러");
             }); // 여기에 강의개설 실패 메시지
     };
     return (

@@ -59,7 +59,7 @@ const ClassJoinCheckModal = (props) => {
     };
     const handleDeleteLesson = () => {
         if (lessonNo !== null) {
-            tokenHttp.delete(`${url}/lesson/writing/delete/${Number(lessonNo)}`)
+            tokenHttp.delete(`${url}/lesson/delete/${Number(lessonNo)}`)
             .then(res => console.log("삭제 성공"))
             .catch((err) => console.log(err, "삭제 실패"))
             ;
