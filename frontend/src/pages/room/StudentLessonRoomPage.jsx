@@ -50,7 +50,7 @@ const ChatWrap = styled.div`
     background-color: #e1e6f9;
 `;
 
-const StudentLessonRoomPage = ({ lessonName }) => {
+const StudentLessonRoomPage = ({ lessonName,closeRoom }) => {
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -65,12 +65,13 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     const [session, setSession] = useState(undefined);
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
-    const [subscribers, setSubscribers] = useState([]);
-    const [token, setToken] = useState("");
+    const [teacher, setTeacher] = useState(undefined);
+    const [token, setToken] = useState(undefined);
 
     // video, audio 접근 권한
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(false);
+
 
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
@@ -92,9 +93,9 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     }, []);
 
     // session이 바뀌면 하는 것
-    const leaveSession = async () => {
+    const leaveSession =  () => {
         if (session) {
-            session.disconnect();
+             session.disconnect();
         }
         // session, state 초기화
         setOV(null);
@@ -103,11 +104,13 @@ const StudentLessonRoomPage = ({ lessonName }) => {
         setSession(undefined);
         setMainStreamManager(undefined);
         setPublisher(undefined);
-        setSubscribers([]);
+        setTeacher(undefined);
+        setToken(undefined);
 
         // 메인화면 이동 필요
-        navigate("/");
+        closeRoom();
     };
+
     // 페이지를 언로드하기 전에 leaveSession 메서드를 호출
     const onBeforeUnload = () => {
         leaveSession();
@@ -117,48 +120,27 @@ const StudentLessonRoomPage = ({ lessonName }) => {
     const joinSession = useCallback(async () => {
         const newOV = new OpenVidu();
         let mySession = newOV.initSession();
-
         mySession.on('sessionDisconnected', event => {
-            if (event.reason === 'disconnect') {
-              // 여기에 강제 종료 시 실행할 코드 작성
-            } else {
-              console.log('세션이 기타 이유로 닫혔습니다.');
-              // 여기에 기타 이유로 인해 세션이 닫힐 때 실행할 코드 작성
-            }
-            navigate('/');
-          });
+            console.log("session 종료됨");
+            leaveSession();
+        });
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
             ///////////////// 여기서 선생 찾기
-            const rawData = event.stream.connection.data;
-            const start = rawData.indexOf('{"clientData":') + '{"clientData":'.length;
-            const end = rawData.indexOf('}', start);
-            const clientDataValue = rawData.substring(start, end);
-            console.log("Value of 'clientData':", clientDataValue);
-            /////////////////
-
-            setSubscribers((subscribers) => [...subscribers, subscriber]); // 새 구독자에 대한 상태 업데이트
-            console.log("사용자가 입장하였습니다.");
+            if(JSON.parse(JSON.parse(subscriber.stream.connection.data).clientData).userNo === 1){
+                setTeacher(subscriber);
+            }
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
         });
 
-        // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
-        mySession.on("streamDestroyed", (event) => {
-            event.preventDefault();
-            setSubscribers((preSubscribers) =>
-                preSubscribers.filter(
-                    (subscriber) => subscriber !== event.stream.streamManager
-                )
-            );
-            console.log("사용자가 나갔습니다.");
-            // console.log(JSON.parse(event.stream.connection.data).clientData, "님이 접속을 종료했습니다.")
-        });
-
         // 서버 측에서 예기치 않은 비동기 오류가 발생할 때 Session 개체에 의해 트리거 되는 이벤트
-        mySession.on("exception", (exception) => {
+        mySession.on("exception", async (exception) => {
             console.warn(exception);
+            if(exception.name === 'ICE_CONNECTION_DISCONNECTED'){
+                setOV(null);
+            }
         });
 
         // 세션 갱신
@@ -177,7 +159,7 @@ const StudentLessonRoomPage = ({ lessonName }) => {
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
                     session
-                        .connect(res.data.resultMsg, { clientData: userNo })
+                        .connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName}) })
                         .then(async () => {
                             // Get your own camera stream ---
                             // publisher 객체 생성
@@ -291,11 +273,9 @@ const StudentLessonRoomPage = ({ lessonName }) => {
                 </LessonControlBar>
 
                 {/* 화면 공유 박스, 여기가 맞다. 추후 선생님 찾아야 함. */}
-                {subscribers.map((sub, idx) => (
-                    <ScreenShare key={`${idx}-subscriber`}>
-                        <UserVideoComponent streamManager={sub} />
+                    <ScreenShare>
+                        <UserVideoComponent streamManager={teacher} />
                     </ScreenShare>
-                ))}
             </ControlBarShareWrap>
 
             {/* 학생 화면 / 채팅 컴포넌트가 담길 div 박스 */}

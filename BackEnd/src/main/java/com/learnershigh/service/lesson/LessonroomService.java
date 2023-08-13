@@ -5,6 +5,7 @@ import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lessonhub.LessonAttend;
 import com.learnershigh.domain.lessonhub.StudentLessonList;
 import com.learnershigh.domain.user.User;
+import com.learnershigh.dto.lesson.LessonUserInfoDto;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
 import com.learnershigh.repository.lessonhub.LessonAttendRepository;
@@ -42,8 +43,6 @@ public class LessonroomService {
             logger.info("*** 수강 신청 목록에 존재하지 않음.");
             throw new IllegalStateException("수강하지 않는 수업입니다.");
         }
-        logger.info("*** checkStudent 메소드 종료");
-        
     }
     
     public void checkTeacher(Long userNo, Long lessonNo){

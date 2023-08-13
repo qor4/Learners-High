@@ -58,10 +58,9 @@ public class OpenviduService {
         logger.info("*** connectionProperties build");
         ConnectionProperties connectionProperties
                 = new ConnectionProperties.Builder()
-                                          .type(ConnectionType.WEBRTC)
-                                          .role(OpenViduRole.PUBLISHER)
-                                          .data(String.valueOf(teacherNo))
-                                          .build();
+                .type(ConnectionType.WEBRTC)
+                .role(OpenViduRole.PUBLISHER)
+                .build();
         logger.info("*** connectionProperties build 종료");
 
         logger.info("*** connectionProperties createConnection 호출");
@@ -102,7 +101,6 @@ public class OpenviduService {
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
                     .type(ConnectionType.WEBRTC)
                     .role(OpenViduRole.PUBLISHER)
-                    .data(String.valueOf(studentNo))
                     .build();
             try{
                 Connection connection = session.createConnection(connectionProperties);
