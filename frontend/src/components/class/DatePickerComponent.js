@@ -2,16 +2,18 @@ import DatePicker from "react-datepicker"
 import React, {useState, useEffect} from "react";
 import "react-datepicker/dist/react-datepicker.css"
 import {ko} from "date-fns/esm/locale"
+import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat'; // day.js의 플러그인을 import
+dayjs.extend(customParseFormat)
 
 const DatePickerComponent = (
   {onDataChange, initial, initialDate, idx, miniDisabledDate, maxDisabledDate}
   ) => {
-  const today = new Date()
-  today.setDate(today.getDate()+7)
-  // const [startDate, setStartDate] = useState(new Date('2023-04-05 19:12'));
-  // const standDay = initial? today  : new Date(initialDate)  
-  const standDay = initial? today : (initialDate? new Date( initialDate) : new Date())
+  const currentDate = dayjs()
+  const firstDate = currentDate.add(7, 'day')
+  const standDay = initial? firstDate : (initialDate? dayjs(initialDate) : firstDate)
 
+  const customDateFormat = "yyyy-MM-dd aa h:mm"
 
 
   const [lessonRoundDate, setLessonRoundDate] = useState( standDay );
@@ -21,10 +23,7 @@ const DatePickerComponent = (
 
   
   useEffect(()=> {
-    return () =>
-    {
-      setLessonRoundDate(initialDate) // 얘가 문제다.
-    }
+    setLessonRoundDate(dayjs(initialDate)) // 얘가 문제다.
   }, [initialDate, miniDisabledDate, maxDisabledDate])
   
   // const changeLessonRoundDate = (date) => {
@@ -32,25 +31,25 @@ const DatePickerComponent = (
   //   onDataChange(idx, date)
   // }
 
-  const miniLimitDay = miniDisabledDate ? new Date(miniDisabledDate) : new Date()
-  const maxLimitDay = maxDisabledDate ? new Date(maxDisabledDate) : false
+  const miniLimitDay = miniDisabledDate ? dayjs(miniDisabledDate) : firstDate
+  const maxLimitDay = maxDisabledDate ? dayjs(maxDisabledDate) : false
   return (
     <>
     <DatePicker
-      selected={lessonRoundDate}
-      minDate={initial? standDay :miniLimitDay}
-      maxDate={maxLimitDay}
+      selected={lessonRoundDate.toDate()}
+      minDate={initial? standDay.toDate() :miniLimitDay.toDate()}
+      maxDate={maxLimitDay ? maxLimitDay.toDate() : false}
       closeOnScroll={true}
       locale={ko}
       onChange={(date) => {
-        setLessonRoundDate(date)
-        onDataChange(idx, date)
+        setLessonRoundDate(dayjs(date))
+        onDataChange(idx, dayjs(date))
       }}
       showTimeSelect
       timeFormat="HH:mm"
       timeIntervals={30}
       timeCaption="시작시간"
-      dateFormat="yyyy.MM.dd aa h:mm"
+      dateFormat="yyyy-MM-dd aa h:mm"
       // onBlur={handleButtonClick}
     />
     {/* { classRunningTime ? <>  */}

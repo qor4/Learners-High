@@ -201,7 +201,7 @@ const Header = () => {
             {controlLessonJoin ? (
                 <ClassJoinCheckModal
                     isUpdated={controlLessonJoin}
-                    onDataChange={initControllLessonJoin}
+                    initControllLessonJoin={initControllLessonJoin}
                     lessonNo={lessonNo ? lessonNo : null}
                 />
             ) : null}

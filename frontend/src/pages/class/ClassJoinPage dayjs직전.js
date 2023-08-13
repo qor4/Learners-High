@@ -15,8 +15,6 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { url } from "../../api/APIPath";
 
-import dayjs from "dayjs";
-
 const ClassJoinPage = () => {
 
     const location = useLocation()
@@ -49,10 +47,6 @@ const ClassJoinPage = () => {
             .then(res=> {
                 console.log(res, "강의 라운드 결과값")
                 setLessonRoundDataSet(res.data.result)
-                const startTime = dayjs(res.data.result.lessonRoundStartDatetime)
-                const endTime = dayjs(res.data.result.lessonRoundEndDatetime)
-                const timeDiffInMinutes = endTime.diff(startTime, 'minute')
-                setLessonRunningTime(timeDiffInMinutes)
             })
             .catch(err => console.log(err, "강의상세 초기 요청 실패"))
         }
@@ -148,7 +142,7 @@ const ClassJoinPage = () => {
         },
     ];
     const [days, setDays] = useState(initialDays);
-    const [lessonRunningTime, setLessonRunningTime] = useState(0)
+    const [lessonRunningTime, setLessonRunningTime] = useState("")
     const [startDate, setStartDate] = useState("")
 
     // ClassJoin <-> ClassRoundJoin

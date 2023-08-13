@@ -7,6 +7,7 @@ import ClassRoundItem from "./ClassRoundItem";
 import ClassRoundTime from "./ClassRoundTime";
 
 import DatePickerComponent from "./DatePickerComponent";
+import dayjs from "dayjs";
 import axios from "axios";
 import tokenHttp from "../../api/APIPath";
 
@@ -146,27 +147,26 @@ const ClassRoundJoin = ({
         console.log(days, "days");
         // const standDay = new Date(startDate);
         for (let i = 0; i < 7; i++) {
-            const standDay = new Date(startDate);
-            standDay.setDate(standDay.getDate()+i)
+            console.log(startDate, "넌 시작!")
+            const standDay = startDate.add(i, 'day');
+            console.log(standDay.day(), '요일 바뀌니?', standDay)
             // 요일의 기준을 +1로 할 필요가 없다.
             days.map((day) => {
-                console.log(standDay.getDay(), day.code, "짠")
-                console.log(standDay, "얜 들어와야 했아.", day.isSelected)
+                console.log(standDay.day(), "난 요일")
                 if (
                     day.isSelected &&
-                    Number(standDay.getDay()) === Number(day.code)
+                    Number(standDay.day()) === Number(day.code)
                     ) {
-                        console.log("들어옴?", standardDate)
-                        
-                        const newDate = new Date(
-                            standDay.getFullYear(),
-                            standDay.getMonth(),
-                            standDay.getDate(),
-                            day.startHour,
-                            day.startMinute
-                            )
-                            standardDate.push(newDate)
-                            return
+                        console.log(standDay.year(), standDay.month(), standDay.date(), day.startHour,"연")           
+                        const newDate = dayjs()
+                        .year(standDay.year())
+                        .month(standDay.month())
+                        .day(standDay.date())
+                        .hour(Number(day.startHour))
+                        .minute(Number(day.startMinute))
+                        standardDate.push(newDate)
+                        console.log("날짜 들어옴?", newDate)
+                        return
                         }
                 }); // 완료!
             }
@@ -180,18 +180,11 @@ const ClassRoundJoin = ({
             // 배열 절대 바꾸지 마라.
             
             if (i < weekNum) {
-                console.log(standardDate)
-                standardDate[(i) % weekNum].setDate(
-                    standardDate[(i) % weekNum].getDate()
-                );
-                const newDate = new Date(
-                    standardDate[i % weekNum]
-                );
-                const endNewDate = new Date(newDate)
-                endNewDate.setMinutes(endNewDate.getMinutes()+Number(lessonRunningTime))
-                console.log(newDate, endNewDate, "여기 어때")
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = newDate
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate
+                const startNewDate = standardDate[i % weekNum];
+                const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
+                console.log(startNewDate, endNewDate, "여기 어때")
+                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
                 console.log(lessonRoundDataSetCopy[i].lessonRoundStartDatetime) 
                 // 종료시간까지 함께 넣을 것
@@ -200,14 +193,11 @@ const ClassRoundJoin = ({
             } else {
                 // 여기다.+
                 
-                standardDate[i % weekNum].setDate(
-                    standardDate[i % weekNum].getDate() + 7
-                );
-                const newDate = new Date(standardDate[i % weekNum])
-                const endNewDate = new Date(newDate)
-                endNewDate.setMinutes(endNewDate.getMinutes()+Number(lessonRunningTime))
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = newDate
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate
+                const addWeekDate = dayjs(standardDate[i % weekNum]).add(Math.floor(i/weekNum), 'week')
+                const startNewDate = dayjs(addWeekDate)
+                const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
+                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
                 console.log( lessonRoundDataSetCopy[i].lessonRoundStartDatetime, "시작시간들")
                 // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
@@ -225,14 +215,14 @@ const ClassRoundJoin = ({
         index,
         newLessonRoundStartDatetime
     ) => {
-        const newLessonRoundEndDatetime = new Date(newLessonRoundStartDatetime)
-        newLessonRoundEndDatetime.setMinutes(newLessonRoundEndDatetime.getMinutes()+ Number(lessonRunningTime))
+        const newLessonRoundEndDatetime = newLessonRoundStartDatetime
+        newLessonRoundEndDatetime.add(Number(lessonRunningTime), 'minute')
         const lessonRoundDataSetCopy = lessonRoundDataSet.map((item, idx) =>
             idx === index
                 ? {
                       ...item,
-                      lessonRoundStartDatetime: newLessonRoundStartDatetime,
-                      lessonRoundEndDatetime: newLessonRoundEndDatetime,
+                      lessonRoundStartDatetime: newLessonRoundStartDatetime.toISOString(),
+                      lessonRoundEndDatetime: newLessonRoundEndDatetime.toISOString(),
                   }
                 : item
         );
@@ -314,9 +304,6 @@ const ClassRoundJoin = ({
             });
         navigate("/");
     };
-    const today = new Date()
-    const afterOneWeek = new Date(today)
-    afterOneWeek.setDate(today.getDate()+7)
 
     console.log(ParentLessonDataSet)
     return (
