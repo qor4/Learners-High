@@ -395,7 +395,7 @@ const ClassJoin = ({
                             <label htmlFor="lessonThumbnailImg">
                                 강의 썸네일
                             </label>
-                            {lessonThumbnailImg ? (
+                            {thumbnailURL ? (
                                 <StyledImg
                                     src={thumbnailURL}
                                     alt="썸네일 사진"
