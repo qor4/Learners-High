@@ -35,15 +35,16 @@ const CanvasWrap = styled.div`
     margin: 0 auto;
 `;
 
+
 // 화면을 확인할 수 있는 공간
 const WaitScreen = styled.div`
     width: 100%;
     height: calc(100vh - 6.75rem);
     border-radius: 1.25rem;
     margin-bottom: 0.75rem;
+    overflow: hidden;
 
     background-color: #e1e6f9;
-
     position: relative;
 `;
 
@@ -61,7 +62,7 @@ const WaitControlBar = styled.div`
     justify-content: space-between;
     align-items: center;
 
-    width: 70%;
+    width: 60%;
     height: 4.5rem;
     background-color: #293c81;
     padding: 0.75rem 1rem;
@@ -83,31 +84,45 @@ const StudentWaitLessonRoomPage = () => {
     const lessonName = location.state.lessonName
         ? location.state.lessonName
         : null;
-    
-    // console.log("여기 왔어?")
+
     let userStatus = useRef(null);
     const eyeTracker = useRef(null);
     let currentX, currentY;
-    const navigate = useNavigate();
     const { lessonNo, lessonRoundNo } = useParams();
-    const [ isSeesoInit, setSeesoInit ] = useState(false);
+    const [isSeesoInit, setSeesoInit] = useState(false);
 
     const [attentionScore, setAttentionScore] = useState(0);
     const [isFocus, setIsFocus] = useState(true);
     const [isTest, setIsTest] = useState(false);
     const [calibrationData, setCalibrationData] = useState(null);
 
-    useEffect(() => { 
-        window.addEventListener('blur',focusOutLessonRoom);  
-        window.addEventListener('focus',focusInLessonRoom);  
+    // 카메라 & 오디오 on/off
+    const [videoEnabled, setVideoEnabled] = useState(true);
+    const refVideo = useRef(null)
+    const [audioEnabled, setAudioEnabled] = useState(false);
+
+    const toggleVideo = () => {
+        setVideoEnabled( prevState => !prevState);
+    };
+
+    // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
+    const toggleAudio = () => {
+        setAudioEnabled(!audioEnabled);
+    };
+
+    useEffect(() => {
+        window.addEventListener("blur", focusOutLessonRoom);
+        window.addEventListener("focus", focusInLessonRoom);
         (async () => {
             try {
-              const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-              if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-              }
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                });
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                }
             } catch (error) {
-              console.error('Error accessing webcam:', error);
+                console.error("Error accessing webcam:", error);
             }
         })();
 
@@ -134,49 +149,72 @@ const StudentWaitLessonRoomPage = () => {
                 );
             })();
         }
-        return ()=>{
-            window.removeEventListener('blur',focusOutLessonRoom);  
-            window.removeEventListener('focus',focusInLessonRoom);  
-
+        const beforeunloadEvent = () => {
+            console.log("너 실행됨?")
+            console.log(videoRef.current)
             if (videoRef.current) {
                 const stream = videoRef.current.srcObject;
+                console.log("너 실행됨?", stream)
                 if (stream) {
-                const tracks = stream.getTracks();
-                tracks.forEach(track => track.stop());
+                    const tracks = stream.getTracks();
+                    tracks.forEach((track) => track.stop());
                 }
             }
         }
+        window.addEventListener("beforeunload", beforeunloadEvent)
+
+        return () => {
+            window.removeEventListener("blur", focusOutLessonRoom);
+            window.removeEventListener("focus", focusInLessonRoom);
+
+            beforeunloadEvent()
+            window.removeEventListener("beforeunload", beforeunloadEvent);
+
+            if (videoRef.current) {
+                const stream = videoRef.current.srcObject;
+                console.log("너 실행됨?", stream)
+                if (stream) {
+                    const tracks = stream.getTracks();
+                    tracks.forEach((track) => track.stop());
+                }
+            }
+
+            // if (webcam) {
+            //     const tracks = webcam.srcObject.getTracks()
+            //     tracks.forEach(track => track.stop())
+            // }
+        };
     }, []);
     // 다른 화면으로 변경 시 실행되는 callback 함수
-    const focusOutLessonRoom = useCallback(()=>{
-        console.log('다른 화면 봄');
+    const focusOutLessonRoom = useCallback(() => {
+        console.log("다른 화면 봄");
         setIsFocus(false);
-
     });
 
     // 강의실 화면으로 변경 시 실행되는 callback 함수
-    const focusInLessonRoom = useCallback(()=>{
-        console.log('강의룸으로 돌아 옴');
+    const focusInLessonRoom = useCallback(() => {
+        console.log("강의룸으로 돌아 옴");
         setIsFocus(true);
     });
 
-    useEffect(()=>{
-        eyeTracker.current.startTracking(onGaze,onDebug);
-    },[isSeesoInit]);
+    useEffect(() => {
+        eyeTracker.current.startTracking(onGaze, onDebug);
+    }, [isSeesoInit]);
 
-    useEffect(()=>{
+    useEffect(() => {
         saveAttentionScore(attentionScore);
-    },[attentionScore]);
+    }, [attentionScore]);
 
     // 화면을 보는지 안 보는 지를 파악하여 mongodb에 넣는 함수
-    const saveAttentionScore = useCallback((score)=>{
+    const saveAttentionScore = useCallback(
+        (score) => {
             let currentScore = score;
-            if(!isFocus){
+            if (!isFocus) {
                 console.log("다른 화면 보는 중");
                 currentScore = 0;
             }
             // 조건
-            if(enterRoom){
+            if (enterRoom) {
                 console.log("AttentScore : ", currentScore);
             }
             // mongodb server와 통신
@@ -198,25 +236,27 @@ const StudentWaitLessonRoomPage = () => {
             //     .catch((err) => {
             //       console.error(err);
             //     });
-    },[isFocus,enterRoom]);
+        },
+        [isFocus, enterRoom]
+    );
 
-    const onAttention = useCallback((timestampBegin, timestampEnd, score) =>{
+    const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
         console.log(
-        `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
+            `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
         );
         setAttentionScore(score);
-    },[]);
-    
-    useEffect(()=>{
-        if(calibrationData !== null){
-            eyeTracker.current.startTracking(onGaze,onDebug);
+    }, []);
+
+    useEffect(() => {
+        if (calibrationData !== null) {
+            eyeTracker.current.startTracking(onGaze, onDebug);
             eyeTracker.current.setCalibrationData(calibrationData);
-            console.log('test 함');
-        }else{
-            console.log('test 안함');
+            console.log("test 함");
+        } else {
+            console.log("test 안함");
         }
-    },[enterRoom]);
-    
+    }, [enterRoom]);
+
     // calibration callback.
     function onCalibrationNextPoint(pointX, pointY) {
         currentX = pointX;
@@ -236,22 +276,18 @@ const StudentWaitLessonRoomPage = () => {
     // calibration callback.
     const onCalibrationFinished = useCallback((calibrationData) => {
         clearCanvas();
-        eyeTracker.current.setUserStatusCallback(
-            onAttention,
-            null,
-            null
-            );
+        eyeTracker.current.setUserStatusCallback(onAttention, null, null);
         eyeTracker.current.setAttentionInterval(10);
         setIsTest(false);
         setCalibrationData(calibrationData);
-        }, []);
+    }, []);
 
     function drawCircle(x, y, dotSize, ctx) {
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(x, y, dotSize, 0, Math.PI * 2, true);
         ctx.fill();
-    }  
+    }
     function clearCanvas() {
         let canvas = document.getElementById("output");
         canvas.width = window.innerWidth;
@@ -260,8 +296,8 @@ const StudentWaitLessonRoomPage = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return ctx;
     }
-    const onGaze = ((gazeInfo)=> { });
-    const onDebug = (FPS, latency_min, latency_max, latency_avg)=> { };
+    const onGaze = (gazeInfo) => {};
+    const onDebug = (FPS, latency_min, latency_max, latency_avg) => {};
 
     const tmpClick = useCallback(() => {
         setIsTest(true);
@@ -275,126 +311,81 @@ const StudentWaitLessonRoomPage = () => {
     }, []);
 
     const enterTheLessonRoom = () => {
+        setVideoEnabled(false)
         setEnterRoom(true);
     };
-   
 
     return (
         <>
             <RoomFrameWrap>
-                <Container maxWidth="md">
-                    {/* 화면을 확인할 수 있는 공간 */}
-                    <WaitScreen>
-                        <canvas
+                {!enterRoom && (
+                    <>
+                        <Container maxWidth="lg">
+                            {/* 화면을 확인할 수 있는 공간 */}
+                            <WaitScreen>
+                            <canvas
                             id="output"
                             style={{
                                 position: "absolute",
-                                height: "500px",
+                                height: "100%",
                                 width: "100%",
-                                margin: "auto",
-                                zIndex: 9999,
+                                zIndex:9999
                             }}
                         />
-                        {!enterRoom ? (
-                            <>
-                                <Webcam
-                                    style={{
-                                        position: "absolute",
-                                        height: "100%",
-                                        width: "100%",
-                                        overFit: "cover",
-                                        margin: "auto",
-                                    }}
-                                />
-                            </>
-                        ) : null}
-                    </WaitScreen>
+                            {videoEnabled && 
+                            <video 
+                                style={{
+                                    position: "absolute",
+                                    // objectFit: "cover",
+                                    width: "100%",
+                                    
+                                    height: "auto",
+                                    top: "50%",
+                                    left: "50%",
+                                    overFit:"cover",
+                                    transform: "translate(-50%, -50%)"
+                                }}
+                                ref={videoRef}
+                                /> 
+                            }
+                            </WaitScreen>
 
-                    {!enterRoom ? (
-                        <>
                             {/* 하단 바 (강의명 박스 / 컨트롤 바) */}
                             <BottomBarWrap>
                                 {/* 강의명 */}
                                 <Typography fontWeight={"bold"}>
-                                    강의명 들어올 칸
+                                    강의명: {lessonName}
                                 </Typography>
 
                                 {/* 컨트롤 바 */}
                                 <WaitControlBar>
                                     <ControlButtonWrap>
-                                        <Button>
+                                        <Button onClick={toggleAudio}>
                                             <HiMicrophone />
                                         </Button>
-                                        <Button>
+                                        <Button onClick={toggleVideo}>
                                             <HiVideoCamera />
                                         </Button>
                                     </ControlButtonWrap>
 
                                     <ControlButtonWrap>
-                                        <Button>테스트</Button>
+                                        <Button
+                                            onClick={tmpClick}
+                                            disabled={!isSeesoInit}
+                                        >
+                                            테스트
+                                        </Button>
                                         <Button onClick={enterTheLessonRoom}>
                                             강의 입장
                                         </Button>
                                     </ControlButtonWrap>
                                 </WaitControlBar>
                             </BottomBarWrap>
-                        </>
-                    ) : null}
+                        </Container>
+                    </>
+                )}
 
-                    <div style={{ position: "relative" }}>
-                        <div className="Wrap-Cam-canvas">
-                            {!enterRoom ? (
-                                <>
-                                    <div
-                                        style={{
-                                            position: "relative",
-                                            top: "500px",
-                                            backgroundColor: "blue",
-                                            width: "1000px",
-                                            marginLeft: "10%",
-                                            paddingLeft: "auto",
-                                            borderRadius: "20px",
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "start",
-                                                top: "50%",
-                                            }}
-                                        >
-                                            {/* <span> {lessonName} </span> */}
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "end",
-                                            }}
-                                        >
-                                            <Button
-                                                onClick={enterTheLessonRoom}
-                                            >
-                                                실제 룸 입장
-                                            </Button>
-                                            <button
-                                                onClick={tmpClick}
-                                                disabled={!isSeesoInit}
-                                            >
-                                                테스트
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <StudentLessonRoomPage
-                                    lessonName={lessonName}
-                                />
-                            )}
-                        </div>
-
-                        {/* 추후 하나의 컴포넌트로 대체 */}
-                    </div>
-                </Container>
+                {enterRoom && <StudentLessonRoomPage lessonName={lessonName} />}
             </RoomFrameWrap>
         </>
     );
