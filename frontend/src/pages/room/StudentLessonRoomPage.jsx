@@ -94,7 +94,6 @@ const StudentLessonRoomPage = () => {
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
-
             ///////////////// 여기서 선생 찾기
             const rawData = event.stream.connection.data;
             const start = rawData.indexOf('{"clientData":') + '{"clientData":'.length;
@@ -103,7 +102,6 @@ const StudentLessonRoomPage = () => {
             console.log("Value of 'clientData':", clientDataValue);
             /////////////////
 
-            console.log("sa", );
             setSubscribers((subscribers) => [...subscribers, subscriber]); // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");

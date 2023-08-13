@@ -39,7 +39,6 @@ const StudentWaitLessonRoomPage = () => {
     useEffect(() => { 
         window.addEventListener('blur',focusOutLessonRoom);  
         window.addEventListener('focus',focusInLessonRoom);  
-        
         (async () => {
             try {
               const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -80,12 +79,12 @@ const StudentWaitLessonRoomPage = () => {
             window.removeEventListener('focus',focusInLessonRoom);  
 
             if (videoRef.current) {
-        const stream = videoRef.current.srcObject;
-        if (stream) {
-          const tracks = stream.getTracks();
-          tracks.forEach(track => track.stop());
-        }
-      }
+                const stream = videoRef.current.srcObject;
+                if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                }
+            }
         }
     }, []);
     
@@ -149,9 +148,9 @@ const StudentWaitLessonRoomPage = () => {
         );
         setAttentionScore(score);
     },[]);
+    
     useEffect(()=>{
         if(calibrationData !== null){
-            
             eyeTracker.current.startTracking(onGaze,onDebug);
             eyeTracker.current.setCalibrationData(calibrationData);
             console.log('test 함');
@@ -248,16 +247,16 @@ const StudentWaitLessonRoomPage = () => {
                             />
                                 
                             <div
-                        style={{
-                            position: "relative",
-                            top: "500px",
-                            backgroundColor: "blue",
-                            width: "1000px",
-                            marginLeft: "10%",
-                            paddingLeft: "auto",
-                            borderRadius: "20px",
-                        }}
-                    >
+                                style={{
+                                    position: "relative",
+                                    top: "500px",
+                                    backgroundColor: "blue",
+                                    width: "1000px",
+                                    marginLeft: "10%",
+                                    paddingLeft: "auto",
+                                    borderRadius: "20px",
+                                }}
+                            >
                         <div
                             style={{
                                 display: "flex",
