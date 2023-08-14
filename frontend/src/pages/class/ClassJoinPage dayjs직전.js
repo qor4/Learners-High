@@ -15,8 +15,6 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { url } from "../../api/APIPath";
 
-import dayjs from "dayjs";
-
 const ClassJoinPage = () => {
 
     const location = useLocation()
@@ -24,29 +22,35 @@ const ClassJoinPage = () => {
     const lessonNo = location.state ? location.state.lessonNo : ""
     const userNo = useSelector(state => state.user.userNo)
     const [isLessonJoin, setIsLessonJoin] = useState(true)
-    const middleLoading = location.state ? (location.state.isInterLoading ? location.state.isInterLoading : true) : true
-    const [isLoading, setIsLoading] = useState( middleLoading  )
+
+    const isLoading = useRef(false)
     // const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(()=> {
         // 작성중인 정보가 있다!
         if (isUpdated) {
             tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
             .then(res => {
+                console.log(res, "작성중인 정보")
                 const updatedLessonDataSet = res.data.result
+                console.log(res.data.result, "#$#$")
+                console.log(updatedLessonDataSet, "왜??")
                 setLessonDataSet(updatedLessonDataSet)
             })
+            // .then(()=> {
+            //     tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
+            //     .then(res=> {
+            //         console.log(res, "S3서버로 간다")
+            //         setThumbnailURL(res.data.resultMsg)
+            //     })
+            // })
             tokenHttp.get(`${url}/lesson/writing/round/${Number(location.state.lessonNo)}`)
             .then(res=> {
                 console.log(res, "강의 라운드 결과값")
                 setLessonRoundDataSet(res.data.result)
-                const startTime = dayjs(res.data.result.lessonRoundStartDatetime)
-                const endTime = dayjs(res.data.result.lessonRoundEndDatetime)
-                const timeDiffInMinutes = endTime.diff(startTime, 'minute')
-                setLessonRunningTime(timeDiffInMinutes)
             })
             .catch(err => console.log(err, "강의상세 초기 요청 실패"))
         }
-        setIsLoading(true)
+        isLoading.current = true
     }, [])
 
     // isUpdated면 들어온 값을. 아니면 이걸로 -> useEffect
@@ -64,7 +68,7 @@ const ClassJoinPage = () => {
         userNo: userNo,
     }
     const [lessonDataSet, setLessonDataSet] = useState(initialLessonDataSet)
-    const currentDate = dayjs().add(7, 'day')
+
     // lessonRoundJoin 처리 부분
     const initialLessonRoundItem = {
         lessonNo: lessonNo, // 임시
@@ -72,8 +76,8 @@ const ClassJoinPage = () => {
         lessonRoundTitle: "",
         lessonRoundFileName: "", // S3 접근
         lessonRoundFileOriginName: "",
-        lessonRoundStartDatetime: currentDate.toISOString(),
-        lessonRoundEndDatetime: null,
+        lessonRoundStartDatetime: "",
+        lessonRoundEndDatetime: "",
         isHomework: false,
 
         lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
@@ -138,7 +142,7 @@ const ClassJoinPage = () => {
         },
     ];
     const [days, setDays] = useState(initialDays);
-    const [lessonRunningTime, setLessonRunningTime] = useState(0)
+    const [lessonRunningTime, setLessonRunningTime] = useState("")
     const [startDate, setStartDate] = useState("")
 
     // ClassJoin <-> ClassRoundJoin
@@ -153,6 +157,7 @@ const ClassJoinPage = () => {
             setStartDate(roundData.startDate)
         }
         setIsLessonJoin(!isLessonJoin)
+
     }
 
     return (
@@ -160,7 +165,7 @@ const ClassJoinPage = () => {
         <Box sx={{ my: "4rem" }}>
             <Container maxWidth="md">
                 <Title>강의 개설</Title>
-            { isLoading ?  ( isLessonJoin ? (
+            { isLoading.current ?  ( isLessonJoin ? (
                 <ClassJoin 
                 changeChildPage={changePage}
                 ParentLessonDataSet={lessonDataSet}
