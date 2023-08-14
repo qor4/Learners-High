@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url, homeurl} from "../../api/APIPath";
-
+import axios from "axios"; 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -360,6 +360,22 @@ const TeacherLessonRoomPage = () => {
             setAudioEnabled(enabled);
             publisher.publishAudio(enabled);
         }
+
+        tokenHttp.post(
+            `${url}/notification/send`,
+            {
+                lessonNo : Number(lessonNo),
+                lessonRoundNo : Number(lessonRoundNo),
+                studentNo : Number(4),
+                teacherId : userId
+            }
+        ).then(res=>{
+            console.log('send 성공');
+        }).catch(err=>{
+            console.log('send 실패', err);
+        })
+
+
     };
 
     const toggleShare = () => {
