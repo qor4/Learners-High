@@ -16,7 +16,6 @@ import TeacherProfilePage from "./pages/TeacherProfilePage";
 // 강의 관련
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
-import ClassRoundJoinPage from "./pages/class/ClassRoundJoinPage";
 import LessonInfoPage from "./pages/LessonInfoPage";
 import PayLessonSuccessPage from "./pages/class/PayLessonSuccessPage";
 import PayLessonFailPage from "./pages/class/PayLessonFailPage";
@@ -142,10 +141,6 @@ function App() {
                     <Route
                         path="/lesson/join"
                         element={<ClassJoinPage />}
-                    ></Route>
-                    <Route
-                        path="/lesson/round/join"
-                        element={<ClassRoundJoinPage />}
                     ></Route>
                     <Route
                         path="/lesson/info/:lessonNo"

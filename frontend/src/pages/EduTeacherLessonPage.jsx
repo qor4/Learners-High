@@ -70,6 +70,9 @@ const EduTeacherLessonPage = () => {
             console.log(response);
             setLessonNameData(response.data.result.lessonInfo.lessonName);
         });
+
+        // table에 필요한 기반 데이터 불러오기
+        
     }, []);
     return (
         <>
@@ -153,6 +156,10 @@ const EduTeacherLessonPage = () => {
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
                     <DropTable />
+                    {selectedTabBar==="학생" && <></>}
+                    {selectedTabBar==="분석" && <></>}
+                    {selectedTabBar==="소개" && <></>}
+                    {selectedTabBar==="과제" && <></>}
                 </div>
             </Container>
         </>
