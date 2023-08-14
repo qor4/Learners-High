@@ -79,14 +79,38 @@ public class CsatController {
     // 수업 회차당 수업 만족도 보기
     @ApiOperation("수업 하나당 수업 만족도 보기")
     @GetMapping("/onelesson/{lessonNo}")
-    public double oneLessonLectureSati(@PathVariable("lessonNo") Long lessonNo) {
-        return satisfactionService.oneLessonLectureSati(lessonNo);
+    public ResponseEntity<CustomResponseBody> oneLessonLectureSati(@PathVariable("lessonNo") Long lessonNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("수업 하나당 수업 만족도 보기");
+        try {
+            responseBody.setResult(satisfactionService.oneLessonLectureSati(lessonNo));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 
     // 수업 회차당 강사 만족도 보기
     @ApiOperation("수업 하나당 강사 만족도 보기")
     @GetMapping("/oneteacher/{lessonNo}")
-    public double oneLessonTeacherSati(@PathVariable("lessonNo") Long lessonNo) {
-        return satisfactionService.oneLessonTeacherSati(lessonNo);
+    public ResponseEntity<CustomResponseBody> oneLessonTeacherSati(@PathVariable("lessonNo") Long lessonNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("수업 하나당 강사 만족도 보기");
+        try {
+            responseBody.setResult(satisfactionService.oneLessonTeacherSati(lessonNo));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 }
