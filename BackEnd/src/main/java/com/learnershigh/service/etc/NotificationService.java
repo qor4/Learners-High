@@ -3,6 +3,7 @@ package com.learnershigh.service.etc;
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.user.User;
+import com.learnershigh.dto.lessonhub.SaveWarningDto;
 import com.learnershigh.repository.EmitterRepository;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.user.UserRepository;
@@ -43,6 +44,7 @@ public class NotificationService {
         try {
             sseEmitter.send(SseEmitter.event().id(userId).name("setting").data("Connection completed"));
         } catch (IOException exception) {
+            logger.info("*** IOException 발생");
             throw new IllegalStateException("IOException");
         }
         return sseEmitter;
@@ -58,6 +60,7 @@ public class NotificationService {
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.delete(lesson.getUserNo().getUserId());
+                logger.info("*** IOException 발생 user.getUserId() emitter delete");
                 throw new IllegalStateException("IOException");
             }
         } else {
@@ -65,17 +68,19 @@ public class NotificationService {
         }
     }
 
-    public void send(String teacherId, Long studentNo) {
+    public void send(SaveWarningDto saveWarningDto) {
 
-        User user = userRepository.findByUserNo(studentNo);
+        User user = userRepository.findByUserNo(saveWarningDto.getStudentNo());
         Optional<SseEmitter> sseEmitter = emitterRepository.get(user.getUserId());
         if (sseEmitter.isPresent()) {
             try {
-                sseEmitter.get().send(SseEmitter.event().id(teacherId).name("send")
+                sseEmitter.get().send(SseEmitter.event().id(saveWarningDto.getTeacherId()).name("send")
                         .data("알림"));
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.delete(user.getUserId());
+                logger.info("*** IOException 발생 user.getUserId() emitter delete");
+                throw new IllegalStateException("IOException");
             }
         } else {
             logger.info("*** No emitter found");

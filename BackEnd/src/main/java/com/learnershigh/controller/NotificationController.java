@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.dto.lessonhub.SaveWarningDto;
 import com.learnershigh.service.etc.NotificationService;
 import com.learnershigh.service.lessonhub.WarningService;
 import io.swagger.annotations.Api;
@@ -39,11 +40,10 @@ public class NotificationController {
         notificationService.isActive(lessonNo, studentId, false);
     }
 
-    @GetMapping(value = "/{lessonNo}/{lessonRoundNo}/{teacherId}/{studentNo}")
-    public void send(@PathVariable Long lessonNo, @PathVariable Long lessonRoundNo, @PathVariable String teacherId,
-                     @PathVariable Long studentNo) {
-        warningService.saveWarning(lessonNo, lessonRoundNo, studentNo);
-        notificationService.send(teacherId, studentNo);
+    @PostMapping(value = "/send")
+    public void send(@RequestBody SaveWarningDto saveWarningDto) {
+        warningService.saveWarning(saveWarningDto);
+        notificationService.send(saveWarningDto);
     }
 
 }
