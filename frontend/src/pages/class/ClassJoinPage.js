@@ -24,27 +24,17 @@ const ClassJoinPage = () => {
     const lessonNo = location.state ? location.state.lessonNo : ""
     const userNo = useSelector(state => state.user.userNo)
     const [isLessonJoin, setIsLessonJoin] = useState(true)
-    console.log(location.state.isInterLoading, "넌 뭐니")
-    const [isLoading, setIsLoading] = useState( location.state ? location.state.isInterLoading : true  )
+    const middleLoading = location.state ? (location.state.isInterLoading ? location.state.isInterLoading : true) : true
+    const [isLoading, setIsLoading] = useState( middleLoading  )
     // const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(()=> {
         // 작성중인 정보가 있다!
         if (isUpdated) {
             tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
             .then(res => {
-                console.log(res, "작성중인 정보")
                 const updatedLessonDataSet = res.data.result
-                console.log(res.data.result, "#$#$")
-                console.log(updatedLessonDataSet, "왜??")
                 setLessonDataSet(updatedLessonDataSet)
             })
-            // .then(()=> {
-            //     tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
-            //     .then(res=> {
-            //         console.log(res, "S3서버로 간다")
-            //         setThumbnailURL(res.data.resultMsg)
-            //     })
-            // })
             tokenHttp.get(`${url}/lesson/writing/round/${Number(location.state.lessonNo)}`)
             .then(res=> {
                 console.log(res, "강의 라운드 결과값")
