@@ -4,7 +4,7 @@ import { useState, useRef } from "react"; // 내꺼.
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import tokenHttp, { url } from "../../api/APIPath";
+import tokenHttp, { url, homeurl} from "../../api/APIPath";
 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
@@ -23,6 +23,7 @@ import {
     HiOutlineBell,
 } from "react-icons/hi";
 import Button from "../../components/common/Button";
+import { useCallback } from "react";
 
 // 전체 Wrap (가로, 세로 100%)
 export const RoomFrameWrap = styled.div`
@@ -225,6 +226,20 @@ const TeacherLessonRoomPage = () => {
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
+        // 알림
+        const sse = new EventSource(
+            `${url}/notification/subscribe/${userId}`
+        );
+        sse.onopen = () => {
+            console.log("SSEONOPEN==========", sse);
+        };
+        sse.addEventListener("isActive", function (event) {
+            console.log("ADDEVENTLISTENER==========");
+            const tmp = JSON.parse(event.data);
+            tmp.status = Boolean(tmp.status);
+            console.log(tmp);
+        });
+
         // 윈도우 객체에 화면 종료 이벤트 추가
         joinSession(); // 세션 입장
         return () => {
@@ -254,7 +269,7 @@ const TeacherLessonRoomPage = () => {
             setToken(undefined)
         }
         // 메인화면 이동 필요
-        navigate("/");
+        window.location.href=homeurl;
     };
     // 세션 생성 및 세션에서 이벤트가 발생할 때의 동작을 지정
     const joinSession = async () => {
@@ -264,7 +279,8 @@ const TeacherLessonRoomPage = () => {
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
-            setSubscribers((subscribers) => [...subscribers, subscriber]); // 새 구독자에 대한 상태 업데이트
+            setSubscribers((subscribers) => [...subscribers, subscriber])
+             // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
         });
@@ -301,7 +317,7 @@ const TeacherLessonRoomPage = () => {
                     if (res.data.resultCode !== 200) throw res.data.resultMsg;
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                    session.connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName}) })
+                    session.connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName,userId}) })
                 })
                 .then(async () => {
                     // Get your own camera stream ---
@@ -443,7 +459,7 @@ const TeacherLessonRoomPage = () => {
                       />}
                     </div> */}
                 <StudentScreenWrap>
-                    {session !== undefined &&
+                    {session !== undefined  &&
                     session.connection !== undefined ? (
                         <>
                             {/* 여기서 강사 아닌 사람들만 */}
@@ -530,6 +546,7 @@ const TeacherLessonRoomPage = () => {
                                     <StateFlex>
                                         {/* 여기에 집중 여부에 따라 바꿀 것. */}
                                         <div>상태</div>
+                                        {/* {console.log(subscribersStatus,"sssss")} */}
                                         <StateButton><HiOutlineBell /></StateButton>
                                     </StateFlex>
                                 </StateWrap>

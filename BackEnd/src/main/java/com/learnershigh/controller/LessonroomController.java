@@ -65,5 +65,5 @@ public class LessonroomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수업을 종료 중 에러가 발생하였습니다.");
         }
     }
-    
+
 }
