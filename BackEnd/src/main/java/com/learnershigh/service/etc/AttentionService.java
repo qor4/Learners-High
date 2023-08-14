@@ -1,19 +1,20 @@
 package com.learnershigh.service.etc;
 
 import com.learnershigh.domain.LessonRoundAttentionRate;
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.dto.etc.AttentionDto;
 import com.learnershigh.dto.etc.AttentionMaxMinTime;
 import com.learnershigh.dto.etc.AttentionRateMetadataDto;
 import com.learnershigh.dto.etc.SaveAttentionRateDto;
 import com.learnershigh.repository.LessonRoundAttentionRateRepository;
+import com.learnershigh.repository.lesson.LessonRepository;
+import com.learnershigh.repository.lesson.LessonRoundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,6 +22,8 @@ import java.util.List;
 public class AttentionService {
 
     private final LessonRoundAttentionRateRepository lessonRoundAttentionRateRepository;
+
+    private final LessonRoundRepository lessonRoundRepository;
 
 
     @Transactional
@@ -187,6 +190,59 @@ public class AttentionService {
 
         return attentionMaxMinTime;
     }
+
+    // 하나의 수업의 모든 회차 집중도(모든 학생) 20구간
+    public double[] oneClassAllroundAllstudent(Long lessonNo) {
+
+        double arr[] = new double[21];
+
+        List<LessonRound> timelist = lessonRoundRepository.findByLessonNo(lessonNo);
+
+        for (LessonRound lr : timelist) {
+
+            int count = 1;
+
+            List<AttentionDto> lrlist = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lr.getLessonRoundStartDatetime(), lr.getLessonRoundEndDatetime());
+
+            for (AttentionDto ad : lrlist) {
+                arr[count] += ad.getAvg_value();
+                count++;
+            }
+
+            // 나누기?
+
+        }
+
+        return arr;
+
+
+    }
+
+//    // 하나의 수업의 모든 회차 집중도(한명 학생) 20구간
+//    public double[] oneClassAllroundOnestudent(Long lessonNo, Long userNo) {
+//
+//        double arr[] = new double[21];
+//
+//        List<LessonRound> timelist = lessonRoundRepository(lessonNo);
+//
+//        for (LessonRound lr : timelist) {
+//
+//            int count = 1;
+//
+//            List<AttentionDto> lrlist = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lr.getLessonRoundStartDatetime(), lr.getLessonRoundEndDatetime());
+//
+//            for (AttentionDto ad : lrlist) {
+//                arr[count] += ad.getAvg_value();
+//                count++;
+//            }
+//
+//
+//        }
+//
+//        return arr;
+//
+//
+//    }
 
 
 }
