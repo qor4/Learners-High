@@ -1,4 +1,3 @@
-import { colors } from "@material-ui/core";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
@@ -80,6 +79,13 @@ class ApexChart extends React.Component {
                 type: { chartType },
                 fontFamily: "Pretendard-Regular, sans-serif",
                 borderColor: "#000",
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        offset: -10,
+                    },
+                },
             },
             labels: labels,
             colors: ["#CAF0F8", "#90E0EF", "#00B4D8", "#0077B6", "#023E8A"],

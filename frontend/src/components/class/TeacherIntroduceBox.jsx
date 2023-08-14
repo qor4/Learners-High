@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import { Container, Grid } from "@material-ui/core";
-import tokenHttp, { url } from "../../api/APIPath";
+import { url } from "../../api/APIPath";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
@@ -64,14 +64,16 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
         if (teacherNo) {
             // 강사의 모든 수업 총 만족도 GET 요청
             axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
-                setTeacherCsatLesson(response.data.result);
-                setCsatLessonCount(response.data.satiCnt);
+                const lessonData = response.data.result;
+                setTeacherCsatLesson(lessonData.result.toFixed(1));
+                setCsatLessonCount(lessonData.totalCnt);
             });
 
             // 강사에 대한 모든 총 만족도 GET 요청
             axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
-                setTeacherCsatTeacher(response.data.result);
-                setCsatTeacherCount(response.data.satiCnt);
+                const teacherData = response.data.result;
+                setTeacherCsatTeacher(teacherData.result.toFixed(1));
+                setCsatTeacherCount(teacherData.totalCnt);
             });
         }
     }, [teacherNo]);
@@ -96,21 +98,21 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                             <div>
                                 <strong>수업 만족도</strong>
                                 <span>
-                                    😍{" "}
+                                    ⭐{" "}
                                     {isNaN(teacherCsatLesson)
                                         ? "데이터 없음"
                                         : teacherCsatLesson}{" "}
-                                    ( {csatLessonCount} )
+                                    ( {csatLessonCount}명 )
                                 </span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
                                 <span>
-                                    😍{" "}
+                                    ⭐{" "}
                                     {isNaN(teacherCsatTeacher)
                                         ? "데이터 없음"
                                         : teacherCsatTeacher}{" "}
-                                    ( {csatTeacherCount} )
+                                    ( {csatTeacherCount}명 )
                                 </span>
                             </div>
                         </FlexWrap>

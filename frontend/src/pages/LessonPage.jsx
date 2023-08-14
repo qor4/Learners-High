@@ -123,10 +123,10 @@ const LessonPage = () => {
                 <div>
                     <Grid container spacing={2}>
                         <Grid item xs={7}>
-                            <Banner $point>배너1 들어갈 공간입니다.</Banner>
+                            <Banner $image="assets/all-banner1.png"></Banner>
                         </Grid>
                         <Grid item xs={5}>
-                            <Banner $point>배너2 들어갈 공간입니다.</Banner>
+                            <Banner $image="assets/all-banner2.png"></Banner>
                         </Grid>
                     </Grid>
                 </div>
