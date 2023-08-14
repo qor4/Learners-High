@@ -340,7 +340,6 @@ const StudentWaitLessonRoomPage = () => {
             
             setVideoEnabled(true);
             setAudioEnabled(true);
-            // setEnterRoom(false);
             
             window.location.href=homeurl;
         }
