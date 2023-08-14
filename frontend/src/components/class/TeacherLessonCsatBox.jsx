@@ -4,12 +4,27 @@
 import { useEffect, useState } from "react";
 import { url } from "../../api/APIPath";
 import axios from "axios";
-import { ImgInfoWrap, InfoWrap } from "./TeacherIntroduceBox";
+import { ImgInfoWrap } from "./TeacherIntroduceBox";
 import { styled } from "styled-components";
+import { InfoRateWrap, StyledRateWrap } from "../../pages/EduTeacherLessonPage";
+
+// 차트
+import ApexChart from "../chart/ApexChart";
 
 export const StyledChart = styled.div`
     width: 35%;
-    background-color: red;
+`;
+
+const ChartRateWrap = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    & > *:not(:first-child) {
+        margin-top: 2rem;
+    }
 `;
 
 const TeacherLessonCsatBox = ({ userNo }) => {
@@ -18,43 +33,92 @@ const TeacherLessonCsatBox = ({ userNo }) => {
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0); // 강사 총 만족도
     const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
 
+    const initialState = {
+        oneCnt: 0,
+        twoCnt: 0,
+        threeCnt: 0,
+        fourCnt: 0,
+        fiveCnt: 0,
+    };
+    const [csatLessonDataSet, setCsatLessonDataSet] = useState(initialState);
+    const [csatTeacherDataSet, setCsatTeacherDataSet] = useState(initialState);
+
     useEffect(() => {
         // 강사의 모든 수업 총 만족도 GET 요청
         axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
-            console.log(response.data.result);
-            setTeacherCsatLesson(response.data.result);
-            setCsatLessonCount(response.data.satiCnt);
+            const lessonData = response.data.result;
+            const lessonDataSet = {
+                oneCnt: lessonData.oneCnt,
+                twoCnt: lessonData.twoCnt,
+                threeCnt: lessonData.threeCnt,
+                fourCnt: lessonData.fourCnt,
+                fiveCnt: lessonData.fiveCnt,
+            };
+            setCsatLessonDataSet(lessonDataSet);
+            setTeacherCsatLesson(lessonData.result);
+            setCsatLessonCount(lessonData.totalCnt);
         });
 
         // 강사에 대한 모든 총 만족도 GET 요청
         axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
-            console.log(response);
-            setTeacherCsatTeacher(response.data.result);
-            setCsatTeacherCount(response.data.satiCnt);
+            const teacherData = response.data.result;
+            const teacherDataSet = {
+                oneCnt: teacherData.oneCnt,
+                twoCnt: teacherData.twoCnt,
+                threeCnt: teacherData.threeCnt,
+                fourCnt: teacherData.fourCnt,
+                fiveCnt: teacherData.fiveCnt,
+            };
+            setCsatTeacherDataSet(teacherDataSet);
+            setTeacherCsatTeacher(teacherData.result);
+            setCsatTeacherCount(teacherData.totalCnt);
         });
     }, [userNo]);
+
     return (
         <>
             <ImgInfoWrap>
-                {/* 분석 차트가 들어갈 공간입니다!@@@ */}
-                <StyledChart>차트 들어가욧</StyledChart>
                 {/* 수업 총 만족도와 강사 총 만족도 */}
-                <InfoWrap>
-                    <div>
-                        수업 총 만족도 :{" "}
-                        {isNaN(teacherCsatLesson)
-                            ? "데이터 없음"
-                            : teacherCsatLesson}{" "}
-                        ( {csatLessonCount} )
-                    </div>
-                    <div>
-                        강사 총 만족도 :{" "}
-                        {isNaN(teacherCsatTeacher)
-                            ? "데이터 없음"
-                            : teacherCsatTeacher}{" "}
-                        ( {csatTeacherCount} )
-                    </div>
-                </InfoWrap>
+                <ChartRateWrap>
+                    <StyledRateWrap>
+                        <InfoRateWrap>
+                            <InfoRateWrap>
+                                <div>
+                                    <strong>수업 총 만족도</strong>
+                                </div>
+                                <div>
+                                    {isNaN(teacherCsatLesson)
+                                        ? "데이터 없음"
+                                        : `⭐ ${teacherCsatLesson}`}{" "}
+                                    ( {csatLessonCount}명 )
+                                </div>
+                            </InfoRateWrap>
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                seriesData={csatLessonDataSet}
+                            />
+                        </InfoRateWrap>
+                        <InfoRateWrap>
+                            <InfoRateWrap>
+                                <div>
+                                    <strong>강사 총 만족도</strong>
+                                </div>
+                                <div>
+                                    {isNaN(teacherCsatTeacher)
+                                        ? "데이터 없음"
+                                        : `⭐ ${teacherCsatTeacher}`}{" "}
+                                    ( {csatTeacherCount}명 )
+                                </div>
+                            </InfoRateWrap>
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                seriesData={csatTeacherDataSet}
+                            />
+                        </InfoRateWrap>
+                    </StyledRateWrap>
+                </ChartRateWrap>
             </ImgInfoWrap>
         </>
     );

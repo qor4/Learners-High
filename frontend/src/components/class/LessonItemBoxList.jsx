@@ -14,6 +14,7 @@ const StyledBoxLink = styled(Link)`
 
 const LessonItemBoxList = ({ lessonList }) => {
     const userType = useSelector((state) => state.user.userType);
+    const userNo = useSelector((state) => state.user.userNo);
 
     console.log(lessonList);
     return (
@@ -23,8 +24,8 @@ const LessonItemBoxList = ({ lessonList }) => {
                     key={`${lessonInfo.userNo}-${index}`}
                     to={
                         userType === "T"
-                            ? `/edu/teacher/${lessonInfo.userNo}/${lessonInfo.lessonNo}`
-                            : `/edu/student/${lessonInfo.userNo}/${lessonInfo.lessonNo}`
+                            ? `/edu/teacher/${userNo}/${lessonInfo.lessonNo}`
+                            : `/edu/student/${userNo}/${lessonInfo.lessonNo}`
                     }
                 >
                     <LessonItemBox

@@ -59,6 +59,9 @@ const DataLists = styled.div`
     z-index: 10;
     width: 13.35rem;
 
+    overflow: hidden;
+    font-size: 0.875rem;
+
     border-radius: 0.75rem;
     border: 1px solid black;
     box-sizing: border-box;

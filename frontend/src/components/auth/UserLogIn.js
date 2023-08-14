@@ -20,6 +20,18 @@ const ButtonWrap = styled.div`
     }
 `;
 
+const StyledSmallText = styled.div`
+    font-size: 1rem;
+    color: #474747;
+    text-align: right;
+    margin-top: 0.5rem;
+
+    &:hover {
+        color: #303030;
+        font-weight: bold;
+    }
+`;
+
 const UserLogIn = (props) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
@@ -38,7 +50,7 @@ const UserLogIn = (props) => {
     };
 
     const userLogIn = () => {
-        console.log(logInForm, "로그인")
+        console.log(logInForm, "로그인");
         axios
             .post(`${url}/user/login`, logInForm, {
                 headers: { "Content-Type": "application/json" },
@@ -62,10 +74,9 @@ const UserLogIn = (props) => {
                     alert("로그인 실패!");
                 }
             })
-            .catch((err)=> {
-                alert("로그인이 실패했습니다.")
-            })
-
+            .catch((err) => {
+                alert("로그인이 실패했습니다.");
+            });
     };
 
     const handleKeyPress = (e) => {
@@ -75,8 +86,8 @@ const UserLogIn = (props) => {
     };
 
     const kakaoLogIn = (e) => {
-        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${url}/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`
-    }
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${url}/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`;
+    };
     return (
         <>
             <form onSubmit={(e) => e.preventDefault()}>
@@ -104,15 +115,28 @@ const UserLogIn = (props) => {
                     <Button type="button" $fullWidth $point onClick={userLogIn}>
                         로그인
                     </Button>
-                    <Button type="button" $fullWidth $kakao onClick={kakaoLogIn}>
+                    <Button
+                        type="button"
+                        $fullWidth
+                        $kakao
+                        onClick={kakaoLogIn}
+                    >
                         카카오로그인
                     </Button>
                     <Link to="/join">
-                        <Button type="button" onClick={props.onClose} $fullWidth $skyBlue>
+                        <Button
+                            type="button"
+                            onClick={props.onClose}
+                            $fullWidth
+                            $skyBlue
+                        >
                             회원가입
                         </Button>
                     </Link>
                 </ButtonWrap>
+                <Link to="">
+                    <StyledSmallText>아이디 / 비밀번호 찾기</StyledSmallText>
+                </Link>
             </form>
 
             {/* <KakaoPassing code={code}/> */}
