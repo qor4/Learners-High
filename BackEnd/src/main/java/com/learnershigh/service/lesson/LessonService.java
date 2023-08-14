@@ -90,6 +90,7 @@ public class LessonService {
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setTotalStudent(lessonDomain.getTotalStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
+            lessonListDto.setUserNo(lessonDomain.getUserNo().getUserNo());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
@@ -206,12 +207,16 @@ public class LessonService {
     }
 
     // 메인페이지 TOP5 출력
-    public List<LessonListDto> mainTop5() {
-        List<Lesson> lessonlist = lessonRepository.findTop5ByOrderByLessonViewCountDesc();
+    public List<LessonListDto> mainTop4() {
+        List<Lesson> lessonlist = lessonRepository.findTop4ByOrderByLessonViewCountDesc();
 
         List<LessonListDto> returnlist = new ArrayList<>();
 
         for (Lesson cla : lessonlist) {
+
+            if(cla.getLessonStatus().equals("작성 중"))
+                continue;
+
             LessonListDto clas = new LessonListDto();
 
             clas.setLessonNo(cla.getLessonNo());

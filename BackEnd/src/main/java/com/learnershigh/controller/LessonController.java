@@ -185,7 +185,7 @@ public class LessonController {
     @GetMapping("/list/main")
     public ResponseEntity<CustomResponseBody> mainTop5() {
         CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
-        responseBody.setResult(lessonService.mainTop5());
+        responseBody.setResult(lessonService.mainTop4());
         return ResponseEntity.ok().body(responseBody);
     }
 
