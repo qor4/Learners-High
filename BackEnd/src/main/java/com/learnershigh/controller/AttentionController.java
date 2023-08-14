@@ -28,10 +28,12 @@ public class AttentionController {
         attentionService.saveAttentionRate(saveAttentionRateDto);
         return ResponseEntity.ok().body(responseBody);
     }
-//    @GetMapping("/test")
-//    public List<Object> test(){
-//        return mongoDBService.test();
-//    }
+    @GetMapping("/test")
+    public ResponseEntity<CustomResponseBody> test(){
+        CustomResponseBody responseBody = new CustomResponseBody<>("ss");
+        responseBody.setResult(attentionService.test());
+        return ResponseEntity.ok().body(responseBody);
+    }
 
     //  그 수업을 듣는 모든 학생의 집중도 평균 20구간
     @GetMapping("lesson/allstudent/attention-avg")

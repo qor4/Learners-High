@@ -95,11 +95,11 @@ const Header = () => {
                     setLessonNo(res.data.result.lessonNo);
                     return;
                 }
-                navigate(`/lesson/join`);
+                navigate(`/lesson/join`, {state: {isInterLoading:true}});
             })
             .catch((err) => {
                 console.log(err, "에러내용");
-                navigate(`/lesson/join`);
+                navigate(`/lesson/join`, {state: {isInterLoading:true}});
             });
     };
     const initControllLessonJoin = () => {
@@ -201,7 +201,7 @@ const Header = () => {
             {controlLessonJoin ? (
                 <ClassJoinCheckModal
                     isUpdated={controlLessonJoin}
-                    onDataChange={initControllLessonJoin}
+                    initControllLessonJoin={initControllLessonJoin}
                     lessonNo={lessonNo ? lessonNo : null}
                 />
             ) : null}

@@ -140,32 +140,121 @@ const StyledClassIntro = styled.div`
     }
 `;
 
-const ClassJoin = () => {
+const ClassJoin = ({
+    changeChildPage,
+    ParentLessonDataSet,
+    ParentLessonRoundDataSet,
+    // ParentThumbnailURL,
+    ParentIsUpdated,
+}) => {
     const navigate = useNavigate();
     const location = useLocation();
     // 업데이트 "다음"버튼 눌렀으면 그냥 "isUpdated를 false로 바꿔야 axios요청 안보낸다."
-    const [isUpdated, setIsUpdated] = useState(location.state ? location.state.isUpdated : false)
-    console.log(isUpdated, "업데이트 할거")
+    const [isUpdated, setIsUpdated] = useState(
+        location.state ? location.state.isUpdated : false
+    );
     const userNo = useSelector((state) => state.user.userNo);
-    const [lessonNo, setLessonNo] = useState(location.state ? location.state.lessonNo : "");
+    const [lessonNo, setLessonNo] = useState(
+        location.state ? location.state.lessonNo : ""
+    );
+    // 초기 데이터에 들어갈 녀석들
+    const [lessonName, setLessonName] = useState(
+        ParentLessonDataSet.lessonName
+    );
+    const [lessonThumbnailImg, setLessonThumbnailImg] = useState(
+        ParentLessonDataSet.lessonThumbnailImg
+    );
+    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState(
+        ParentLessonDataSet.lessonThumbnailInfo
+    );
+    const [lessonInfo, setLessonInfo] = useState(
+        ParentLessonDataSet.lessonInfo
+    );
+    const [lessonTypeName, setLessonTypeName] = useState(
+        ParentLessonDataSet.lessonTypeName
+    );
+    const [lessonTypeNo, setLessonTypeNo] = useState(
+        ParentLessonDataSet.lessonTypeNo
+    );
+    const [maxStudent, setMaxStudent] = useState(
+        ParentLessonDataSet.maxStudent
+    );
+    const [lessonPrice, setLessonPrice] = useState(
+        ParentLessonDataSet.lessonPrice
+    );
 
-    const [lessonName, setLessonName] = useState("");
-    const [lessonThumbnailImg, setLessonThumbnailImg] = useState(null);
-    const [lessonThumbnailInfo, setLessonThumbnailInfo] = useState("");
-    const [lessonInfo, setLessonInfo] = useState("");
+    useEffect(() => {
+        if (ParentLessonDataSet.lessonThumbnailImg && !ParentIsUpdated) {
+            const imageURL = URL.createObjectURL(
+                ParentLessonDataSet.lessonThumbnailImg
+            );
+            setThumbnailURL(imageURL);
+        }
+    }, [ParentLessonDataSet.lessonThumbnailImg]);
+
+    useEffect(() => {
+        if (ParentIsUpdated) {
+            if (isUpdated) {
+                tokenHttp
+                    .get(`${url}/lesson/writing/info/${lessonNo}`)
+                    .then((res) => {
+                        const {
+                            lessonTypeNo,
+                            lessonTypeName,
+                            lessonName,
+                            lessonInfo,
+                            maxStudent,
+                            lessonPrice,
+                            lessonThumbnailImg,
+                            lessonThumbnailInfo,
+                        } = res.data.result;
+                        setLessonTypeNo(lessonTypeNo);
+                        setLessonTypeName(lessonTypeName);
+                        setLessonName(lessonName);
+                        setLessonInfo(lessonInfo);
+                        setMaxStudent(maxStudent);
+                        setLessonPrice(lessonPrice);
+                        setLessonThumbnailImg(lessonThumbnailImg);
+                        setLessonThumbnailInfo(lessonThumbnailInfo);
+                    });
+            }
+        }
+
+        if (ParentIsUpdated) {
+            tokenHttp
+                .get(`${url}/s3/thumbnail-load/${lessonNo}`)
+                .then((res) => {
+                    console.log(res, "S3서버로 간다");
+                    setThumbnailURL(res.data.resultMsg);
+                });
+        }
+    }, []);
+
+    const nextPage = () => {
+        const data = {
+            lessonInfo: lessonInfo,
+            lessonName: lessonName,
+            lessonPrice: lessonPrice,
+            lessonStatus: "작성 중",
+            lessonThumbnailImg: lessonThumbnailImg,
+            lessonThumbnailInfo: lessonThumbnailInfo,
+            lessonTypeNo: lessonTypeNo,
+            lessonTypeName: lessonTypeName,
+            maxStudent: maxStudent,
+            userNo: userNo,
+            lessonNo: lessonNo,
+        };
+        console.log(data, "이게 데이터임");
+        changeChildPage(data);
+        // navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
+    };
 
     // const [totalStudent, setTotalStudent] = useState(0) : 총 학생 수는 백엔드에서 처리함.
 
-    const [subjectName, setSubjectName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
-    const [chooseLessonTypeNo, setChooseLessonTypeNo] = useState(null);
-
-    const [maxStudent, setMaxStudent] = useState(0);
-    const [lessonPrice, setLessonPrice] = useState(0);
 
     // API가 완료되면 밑에 것들로 바꿀 것.
-    // const subjectData = ["프로게이밍", "프로그래밍", "국어", "한국사"]; // 백엔드 요청해서 과목 분류 싹 받기.
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([]);
     useEffect(() => {
@@ -173,32 +262,6 @@ const ClassJoin = () => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
-
-        // 작성중인 정보가 있다!
-        if (isUpdated) {
-            tokenHttp.get(`${url}/lesson/writing/info/${lessonNo}`)
-            .then(res => {
-                console.log(res, "작성중인 정보")
-                const {lessonTypeNo, lessonTypeName, lessonName, lessonInfo, maxStudent, lessonPrice, lessonThumbnailImg, lessonThumbnailInfo} = res.data.result
-                setChooseLessonTypeNo(lessonTypeNo)
-                setSubjectName(lessonTypeName)
-                setLessonName(lessonName)
-                setLessonInfo(lessonInfo)
-                setMaxStudent(maxStudent)
-                setLessonPrice(lessonPrice)
-                setLessonThumbnailImg(lessonThumbnailImg)
-                setLessonThumbnailInfo(lessonThumbnailInfo)
-                // setIsUpdated(false) // 아직 false로 바꾸지 마. round에서 location.state에 false로 넘겨야함.
-            })
-            .then(()=> {
-                tokenHttp.get(`${url}/s3/thumbnail-load/${lessonNo}`)
-                .then(res=> {
-                    console.log(res, "S3서버로 간다")
-                    setThumbnailURL(res.data.resultMsg)
-                    
-                })
-            })
-        }
     }, []);
 
     // 강의 이름(lessonName) input 박스에Name을 때
@@ -211,14 +274,13 @@ const ClassJoin = () => {
 
     // 과목 이름 input 박스에 입력했을 때
     const handleSubjectChange = (event) => {
-        setSubjectName(event.target.value);
+        setLessonTypeName(event.target.value);
     };
 
     /** 과목 이름 검색 버튼 클릭 => 한 글자라도 포함되어 있으면 검색 */
     const handleSearchClick = () => {
         const filteredResults = lessonTypeList.filter((item) => {
-            console.log(item, "클릭");
-            return item.lessonTypeName.includes(subjectName);
+            return item.lessonTypeName.includes(lessonTypeName);
         });
         setSearchResults(filteredResults);
         setSearchClicked(true);
@@ -226,15 +288,15 @@ const ClassJoin = () => {
 
     // 검색을 통해 나온 과목 li를 클릭했을 때
     const selectedResult = (rlt) => {
-        setSubjectName(rlt.lessonTypeName);
-        setChooseLessonTypeNo(rlt.lessonTypeNo);
+        setLessonTypeName(rlt.lessonTypeName);
+        setLessonTypeNo(rlt.lessonTypeNo);
         setSearchClicked(false);
-        // console.log(subjectName)
+        // console.log(lessonTypeName)
         console.log(rlt, "이벤트"); // 이슈 해결! () => 함수(값)
     };
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
-    // 썸네일 이미지 넣는 URL
+    // 썸네일 이미지 넣는 URL -> 문제 1순위
     const [thumbnailURL, setThumbnailURL] = useState("");
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -291,7 +353,7 @@ const ClassJoin = () => {
             lessonStatus: "작성 중",
             // lessonThumbnailImg: lessonThumbnailImg,
             lessonThumbnailInfo: lessonThumbnailInfo,
-            lessonTypeNo: chooseLessonTypeNo, // 미정
+            lessonTypeNo: lessonTypeNo, // 미정
             maxStudent: maxStudent,
             userNo: userNo, // 임시
         };
@@ -301,8 +363,6 @@ const ClassJoin = () => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data, "resData");
-                console.log(res.data.result);
                 const { lessonNo } = res.data.result;
                 setLessonNo(lessonNo);
                 return lessonNo;
@@ -324,27 +384,78 @@ const ClassJoin = () => {
                         .then((res) => console.log(res))
                         .catch((err) => console.log(err));
                 }
+                return lessonNo;
             })
-            .catch((err) => console.log(err, "에러")); // 여기에 강의개설 실패 메시지
+            // 강의 회차 갑니다.
+            .then((lessonNo) => {
+                if (ParentLessonRoundDataSet.length === 0) return;
+                ParentLessonRoundDataSet.map((item) => {
+                    item.lessonNo = lessonNo;
+                });
+                tokenHttp
+                    .post(
+                        `${url}/lesson/join/round`,
+                        ParentLessonRoundDataSet,
+                        { headers: { "Content-Type": "application/json" } }
+                    )
+                    .then((res) => {
+                        console.log(res, "강의세부회차 성공");
+                        const lessonRoundNoDataSet = res.data.result;
+                        for (
+                            let i = 0;
+                            i < ParentLessonRoundDataSet.length;
+                            i++
+                        ) {
+                            if (
+                                ParentLessonRoundDataSet[i]
+                                    .lessonRoundFileOriginName
+                            ) {
+                                console.log(
+                                    lessonRoundNoDataSet[i],
+                                    "회차정보"
+                                );
+                                const formData = new FormData();
+                                console.log(
+                                    ParentLessonRoundDataSet[i]
+                                        .lessonRoundFileName,
+                                    "파일이니?"
+                                );
+                                formData.append(
+                                    "multipartFile",
+                                    ParentLessonRoundDataSet[i]
+                                        .lessonRoundFileName
+                                );
+                                tokenHttp
+                                    .post(
+                                        `${url}/s3/upload/data/${Number(
+                                            lessonNo
+                                        )}/${Number(
+                                            lessonRoundNoDataSet[i]
+                                                .lessonRoundNo
+                                        )}`,
+                                        formData,
+                                        {
+                                            headers: {
+                                                "Content-Type":
+                                                    "multipart/form-data",
+                                            },
+                                        }
+                                    )
+                                    .then((res) =>
+                                        console.log(res, "학습자료 전송 성공")
+                                    )
+                                    .catch((err) =>
+                                        console.log(err, "학습자료 전송 실패")
+                                    );
+                            }
+                        }
+                    });
+            })
+            .catch((err) => {
+                alert("임시저장 실패");
+                console.log(err, "종합 에러");
+            }); // 여기에 강의개설 실패 메시지
     };
-    const nextPage = () => {
-        // sendDataToServer()
-        console.log(data, "classJoin임");
-        navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
-    };
-    const data = {
-        lessonInfo: lessonInfo,
-        lessonName: lessonName,
-        lessonPrice: lessonPrice,
-        lessonStatus: "작성 중",
-        lessonThumbnailImg: lessonThumbnailImg,
-        lessonThumbnailInfo: lessonThumbnailInfo,
-        lessonTypeNo: chooseLessonTypeNo,
-        maxStudent: maxStudent,
-        userNo: userNo ? userNo : 1, //
-        lessonNo: lessonNo,
-    };
-    console.log(searchClicked);
     return (
         <>
             <MenuCard title="기본 정보 입력">
@@ -364,13 +475,15 @@ const ClassJoin = () => {
                         </FiftyWrap>
                         <FiftyWrap>
                             <InputButton>
-                                <label htmlFor="subjectName">과목 이름</label>
+                                <label htmlFor="lessonTypeName">
+                                    과목 이름
+                                </label>
                                 <div>
                                     <JoinInput
                                         type="text"
-                                        value={subjectName}
-                                        name="subjectName"
-                                        id="subjectName"
+                                        value={lessonTypeName}
+                                        name="lessonTypeName"
+                                        id="lessonTypeName"
                                         placeholder="과목명"
                                         onChange={handleSubjectChange}
                                     />
@@ -466,7 +579,7 @@ const ClassJoin = () => {
                             <label htmlFor="lessonThumbnailImg">
                                 강의 썸네일
                             </label>
-                            {lessonThumbnailImg ? (
+                            {thumbnailURL ? (
                                 <StyledImg
                                     src={thumbnailURL}
                                     alt="썸네일 사진"
@@ -526,6 +639,7 @@ const ClassJoin = () => {
                             <div className="ck">
                                 <CKEditor
                                     editor={ClassicEditor}
+                                    data={lessonInfo}
                                     value={lessonInfo}
                                     // toolbar 설정
                                     config={{
@@ -558,50 +672,16 @@ const ClassJoin = () => {
                             </div>
                         </div>
                         {/* html 에디터 =00000> 엔터 시, <p>태그 처리 수정@@@ */}
-                        <CKEditor
-                            editor={ClassicEditor}
-                            data={lessonInfo}
-                            value={lessonInfo}
-                            // toolbar 설정
-                            config={{
-                                toolbar: {
-                                    items: [
-                                        "heading",
-                                        "|",
-                                        "bold",
-                                        "italic",
-                                        "link",
-                                        "bulletedList",
-                                        "numberedList",
-                                        "|",
-                                        "blockQuote",
-                                        "insertTable",
-                                        "undo",
-                                        "redo",
-                                    ],
-                                },
-                                table: {
-                                    contentToolbar: [
-                                        "tableColumn",
-                                        "tableRow",
-                                        "mergeTableCells",
-                                    ],
-                                },
-                            }}
-                            onBlur={handleEditorChange}
-                        />
                     </div>
                 </Container>
             </MenuCard>
-
+            {/* 버튼 모음 => 이후 수정@@@ */}
             <Container maxWidth="xs">
                 <ButtonWrap>
                     <Button onClick={sendDataToServer}>임시 저장</Button>
-                    <Link to="/lesson/round/join" state={{ data }}>
-                        <Button $point onClick={nextPage}>
-                            다음
-                        </Button>
-                    </Link>
+                    <Button point onClick={nextPage}>
+                        다음
+                    </Button>
                 </ButtonWrap>
             </Container>
         </>
