@@ -103,6 +103,8 @@ const StudentWaitLessonRoomPage = () => {
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(false);
 
+    const es = useRef();
+
     const toggleVideo = () => {
         setVideoEnabled( prevState => !prevState);
     };
@@ -115,17 +117,31 @@ const StudentWaitLessonRoomPage = () => {
         window.addEventListener('blur',focusOutLessonRoom);  
         window.addEventListener('focus',focusInLessonRoom); 
 
-        // 알림
-        const sse = new EventSource(
-            `${url}/notification/subscribe/${userId}`
-        );
-        sse.onopen = () => {
-            console.log("SSEONOPEN==========", sse);
-        };
+        // // 알림
+        // const sse = new EventSource(
+        //     `${url}/notification/subscribe/${userId}`
+        // );
+        // sse.onopen = () => {
+        //     console.log("SSEONOPEN==========", sse);
+        // };
         
-        sse.addEventListener("send", function (event) {
+        // sse.addEventListener("send", function (event) {
+        //     console.log("ADDEVENTLISTENER==========", event.data);
+        // });
+
+        es.current = new EventSource(  `${url}/notification/subscribe/${userId}`);
+
+        es.current.onopen = (e) => {
+            console.log("SSEONOPEN==========", es);
+        };
+
+        es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
         });
+
+        es.current.onerror = (err) => {
+            console.log('[sse] error', { err });
+        };
 
         if (!eyeTracker.current && !enterRoom) {
             eyeTracker.current = new EasySeeso();
@@ -149,12 +165,14 @@ const StudentWaitLessonRoomPage = () => {
                 );
                 setSeesoInit(true);
                 setIsTest(true);
+                
             })();
         }
                     
         return ()=>{
             window.removeEventListener('blur',focusOutLessonRoom);  
             window.removeEventListener('focus',focusInLessonRoom); 
+            es.current.close()
         }
 
     }, []);

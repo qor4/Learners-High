@@ -217,6 +217,7 @@ const TeacherLessonRoomPage = () => {
 
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
+    const es = useRef();
 
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
@@ -226,24 +227,41 @@ const TeacherLessonRoomPage = () => {
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
-        // 알림
-        const sse = new EventSource(
-            `${url}/notification/subscribe/${userId}`
-        );
-        sse.onopen = () => {
-            console.log("SSEONOPEN==========", sse);
+        // // 알림
+        // const sse = new EventSource(
+        //     `${url}/notification/subscribe/${userId}`
+        // );
+        // sse.onopen = () => {
+        //     console.log("SSEONOPEN==========", sse);
+        // };
+        // sse.addEventListener("isActive", function (event) {
+        //     console.log("ADDEVENTLISTENER==========");
+        //     const tmp = JSON.parse(event.data);
+        //     tmp.status = Boolean(tmp.status);
+        //     console.log(tmp);
+        // });
+
+        es.current = new EventSource( `${url}/notification/subscribe/${userId}`);
+
+        es.current.onopen = (e) => {
+            console.log("SSEONOPEN==========", es);
         };
-        sse.addEventListener("isActive", function (event) {
+
+        es.current.onmessage = (event) => {
             console.log("ADDEVENTLISTENER==========");
             const tmp = JSON.parse(event.data);
             tmp.status = Boolean(tmp.status);
             console.log(tmp);
-        });
+        };
 
+        es.current.onerror = (err) => {
+            console.log('[sse] error', { err });
+        };
         // 윈도우 객체에 화면 종료 이벤트 추가
         joinSession(); // 세션 입장
         return () => {
             window.removeEventListener('beforeunload',leaveSession);
+            es.current.close();
         };
     }, []);
 
