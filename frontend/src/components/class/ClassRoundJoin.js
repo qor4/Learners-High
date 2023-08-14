@@ -403,9 +403,6 @@ const ClassRoundJoin = ({
                                             : false
                                     }
                                     onDataChange={getDateData}
-                                    lessonRunningTime={
-                                        item.lessonRunningTimeForEnd
-                                    }
                                 />
                             </>
                         );

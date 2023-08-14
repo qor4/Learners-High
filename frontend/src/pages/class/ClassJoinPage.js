@@ -75,7 +75,7 @@ const ClassJoinPage = () => {
         userNo: userNo,
     }
     const [lessonDataSet, setLessonDataSet] = useState(initialLessonDataSet)
-
+    const currentDate = dayjs().add(7, 'day')
     // lessonRoundJoin 처리 부분
     const initialLessonRoundItem = {
         lessonNo: lessonNo, // 임시
@@ -83,8 +83,8 @@ const ClassJoinPage = () => {
         lessonRoundTitle: "",
         lessonRoundFileName: "", // S3 접근
         lessonRoundFileOriginName: "",
-        lessonRoundStartDatetime: "",
-        lessonRoundEndDatetime: "",
+        lessonRoundStartDatetime: currentDate.toISOString(),
+        lessonRoundEndDatetime: null,
         isHomework: false,
 
         lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
@@ -164,7 +164,6 @@ const ClassJoinPage = () => {
             setStartDate(roundData.startDate)
         }
         setIsLessonJoin(!isLessonJoin)
-
     }
 
     return (
