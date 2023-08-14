@@ -30,10 +30,10 @@ public class AttentionService {
     public void saveAttentionRate(SaveAttentionRateDto saveAttentionRateDto) {
         LessonRoundAttentionRate lessonRoundAttentionRate = new LessonRoundAttentionRate();
         AttentionRateMetadataDto attentionRateMetadataDto = new AttentionRateMetadataDto();
-
         attentionRateMetadataDto.setLessonNo(saveAttentionRateDto.getLessonNo());
         attentionRateMetadataDto.setLessonRoundNo(saveAttentionRateDto.getLessonRoundNo());
         attentionRateMetadataDto.setUserNo(saveAttentionRateDto.getUserNo());
+        attentionRateMetadataDto.setStatus(saveAttentionRateDto.getStatus());
         lessonRoundAttentionRate.setMetadata(attentionRateMetadataDto);
         lessonRoundAttentionRate.setTimestamp(LocalDateTime.now());
         lessonRoundAttentionRate.setRate(saveAttentionRateDto.getRate());
@@ -41,7 +41,7 @@ public class AttentionService {
     }
 
     public List<AttentionDto> test() {
-        return lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(1L, 1L, LocalDateTime.now(), LocalDateTime.now());
+        return lessonRoundAttentionRateRepository.test();
     }
 
 
@@ -69,8 +69,8 @@ public class AttentionService {
         double sum = 0.0;
 
         for (AttentionDto ad : list) {
-            System.out.println(ad.getAvg_value());
-            sum += ad.getAvg_value();
+            System.out.println(ad.getAvgValue());
+            sum += ad.getAvgValue();
         }
 
         System.out.println(sum);
@@ -97,15 +97,15 @@ public class AttentionService {
         AttentionMaxMinTime attentionMaxMinTime = new AttentionMaxMinTime();
 
         for (AttentionDto ad : list) {
-            System.out.println(ad.getAvg_value());
+            System.out.println(ad.getAvgValue());
 
-            if (ad.getAvg_value() > max) {
-                max = ad.getAvg_value();
+            if (ad.getAvgValue() > max) {
+                max = ad.getAvgValue();
                 maxStartTime = ad.getId().getMax();
                 maxEndTime = ad.getId().getMin();
             }
-            if (ad.getAvg_value() < min) {
-                min = ad.getAvg_value();
+            if (ad.getAvgValue() < min) {
+                min = ad.getAvgValue();
                 minStartTime = ad.getId().getMax();
                 maxEndTime = ad.getId().getMin();
             }
@@ -135,8 +135,8 @@ public class AttentionService {
         double sum = 0.0;
 
         for (AttentionDto lrar : list) {
-            System.out.println(lrar.getAvg_value());
-            sum += lrar.getAvg_value();
+            System.out.println(lrar.getAvgValue());
+            sum += lrar.getAvgValue();
         }
 
         System.out.println(sum);
@@ -163,15 +163,15 @@ public class AttentionService {
         AttentionMaxMinTime attentionMaxMinTime = new AttentionMaxMinTime();
 
         for (AttentionDto ad : list) {
-            System.out.println(ad.getAvg_value());
+            System.out.println(ad.getAvgValue());
 
-            if (ad.getAvg_value() > max) {
-                max = ad.getAvg_value();
+            if (ad.getAvgValue() > max) {
+                max = ad.getAvgValue();
                 maxStartTime = ad.getId().getMax();
                 maxEndTime = ad.getId().getMin();
             }
-            if (ad.getAvg_value() < min) {
-                min = ad.getAvg_value();
+            if (ad.getAvgValue() < min) {
+                min = ad.getAvgValue();
                 minStartTime = ad.getId().getMax();
                 maxEndTime = ad.getId().getMin();
             }
@@ -205,7 +205,7 @@ public class AttentionService {
             List<AttentionDto> lrlist = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lr.getLessonRoundNo(), lr.getLessonRoundStartDatetime(), lr.getLessonRoundEndDatetime());
 
             for (AttentionDto ad : lrlist) {
-                arr[count] += ad.getAvg_value();
+                arr[count] += ad.getAvgValue();
                 count++;
             }
 

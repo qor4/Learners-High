@@ -12,4 +12,5 @@ public class SaveAttentionRateDto {
     private Long lessonNo;
     private Long userNo;
     private Float rate;
+    private int status;
 }
