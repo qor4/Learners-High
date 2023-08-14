@@ -8,21 +8,23 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class AttentionDto {
 
-        public Id id;
-        public float avg_value;
+    public Id id;
+    public float avgValue;
+    public int count0;
+    public int count1;
+    public int count2;
 
-        @JsonIgnoreProperties(ignoreUnknown=true)
-        @Data
-        public class Id {
-            public Date min;
-            public Date max;
-        }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @Data
+    public class Id {
+        public Date min;
+        public Date max;
+    }
 
 
 }

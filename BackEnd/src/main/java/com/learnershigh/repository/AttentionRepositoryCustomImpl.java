@@ -16,7 +16,37 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     public AttentionRepositoryCustomImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
+    @Override
+    public List<AttentionDto> test() {
+        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+        MatchOperation matchOperation =
+                Aggregation.match(
+                        Criteria.where("timestamp")
+                                .gte(startDate)
+                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
+//                                .and("metadata.userNo").is(1)
+                );
+        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
+                .andOutput("rate").avg().as("avgValue")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(0))
+                                .then(1).otherwise(0)).sum()).as("count0")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(1))
+                                .then(1).otherwise(0)).sum()).as("count1")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(2))
+                                .then(1).otherwise(0)).sum()).as("count2");
 
+
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation,
+                bucketAutoOperation
+        );
+        AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
+        List<AttentionDto> objectList = results.getMappedResults();
+        return objectList;
+    }
     @Override
     public List<AttentionDto> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
 /*
@@ -51,7 +81,7 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
                                 .and("metadata.userNo").is(1)
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
-                .andOutput("rate").avg().as("avg_value");
+                .andOutput("rate").avg().as("avgValue");
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
@@ -75,7 +105,7 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
 
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
-                .andOutput("rate").avg().as("avg_value");
+                .andOutput("rate").avg().as("avgValue");
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
