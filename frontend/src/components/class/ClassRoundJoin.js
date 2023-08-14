@@ -158,7 +158,9 @@ const ClassRoundJoin = ({
         // const standDay = new Date(startDate);
         for (let i = 0; i < 7; i++) {
             console.log(startDate, "넌 시작!")
-            const standDay = startDate.add(i, 'day');
+            const beforeDay = startDate.clone()
+            const standDay = beforeDay.add(i, 'day');
+
             console.log(standDay.day(), '요일 바뀌니?', standDay)
             // 요일의 기준을 +1로 할 필요가 없다.
             days.map((day) => {
@@ -167,11 +169,12 @@ const ClassRoundJoin = ({
                     day.isSelected &&
                     Number(standDay.day()) === Number(day.code)
                     ) {
+                        console.log(standDay, "널 좀 보자 standDay")
                         console.log(standDay.year(), standDay.month(), standDay.date(), day.startHour,"연")           
                         const newDate = dayjs()
                         .year(standDay.year())
                         .month(standDay.month())
-                        .day(standDay.date())
+                        .day(standDay.date()-7)
                         .hour(Number(day.startHour))
                         .minute(Number(day.startMinute))
                         standardDate.push(newDate)
@@ -471,12 +474,12 @@ const ClassRoundJoin = ({
                             }
                         }
                     });
+                    navigate("/");
             })
             .catch((err) => {
                 alert("개설 실패");
                 console.log(err, "종합 에러");
             }); // 여기에 강의개설 실패 메시지
-        navigate("/");
     };
 
     console.log(ParentLessonDataSet)
