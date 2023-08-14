@@ -55,7 +55,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                 fiveCnt: lessonData.fiveCnt,
             };
             setCsatLessonDataSet(lessonDataSet);
-            setTeacherCsatLesson(lessonData.result);
+            setTeacherCsatLesson(lessonData.result.toFixed(1));
             setCsatLessonCount(lessonData.totalCnt);
         });
 
@@ -70,7 +70,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                 fiveCnt: teacherData.fiveCnt,
             };
             setCsatTeacherDataSet(teacherDataSet);
-            setTeacherCsatTeacher(teacherData.result);
+            setTeacherCsatTeacher(teacherData.result.toFixed(1));
             setCsatTeacherCount(teacherData.totalCnt);
         });
     }, [userNo]);

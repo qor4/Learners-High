@@ -147,10 +147,6 @@ const UserJoin = () => {
     const handleChildJobChange = (updatedJobInputList) => {
         setJobInputList(updatedJobInputList);
     };
-
-    console.log("학력이에욥~~~!!!", eduInputList);
-    console.log("경력이에욥~~~!!!", jobInputList);
-
     // 경력 및 학력 입력 버튼을 누를 때,
     const [openAddInfo, setOpenAddInfo] = useState(false);
     const handleOpenAddInfo = () => {

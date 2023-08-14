@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
 // 컴포넌트
@@ -46,6 +46,9 @@ import StudentRoomFrame from "./pages/room/StudentRoomFrame";
 import AlertTest from "./pages/room/AlertTest";
 import StudentWaitRoomFrame from "./pages/room/StudentWaitRoomFrame";
 
+import { logOutUser } from "./store/UserStore";
+import { useDispatch, useSelector } from "react-redux";
+
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
     @font-face {
@@ -88,9 +91,21 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
     const location = useLocation();
-    const hideComponent = location.pathname.startsWith(
-        "/lessonroom"
-    );
+    const hideComponent = location.pathname.startsWith("/lessonroom");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // 로그인 여부
+    const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
+    const isLoginData = JSON.parse(persistRoot.user).isLogin;
+
+    // useEffect(() => {
+    //     if (!localStorage.getItem("accessToken") && isLoginData === true) {
+    //         alert("다시 로그인해주세요!");
+    //         dispatch(logOutUser());
+    //         navigate("/");
+    //     }
+    // }, [localStorage.getItem("accessToken")]);
     // const hideComponentTeacher = location.pathname.startsWith(
     //     "/lessonroom/teacher"
     // );
@@ -99,11 +114,8 @@ function App() {
         <>
             <GlobalStyle />
             <div className="App">
-                { (!hideComponent && 
-                <Header />
-                    
-                    )}
-                
+                {!hideComponent && <Header />}
+
                 <Routes>
                     <Route path="/" element={<MainPage />}></Route>
                     <Route path="/join" element={<UserJoinPage />}></Route>
@@ -191,10 +203,7 @@ function App() {
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
-                {
-                    (!hideComponent) && (
-                        <Footer />
-                    )}
+                {!hideComponent && <Footer />}
             </div>
         </>
     );

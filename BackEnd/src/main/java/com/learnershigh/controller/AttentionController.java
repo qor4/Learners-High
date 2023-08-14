@@ -28,10 +28,12 @@ public class AttentionController {
         attentionService.saveAttentionRate(saveAttentionRateDto);
         return ResponseEntity.ok().body(responseBody);
     }
-//    @GetMapping("/test")
-//    public List<Object> test(){
-//        return mongoDBService.test();
-//    }
+    @GetMapping("/test")
+    public ResponseEntity<CustomResponseBody> test(){
+        CustomResponseBody responseBody = new CustomResponseBody<>("ss");
+        responseBody.setResult(attentionService.test());
+        return ResponseEntity.ok().body(responseBody);
+    }
 
     //  그 수업을 듣는 모든 학생의 집중도 평균 20구간
     @GetMapping("lesson/allstudent/attention-avg")
@@ -116,4 +118,17 @@ public class AttentionController {
 //        }
 //        return ResponseEntity.ok().body(responseBody);
 //    }
+
+    // 한 학생이 들은 모든 강의중 가장 집중도가 높은 수업
+    public ResponseEntity<CustomResponseBody> oneStudentMaxlessonAvg(@RequestParam Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("한 학생이 들은 모든 강의중 가장 집중도가 높은 수업");
+        try {
+            responseBody.setResult(attentionService.oneClassAllroundAllstudent(userNo));
+        } catch (Exception e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
 }

@@ -30,7 +30,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
     @Query(value = "SELECT C FROM Lesson C WHERE C.lessonStatus = '작성 중' AND C.userNo.userNo = :userNo")
     Lesson isWritingByUserNo(@Param("userNo") Long userNo);
 
-    List<Lesson> findTop5ByOrderByLessonViewCountDesc();
+    List<Lesson> findTop4ByOrderByLessonViewCountDesc();
 
     Lesson findByLessonNoAndUserNo(Long lessonNo, User userNo);
 

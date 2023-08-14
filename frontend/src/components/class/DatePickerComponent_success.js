@@ -17,6 +17,8 @@ const DatePickerComponent = (
   const customDateFormat = "yyyy-MM-dd aa h:mm"
   console.log(initialDate, "여기222?")
   
+  // useRef로 관리하기
+  const refDate = useRef(standDay)
 
   const [lessonRoundDate, setLessonRoundDate] = useState( standDay );
   // const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate) // 너야!!!!
@@ -55,11 +57,25 @@ const DatePickerComponent = (
       }}
       showTimeSelect={!initial}
       timeFormat="HH:mm"
-      dateFormat={"yyyy년 MM월 dd일"} // 시간 형식에 맞게 수정
+      dateFormat={!initial ? "yyyy-MM-dd h:mm aa" : "yyyy-MM-dd"} // 시간 형식에 맞게 수정
       timeIntervals={30}
       timeCaption="시작시간"
+      customInput
+      // dateFormat="yyyy-MM-dd aa h:mm"
+      // onBlur={handleButtonClick}
     />
- 
+    {/* { classRunningTime ? <>  */}
+    {/* { !initial ? <>
+    <span>진행시간</span>
+    <input 
+    type="number"
+    name="classRunningTime"
+    value={classRunningTimeState}
+    onChange={handleClassRunningTimeChange}
+    />
+    </> : null}    
+    
+    <button onClick={handleButtonClick}>날짜 입력</button> */}
     </>
   );
 };

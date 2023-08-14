@@ -1,6 +1,11 @@
 package com.learnershigh.service.etc;
 
+import com.learnershigh.domain.lesson.Lesson;
+import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.user.User;
 import com.learnershigh.repository.EmitterRepository;
+import com.learnershigh.repository.lesson.LessonRepository;
+import com.learnershigh.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +21,8 @@ public class NotificationService {
     private final static String NOTIFICATION_NAME = "notification";
 
     private final EmitterRepository emitterRepository;
-
+    private final LessonRepository lessonRepository;
+    private final UserRepository userRepository;
 
     public SseEmitter connectNotification(String userId) {
         // 새로운 SseEmitter를 만든다
@@ -38,16 +44,32 @@ public class NotificationService {
         }
         return sseEmitter;
     }
-
-    public void Request(String fromUserId, String toUserId) {
-        Optional<SseEmitter> sseEmitter = emitterRepository.get(toUserId);
+    public void isActive(Long lessonNo, String studentId, Boolean status) {
+        Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
+        Optional<SseEmitter> sseEmitter = emitterRepository.get(lesson.getUserNo().getUserId());
         if (sseEmitter.isPresent()) {
             try {
-                sseEmitter.get().send(SseEmitter.event().id(fromUserId).name("Request")
-                        .data(fromUserId + "님께서 " + toUserId + "님께 알림을 보냈습니다."));
+                sseEmitter.get().send(SseEmitter.event().id(studentId).name("isActive")
+                        .data("{").data("\"status\":\""+status+"\",").data("\"studentId\":\""+studentId+"\"").data("}"));
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
-                emitterRepository.delete(toUserId);
+                emitterRepository.delete(lesson.getUserNo().getUserId());
+            }
+        } else {
+            System.out.println("else");
+        }
+    }
+
+    public void send(String teacherId, Long studentNo) {
+        User user = userRepository.findByUserNo(studentNo);
+        Optional<SseEmitter> sseEmitter = emitterRepository.get(user.getUserId());
+        if (sseEmitter.isPresent()) {
+            try {
+                sseEmitter.get().send(SseEmitter.event().id(teacherId).name("send")
+                        .data("알림"));
+            } catch (IOException exception) {
+                // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
+                emitterRepository.delete(user.getUserId());
             }
         } else {
             System.out.println("else");
