@@ -184,56 +184,71 @@ const StudentWaitLessonRoomPage = () => {
     const saveAttentionScore = useCallback(
         (score) => {
             let currentScore = score;
-            let state = 0;
+            let status = 0;
             if (!isFocus) {
                 console.log("다른 화면 보는 중");
                 currentScore = 0;
-                state = 2;
+                status = 2;
             }else if(!videoEnabled){
                 console.log("캠 꺼져 있음");
                 currentScore = 0;
-                state = 1;
+                status = 1;
             }
             // 조건
             if (enterRoom) {
-                console.log("AttentScore : ", currentScore, state);
+                console.log("AttentScore : ", currentScore, status);
                 // mongodb server와 통신
-                //     {
-                // axios.post(
-                //     `${seesoUrl}/seeso/attention-rate`,
-                //       lessonRoundNo: Number(lessonRoundNo),
-                //       lessonNo: Number(lessonNo),
-                //       userNo: Number(userNo),
-                //       rate: Number(score),
-                //       state: Number(state)
-                //     },
-                //     {
-                //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-                //     }
-                //   )
-                //     .then((res) => {
-                //       console.log(res, "ddd");
-                //     })
-                //     .catch((err) => {
-                //       console.error(err);
-                //     });
+
+                axios.post(
+                    `${url}/attention/save`,
+                    {
+                      lessonRoundNo: Number(lessonRoundNo),
+                      lessonNo: Number(lessonNo),
+                      userNo: Number(userNo),
+                      rate: Number(score),
+                      status: Number(status)
+                    },
+                    {
+                      headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+                    }
+                  )
+                    .then((res) => {
+                      console.log(res, "ddd");
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                    });
             
                 if(attentionList.length > 5){
                     attentionList.shift();
                 }
-                attentionList.push({currentScore,state});
+                attentionList.push({currentScore,status});
 
+                if(attentionList.length > 5){
+                    // 집중도가 0.3 이하인 경우
+                    let checkAttention = attentionList.every(item => item.currentScore < 0.3);
+                    if (checkAttention) {
+                        axios.get(
+                            `${url}/notification/active/${lessonNo}/${userId}`,
+                          ).then(res =>{
+                            console.log("제대로 감 ac");
+                          }).catch(err=>{
+                            console.log("제대로 감 ac", err);
+                          });
+                    }
+                    checkAttention = attentionList.every(item => item.currentScore >= 0.3);
+                    if (checkAttention) {
+                        axios.get(
+                            `${url}/notification/disactive/${lessonNo}/${userId}`,
+                          ).then(res =>{
+                            console.log("제대로 감 dis ");
+                          }).catch(err=>{
+                            console.log("제대로 감 dis ", err);
+                          });
 
-                // 집중도가 0.3 이하인 경우
-                let checkAttention = attentionList.every(item => item.currentScore < 0.3);
-                if (checkAttention) {
-                    console.log("as");
+                    }
                 }
-                console.log(attentionList);
-                checkAttention = attentionList.every(item => item.currentScore >= 0.3);
-                if (checkAttention) {
-                    console.log("as");
-                }
+               
                 // 현재 주의를 받을 상황인가 파악
                 
             }
@@ -244,12 +259,6 @@ const StudentWaitLessonRoomPage = () => {
         console.log(
             `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
         );
-        axios.get(`${url}/notification/active/${lessonNo}/${userId}`)
-            .then(res=>{
-                console.log("제대로감")
-            }).catch(err=>{
-                console.error('잘못감');
-            });
         setAttentionScore(score);
     }, []);
 

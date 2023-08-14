@@ -46,12 +46,17 @@ public class OpenviduService {
         Session session= null;
         int cnt =0;
         while(cnt < 10){
+            try {
                 session = openvidu.getActiveSession(sessionId);
                 if(session != null){
                     session.close();
+                    logger.info("*** session close");
                     break;
                 }
-            Thread.sleep(200);
+            }catch (Exception e) {
+                logger.info("*** getActiveSession 메소드 중..."+cnt);
+            }
+            Thread.sleep(300);
             cnt++;
         }
 
