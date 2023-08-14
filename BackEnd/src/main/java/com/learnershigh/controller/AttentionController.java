@@ -103,17 +103,17 @@ public class AttentionController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    // 하나의 수업의 모든 회차 집중도(한명 학생) 20구간
-    @GetMapping("lesson/allstudent/all-attention-avg")
-    public ResponseEntity<CustomResponseBody> aggregateAttentionOnestudentAlllessonroundAvg(@RequestParam Long lessonRoundNo, @RequestParam Long userNo) {
-        CustomResponseBody responseBody = new CustomResponseBody("하나의 수업의 모든 회차 집중도(한명 학생) 20구간");
-        try {
-            responseBody.setResult(attentionService.oneClassAllroundOnestudent(lessonRoundNo, userNo));
-        } catch (Exception e) {
-            responseBody.setResultCode(-1);
-            responseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-        }
-        return ResponseEntity.ok().body(responseBody);
-    }
+//    // 하나의 수업의 모든 회차 집중도(한명 학생) 20구간
+//    @GetMapping("lesson/allstudent/all-attention-avg")
+//    public ResponseEntity<CustomResponseBody> aggregateAttentionOnestudentAlllessonroundAvg(@RequestParam Long lessonRoundNo, @RequestParam Long userNo) {
+//        CustomResponseBody responseBody = new CustomResponseBody("하나의 수업의 모든 회차 집중도(한명 학생) 20구간");
+//        try {
+//            responseBody.setResult(attentionService.oneClassAllroundOnestudent(lessonRoundNo, userNo));
+//        } catch (Exception e) {
+//            responseBody.setResultCode(-1);
+//            responseBody.setResultMsg(e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+//        }
+//        return ResponseEntity.ok().body(responseBody);
+//    }
 }

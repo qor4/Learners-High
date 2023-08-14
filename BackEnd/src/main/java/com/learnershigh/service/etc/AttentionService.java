@@ -202,7 +202,7 @@ public class AttentionService {
 
             int count = 1;
 
-            List<AttentionDto> lrlist = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lr.getLessonRoundStartDatetime(), lr.getLessonRoundEndDatetime());
+            List<AttentionDto> lrlist = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lr.getLessonRoundNo(), lr.getLessonRoundStartDatetime(), lr.getLessonRoundEndDatetime());
 
             for (AttentionDto ad : lrlist) {
                 arr[count] += ad.getAvg_value();
