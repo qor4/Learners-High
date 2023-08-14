@@ -7,7 +7,7 @@ import styled from "styled-components";
 import axios from "axios";
 
 import { Container } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
 import { HiOutlineHeart } from "react-icons/hi";
 import LessonStatusBox from "../common/LessonStatusBox";
@@ -196,7 +196,9 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                     </span>
                                 )}
                             </FlexWrap>
-                            <div>{lessonInfo.userName}</div>
+                            <Link to={`/profile/${lessonInfo.userNo}`}>
+                                <div>{lessonInfo.userName}</div>
+                            </Link>
                             <div>{lessonInfo.lessonThumbnailInfo}</div>
 
                             {$info && (

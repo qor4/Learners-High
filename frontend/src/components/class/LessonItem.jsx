@@ -46,7 +46,7 @@ const ImageIconWrap = styled.div`
 
 const LessonItem = (props) => {
     const userType = useSelector((state) => state.user.userType);
-
+    console.log(props)
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -66,7 +66,7 @@ const LessonItem = (props) => {
                         {props.lessonStatus}
                     </LessonStatusBox>
                 )}
-                
+
                 {/* 학생일 때만 찜(하트) 아이콘이 보이도록 처리 */}
                 {userType === "S" && (
                     <span>
@@ -89,7 +89,9 @@ const LessonItem = (props) => {
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <strong>{props.lessonName}</strong>
                 </Link>
-                <span>{props.userName}</span>
+                <Link to={`/profile/${props.userNo}`}>
+                    <span>{props.userName}</span>
+                </Link>
             </FlexWrap>
             {!props.$popular && (
                 <>
