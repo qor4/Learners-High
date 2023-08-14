@@ -51,41 +51,36 @@ public class SatisfactionService {
         double satiTotal = 0.0;
         double totalCnt = 0.0;
 
-        int one =0;
-        int two =0;
-        int three =0;
-        int four =0;
-        int five =0;
+        int one = 0;
+        int two = 0;
+        int three = 0;
+        int four = 0;
+        int five = 0;
 
         List<Satisfaction> satiList = satisfactionRepository.findAllByTeacherNo(userRepository.findByUserNo(teacherNo));
 
-        if(satiList.size() == 0){
+        if (satiList.size() == 0) {
             throw new IllegalStateException("저장된 만족도가 없습니다.");
         }
 
-        for(Satisfaction satisfaction : satiList){
+        for (Satisfaction satisfaction : satiList) {
 
 
-
-            if(satisfaction.getLessonRoundCsat() == 1){
+            if (satisfaction.getLessonRoundCsat() == 1) {
                 one++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 2){
+            } else if (satisfaction.getLessonRoundCsat() == 2) {
                 two++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 3){
+            } else if (satisfaction.getLessonRoundCsat() == 3) {
                 three++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 4){
+            } else if (satisfaction.getLessonRoundCsat() == 4) {
                 four++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 5){
+            } else if (satisfaction.getLessonRoundCsat() == 5) {
                 five++;
             }
             totalCnt++;
             satiTotal += satisfaction.getTeacherCsat();
         }
-        double result = satiTotal/totalCnt;
+        double result = satiTotal / totalCnt;
 
 
         System.out.println(result);
@@ -103,94 +98,138 @@ public class SatisfactionService {
         double satiTotal = 0.0;
         double totalCnt = 0.0;
 
-        int one =0;
-        int two =0;
-        int three =0;
-        int four =0;
-        int five =0;
+        int one = 0;
+        int two = 0;
+        int three = 0;
+        int four = 0;
+        int five = 0;
 
 
         List<Satisfaction> satiList = satisfactionRepository.findAllByTeacherNo(userRepository.findByUserNo(teacherNo));
 
-        if(satiList.size() == 0){
+        if (satiList.size() == 0) {
             throw new IllegalStateException("저장된 만족도가 없습니다.");
         }
 
-        for(Satisfaction satisfaction : satiList){
+        for (Satisfaction satisfaction : satiList) {
 
-
-
-            if(satisfaction.getLessonRoundCsat() == 1){
+            if (satisfaction.getLessonRoundCsat() == 1) {
                 one++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 2){
+            } else if (satisfaction.getLessonRoundCsat() == 2) {
                 two++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 3){
+            } else if (satisfaction.getLessonRoundCsat() == 3) {
                 three++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 4){
+            } else if (satisfaction.getLessonRoundCsat() == 4) {
                 four++;
-            }
-            else if(satisfaction.getLessonRoundCsat() == 5){
+            } else if (satisfaction.getLessonRoundCsat() == 5) {
                 five++;
             }
             totalCnt++;
             satiTotal += satisfaction.getLessonRoundCsat();
         }
-        double result = satiTotal/totalCnt;
+        double result = satiTotal / totalCnt;
 
         System.out.println(result);
 
-        SatiResultDto satiResultDto = new SatiResultDto(one, two, three, four, five,totalCnt, result);
+        SatiResultDto satiResultDto = new SatiResultDto(one, two, three, four, five, totalCnt, result);
 
         return satiResultDto;
 
     }
 
     // 수업당 수업 만족도 뽑기
-    public double oneLessonLectureSati(Long LessonNo) {
+    public SatiResultDto oneLessonLectureSati(Long LessonNo) {
 
         double satiTotal = 0.0;
-        double satiCnt = 0.0;
+        double totalCnt = 0.0;
+
+        int one = 0;
+        int two = 0;
+        int three = 0;
+        int four = 0;
+        int five = 0;
 
 
         List<Satisfaction> satiList = satisfactionRepository.findAllByLessonNo(lessonRepository.findByLessonNo(LessonNo));
 
-        for(Satisfaction satisfaction : satiList){
-            satiCnt++;
+        if (satiList.size() == 0) {
+            throw new IllegalStateException("저장된 만족도가 없습니다.");
+        }
+
+        for (Satisfaction satisfaction : satiList) {
+
+            if (satisfaction.getLessonRoundCsat() == 1) {
+                one++;
+            } else if (satisfaction.getLessonRoundCsat() == 2) {
+                two++;
+            } else if (satisfaction.getLessonRoundCsat() == 3) {
+                three++;
+            } else if (satisfaction.getLessonRoundCsat() == 4) {
+                four++;
+            } else if (satisfaction.getLessonRoundCsat() == 5) {
+                five++;
+            }
+
+            totalCnt++;
             satiTotal += satisfaction.getLessonRoundCsat();
         }
-        double result = satiTotal/satiCnt;
+        double result = satiTotal / totalCnt;
 
         System.out.println(result);
 
-        return result;
+        SatiResultDto satiResultDto = new SatiResultDto(one, two, three, four, five, totalCnt, result);
+
+        return satiResultDto;
 
     }
 
 
     // 수업당 강사 만족도 뽑기
-    public double oneLessonTeacherSati(Long LessonNo) {
+    public SatiResultDto oneLessonTeacherSati(Long LessonNo) {
 
         double satiTotal = 0.0;
-        double satiCnt = 0.0;
+        double totalCnt = 0.0;
+
+        int one = 0;
+        int two = 0;
+        int three = 0;
+        int four = 0;
+        int five = 0;
 
 
         List<Satisfaction> satiList = satisfactionRepository.findAllByLessonNo(lessonRepository.findByLessonNo(LessonNo));
 
-        for(Satisfaction satisfaction : satiList){
-            satiCnt++;
+        if (satiList.size() == 0) {
+            throw new IllegalStateException("저장된 만족도가 없습니다.");
+        }
+
+        for (Satisfaction satisfaction : satiList) {
+
+            if (satisfaction.getLessonRoundCsat() == 1) {
+                one++;
+            } else if (satisfaction.getLessonRoundCsat() == 2) {
+                two++;
+            } else if (satisfaction.getLessonRoundCsat() == 3) {
+                three++;
+            } else if (satisfaction.getLessonRoundCsat() == 4) {
+                four++;
+            } else if (satisfaction.getLessonRoundCsat() == 5) {
+                five++;
+            }
+
+            totalCnt++;
             satiTotal += satisfaction.getTeacherCsat();
         }
-        double result = satiTotal/satiCnt;
+        double result = satiTotal / totalCnt;
 
         System.out.println(result);
 
-        return result;
+        SatiResultDto satiResultDto = new SatiResultDto(one, two, three, four, five, totalCnt, result);
+
+
+        return satiResultDto;
 
     }
-
 
 
 }
