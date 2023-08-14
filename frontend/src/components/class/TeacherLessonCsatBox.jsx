@@ -32,37 +32,49 @@ const TeacherLessonCsatBox = ({ userNo }) => {
     const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
     const [teacherCsatTeacher, setTeacherCsatTeacher] = useState(0); // 강사 총 만족도
     const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
-    
 
-    const csatLessonData = {
-        resultCode: 0,
-        resultMsg: "강사의 모든 수업 총 만족도 뽑기",
-        result: {
-            oneCnt: 1,
-            twoCnt: 1,
-            threeCnt: 1,
-            fourCnt: 1,
-            fiveCnt: 1,
-            totalCnt: 5.0,
-            result: 0.0,
-        },
+    const initialState = {
+        oneCnt: 0,
+        twoCnt: 0,
+        threeCnt: 0,
+        fourCnt: 0,
+        fiveCnt: 0,
     };
+    const [csatLessonDataSet, setCsatLessonDataSet] = useState(initialState);
+    const [csatTeacherDataSet, setCsatTeacherDataSet] = useState(initialState);
 
     useEffect(() => {
         // 강사의 모든 수업 총 만족도 GET 요청
         axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
-            console.log(response.data.result);
-            setTeacherCsatLesson(response.data.result);
-            setCsatLessonCount(response.data.satiCnt);
+            const lessonData = response.data.result;
+            const lessonDataSet = {
+                oneCnt: lessonData.oneCnt,
+                twoCnt: lessonData.twoCnt,
+                threeCnt: lessonData.threeCnt,
+                fourCnt: lessonData.fourCnt,
+                fiveCnt: lessonData.fiveCnt,
+            };
+            setCsatLessonDataSet(lessonDataSet);
+            setTeacherCsatLesson(lessonData.result.toFixed(1));
+            setCsatLessonCount(lessonData.totalCnt);
         });
 
         // 강사에 대한 모든 총 만족도 GET 요청
         axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
-            console.log(response);
-            setTeacherCsatTeacher(response.data.result);
-            setCsatTeacherCount(response.data.satiCnt);
+            const teacherData = response.data.result;
+            const teacherDataSet = {
+                oneCnt: teacherData.oneCnt,
+                twoCnt: teacherData.twoCnt,
+                threeCnt: teacherData.threeCnt,
+                fourCnt: teacherData.fourCnt,
+                fiveCnt: teacherData.fiveCnt,
+            };
+            setCsatTeacherDataSet(teacherDataSet);
+            setTeacherCsatTeacher(teacherData.result.toFixed(1));
+            setCsatTeacherCount(teacherData.totalCnt);
         });
     }, [userNo]);
+
     return (
         <>
             <ImgInfoWrap>
@@ -77,11 +89,15 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                 <div>
                                     {isNaN(teacherCsatLesson)
                                         ? "데이터 없음"
-                                        : teacherCsatLesson}{" "}
-                                    ( {csatLessonCount} )
+                                        : `⭐ ${teacherCsatLesson}`}{" "}
+                                    ( {csatLessonCount}명 )
                                 </div>
                             </InfoRateWrap>
-                            <ApexChart width={350} />
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                seriesData={csatLessonDataSet}
+                            />
                         </InfoRateWrap>
                         <InfoRateWrap>
                             <InfoRateWrap>
@@ -91,11 +107,15 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                 <div>
                                     {isNaN(teacherCsatTeacher)
                                         ? "데이터 없음"
-                                        : teacherCsatTeacher}{" "}
-                                    ( {csatTeacherCount} )
+                                        : `⭐ ${teacherCsatTeacher}`}{" "}
+                                    ( {csatTeacherCount}명 )
                                 </div>
                             </InfoRateWrap>
-                            <ApexChart width={350} />
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                seriesData={csatTeacherDataSet}
+                            />
                         </InfoRateWrap>
                     </StyledRateWrap>
                 </ChartRateWrap>

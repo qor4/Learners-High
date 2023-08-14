@@ -11,4 +11,5 @@ public class AttentionRateMetadataDto {
     private Long lessonRoundNo;
     private Long lessonNo;
     private Long userNo;
+    private int status;
 }

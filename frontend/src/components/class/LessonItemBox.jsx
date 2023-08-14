@@ -59,20 +59,27 @@ const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
     const userType = useSelector((state) => state.user.userType);
     const lessonNo = lessonInfo.lessonNo;
-    const [teacherSat, setTeacherSat] = useState(0);
-    const [lessonSat, setLessonSat] = useState(0);
+    const [teacherSat, setTeacherSat] = useState(0); // 수업 하나당 강사 만족도
+    const [lessonSat, setLessonSat] = useState(0); // 수업 하나당 강의 만족도
+    
+
     const [attendRate, setAttendRate] = useState(0);
     const [homeworkRate, setHomeworkRate] = useState(0);
+
     useEffect(() => {
         if (userType === "T") {
+            // 수업 하나당 강의 만족도
             tokenHttp
                 .get(`${url}/csat/onelesson/${lessonNo}`)
                 .then((response) => {
+                    console.log(response.data)
                     setLessonSat(response.data);
                 });
+            // 수업 하나당 강사 만족도
             tokenHttp
                 .get(`${url}/csat/oneteacher/${lessonNo}`)
                 .then((response) => {
+                    console.log(response.data)
                     setTeacherSat(response.data);
                 });
             tokenHttp

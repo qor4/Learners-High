@@ -9,6 +9,7 @@ import Button from "../../components/common/Button";
 export const RoomFrameWrap = styled.div`
     width: 100vw;
     height: 100vh;
+    position: relative;
 
     padding: 0.75rem;
     box-sizing: border-box;
@@ -35,8 +36,9 @@ const StudentScreenWrap = styled.div`
 export const StudentScreen = styled.div`
     width: 100%;
     // height auto로 변경하기@@@ (화면 들어왔을 때, 높이 자동 설정)
-    height: 10rem;
+    height: auto;
     border-radius: 0.75rem;
+    overflow: hidden;
     background-color: #ddd;
 `;
 
@@ -72,7 +74,7 @@ export const ScreenShare = styled.div`
     width: 100%;
     height: calc(100vh - 6.75rem);
     border-radius: 1.25rem;
-
+    overflow: hidden;
     background-color: #ddd;
 `;
 

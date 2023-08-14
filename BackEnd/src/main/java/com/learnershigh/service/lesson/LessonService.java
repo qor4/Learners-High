@@ -39,10 +39,6 @@ public class LessonService {
     @Transactional
     public Lesson lessonJoin(LessonJoinDto lessonJoinDto) {
         Lesson lessonDomain = new Lesson();
-        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
-        if (writingLesson != null) {
-            lessonRepository.delete(writingLesson);
-        }
         if (lessonJoinDto.getUserNo() == null || userRepository.findByUserNo(lessonJoinDto.getUserNo()) == null
                 || !userRepository.findByUserNo(lessonJoinDto.getUserNo()).getUserType().equals("T")) {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
@@ -60,6 +56,10 @@ public class LessonService {
         // 수업이 0원일 경우 어떻게 처리할 것인지
         if (lessonJoinDto.getLessonPrice() == 0) {
             throw new IllegalStateException("수업 가격을 올바르게 입력해주세요.");
+        }
+        Lesson writingLesson = lessonRepository.isWritingByUserNo(lessonJoinDto.getUserNo());
+        if (writingLesson != null) {
+            lessonDomain = writingLesson;
         }
         // 강의 정보 저장
         lessonDomain.setLessonName(lessonJoinDto.getLessonName());
@@ -90,6 +90,7 @@ public class LessonService {
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setTotalStudent(lessonDomain.getTotalStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
+            lessonListDto.setUserNo(lessonDomain.getUserNo().getUserNo());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
@@ -112,8 +113,6 @@ public class LessonService {
         lessonJoin.setLessonThumbnailInfo(lessonDomain.getLessonThumbnailInfo());
         lessonJoin.setLessonStatus(lessonDomain.getLessonStatus());
         lessonJoin.setLessonTotalRound(lessonDomain.getLessonTotalRound());
-        lessonJoin.setLessonThumbnailImg(lessonDomain.getLessonThumbnailImg());
-
         return lessonJoin;
     }
 
@@ -208,12 +207,16 @@ public class LessonService {
     }
 
     // 메인페이지 TOP5 출력
-    public List<LessonListDto> mainTop5() {
-        List<Lesson> lessonlist = lessonRepository.findTop5ByOrderByLessonViewCountDesc();
+    public List<LessonListDto> mainTop4() {
+        List<Lesson> lessonlist = lessonRepository.findTop4ByOrderByLessonViewCountDesc();
 
         List<LessonListDto> returnlist = new ArrayList<>();
 
         for (Lesson cla : lessonlist) {
+
+            if(cla.getLessonStatus().equals("작성 중"))
+                continue;
+
             LessonListDto clas = new LessonListDto();
 
             clas.setLessonNo(cla.getLessonNo());
@@ -253,7 +256,7 @@ public class LessonService {
 
                 List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
 
-                for(Lesson l : lessonlist){
+                for (Lesson l : lessonlist) {
                     LessonListDto lessonListDto = new LessonListDto();
 
                     lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),
@@ -302,7 +305,7 @@ public class LessonService {
 
                 List<Lesson> lessonlist = lessonRepository.findByUserNo(u);
 
-                for(Lesson l : lessonlist){
+                for (Lesson l : lessonlist) {
                     LessonListDto lessonListDto = new LessonListDto();
 
                     lessonListDto.list(l.getLessonNo(), l.getUserNo().getUserName(), l.getLessonTypeNo().getLessonTypeName(),

@@ -8,11 +8,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class SatiResultDto {
+
+
+    private int oneCnt;
+    private int twoCnt;
+    private int threeCnt;
+    private int fourCnt;
+    private int fiveCnt;
+
+    private double totalCnt;
 
     private double result;
 
-    private double satiCnt;
-
+    public SatiResultDto(int oneCnt, int twoCnt, int threeCnt, int fourCnt, int fiveCnt, double totalCnt, double result) {
+        this.oneCnt = oneCnt;
+        this.twoCnt = twoCnt;
+        this.threeCnt = threeCnt;
+        this.fourCnt = fourCnt;
+        this.fiveCnt = fiveCnt;
+        this.totalCnt = totalCnt;
+        this.result =result;
+    }
 }

@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
@@ -49,6 +50,31 @@ public class StudentController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    // 강의 찜
+    @GetMapping("/{userNo}/wish/{lessonNo}")
+    @ApiOperation("강의 하나에 대한 학생의 찜 여부")
+    public ResponseEntity<BaseResponseBody> isWish(@PathVariable Long userNo, @PathVariable Long lessonNo) {
+        BaseResponseBody responseBody = new BaseResponseBody();
+        try {
+            if (studentService.isWish(userNo, lessonNo)) {
+                responseBody.setResultMsg("찜한 강의입니다.");
+                responseBody.setResultCode(0);
+            } else {
+                responseBody.setResultMsg("찜한 강의가 아닙니다.");
+                responseBody.setResultCode(1);
+            }
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
 
     @DeleteMapping("/wish/{userNo}/{lessonNo}")
     @ApiOperation("강의 찜 취소")
@@ -80,24 +106,49 @@ public class StudentController {
     // 학생 강의 찜 목록 전체 출력
     @GetMapping("/wish/list")
     @ApiOperation("학생 찜 목록 전체 출력")
-    public List<LessonListDto> wishListAll(@RequestParam("userNo") User userNo)
-    {
+    public List<LessonListDto> wishListAll(@RequestParam("userNo") User userNo) {
         return studentService.wishListAll(userNo);
     }
 
     @GetMapping("/lesson/list/{userNo}")
     @ApiOperation("학생 수강 목록")
-    public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo)
-    {
-        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 목록 조회 완료");
-        responseBody.setResult(studentService.userLessonAll(userNo));
+    public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo, @RequestParam String status) {
+        CustomResponseBody responseBody = new CustomResponseBody("학생 " + status + " 수강 목록 조회 완료");
+        responseBody.setResult(studentService.userLessonAll(userNo, status));
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/{userNo}/lessonroom/{lessonNo}/check")
+    @ApiOperation("학생 수강 수업 강의룸 입장 가능 여부")
+    public ResponseEntity<CustomResponseBody> isEnterLessonroom(@PathVariable Long userNo, @PathVariable Long lessonNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 수업 강의룸 입장 가능 여부");
+        try {
+            LessonRound lessonRound = studentService.isEnterLessonroom(userNo, lessonNo);
+            if (lessonRound != null) {
+                HashMap<String, Long> result = new HashMap<>();
+                responseBody.setResultMsg("입장 가능한 강의입니다.");
+                responseBody.setResultCode(0);
+                result.put("lessonRoundNo", lessonRound.getLessonRoundNo());
+                responseBody.setResult(result);
+            } else {
+                responseBody.setResultMsg("입장 가능한 강의가 아닙니다.");
+                responseBody.setResultCode(1);
+            }
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
         return ResponseEntity.ok().body(responseBody);
     }
 
     @GetMapping("/{userNo}/lesson/{lessonNo}/rate")
     @ApiOperation("학생 수업 별 출석률/과제 제출률 조회 완료")
-    public ResponseEntity<CustomResponseBody> getAttendAndHomeworkRate(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo)
-    {
+    public ResponseEntity<CustomResponseBody> getAttendAndHomeworkRate(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("수업 별 출석률/과제 제출률 조회 완료");
         try {
             HashMap<String, Object> result = new HashMap<>();
@@ -113,12 +164,12 @@ public class StudentController {
             responseBody.setResultMsg(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-        return ResponseEntity.ok().body(responseBody);    }
+        return ResponseEntity.ok().body(responseBody);
+    }
 
     @GetMapping("/{userNo}/lesson/{lessonNo}")
     @ApiOperation("학생 수강 관리 현황 탭")
-    public ResponseEntity<CustomResponseBody> getStudentLessonDashboardInfo(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo)
-    {
+    public ResponseEntity<CustomResponseBody> getStudentLessonDashboardInfo(@PathVariable("userNo") Long userNo, @PathVariable("lessonNo") Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("학생 수강 관리 현황 탭 조회 완료");
         try {
             StudentAttendHomeworkDto attendHomeworkInfo = studentService.getStudentAttendHomeworkInfo(userNo, lessonNo);

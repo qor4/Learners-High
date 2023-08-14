@@ -24,6 +24,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,10 +48,10 @@ public class StudentService {
         if (user == null) {
             return false;
         }
-        if (!user.getUserType().equals("S")) {
-            return false;
+        if (user.getUserType().equals("S")) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean isStudentLesson(User user, Long lessonNo) {
@@ -70,6 +71,19 @@ public class StudentService {
         studentWishlist.setLessonNo(lessonRepository.findByLessonNo(studentLessonActionDto.getLessonNo()));
 
         studentWishlistRepository.save(studentWishlist);
+    }
+
+    public boolean isWish(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        StudentWishlist studentWishlist = studentWishlistRepository.findByUserNoAndLessonNo(userNo, lessonNo);
+        if (studentWishlist != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Transactional
@@ -133,10 +147,10 @@ public class StudentService {
     }
 
     // 학생 수강 목록 전체 출력
-    public List<LessonListDto> userLessonAll(Long userNo) {
+    public List<LessonListDto> userLessonAll(Long userNo, String status) {
         User user = userRepository.findByUserNo(userNo);
 
-        List<StudentLessonList> userlessonlist = studentLessonListRepository.findAllByUserNo(user);
+        List<StudentLessonList> userlessonlist = studentLessonListRepository.findAllByUserNoAndStatus(user, status);
         List<LessonListDto> clalist = new ArrayList<>();
 
         for (StudentLessonList lessonAll : userlessonlist) {
@@ -152,6 +166,17 @@ public class StudentService {
             clalist.add(cla);
         }
         return clalist;
+    }
+
+    public LessonRound isEnterLessonroom(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isStudentLesson(user, lessonNo)) {
+            throw new IllegalStateException("수강하지 않는 수업입니다.");
+        }
+        return lessonRoundRepository.isEnterLessonroom(lessonNo);
     }
 
     public StudentAttendHomeworkDto getStudentAttendHomeworkInfo(Long userNo, Long lessonNo) throws IllegalAccessException {
@@ -263,4 +288,6 @@ public class StudentService {
         double result = submissionCnt / (submissionCnt + unsubmittedCnt) * 100;
         return result;
     }
+
+
 }
