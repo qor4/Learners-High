@@ -75,9 +75,6 @@ const TeacherLessonCsatBox = ({ userNo }) => {
         });
     }, [userNo]);
 
-    console.log("데이터셋", csatLessonDataSet);
-    console.log("총만족도 수업", teacherCsatLesson);
-    console.log("수업 투표 인원", csatLessonCount);
     return (
         <>
             <ImgInfoWrap>
@@ -92,8 +89,8 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                 <div>
                                     {isNaN(teacherCsatLesson)
                                         ? "데이터 없음"
-                                        : teacherCsatLesson}{" "}
-                                    ( {csatLessonCount} )
+                                        : `⭐ ${teacherCsatLesson}`}{" "}
+                                    ( {csatLessonCount}명 )
                                 </div>
                             </InfoRateWrap>
                             <ApexChart
@@ -110,8 +107,8 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                 <div>
                                     {isNaN(teacherCsatTeacher)
                                         ? "데이터 없음"
-                                        : teacherCsatTeacher}{" "}
-                                    ( {csatTeacherCount} )
+                                        : `⭐ ${teacherCsatTeacher}`}{" "}
+                                    ( {csatTeacherCount}명 )
                                 </div>
                             </InfoRateWrap>
                             <ApexChart

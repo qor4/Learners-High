@@ -1,3 +1,4 @@
+import { colors } from "@material-ui/core";
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
@@ -17,11 +18,11 @@ class ApexChart extends React.Component {
                 plotOptions: {
                     pie: {
                         colors: [
-                            "#FF5733",
-                            "#FFC300",
-                            "#33FF57",
-                            "#3366FF",
-                            "#FF33CC",
+                            "#CAF0F8",
+                            "#90E0EF",
+                            "#00B4D8",
+                            "#0077B6",
+                            "#023E8A",
                         ],
                     },
                 },
@@ -51,7 +52,7 @@ class ApexChart extends React.Component {
         //     fourCnt: 4,
         //     fiveCnt: 5,
         // };
-        
+
         const { seriesData, chartType, width } = this.props;
         const labels = Object.keys(seriesData).map((key) => {
             const countName = key;
@@ -77,13 +78,34 @@ class ApexChart extends React.Component {
             chart: {
                 width: { width },
                 type: { chartType },
+                fontFamily: "Pretendard-Regular, sans-serif",
+                borderColor: "#000",
             },
             labels: labels,
-            // ... 나머지 옵션 설정
+            colors: ["#CAF0F8", "#90E0EF", "#00B4D8", "#0077B6", "#023E8A"],
+
+            stroke: {
+                show: false,
+            },
+
+            // 데이터 없을 때? @@@ 확인
+            // noData: {
+            //   text: undefined,
+            //   align: 'center',
+            //   verticalAlign: 'middle',
+            //   offsetX: 0,
+            //   offsetY: 0,
+            //   style: {
+            //     color: undefined,
+            //     fontSize: '14px',
+            //     fontFamily: undefined
+            //   }
+            // }
         };
         return (
             <div id="chart">
                 <ReactApexChart
+                    key={Math.random()} // 애니메이션 렌더링마다 반복
                     options={options}
                     series={series}
                     type={chartType}
