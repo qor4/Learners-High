@@ -24,8 +24,8 @@ const ClassJoinPage = () => {
     const lessonNo = location.state ? location.state.lessonNo : ""
     const userNo = useSelector(state => state.user.userNo)
     const [isLessonJoin, setIsLessonJoin] = useState(true)
-
-    const isLoading = useRef(true)
+    console.log(location.state.isInterLoading, "넌 뭐니")
+    const [isLoading, setIsLoading] = useState( location.state ? location.state.isInterLoading : true  )
     // const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(()=> {
         // 작성중인 정보가 있다!
@@ -56,8 +56,7 @@ const ClassJoinPage = () => {
             })
             .catch(err => console.log(err, "강의상세 초기 요청 실패"))
         }
-        return () => {
-        }
+        setIsLoading(true)
     }, [])
 
     // isUpdated면 들어온 값을. 아니면 이걸로 -> useEffect
@@ -171,7 +170,7 @@ const ClassJoinPage = () => {
         <Box sx={{ my: "4rem" }}>
             <Container maxWidth="md">
                 <Title>강의 개설</Title>
-            { isLoading.current ?  ( isLessonJoin ? (
+            { isLoading ?  ( isLessonJoin ? (
                 <ClassJoin 
                 changeChildPage={changePage}
                 ParentLessonDataSet={lessonDataSet}

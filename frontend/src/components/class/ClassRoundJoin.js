@@ -15,7 +15,17 @@ import { url } from "../../api/APIPath";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
+import { useSelector } from "react-redux";
 
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// dayjs.extend(utc);
+// dayjs.extend(timezone);
+// dayjs.tz.setDefault('Asia/Seoul')
+
+
+// console.log(dayjs().format(), '###########')
 const ClassRoundJoin = ({
     changeChildPage,
     ParentLessonDataSet,
@@ -30,7 +40,7 @@ const ClassRoundJoin = ({
         }
         changeChildPage(lessonRoundDataSet, baseLessonRoundData);
     };
-
+    const userNo = useSelector(state=> state.user.userNo)
     const [lessonTotalRound, setLessonTotalRound] = useState(ParentLessonRoundDataSet.length);
 
     const navigate = useNavigate();
@@ -183,8 +193,8 @@ const ClassRoundJoin = ({
                 const startNewDate = standardDate[i % weekNum];
                 const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
                 console.log(startNewDate, endNewDate, "여기 어때")
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
                 console.log(lessonRoundDataSetCopy[i].lessonRoundStartDatetime) 
                 // 종료시간까지 함께 넣을 것
@@ -196,8 +206,8 @@ const ClassRoundJoin = ({
                 const addWeekDate = dayjs(standardDate[i % weekNum]).add(Math.floor(i/weekNum), 'week')
                 const startNewDate = dayjs(addWeekDate)
                 const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
+                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
                 console.log( lessonRoundDataSetCopy[i].lessonRoundStartDatetime, "시작시간들")
                 // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
@@ -221,8 +231,8 @@ const ClassRoundJoin = ({
             idx === index
                 ? {
                       ...item,
-                      lessonRoundStartDatetime: newLessonRoundStartDatetime.toISOString(),
-                      lessonRoundEndDatetime: newLessonRoundEndDatetime.toISOString(),
+                      lessonRoundStartDatetime: newLessonRoundStartDatetime.add(9, 'hour').toISOString(),
+                      lessonRoundEndDatetime: newLessonRoundEndDatetime.add(9, 'hour').toISOString(),
                   }
                 : item
         );
@@ -243,10 +253,22 @@ const ClassRoundJoin = ({
 
     const handleClickTmpStore = () => {
         // ParentLessonDataSet.lessonTotalRound = lessonTotalRound
+        const data = {
+            lessonInfo: ParentLessonDataSet.lessonInfo,
+            lessonName: ParentLessonDataSet.lessonName,
+            lessonPrice: ParentLessonDataSet.lessonPrice,
+            lessonStatus: "작성 중",
+            // lessonThumbnailImg: lessonThumbnailImg,
+            lessonThumbnailInfo: ParentLessonDataSet.lessonThumbnailInfo,
+            lessonTypeNo: ParentLessonDataSet.lessonTypeNo, // 미정
+            maxStudent: ParentLessonDataSet.maxStudent,
+            userNo: userNo, // 임시
+        }
+        console.log(lessonRoundDataSet, "보내는값!!!!")
         tokenHttp
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
-                ParentLessonDataSet,
+                data,
                 { headers: { "Content-Type": "application/json" } }
             )
             .then((res) => {
@@ -254,54 +276,206 @@ const ClassRoundJoin = ({
                 return res.data.result.lessonNo;
             })
             .then((lessonNo) => {
-                ParentLessonDataSet.lessonNo = lessonNo;
+                if (ParentLessonDataSet.lessonThumbnailImg) {
+                    const formData = new FormData();
+                    formData.append("multipartFile", ParentLessonDataSet.lessonThumbnailImg);
+                    tokenHttp
+                        .post(
+                            `${url}/s3/upload/thumbnail/${lessonNo}`,
+                            formData,
+                            {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            }
+                        )
+                        .then((res) => console.log(res))
+                        .catch((err) => console.log(err))
+                }
+                return lessonNo;
+            })
+            // 강의 회차 갑니다.
+            .then((lessonNo) => {
+                if (lessonRoundDataSet.length === 0) return
+                lessonRoundDataSet.map((item) => {
+                    item.lessonNo = lessonNo;
+                });
                 tokenHttp
-                    .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
-                        headers: { "Content-Type": "application/json" },
-                    })
+                    .post(
+                        `${url}/lesson/join/round`,
+                        lessonRoundDataSet,
+                        { headers: { "Content-Type": "application/json" } }
+                    )
                     .then((res) => {
-                        console.log(res, "강의회차");
-                    })
-                    .catch((err) => {
-                        console.log(err);
+                        console.log(res, "강의세부회차 성공");
+                        const lessonRoundNoDataSet = res.data.result;
+                        for (
+                            let i = 0;
+                            i < lessonRoundDataSet.length;
+                            i++
+                        ) {
+                            if (
+                                lessonRoundDataSet[i]
+                                    .lessonRoundFileOriginName
+                            ) {
+                                console.log(
+                                    lessonRoundNoDataSet[i],
+                                    "회차정보"
+                                );
+                                const formData = new FormData();
+                                console.log(
+                                    lessonRoundDataSet[i]
+                                        .lessonRoundFileName,
+                                    "파일이니?"
+                                );
+                                formData.append(
+                                    "multipartFile",
+                                    lessonRoundDataSet[i]
+                                        .lessonRoundFileName
+                                );
+                                tokenHttp
+                                    .post(
+                                        `${url}/s3/upload/data/${Number(
+                                            lessonNo
+                                        )}/${Number(
+                                            lessonRoundNoDataSet[i]
+                                                .lessonRoundNo
+                                        )}`,
+                                        formData,
+                                        {
+                                            headers: {
+                                                "Content-Type":
+                                                    "multipart/form-data",
+                                            },
+                                        }
+                                    )
+                                    .then((res) =>
+                                        console.log(res, "학습자료 전송 성공")
+                                    )
+                                    .catch((err) =>
+                                        console.log(err, "학습자료 전송 실패")
+                                    );
+                            }
+                        }
                     });
             })
             .catch((err) => {
-                console.log(err);
-            });
-        // 개별 강의 갑니다.
-        navigate("/");
+                alert("임시저장 실패");
+                console.log(err, "종합 에러");
+            }); // 여기에 강의개설 실패 메시지
     };
+
+    // 강의등록
     const handleClickRegisterLesson = () => {
-        ParentLessonDataSet.lessonStatus = "강의 전";
+        // ParentLessonDataSet.lessonTotalRound = lessonTotalRound
+        const data = {
+            lessonInfo: ParentLessonDataSet.lessonInfo,
+            lessonName: ParentLessonDataSet.lessonName,
+            lessonPrice: ParentLessonDataSet.lessonPrice,
+            lessonStatus: "강의 전",
+            // lessonThumbnailImg: lessonThumbnailImg,
+            lessonThumbnailInfo: ParentLessonDataSet.lessonThumbnailInfo,
+            lessonTypeNo: ParentLessonDataSet.lessonTypeNo, // 미정
+            maxStudent: ParentLessonDataSet.maxStudent,
+            userNo: userNo, // 임시
+        }
         tokenHttp
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
-                ParentLessonDataSet,
+                data,
                 { headers: { "Content-Type": "application/json" } }
             )
             .then((res) => {
-                console.log(res.data.result, "개별강의 #### 등록!!");
-                console.log(res.data.result.lessonNo, "개별강의 #### 등록!!");
-                lessonRoundDataSet.map((item) => {
-                    item.lessonNo = res.data.result.lessonNo;
-                });
-                console.log(lessonRoundDataSet);
-                return lessonRoundDataSet;
+                return res.data.result.lessonNo;
             })
-            .then((lessonRoundDataSet) => {
+            .then((lessonNo) => {
+                if (ParentLessonDataSet.lessonThumbnailImg) {
+                    const formData = new FormData();
+                    formData.append("multipartFile", ParentLessonDataSet.lessonThumbnailImg);
+                    tokenHttp
+                        .post(
+                            `${url}/s3/upload/thumbnail/${lessonNo}`,
+                            formData,
+                            {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            }
+                        )
+                        .then((res) => console.log(res))
+                        .catch((err) => console.log(err))
+                }
+                return lessonNo;
+            })
+            // 강의 회차 갑니다.
+            .then((lessonNo) => {
+                if (lessonRoundDataSet.length === 0) return
+                lessonRoundDataSet.map((item) => {
+                    item.lessonNo = lessonNo;
+                });
                 tokenHttp
-                    .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
-                        headers: { "Content-Type": "application/json" },
-                    })
+                    .post(
+                        `${url}/lesson/join/round`,
+                        lessonRoundDataSet,
+                        { headers: { "Content-Type": "application/json" } }
+                    )
                     .then((res) => {
-                        console.log(res);
-                    })
-                    .catch((err) => console.log(err));
+                        console.log(res, "강의세부회차 성공");
+                        const lessonRoundNoDataSet = res.data.result;
+                        for (
+                            let i = 0;
+                            i < lessonRoundDataSet.length;
+                            i++
+                        ) {
+                            if (
+                                lessonRoundDataSet[i]
+                                    .lessonRoundFileOriginName
+                            ) {
+                                console.log(
+                                    lessonRoundNoDataSet[i],
+                                    "회차정보"
+                                );
+                                const formData = new FormData();
+                                console.log(
+                                    lessonRoundDataSet[i]
+                                        .lessonRoundFileName,
+                                    "파일이니?"
+                                );
+                                formData.append(
+                                    "multipartFile",
+                                    lessonRoundDataSet[i]
+                                        .lessonRoundFileName
+                                );
+                                tokenHttp
+                                    .post(
+                                        `${url}/s3/upload/data/${Number(
+                                            lessonNo
+                                        )}/${Number(
+                                            lessonRoundNoDataSet[i]
+                                                .lessonRoundNo
+                                        )}`,
+                                        formData,
+                                        {
+                                            headers: {
+                                                "Content-Type":
+                                                    "multipart/form-data",
+                                            },
+                                        }
+                                    )
+                                    .then((res) =>
+                                        console.log(res, "학습자료 전송 성공")
+                                    )
+                                    .catch((err) =>
+                                        console.log(err, "학습자료 전송 실패")
+                                    );
+                            }
+                        }
+                    });
             })
             .catch((err) => {
-                console.log(err);
-            });
+                alert("개설 실패");
+                console.log(err, "종합 에러");
+            }); // 여기에 강의개설 실패 메시지
         navigate("/");
     };
 

@@ -194,6 +194,33 @@ const ClassJoin = ({
 
     useEffect(() => {
         if (ParentIsUpdated) {
+            if (isUpdated) {
+                tokenHttp
+                    .get(`${url}/lesson/writing/info/${lessonNo}`)
+                    .then((res) => {
+                        const {
+                            lessonTypeNo,
+                            lessonTypeName,
+                            lessonName,
+                            lessonInfo,
+                            maxStudent,
+                            lessonPrice,
+                            lessonThumbnailImg,
+                            lessonThumbnailInfo,
+                        } = res.data.result;
+                        setLessonTypeNo(lessonTypeNo);
+                        setLessonTypeName(lessonTypeName);
+                        setLessonName(lessonName);
+                        setLessonInfo(lessonInfo);
+                        setMaxStudent(maxStudent);
+                        setLessonPrice(lessonPrice);
+                        setLessonThumbnailImg(lessonThumbnailImg);
+                        setLessonThumbnailInfo(lessonThumbnailInfo);
+                    });
+            }
+        }
+
+        if (ParentIsUpdated) {
             tokenHttp
                 .get(`${url}/s3/thumbnail-load/${lessonNo}`)
                 .then((res) => {
@@ -300,7 +327,6 @@ const ClassJoin = ({
             // 50명 제한
             setMaxStudent(Math.min(numericValue, 50));
         }
-
     };
 
     // 가격을 입력했을 때
@@ -362,7 +388,7 @@ const ClassJoin = ({
             })
             // 강의 회차 갑니다.
             .then((lessonNo) => {
-                if (ParentLessonRoundDataSet.length === 0) return
+                if (ParentLessonRoundDataSet.length === 0) return;
                 ParentLessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
@@ -449,7 +475,9 @@ const ClassJoin = ({
                         </FiftyWrap>
                         <FiftyWrap>
                             <InputButton>
-                                <label htmlFor="lessonTypeName">과목 이름</label>
+                                <label htmlFor="lessonTypeName">
+                                    과목 이름
+                                </label>
                                 <div>
                                     <JoinInput
                                         type="text"
@@ -611,6 +639,7 @@ const ClassJoin = ({
                             <div className="ck">
                                 <CKEditor
                                     editor={ClassicEditor}
+                                    data={lessonInfo}
                                     value={lessonInfo}
                                     // toolbar 설정
                                     config={{
@@ -643,46 +672,16 @@ const ClassJoin = ({
                             </div>
                         </div>
                         {/* html 에디터 =00000> 엔터 시, <p>태그 처리 수정@@@ */}
-                        <CKEditor
-                            editor={ClassicEditor}
-                            data={lessonInfo}
-                            value={lessonInfo}
-                            // toolbar 설정
-                            config={{
-                                toolbar: {
-                                    items: [
-                                        "heading",
-                                        "|",
-                                        "bold",
-                                        "italic",
-                                        "link",
-                                        "bulletedList",
-                                        "numberedList",
-                                        "|",
-                                        "blockQuote",
-                                        "insertTable",
-                                        "undo",
-                                        "redo",
-                                    ],
-                                },
-                                table: {
-                                    contentToolbar: [
-                                        "tableColumn",
-                                        "tableRow",
-                                        "mergeTableCells",
-                                    ],
-                                },
-                            }}
-                            onBlur={handleEditorChange}
-                        />
                     </div>
                 </Container>
             </MenuCard>
             {/* 버튼 모음 => 이후 수정@@@ */}
             <Container maxWidth="xs">
                 <ButtonWrap>
-                <Button onClick={sendDataToServer}>임시 저장</Button>
-                <Button point onClick={nextPage}>다음</Button>
+                    <Button onClick={sendDataToServer}>임시 저장</Button>
+                    <Button point onClick={nextPage}>
+                        다음
+                    </Button>
                 </ButtonWrap>
             </Container>
         </>

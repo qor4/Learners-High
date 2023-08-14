@@ -68,6 +68,7 @@ const ClassRoundItem = (
                 accept=".pdf, .ppt, .pptx, .doc, .docx, .hwp"
                 onChange={handleFileChange}
                 style={{display: 'none'}}
+                enctype="multipart/form-data"
                 // 파일은 다르게 넣어야한다.
             />
             {/* 첨부된 파일 이름 보여주기. */}

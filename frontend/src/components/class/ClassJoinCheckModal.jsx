@@ -51,7 +51,7 @@ const ClassJoinCheckModal = (props) => {
                     console.log(res);
                     navigate(
                         `/lesson/join`,
-                        { state: { lessonNo, isUpdated: true } },
+                        { state: { lessonNo, isUpdated: true, isInterLoading: false } },
                         { replace: false }
                     );
                 });
@@ -67,7 +67,7 @@ const ClassJoinCheckModal = (props) => {
             document.body.classList.remove("overflow-hidden");
             navigate(
                 "/lesson/join",
-                { state: { lessonNo: null, isUpdated: false } },
+                { state: { lessonNo: null, isUpdated: false, isInterLoading:true } },
                 { replace: false }
             );
         }
