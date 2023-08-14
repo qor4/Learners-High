@@ -3,10 +3,14 @@ package com.learnershigh.service.etc;
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.user.User;
+import com.learnershigh.dto.lessonhub.SaveWarningDto;
 import com.learnershigh.repository.EmitterRepository;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.user.UserRepository;
+import com.learnershigh.service.lesson.LessonroomService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,6 +27,7 @@ public class NotificationService {
     private final EmitterRepository emitterRepository;
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
+    public static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
     public SseEmitter connectNotification(String userId) {
         // 새로운 SseEmitter를 만든다
@@ -39,40 +44,46 @@ public class NotificationService {
         try {
             sseEmitter.send(SseEmitter.event().id(userId).name("setting").data("Connection completed"));
         } catch (IOException exception) {
-
-            System.out.println("ss");
+            logger.info("*** IOException 발생");
+            throw new IllegalStateException("IOException");
         }
         return sseEmitter;
     }
+
     public void isActive(Long lessonNo, String studentId, Boolean status) {
         Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
         Optional<SseEmitter> sseEmitter = emitterRepository.get(lesson.getUserNo().getUserId());
         if (sseEmitter.isPresent()) {
             try {
                 sseEmitter.get().send(SseEmitter.event().id(studentId).name("isActive")
-                        .data("{").data("\"status\":\""+status+"\",").data("\"studentId\":\""+studentId+"\"").data("}"));
+                        .data("{").data("\"status\":" + status + ",").data("\"studentId\":\"" + studentId + "\"").data("}"));
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.delete(lesson.getUserNo().getUserId());
+                logger.info("*** IOException 발생 user.getUserId() emitter delete");
+                throw new IllegalStateException("IOException");
             }
         } else {
-            System.out.println("else");
+            logger.info("*** No emitter found");
         }
     }
 
-    public void send(String teacherId, Long studentNo) {
-        User user = userRepository.findByUserNo(studentNo);
+    public void send(SaveWarningDto saveWarningDto) {
+
+        User user = userRepository.findByUserNo(saveWarningDto.getStudentNo());
         Optional<SseEmitter> sseEmitter = emitterRepository.get(user.getUserId());
         if (sseEmitter.isPresent()) {
             try {
-                sseEmitter.get().send(SseEmitter.event().id(teacherId).name("send")
+                sseEmitter.get().send(SseEmitter.event().id(saveWarningDto.getTeacherId()).name("send")
                         .data("알림"));
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.delete(user.getUserId());
+                logger.info("*** IOException 발생 user.getUserId() emitter delete");
+                throw new IllegalStateException("IOException");
             }
         } else {
-            System.out.println("else");
+            logger.info("*** No emitter found");
         }
     }
 }
