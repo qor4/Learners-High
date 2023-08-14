@@ -103,7 +103,11 @@ const TeacherProfilePage = () => {
                     </Button>
                 </StyledButtonWrap>
                 {/* 상태에 따른 강사의 강의 목록 */}
-                <LessonList items={teacherLessonDataSet} />
+                {teacherLessonDataSet.length > 0 ? (
+                    <LessonList items={teacherLessonDataSet} />
+                ) : (
+                    <Card style={{ textAlign: "center" }}>데이터 없음</Card>
+                )}
 
                 {/* 페이지네이션 */}
             </Container>

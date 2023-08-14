@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { styled } from "styled-components";
-import { Card, Container } from "@mui/material";
+import { Container } from "@mui/material";
 
 import Button from "../components/common/Button";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
@@ -12,6 +12,7 @@ import tokenHttp, { url } from "../api/APIPath";
 import axios from "axios";
 import { StyledTeacherInfoWrap } from "./TeacherProfilePage";
 import TeacherLessonCsatBox from "../components/class/TeacherLessonCsatBox";
+import Card from "../components/common/Card";
 
 // 탭바 버튼 wrap
 export const StyledButtonWrap = styled.div`
@@ -24,7 +25,7 @@ export const StyledButtonWrap = styled.div`
 const FlexButtonWrap = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
 `;
 
 const EduTeacherManagePage = () => {
@@ -95,10 +96,7 @@ const EduTeacherManagePage = () => {
                 {teacherLessonDataSet.length > 0 ? (
                     <LessonItemBoxList lessonList={teacherLessonDataSet} />
                 ) : (
-                    <div>
-                        존재하는 강의 없음!!! ( 여기에 어떤 것을 넣어야할지
-                        ,,,@@@ )
-                    </div>
+                    <Card style={{ textAlign: "center" }}>데이터 없음</Card>
                 )}
             </Container>
         </>

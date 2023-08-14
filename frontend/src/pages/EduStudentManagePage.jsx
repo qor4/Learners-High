@@ -10,6 +10,10 @@ import tokenHttp, { url } from "../api/APIPath";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
 import LessonList from "../components/class/LessonList";
 import axios from "axios";
+import { ImgInfoWrap } from "../components/class/TeacherIntroduceBox";
+import { StyledChart } from "../components/class/TeacherLessonCsatBox";
+import { InfoRateWrap } from "./EduTeacherLessonPage";
+import Card from "../components/common/Card";
 
 // 강의 wrap
 const StyledCsatInfoWrap = styled.div`
@@ -28,16 +32,21 @@ export const StyledButtonWrap = styled.div`
 const EduStudentManagePage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const [studentLessonDataSet, setStudentLessonDataSet] = useState([]);
-    const [selectedStatus, setSelectedStatus] = useState("수강 중");
+    const [selectedStatus, setSelectedStatus] = useState("강의 중");
     const [studentWishDataSet, setStudentWishDataSet] = useState([]);
 
     useEffect(() => {
         tokenHttp
-            .get(`${url}/student/lesson/list/${userNo}`)
+            .get(
+                `${url}/student/lesson/list/${userNo}?status=${selectedStatus}`
+            )
             .then((response) => {
                 console.log(response.data);
                 setStudentLessonDataSet(response.data.result);
             });
+    }, [selectedStatus]);
+
+    useEffect(() => {
         tokenHttp
             .get(`${url}/student/wish/list?userNo=${userNo}`)
             .then((response) => {
@@ -51,11 +60,18 @@ const EduStudentManagePage = () => {
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
             <StyledCsatInfoWrap>
                 <Container maxWidth="md">
-                    <div>
-                        최학생이 열심히 공부한 과목은 프로그래밍입니다. <br />
-                        프로그래밍에서 가장 집중한 강사는 김강사입니다. <br />
-                        이러한 분석 내용이 들어갈 박스입니다.
-                    </div>
+                    <ImgInfoWrap>
+                        {/* 분석 차트가 들어갈 공간입니다!@@@ */}
+                        <StyledChart>차트 들어갈 공간</StyledChart>
+                        <InfoRateWrap>
+                            <div>
+                                최학생이 열심히 공부한 과목은 프로그래밍입니다.
+                            </div>
+                            <div>
+                                프로그래밍에서 가장 집중한 강사는 김강사입니다.
+                            </div>
+                        </InfoRateWrap>
+                    </ImgInfoWrap>
                 </Container>
             </StyledCsatInfoWrap>
 
@@ -63,23 +79,23 @@ const EduStudentManagePage = () => {
                 {/* 탭바 */}
                 <StyledButtonWrap>
                     <Button
-                        onClick={() => setSelectedStatus("수강 중")}
-                        $point={selectedStatus === "수강 중"}
-                        disabled={selectedStatus === "수강 중"}
+                        onClick={() => setSelectedStatus("강의 중")}
+                        $point={selectedStatus === "강의 중"}
+                        disabled={selectedStatus === "강의 중"}
                     >
                         수강 중
                     </Button>
                     <Button
-                        onClick={() => setSelectedStatus("수강 예정")}
-                        $point={selectedStatus === "수강 예정"}
-                        disabled={selectedStatus === "수강 예정"}
+                        onClick={() => setSelectedStatus("강의 전")}
+                        $point={selectedStatus === "강의 전"}
+                        disabled={selectedStatus === "강의 전"}
                     >
                         수강 예정
                     </Button>
                     <Button
-                        onClick={() => setSelectedStatus("수강 완료")}
-                        $point={selectedStatus === "수강 완료"}
-                        disabled={selectedStatus === "수강 완료"}
+                        onClick={() => setSelectedStatus("강의 완료")}
+                        $point={selectedStatus === "강의 완료"}
+                        disabled={selectedStatus === "강의 완료"}
                     >
                         수강 완료
                     </Button>
@@ -93,16 +109,25 @@ const EduStudentManagePage = () => {
                 </StyledButtonWrap>
 
                 {/* 강의 목록들이 들어갈 공간 => 찜한 강의 제외 */}
-                {selectedStatus !== "내가 찜한 강의" && (
-                    <LessonItemBoxList
-                        lessonList={studentLessonDataSet}
-                    ></LessonItemBoxList>
-                )}
+                {selectedStatus !== "내가 찜한 강의" &&
+                    (studentLessonDataSet.length > 0 ? (
+                        <LessonItemBoxList
+                            lessonList={studentLessonDataSet}
+                        ></LessonItemBoxList>
+                    ) : (
+                        <Card style={{ textAlign: "center" }}>데이터 없음</Card>
+                    ))}
 
                 {/* 찜한 강의를 보여주는 공간 */}
                 {selectedStatus === "내가 찜한 강의" && (
                     <>
-                        <LessonList items={studentWishDataSet} />
+                        {studentWishDataSet.length > 0 ? (
+                            <LessonList items={studentWishDataSet} />
+                        ) : (
+                            <Card style={{ textAlign: "center" }}>
+                                데이터 없음
+                            </Card>
+                        )}
                     </>
                 )}
             </Container>

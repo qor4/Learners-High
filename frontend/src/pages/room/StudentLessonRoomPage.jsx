@@ -50,7 +50,7 @@ const ChatWrap = styled.div`
     background-color: #e1e6f9;
 `;
 
-const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
+const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,audioEnabled,changeVideo,changeAudio }) => {
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -68,21 +68,16 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
     const [teacher, setTeacher] = useState(undefined);
     const [token, setToken] = useState(undefined);
 
-    // video, audio 접근 권한
-    const [videoEnabled, setVideoEnabled] = useState(true);
-    const [audioEnabled, setAudioEnabled] = useState(false);
-
-
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
 
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
-        setVideoEnabled(true);
-        setAudioEnabled(false);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
+
+        
         // 윈도우 객체에 화면 종료 이벤트 추가
         window.addEventListener("beforeunload", onBeforeUnload);
         joinSession(); // 세션 입장
@@ -93,9 +88,10 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
     }, []);
 
     // session이 바뀌면 하는 것
-    const leaveSession =  () => {
+    const leaveSession = useCallback(async() => {
+        console.log(session)
         if (session) {
-             session.disconnect();
+            await session.disconnect();
         }
         // session, state 초기화
         setOV(null);
@@ -109,7 +105,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
 
         // 메인화면 이동 필요
         closeRoom();
-    };
+    },[session]);
 
     // 페이지를 언로드하기 전에 leaveSession 메서드를 호출
     const onBeforeUnload = () => {
@@ -120,16 +116,23 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
     const joinSession = useCallback(async () => {
         const newOV = new OpenVidu();
         let mySession = newOV.initSession();
+
         mySession.on('sessionDisconnected', event => {
-            console.log("session 종료됨");
+            console.log("sessionDisconnected 종료됨");
             leaveSession();
+        });
+        mySession.on('streamDestroyed', event => {
+            console.log("streamDestroyed 종료됨");
+            if(JSON.parse(JSON.parse(event.stream.connection.data).clientData).userNo === Number(teacherNo)){
+                leaveSession();
+            }
         });
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
-            const subscriber = mySession.subscribe(event.stream, undefined);
             ///////////////// 여기서 선생 찾기
-            if(JSON.parse(JSON.parse(subscriber.stream.connection.data).clientData).userNo === Number(teacherNo)){
+            if(JSON.parse(JSON.parse(event.stream.connection.data).clientData).userNo === Number(teacherNo)){
+                const subscriber = mySession.subscribe(event.stream, undefined);
                 setTeacher(subscriber);
             }
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
@@ -140,6 +143,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
             console.warn(exception);
             if(exception.name === 'ICE_CONNECTION_DISCONNECTED'){
                 setOV(null);
+                leaveSession();
             }
         });
 
@@ -159,7 +163,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
                     session
-                        .connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName}) })
+                        .connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName,userId}) })
                         .then(async () => {
                             // Get your own camera stream ---
                             // publisher 객체 생성
@@ -178,6 +182,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
                             );
                             // Publish your stream ---
                             session.publish(publisher);
+                            publisher.publishVideo(true);
                             // Set the main video in the page to display our webcam and store our Publisher
                             setPublisher(publisher);
                             setMainStreamManager(publisher);
@@ -185,53 +190,25 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
                         .catch((error) => {
                             console.error(error);
                             alert("세션 연결 오류");
-                            navigate("/");
+                            closeRoom();
                         });
                 })
                 .catch((error) => {
                     alert(error.response.data);
-                    navigate("/");
+                    closeRoom();
                 });
         }
     }, [session]);
-    // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
-    const toggleVideo = () => {
-        if (publisher) {
-            const enabled = !videoEnabled;
-            setVideoEnabled(enabled);
-            publisher.publishVideo(enabled);
+
+
+
+    useEffect(()=>{
+        if(publisher){
+            publisher.publishVideo(videoEnabled);
+            publisher.publishAudio(audioEnabled);
         }
-    };
-
-    // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
-    const toggleAudio = () => {
-        if (publisher) {
-            const enabled = !audioEnabled;
-            setAudioEnabled(enabled);
-            publisher.publishAudio(enabled);
-        }
-    };
-
-    // // 알림
-    // useEffect(() => {
-    //     const sse = new EventSource(
-    //         `${url}/notification/subscribe/${userId}`
-    //     );
-
-    //     sse.onopen = () => {
-    //         console.log("SSEONOPEN==========", sse);
-    //     };
-
-    //     sse.onmessage = async (event) => {
-    //         const res = await event.data;
-    //         const parseData = JSON.parse(res);
-    //         console.log("SSEONMESSAGE==========", parseData);
-    //     };
-
-    //     sse.addEventListener("Request", function (event) {
-    //         console.log("ADDEVENTLISTENER==========", event.data);
-    //     });
-    // }, []);
+    },[videoEnabled,audioEnabled,publisher]);
+    
 
     return (
         <>
@@ -248,7 +225,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
                         {/* 비디오 */}
                         <Button
                             type="button"
-                            onClick={toggleAudio}
+                            onClick={changeAudio}
                             value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                         >
                         <HiMicrophone />
@@ -256,13 +233,13 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo }) => {
                         {/* 마이크 */}
                         <Button
                             type="button"
-                            onClick={toggleVideo}
+                            onClick={changeVideo}
                             value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
                         >
                         <HiVideoCamera />
                         </Button>
                         {/* 수업 나가기 */}
-                        <Button
+                            <Button
                             type="button"
                             onClick={leaveSession}
                             value="나가기"

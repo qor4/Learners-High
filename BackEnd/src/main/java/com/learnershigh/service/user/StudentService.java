@@ -24,6 +24,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,6 +166,17 @@ public class StudentService {
             clalist.add(cla);
         }
         return clalist;
+    }
+
+    public LessonRound isEnterLessonroom(Long userNo, Long lessonNo) {
+        User user = userRepository.findByUserNo(userNo);
+        if (!isStudent(user)) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+        if (!isStudentLesson(user, lessonNo)) {
+            throw new IllegalStateException("수강하지 않는 수업입니다.");
+        }
+        return lessonRoundRepository.isEnterLessonroom(lessonNo);
     }
 
     public StudentAttendHomeworkDto getStudentAttendHomeworkInfo(Long userNo, Long lessonNo) throws IllegalAccessException {

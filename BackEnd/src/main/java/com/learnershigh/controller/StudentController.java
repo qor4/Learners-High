@@ -1,5 +1,6 @@
 package com.learnershigh.controller;
 
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.etc.BaseResponseBody;
 import com.learnershigh.dto.etc.CustomResponseBody;
@@ -114,6 +115,34 @@ public class StudentController {
     public ResponseEntity<CustomResponseBody> userLessonAll(@PathVariable("userNo") Long userNo, @RequestParam String status) {
         CustomResponseBody responseBody = new CustomResponseBody("학생 " + status + " 수강 목록 조회 완료");
         responseBody.setResult(studentService.userLessonAll(userNo, status));
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @GetMapping("/{userNo}/lessonroom/{lessonNo}/check")
+    @ApiOperation("학생 수강 수업 강의룸 입장 가능 여부")
+    public ResponseEntity<CustomResponseBody> isEnterLessonroom(@PathVariable Long userNo, @PathVariable Long lessonNo) {
+        CustomResponseBody responseBody = new CustomResponseBody("학생 수강 수업 강의룸 입장 가능 여부");
+        try {
+            LessonRound lessonRound = studentService.isEnterLessonroom(userNo, lessonNo);
+            if (lessonRound != null) {
+                HashMap<String, Long> result = new HashMap<>();
+                responseBody.setResultMsg("입장 가능한 강의입니다.");
+                responseBody.setResultCode(0);
+                result.put("lessonRoundNo", lessonRound.getLessonRoundNo());
+                responseBody.setResult(result);
+            } else {
+                responseBody.setResultMsg("입장 가능한 강의가 아닙니다.");
+                responseBody.setResultCode(1);
+            }
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
         return ResponseEntity.ok().body(responseBody);
     }
 

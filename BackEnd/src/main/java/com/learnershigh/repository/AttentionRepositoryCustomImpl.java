@@ -18,7 +18,7 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     }
 
     @Override
-    public List<Object> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
+    public List<AttentionDto> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
 /*
     $match: {
       "timestamp": {
@@ -41,22 +41,22 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
   }
 ])
          */
-        Date startDate = Date.from(Instant.parse("2023-08-11T04:10:00Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-11T04:16:00Z"));
+        Date startDate = Date.from(Instant.parse("2023-08-13T11:23:08.627Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-13T11:23:18.103Z"));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
                                 .lt(endDate).and("metadata.lessonRoundNo").is(1) // lessonRoundNo
-                                .and("metadate.userNo").is(1)
+                                .and("metadata.userNo").is(1)
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
                 .andOutput("rate").avg().as("avg_value");
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
-        AggregationResults<Object> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", Object.class);
-        List<Object> objectList = results.getMappedResults();
+        AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
+        List<AttentionDto> objectList = results.getMappedResults();
         return objectList;
     }
 
@@ -65,8 +65,8 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     @Override
     public List<AttentionDto> aggregateAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
 
-        Date startDate = Date.from(Instant.parse("2023-08-13T09:39:12.317Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-13T09:39:19.599Z"));
+        Date startDate = Date.from(Instant.parse("2023-08-13T11:23:08.627Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-13T11:23:18.103Z"));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
