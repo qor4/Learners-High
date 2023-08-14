@@ -151,7 +151,6 @@ public class UserService {
     @Transactional
     public HashMap<String, Object> kakaoUserJoin(String code) throws JsonProcessingException {
 
-
         System.out.println("들어오냐?");
         System.out.println(code);
         RestTemplate rt = new RestTemplate();
