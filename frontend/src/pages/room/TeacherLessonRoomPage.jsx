@@ -247,12 +247,12 @@ const TeacherLessonRoomPage = () => {
             console.log("SSEONOPEN==========", es);
         };
 
-        es.current.onmessage = (event) => {
-            console.log("ADDEVENTLISTENER==========");
-            const tmp = JSON.parse(event.data);
-            tmp.status = Boolean(tmp.status);
-            console.log(tmp);
-        };
+        es.current.addEventListener("isActive", function (event) {
+                console.log("ADDEVENTLISTENER==========");
+                const tmp = JSON.parse(event.data);
+                tmp.status = Boolean(tmp.status);
+                console.log(tmp);
+        });
 
         es.current.onerror = (err) => {
             console.log('[sse] error', { err });

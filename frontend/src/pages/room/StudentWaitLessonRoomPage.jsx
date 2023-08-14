@@ -149,7 +149,8 @@ const StudentWaitLessonRoomPage = () => {
             (async () => {
                 await eyeTracker.current.init(
                     licenseKey,
-                    () => {
+                    async () => {
+                        await eyeTracker.current.startTracking(onGaze,onDebug);
                         if (!eyeTracker.current.checkMobile()) {
                             eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
@@ -187,12 +188,6 @@ const StudentWaitLessonRoomPage = () => {
         console.log("강의룸으로 돌아 옴");
         setIsFocus(true);
     });
-
-    useEffect(()=>{
-        if(isSeesoInit){
-            eyeTracker.current.startTracking(onGaze,onDebug);
-        }
-    },[isSeesoInit]);
 
     useEffect(() => {
         saveAttentionScore(attentionScore);
