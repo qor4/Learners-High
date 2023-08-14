@@ -1,14 +1,18 @@
 package com.learnershigh.service.etc;
 
 import com.learnershigh.domain.LessonRoundAttentionRate;
+import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.lessonhub.StudentLessonList;
 import com.learnershigh.dto.etc.AttentionDto;
 import com.learnershigh.dto.etc.AttentionMaxMinTime;
 import com.learnershigh.dto.etc.AttentionRateMetadataDto;
 import com.learnershigh.dto.etc.SaveAttentionRateDto;
+import com.learnershigh.dto.lesson.LessonInfoDto;
 import com.learnershigh.repository.LessonRoundAttentionRateRepository;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
+import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,9 @@ public class AttentionService {
 
     private final LessonRoundRepository lessonRoundRepository;
 
+    private final StudentLessonListRepository studentLessonListRepository;
+
+    private final LessonRepository lessonRepository;
 
     @Transactional
     public void saveAttentionRate(SaveAttentionRateDto saveAttentionRateDto) {
@@ -60,7 +67,7 @@ public class AttentionService {
 //    }
 
     // 학생 한수업의 한회차당 자기 집중도 20구간
-    public double onestudentOneroundAttentionAvg() {
+    public double onestudentOneroundAttentionAvg() { // 들어갈변수값 넣어야 함.
         List<AttentionDto> list = new ArrayList<>();
         list = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(1L, 1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
@@ -243,6 +250,40 @@ public class AttentionService {
 //
 //
 //    }
+
+    // 한 학생이 들은 모든 강의중 가장 집중도가 높은 수업이름 출력
+    public String oneStudentMaxlessonAvg(Long userNo){
+
+        double max = Integer.MIN_VALUE;
+
+        String rs= "";
+
+        List<StudentLessonList> list = studentLessonListRepository.findByUserNo(userNo);
+
+        for(StudentLessonList sll : list){
+
+            List<LessonRound> lrlist = lessonRoundRepository.findByLessonNo(sll.getLessonNo().getLessonNo());
+
+            Long result = 0L;
+
+            double sum = 0.0;
+
+            for(LessonRound lr : lrlist){
+
+               sum += onestudentOneroundAttentionAvg(); // 들어갈 변수값들 넣어야함.
+
+            }
+             if(sum > max){
+                 max = sum;
+                 result = sll.getLessonNo().getLessonNo();
+             }
+
+             rs = lessonRepository.findByLessonNo(result).getLessonName();
+        }
+
+        return rs;
+
+    }
 
 
 }
