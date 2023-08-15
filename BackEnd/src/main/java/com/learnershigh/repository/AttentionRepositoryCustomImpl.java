@@ -16,8 +16,11 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     public AttentionRepositoryCustomImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
+
+
     @Override
-    public List<AttentionDto> test() {
+    // 한 회차당 한 학생의 20구간의 평균 집중도
+    public List<AttentionDto> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
         Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
         Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
         MatchOperation matchOperation =
@@ -25,7 +28,37 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
                         Criteria.where("timestamp")
                                 .gte(startDate)
                                 .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
-//                                .and("metadata.userNo").is(1)
+                                .and("metadata.userNo").is(1)
+                );
+        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
+                .andOutput("rate").avg().as("avgValue")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(0))
+                                .then(1).otherwise(0)).sum()).as("count0")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(1))
+                                .then(1).otherwise(0)).sum()).as("count1")
+                .andOutput(AccumulatorOperators.valueOf(
+                        ConditionalOperators.when(Criteria.where("metadata.status").is(2))
+                                .then(1).otherwise(0)).sum()).as("count2");
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation,
+                bucketAutoOperation
+        );
+        AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
+        List<AttentionDto> AttentionList = results.getMappedResults();
+        return AttentionList;
+    }
+
+    // 한 회차당 모든 학생의 20구간의 평균 집중도
+    @Override
+    public List<AttentionDto> aggregateAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
+        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+        MatchOperation matchOperation =
+                Aggregation.match(
+                        Criteria.where("timestamp")
+                                .gte(startDate)
+                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
                 .andOutput("rate").avg().as("avgValue")
@@ -39,78 +72,59 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
                         ConditionalOperators.when(Criteria.where("metadata.status").is(2))
                                 .then(1).otherwise(0)).sum()).as("count2");
 
-
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
+
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
-        List<AttentionDto> objectList = results.getMappedResults();
-        return objectList;
+        List<AttentionDto> attentionList = results.getMappedResults();
+        return attentionList;
     }
+
+    // 한 회차당 한 학생의 1구간의 평균 집중도
     @Override
-    public List<AttentionDto> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-/*
-    $match: {
-      "timestamp": {
-        $gte: new Date("2023-08-11T04:10:00Z"),
-        $lt: new Date("2023-08-11T04:16:00Z")
-      },
-      "metadata.lessonRoundNo": {
-        $eq: 21
-      }
-    }
-  },
-  {
-    $bucketAuto: {
-      groupBy: "$timestamp",
-      buckets: 20,  // 필요에 따라 버킷 개수를 조정하세요
-      output: {
-        avg_value: { $avg: "$rate" }
-      }
-    }
-  }
-])
-         */
-        Date startDate = Date.from(Instant.parse("2023-08-13T11:23:08.627Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-13T11:23:18.103Z"));
+    public AttentionDto aggregateTotalAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
+        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(1) // lessonRoundNo
+                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
                                 .and("metadata.userNo").is(1)
                 );
-        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
+        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 1)
                 .andOutput("rate").avg().as("avgValue");
+
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
+
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
-        List<AttentionDto> objectList = results.getMappedResults();
-        return objectList;
+        List<AttentionDto> attentionList = results.getMappedResults();
+        return attentionList.get(0);
     }
 
-
-    // 한회차당 모든 학생 평균 (20구간)
+    // 한 회차당 모든 학생의 1구간의 평균 집중도
     @Override
-    public List<AttentionDto> aggregateAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-
-        Date startDate = Date.from(Instant.parse("2023-08-13T11:23:08.627Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-13T11:23:18.103Z"));
+    public AttentionDto aggregateTotalAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
+        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
+        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(1) // lessonRoundNo
-
+                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
                 );
-        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
+        BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 1)
                 .andOutput("rate").avg().as("avgValue");
+
         Aggregation aggregation = Aggregation.newAggregation(matchOperation,
                 bucketAutoOperation
         );
+
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
-        List<AttentionDto> objectList = results.getMappedResults();
-        return objectList;
+        List<AttentionDto> attentionList = results.getMappedResults();
+        return attentionList.get(0);
     }
 }
