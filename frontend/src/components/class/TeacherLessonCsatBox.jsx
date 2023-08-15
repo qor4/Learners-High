@@ -67,7 +67,6 @@ const TeacherLessonCsatBox = ({ userNo }) => {
 
         // 강사에 대한 모든 총 만족도 GET 요청
         axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
-            if (response.data.resultCode === 0) {
             const teacherData = response.data.result;
             if (response.data.resultCode === 0) {
                 const teacherDataSet = {
