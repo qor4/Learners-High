@@ -218,7 +218,8 @@ const TeacherLessonRoomPage = () => {
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
     const es = useRef();
-
+    // 학생 
+    const [studentList, setStudentList] = useState([]);
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
         setVideoEnabled(true);
@@ -226,20 +227,6 @@ const TeacherLessonRoomPage = () => {
         setShareEnabled(true);
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
-
-        // // 알림
-        // const sse = new EventSource(
-        //     `${url}/notification/subscribe/${userId}`
-        // );
-        // sse.onopen = () => {
-        //     console.log("SSEONOPEN==========", sse);
-        // };
-        // sse.addEventListener("isActive", function (event) {
-        //     console.log("ADDEVENTLISTENER==========");
-        //     const tmp = JSON.parse(event.data);
-        //     tmp.status = Boolean(tmp.status);
-        //     console.log(tmp);
-        // });
 
         es.current = new EventSource( `${url}/notification/subscribe/${userId}`);
 
@@ -249,9 +236,7 @@ const TeacherLessonRoomPage = () => {
 
         es.current.addEventListener("isActive", function (event) {
                 console.log("ADDEVENTLISTENER==========");
-                const tmp = JSON.parse(event.data);
-                tmp.status = Boolean(tmp.status);
-                console.log(tmp);
+                changeStudentStatus(JSON.parse(event.data));
         });
 
         es.current.onerror = (err) => {
@@ -264,6 +249,20 @@ const TeacherLessonRoomPage = () => {
             es.current.close();
         };
     }, []);
+    const changeStudentStatus = useCallback((studentData)=>{
+        setStudentList((prev)=>
+                prev.map(
+                    (student) => {
+                        console.log(student);
+                        console.log(studentData);   
+                        if(student.studentId === studentData.studentId){
+                            return {...student,status:Number(studentData.status), notificationCnt : student.notificationCnt+1}
+                        }
+                        return student;
+                    }
+               ).slice()
+            );
+    },[studentList]);
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
@@ -284,7 +283,8 @@ const TeacherLessonRoomPage = () => {
             setMainStreamManager(undefined);
             setPublisher(undefined);
             setSubscribers([]);
-            setToken(undefined)
+            setToken(undefined);
+            es.current.close();
         }
         // 메인화면 이동 필요
         window.location.href=homeurl;
@@ -298,6 +298,11 @@ const TeacherLessonRoomPage = () => {
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
             setSubscribers((subscribers) => [...subscribers, subscriber])
+            
+            setStudentList((prev)=>[...prev,{studentId : JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId,
+                status : 0,
+                notificationCnt : 0
+              }]);
              // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
@@ -310,6 +315,12 @@ const TeacherLessonRoomPage = () => {
                     (subscriber) => subscriber !== event.stream.streamManager
                 )
             );
+            setStudentList((prev)=>
+                prev.filter(
+                    student => student.studentId !== JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId
+                )
+            );
+            
             console.log("사용자가 나갔습니다.");
             // console.log(JSON.parse(event.stream.connection.data.clientData), "님이 접속을 종료했습니다.")
         });

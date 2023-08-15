@@ -21,6 +21,7 @@ import { Typography } from "@mui/material";
 import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
 
 import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
+import { isAction } from "@reduxjs/toolkit";
 
 // Canvas를 담아둘 공간
 const CanvasWrap = styled.div`
@@ -103,6 +104,11 @@ const StudentWaitLessonRoomPage = () => {
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(false);
 
+    // 주의 알림 count 객체
+    const [notificationCnt, setNotificationCnt] = useState(0);
+    const [isAttention, setIsAttention] = useState(true);
+
+    // 알림 sse 객체
     const es = useRef();
 
     const toggleVideo = () => {
@@ -116,18 +122,6 @@ const StudentWaitLessonRoomPage = () => {
     useEffect(() => { 
         window.addEventListener('blur',focusOutLessonRoom);  
         window.addEventListener('focus',focusInLessonRoom); 
-
-        // // 알림
-        // const sse = new EventSource(
-        //     `${url}/notification/subscribe/${userId}`
-        // );
-        // sse.onopen = () => {
-        //     console.log("SSEONOPEN==========", sse);
-        // };
-        
-        // sse.addEventListener("send", function (event) {
-        //     console.log("ADDEVENTLISTENER==========", event.data);
-        // });
 
         es.current = new EventSource(  `${url}/notification/subscribe/${userId}`);
 
@@ -226,39 +220,44 @@ const StudentWaitLessonRoomPage = () => {
                     }
                   )
                     .then((res) => {
-                      console.log(res, "ddd");
+                      console.log("집중도 저장 성공");
                     })
                     .catch((err) => {
-                      console.error(err);
+                      console.log("집중도 저장 중 에러 발생", err);
                     });
-            
-                if(attentionList.length > 5){
-                    attentionList.shift();
-                }
+                
+                let checkAttention;
                 attentionList.push({currentScore,status});
-
-                if(attentionList.length > 5){
+                if(attentionList.length > 6){
+                    attentionList.shift();
                     // 집중도가 0.3 이하인 경우
-                    let checkAttention = attentionList.every(item => item.currentScore < 0.3);
+                    checkAttention = attentionList.every(item => item.currentScore < 0.3);
                     if (checkAttention) {
                         axios.get(
-                            `${url}/notification/active/${lessonNo}/${userId}`,
+                            `${url}/notification/active/${lessonNo}/${userId}/${status}`,
                           ).then(res =>{
-                            console.log("제대로 감 ac");
-                          }).catch(err=>{
-                            console.log("제대로 감 ac", err);
-                          });
+                            console.log("선생님께 주의 알림 신호 성공");
+                            
+                        }).catch(err=>{
+                            console.log("선생님께 주의 알림 신호 중 에러 발생", err);
+                        });
+                        console.log(notificationCnt , " : 주의 알림");
+                        setNotificationCnt((prev) => prev += 1);
+                        setAttentionList([]);
+                        setIsAttention(false);
                     }
+                }
+                if(!isAttention && attentionList.length > 5){
                     checkAttention = attentionList.every(item => item.currentScore >= 0.3);
                     if (checkAttention) {
                         axios.get(
-                            `${url}/notification/disactive/${lessonNo}/${userId}`,
+                            `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
                           ).then(res =>{
-                            console.log("제대로 감 dis ");
+                            console.log("선생님께 집중 알림 신호 성공");
                           }).catch(err=>{
-                            console.log("제대로 감 dis ", err);
+                            console.log("선생님께 집중 알림 신호 중 에러 발생", err);
                           });
-
+                        setIsAttention(true);
                     }
                 }
                
@@ -266,7 +265,7 @@ const StudentWaitLessonRoomPage = () => {
                 
             }
 
-    },[isFocus,enterRoom,videoEnabled,attentionList]);
+    },[isFocus,enterRoom,videoEnabled,attentionList,notificationCnt,isAttention]);
 
     const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
         console.log(

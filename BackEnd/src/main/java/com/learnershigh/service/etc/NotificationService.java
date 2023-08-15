@@ -50,7 +50,7 @@ public class NotificationService {
         return sseEmitter;
     }
 
-    public void isActive(Long lessonNo, String studentId, Boolean status) {
+    public void isActive(Long lessonNo, String studentId, Long status) {
         Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
         Optional<SseEmitter> sseEmitter = emitterRepository.get(lesson.getUserNo().getUserId());
         if (sseEmitter.isPresent()) {
