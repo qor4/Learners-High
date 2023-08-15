@@ -46,7 +46,7 @@ const HoverLink = styled(Link)`
 /** 텍스트 정렬 (flex space-between) */
 const FlexTextWrap = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 `;
 
@@ -186,10 +186,10 @@ const LessonInfoPage = () => {
                         lessonRoundInfo.map((round, index) => (
                             <StyledBox key={index}>
                                 <FlexTextWrap>
-                                    <LessonStatusBox>
+                                    <LessonStatusBox $point>
                                         {round.lessonRoundNumber}회
                                     </LessonStatusBox>
-                                    {round.lessonRoundTitle}
+                                    <strong>{round.lessonRoundTitle}</strong>
                                     <span>
                                         {`${formatDate(
                                             new Date(

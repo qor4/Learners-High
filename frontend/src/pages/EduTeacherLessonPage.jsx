@@ -93,7 +93,7 @@ const EduTeacherLessonPage = () => {
                                             "데이터 없음"
                                         ) : (
                                             <StyledTitleText>
-                                                {attendRateDataSet} %
+                                                {attendRateDataSet.toFixed(0)} %
                                             </StyledTitleText>
                                         )}
                                     </div>
@@ -106,7 +106,7 @@ const EduTeacherLessonPage = () => {
                                             "데이터 없음"
                                         ) : (
                                             <StyledTitleText>
-                                                {homeworkRateDataSet} %
+                                                {homeworkRateDataSet.toFixed(0)} %
                                             </StyledTitleText>
                                         )}
                                     </div>

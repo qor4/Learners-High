@@ -47,31 +47,42 @@ const TeacherLessonCsatBox = ({ userNo }) => {
         // 강사의 모든 수업 총 만족도 GET 요청
         axios.get(`${url}/csat/lesson/${userNo}`).then((response) => {
             const lessonData = response.data.result;
-            const lessonDataSet = {
-                oneCnt: lessonData.oneCnt,
-                twoCnt: lessonData.twoCnt,
-                threeCnt: lessonData.threeCnt,
-                fourCnt: lessonData.fourCnt,
-                fiveCnt: lessonData.fiveCnt,
-            };
-            setCsatLessonDataSet(lessonDataSet);
-            setTeacherCsatLesson(lessonData.result.toFixed(1));
-            setCsatLessonCount(lessonData.totalCnt);
+            if (response.data.resultCode === 0) {
+                const lessonDataSet = {
+                    oneCnt: lessonData.oneCnt,
+                    twoCnt: lessonData.twoCnt,
+                    threeCnt: lessonData.threeCnt,
+                    fourCnt: lessonData.fourCnt,
+                    fiveCnt: lessonData.fiveCnt,
+                };
+                setCsatLessonDataSet(lessonDataSet);
+                setTeacherCsatLesson(lessonData.result.toFixed(1));
+                setCsatLessonCount(lessonData.totalCnt);
+            } else if (response.data.resultCode === -1) {
+                setCsatLessonDataSet(null);
+                setTeacherCsatLesson(null);
+                // setCsatLessonCount(0);
+            }
         });
 
         // 강사에 대한 모든 총 만족도 GET 요청
         axios.get(`${url}/csat/teacher/${userNo}`).then((response) => {
             const teacherData = response.data.result;
-            const teacherDataSet = {
-                oneCnt: teacherData.oneCnt,
-                twoCnt: teacherData.twoCnt,
-                threeCnt: teacherData.threeCnt,
-                fourCnt: teacherData.fourCnt,
-                fiveCnt: teacherData.fiveCnt,
-            };
-            setCsatTeacherDataSet(teacherDataSet);
-            setTeacherCsatTeacher(teacherData.result.toFixed(1));
-            setCsatTeacherCount(teacherData.totalCnt);
+            if (response.data.resultCode === 0) {
+                const teacherDataSet = {
+                    oneCnt: teacherData.oneCnt,
+                    twoCnt: teacherData.twoCnt,
+                    threeCnt: teacherData.threeCnt,
+                    fourCnt: teacherData.fourCnt,
+                    fiveCnt: teacherData.fiveCnt,
+                };
+                setCsatTeacherDataSet(teacherDataSet);
+                setTeacherCsatTeacher(teacherData.result.toFixed(1));
+                setCsatTeacherCount(teacherData.totalCnt);
+            } else if (response.data.resultCode === -1) {
+                setCsatTeacherDataSet(null);
+                setTeacherCsatTeacher(null);
+            }
         });
     }, [userNo]);
 
@@ -87,7 +98,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                     <strong>수업 총 만족도</strong>
                                 </div>
                                 <div>
-                                    {isNaN(teacherCsatLesson)
+                                    {teacherCsatLesson === null
                                         ? "데이터 없음"
                                         : `⭐ ${teacherCsatLesson}`}{" "}
                                     ( {csatLessonCount}명 )
@@ -96,6 +107,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                             <ApexChart
                                 width={350}
                                 chartType="pie"
+                                type="csatpie"
                                 seriesData={csatLessonDataSet}
                             />
                         </InfoRateWrap>
@@ -105,7 +117,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                                     <strong>강사 총 만족도</strong>
                                 </div>
                                 <div>
-                                    {isNaN(teacherCsatTeacher)
+                                    {teacherCsatTeacher === null
                                         ? "데이터 없음"
                                         : `⭐ ${teacherCsatTeacher}`}{" "}
                                     ( {csatTeacherCount}명 )
@@ -114,6 +126,7 @@ const TeacherLessonCsatBox = ({ userNo }) => {
                             <ApexChart
                                 width={350}
                                 chartType="pie"
+                                type="csatpie"
                                 seriesData={csatTeacherDataSet}
                             />
                         </InfoRateWrap>
