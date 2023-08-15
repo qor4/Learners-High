@@ -50,13 +50,14 @@ const FlexTextWrap = styled.div`
     align-items: center;
 `;
 
-const LessonInfoPage = () => {
+const LessonInfoPage = (props) => {
     const userNo = useSelector((state) => state.user.userNo);
     const { lessonNo } = useParams();
     const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]);
     const [teacherInfoDataSet, setTeacherInfoDataSet] = useState([]);
     const [lessonPrice, setLessonPrice] = useState(0);
     const [lessonName, setLessonName] = useState(null);
+    const pathByEduStudentLessonPage = props.pathByEduStudentLessonPage ? props.pathByEduStudentLessonPage : false
 
     // 조회수 증가 요청
     useEffect(() => {
@@ -134,14 +135,18 @@ const LessonInfoPage = () => {
 
     return (
         <div>
+            {!pathByEduStudentLessonPage &&
+            <>
             <StyledLessonInfoWrap>
                 {/* 강의 상세 정보 들어갈 공간 */}
                 <LessonInfoBox
                     lessonInfo={lessonInfoDataSet.lessonInfo}
                     handleApplyChange={handleApplyChange}
                     $info
-                />
+                    />
             </StyledLessonInfoWrap>
+            </>
+                }
             <Container maxWidth="md">
                 {/* 강사 소개 */}
                 <FlexWrap>

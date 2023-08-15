@@ -13,6 +13,7 @@ import { StyledButtonWrap } from "./EduTeacherManagePage";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Button from "../components/common/Button";
 import EduManageReportTable from "../components/manage/EduManageReportTable";
+import LessonInfoPage from "./LessonInfoPage";
 
 // 강의 wrap
 const StyledLessonInfoWrap = styled.div`
@@ -75,6 +76,12 @@ const EduStudentLessonPage = () => {
                     {/* <DropTable /> */}
                     {selectedTabBar === "분석" && (
                         <EduManageReportTable lessonNo={lessonNo} />
+                    )}
+                    {selectedTabBar === "현황" && (
+                        <EduManageReportTable lessonNo={lessonNo} />
+                    )}
+                    {selectedTabBar === "소개" && (
+                        <LessonInfoPage pathByEduStudentLessonPage={true}/>
                     )}
                 </div>
             </Container>
