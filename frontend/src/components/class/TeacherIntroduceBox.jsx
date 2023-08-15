@@ -55,6 +55,8 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
     const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
 
+    const [profileImg, setProfileImg] = useState("");
+
     const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
     const jobInfo = teacherInfo.jobInfos;
@@ -65,15 +67,28 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
             // 강사의 모든 수업 총 만족도 GET 요청
             axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
                 const lessonData = response.data.result;
-                setTeacherCsatLesson(lessonData.result.toFixed(1));
-                setCsatLessonCount(lessonData.totalCnt);
+                if (response.data.resultCode === 0) {
+                    setTeacherCsatLesson(lessonData.result.toFixed(1));
+                    setCsatLessonCount(lessonData.totalCnt);
+                } else if (response.data.resultCode === -1) {
+                    setTeacherCsatLesson(null);
+                }
+                console.log(response.data);
             });
 
             // 강사에 대한 모든 총 만족도 GET 요청
             axios.get(`${url}/csat/teacher/${teacherNo}`).then((response) => {
                 const teacherData = response.data.result;
-                setTeacherCsatTeacher(teacherData.result.toFixed(1));
-                setCsatTeacherCount(teacherData.totalCnt);
+                if (response.data.resultCode === 0) {
+                    setTeacherCsatTeacher(teacherData.result.toFixed(1));
+                    setCsatTeacherCount(teacherData.totalCnt);
+                } else if (response.data.resultCode === -1) {
+                    setTeacherCsatTeacher(null);
+                }
+            });
+
+            axios.get(`${url}/s3/profile-load/${teacherNo}`).then((res) => {
+                setProfileImg(res.data);
             });
         }
     }, [teacherNo]);
@@ -84,11 +99,12 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 {/* 강사 이미지 */}
                 <StyledThumbnail
                     src={
-                        teacherInfo.profileImg
-                            ? teacherInfo.profileImg
-                            : "/assets/bannerimg.jpg"
+                        profileImg === "no"
+                            ? "/assets/bannerimg.jpg"
+                            : profileImg
                     }
                     alt="teacher-img"
+                    crossOrigin="anonymous"
                 />
 
                 <InfoWrap>
@@ -99,20 +115,18 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                                 <strong>수업 만족도</strong>
                                 <span>
                                     ⭐{" "}
-                                    {isNaN(teacherCsatLesson)
+                                    {teacherCsatLesson === null
                                         ? "데이터 없음"
-                                        : teacherCsatLesson}{" "}
-                                    ( {csatLessonCount}명 )
+                                        : `${teacherCsatLesson} ( ${csatLessonCount}명 )`}
                                 </span>
                             </div>
                             <div>
                                 <strong>강사 만족도</strong>
                                 <span>
                                     ⭐{" "}
-                                    {isNaN(teacherCsatTeacher)
+                                    {teacherCsatTeacher === null
                                         ? "데이터 없음"
-                                        : teacherCsatTeacher}{" "}
-                                    ( {csatTeacherCount}명 )
+                                        : `${teacherCsatTeacher} ( ${csatTeacherCount}명 )`}
                                 </span>
                             </div>
                         </FlexWrap>

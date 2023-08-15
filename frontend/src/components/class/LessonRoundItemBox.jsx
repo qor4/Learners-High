@@ -116,7 +116,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         <>
             <RoundDateWrap>
                 <LessonStatusBox size="lg" $point $round>
-                    {lessonInfo.lessonRoundNo}회차
+                    {lessonInfo.lessonRoundNumber}회차
                 </LessonStatusBox>
                 <span>
                     {formattedStartDate} ~ {formattedEndDate}

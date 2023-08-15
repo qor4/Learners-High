@@ -10,9 +10,9 @@ import { styled } from "styled-components";
 import { Container } from "@mui/material";
 import { StyledButtonWrap } from "./EduTeacherManagePage";
 
-import DropTable from "../components/common/table/DropTable";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Button from "../components/common/Button";
+import EduManageReportTable from "../components/manage/EduManageReportTable";
 
 // 강의 wrap
 const StyledLessonInfoWrap = styled.div`
@@ -72,7 +72,10 @@ const EduStudentLessonPage = () => {
 
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
-                    <DropTable />
+                    {/* <DropTable /> */}
+                    {selectedTabBar === "분석" && (
+                        <EduManageReportTable lessonNo={lessonNo} />
+                    )}
                 </div>
             </Container>
         </>

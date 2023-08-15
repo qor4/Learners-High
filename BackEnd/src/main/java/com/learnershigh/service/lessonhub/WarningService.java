@@ -1,5 +1,7 @@
 package com.learnershigh.service.lessonhub;
 
+import com.learnershigh.domain.lesson.Lesson;
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lessonhub.Satisfaction;
 import com.learnershigh.domain.lessonhub.Warning;
 import com.learnershigh.domain.user.User;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -43,5 +46,41 @@ public class WarningService {
         warning.setLessonRoundNo(lessonRoundRepository.findByLessonRoundNo(saveWarningDto.getLessonRoundNo()));
         warning.setUserNo(user);
         warningRepository.save(warning);
+    }
+
+    // 한수업의 회차별 한 학생에 대한 주의갯수 배열
+    public HashMap<Integer, Integer> oneStudentOneLesson(Long userNo, Long lessonNo){
+
+        Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
+
+        int num = lesson.getLessonTotalRound();
+        HashMap<Integer, Integer> result = new HashMap<>();
+
+//        int arr[] = new int[num+1];
+
+        for (int i=1;i<num+1;i++){
+            LessonRound lessonRound = lessonRoundRepository.findByLessonNoAndLessonRoundNumber(lessonNo,i);
+            List<Warning> warnings = warningRepository.findAllByLessonRoundNoAndUserNo(lessonRound.getLessonRoundNo(), userNo);
+            result.put(i, warnings.size());
+        }
+
+        return result;
+    }
+
+    // 한 수업의 회차별 모든 학생에 대한 주의갯수 배열
+    public HashMap<Integer, Integer> allStudentOneLesson(Long lessonNo){
+
+        Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
+
+        int num = lesson.getLessonTotalRound();
+        HashMap<Integer, Integer> result = new HashMap<>();
+
+        for (int i=1;i<num+1;i++){
+            LessonRound lessonRound = lessonRoundRepository.findByLessonNoAndLessonRoundNumber(lessonNo,i);
+            List<Warning> warnings = warningRepository.findAllByLessonRoundNo(lessonRound.getLessonRoundNo());
+            result.put(i, warnings.size());
+        }
+
+        return result;
     }
 }

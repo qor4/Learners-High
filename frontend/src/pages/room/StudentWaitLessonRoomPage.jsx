@@ -21,6 +21,7 @@ import { Typography } from "@mui/material";
 import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
 
 import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
+import { isAction } from "@reduxjs/toolkit";
 
 // Canvas를 담아둘 공간
 const CanvasWrap = styled.div`
@@ -103,6 +104,13 @@ const StudentWaitLessonRoomPage = () => {
     const [videoEnabled, setVideoEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(false);
 
+    // 주의 알림 count 객체
+    const [notificationCnt, setNotificationCnt] = useState(0);
+    const [isAttention, setIsAttention] = useState(true);
+
+    // 알림 sse 객체
+    const es = useRef();
+
     const toggleVideo = () => {
         setVideoEnabled( prevState => !prevState);
     };
@@ -115,17 +123,19 @@ const StudentWaitLessonRoomPage = () => {
         window.addEventListener('blur',focusOutLessonRoom);  
         window.addEventListener('focus',focusInLessonRoom); 
 
-        // 알림
-        const sse = new EventSource(
-            `${url}/notification/subscribe/${userId}`
-        );
-        sse.onopen = () => {
-            console.log("SSEONOPEN==========", sse);
+        es.current = new EventSource(  `${url}/notification/subscribe/${userId}`);
+
+        es.current.onopen = (e) => {
+            console.log("SSEONOPEN==========", es);
         };
-        
-        sse.addEventListener("send", function (event) {
+
+        es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
         });
+
+        es.current.onerror = (err) => {
+            console.log('[sse] error', { err });
+        };
 
         if (!eyeTracker.current && !enterRoom) {
             eyeTracker.current = new EasySeeso();
@@ -133,7 +143,8 @@ const StudentWaitLessonRoomPage = () => {
             (async () => {
                 await eyeTracker.current.init(
                     licenseKey,
-                    () => {
+                    async () => {
+                        await eyeTracker.current.startTracking(onGaze,onDebug);
                         if (!eyeTracker.current.checkMobile()) {
                             eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
@@ -149,12 +160,14 @@ const StudentWaitLessonRoomPage = () => {
                 );
                 setSeesoInit(true);
                 setIsTest(true);
+                
             })();
         }
                     
         return ()=>{
             window.removeEventListener('blur',focusOutLessonRoom);  
             window.removeEventListener('focus',focusInLessonRoom); 
+            es.current.close()
         }
 
     }, []);
@@ -170,12 +183,6 @@ const StudentWaitLessonRoomPage = () => {
         setIsFocus(true);
     });
 
-    useEffect(()=>{
-        if(isSeesoInit){
-            eyeTracker.current.startTracking(onGaze,onDebug);
-        }
-    },[isSeesoInit]);
-
     useEffect(() => {
         saveAttentionScore(attentionScore);
     }, [attentionScore]);
@@ -184,78 +191,91 @@ const StudentWaitLessonRoomPage = () => {
     const saveAttentionScore = useCallback(
         (score) => {
             let currentScore = score;
-            let state = 0;
+            let status = 0;
             if (!isFocus) {
                 console.log("다른 화면 보는 중");
                 currentScore = 0;
-                state = 2;
+                status = 2;
             }else if(!videoEnabled){
                 console.log("캠 꺼져 있음");
                 currentScore = 0;
-                state = 1;
+                status = 1;
             }
             // 조건
             if (enterRoom) {
-                console.log("AttentScore : ", currentScore, state);
+                console.log("AttentScore : ", currentScore, status);
                 // mongodb server와 통신
-                //     {
-                // axios.post(
-                //     `${seesoUrl}/seeso/attention-rate`,
-                //       lessonRoundNo: Number(lessonRoundNo),
-                //       lessonNo: Number(lessonNo),
-                //       userNo: Number(userNo),
-                //       rate: Number(score),
-                //       state: Number(state)
-                //     },
-                //     {
-                //       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-                //     }
-                //   )
-                //     .then((res) => {
-                //       console.log(res, "ddd");
-                //     })
-                //     .catch((err) => {
-                //       console.error(err);
-                //     });
-            
-                if(attentionList.length > 5){
+
+                axios.post(
+                    `${url}/attention/save`,
+                    {
+                      lessonRoundNo: Number(lessonRoundNo),
+                      lessonNo: Number(lessonNo),
+                      userNo: Number(userNo),
+                      rate: Number(score),
+                      status: Number(status)
+                    },
+                    {
+                      headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+                    }
+                  )
+                    .then((res) => {
+                      console.log("집중도 저장 성공");
+                    })
+                    .catch((err) => {
+                      console.log("집중도 저장 중 에러 발생", err);
+                    });
+                
+                let checkAttention;
+                attentionList.push({currentScore,status});
+                if(attentionList.length > 6){
                     attentionList.shift();
+                    // 집중도가 0.3 이하인 경우
+                    checkAttention = attentionList.every(item => item.currentScore < 0.3);
+                    if (checkAttention) {
+                        axios.get(
+                            `${url}/notification/active/${lessonNo}/${userId}/${status}`,
+                          ).then(res =>{
+                            console.log("선생님께 주의 알림 신호 성공");
+                            
+                        }).catch(err=>{
+                            console.log("선생님께 주의 알림 신호 중 에러 발생", err);
+                        });
+                        console.log(notificationCnt , " : 주의 알림");
+                        setNotificationCnt((prev) => prev += 1);
+                        setAttentionList([]);
+                        setIsAttention(false);
+                    }
                 }
-                attentionList.push({currentScore,state});
-
-
-                // 집중도가 0.3 이하인 경우
-                let checkAttention = attentionList.every(item => item.currentScore < 0.3);
-                if (checkAttention) {
-                    console.log("as");
+                if(!isAttention && attentionList.length > 5){
+                    checkAttention = attentionList.every(item => item.currentScore >= 0.3);
+                    if (checkAttention) {
+                        axios.get(
+                            `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
+                          ).then(res =>{
+                            console.log("선생님께 집중 알림 신호 성공");
+                          }).catch(err=>{
+                            console.log("선생님께 집중 알림 신호 중 에러 발생", err);
+                          });
+                        setIsAttention(true);
+                    }
                 }
-                console.log(attentionList);
-                checkAttention = attentionList.every(item => item.currentScore >= 0.3);
-                if (checkAttention) {
-                    console.log("as");
-                }
+               
                 // 현재 주의를 받을 상황인가 파악
                 
             }
 
-    },[isFocus,enterRoom,videoEnabled,attentionList]);
+    },[isFocus,enterRoom,videoEnabled,attentionList,notificationCnt,isAttention]);
 
     const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
         console.log(
             `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
         );
-        axios.get(`${url}/notification/active/${lessonNo}/${userId}`)
-            .then(res=>{
-                console.log("제대로감")
-            }).catch(err=>{
-                console.error('잘못감');
-            });
         setAttentionScore(score);
     }, []);
 
     useEffect(() => {
         if (calibrationData !== null) {
-            eyeTracker.current.startTracking(onGaze, onDebug);
             eyeTracker.current.setCalibrationData(calibrationData);
             eyeTracker.current.setUserStatusCallback(onAttention, null, null);
             eyeTracker.current.setAttentionInterval(10);

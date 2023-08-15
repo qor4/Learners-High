@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url, homeurl} from "../../api/APIPath";
-
+import axios from "axios"; 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -217,7 +217,9 @@ const TeacherLessonRoomPage = () => {
 
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
-
+    const es = useRef();
+    // 학생 
+    const [studentList, setStudentList] = useState([]);
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
         setVideoEnabled(true);
@@ -226,26 +228,41 @@ const TeacherLessonRoomPage = () => {
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
-        // 알림
-        const sse = new EventSource(
-            `${url}/notification/subscribe/${userId}`
-        );
-        sse.onopen = () => {
-            console.log("SSEONOPEN==========", sse);
+        es.current = new EventSource( `${url}/notification/subscribe/${userId}`);
+
+        es.current.onopen = (e) => {
+            console.log("SSEONOPEN==========", es);
         };
-        sse.addEventListener("isActive", function (event) {
-            console.log("ADDEVENTLISTENER==========");
-            const tmp = JSON.parse(event.data);
-            tmp.status = Boolean(tmp.status);
-            console.log(tmp);
+
+        es.current.addEventListener("isActive", function (event) {
+                console.log("ADDEVENTLISTENER==========");
+                changeStudentStatus(JSON.parse(event.data));
         });
 
+        es.current.onerror = (err) => {
+            console.log('[sse] error', { err });
+        };
         // 윈도우 객체에 화면 종료 이벤트 추가
         joinSession(); // 세션 입장
         return () => {
             window.removeEventListener('beforeunload',leaveSession);
+            es.current.close();
         };
     }, []);
+    const changeStudentStatus = useCallback((studentData)=>{
+        setStudentList((prev)=>
+                prev.map(
+                    (student) => {
+                        console.log(student);
+                        console.log(studentData);   
+                        if(student.studentId === studentData.studentId){
+                            return {...student,status:Number(studentData.status), notificationCnt : student.notificationCnt+1}
+                        }
+                        return student;
+                    }
+               ).slice()
+            );
+    },[studentList]);
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
@@ -266,7 +283,8 @@ const TeacherLessonRoomPage = () => {
             setMainStreamManager(undefined);
             setPublisher(undefined);
             setSubscribers([]);
-            setToken(undefined)
+            setToken(undefined);
+            es.current.close();
         }
         // 메인화면 이동 필요
         window.location.href=homeurl;
@@ -280,6 +298,11 @@ const TeacherLessonRoomPage = () => {
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
             setSubscribers((subscribers) => [...subscribers, subscriber])
+            
+            setStudentList((prev)=>[...prev,{studentId : JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId,
+                status : 0,
+                notificationCnt : 0
+              }]);
              // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
@@ -292,6 +315,12 @@ const TeacherLessonRoomPage = () => {
                     (subscriber) => subscriber !== event.stream.streamManager
                 )
             );
+            setStudentList((prev)=>
+                prev.filter(
+                    student => student.studentId !== JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId
+                )
+            );
+            
             console.log("사용자가 나갔습니다.");
             // console.log(JSON.parse(event.stream.connection.data.clientData), "님이 접속을 종료했습니다.")
         });
@@ -360,6 +389,22 @@ const TeacherLessonRoomPage = () => {
             setAudioEnabled(enabled);
             publisher.publishAudio(enabled);
         }
+
+        tokenHttp.post(
+            `${url}/notification/send`,
+            {
+                lessonNo : Number(lessonNo),
+                lessonRoundNo : Number(lessonRoundNo),
+                studentNo : Number(4),
+                teacherId : userId
+            }
+        ).then(res=>{
+            console.log('send 성공');
+        }).catch(err=>{
+            console.log('send 실패', err);
+        })
+
+
     };
 
     const toggleShare = () => {

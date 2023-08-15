@@ -197,12 +197,16 @@ const LessonPage = () => {
 
                 {/* 순서 정렬 기준 */}
                 <FilterWrapper>
-                    <span>인기순</span>
-                    <span>강사 만족도순</span>
+                    {/* <span>인기순</span>
+                    <span>강사 만족도순</span> */}
                 </FilterWrapper>
                 {/* 강의 목록 아이템이 보이는 공간 */}
                 <div>
-                    <LessonList items={filteredLessonListData} />
+                    {filteredLessonListData.length > 0 ? (
+                        <LessonList items={filteredLessonListData} />
+                    ) : (
+                        <Card style={{ textAlign: "center" }}>데이터 없음</Card>
+                    )}
                 </div>
 
                 {/* 페이지네이션 */}
