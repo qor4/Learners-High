@@ -59,36 +59,53 @@ const LessonItemBox = ({ lessonInfo }) => {
     const userNo = useSelector((state) => state.user.userNo);
     const userType = useSelector((state) => state.user.userType);
     const lessonNo = lessonInfo.lessonNo;
-    const [teacherSat, setTeacherSat] = useState(0); // 수업 하나당 강사 만족도
-    const [lessonSat, setLessonSat] = useState(0); // 수업 하나당 강의 만족도
-    
+    const [teacherCsat, setTeacherCsat] = useState(0); // 수업 하나당 강사 만족도
+    const [teacherCsatCount, setTeacherCsatCount] = useState(0); // 수업 하나당 강사 만족도 참여 인원
+    const [lessonCsat, setLessonCsat] = useState(0); // 수업 하나당 수업 만족도
+    const [lessonCsatCount, setLessonCsatCount] = useState(0); // 수업 하나당 수업 만족도 참여 인원
 
-    const [attendRate, setAttendRate] = useState(0);
-    const [homeworkRate, setHomeworkRate] = useState(0);
+    const [attendRate, setAttendRate] = useState(0); // 출석률
+    const [homeworkRate, setHomeworkRate] = useState(0); // 과제 제출률
 
     useEffect(() => {
         if (userType === "T") {
-            // 수업 하나당 강의 만족도
-            tokenHttp
-                .get(`${url}/csat/onelesson/${lessonNo}`)
-                .then((response) => {
-                    console.log(response.data)
-                    setLessonSat(response.data);
-                });
             // 수업 하나당 강사 만족도
             tokenHttp
                 .get(`${url}/csat/oneteacher/${lessonNo}`)
                 .then((response) => {
-                    console.log(response.data)
-                    setTeacherSat(response.data);
+                    const oneTeacherData = response.data.result;
+                    // 만약 데이터를 잘 받아 왔다면
+                    if (response.data.resultCode === 0) {
+                        setTeacherCsat(oneTeacherData.result.toFixed(1));
+                        setTeacherCsatCount(oneTeacherData.totalCnt);
+                    } else if (response.data.resultCode === -1) {
+                        setTeacherCsat(null);
+                    }
                 });
+            // 수업 하나당 수업 만족도
+            tokenHttp
+                .get(`${url}/csat/onelesson/${lessonNo}`)
+                .then((response) => {
+                    const oneLessonData = response.data.result;
+                    // 만약 데이터를 잘 받아 왔다면
+                    if (response.data.resultCode === 0) {
+                        setLessonCsat(oneLessonData.result.toFixed(1));
+                        setLessonCsatCount(oneLessonData.totalCnt);
+                    } else if (response.data.resultCode === -1) {
+                        setLessonCsat(null);
+                    }
+                });
+
+            // 강사 출석률 / 과제 제출률
             tokenHttp
                 .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
+                    console.log(response.data);
                     setAttendRate(response.data.result.attendRate);
-                    setHomeworkRate(response.data.result.attendRate);
+                    setHomeworkRate(response.data.result.homeworkRate);
                 });
         } else if (userType === "S") {
+            // 학생 출석률 / 과제 제출률
             tokenHttp
                 .get(`${url}/student/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
@@ -129,10 +146,10 @@ const LessonItemBox = ({ lessonInfo }) => {
                                     <div>강사 만족도</div>
                                 </strong>
                                 <div>
-                                    {isNaN(teacherSat) ? (
+                                    {teacherCsat === null ? (
                                         <NoneDataText>데이터 없음</NoneDataText>
                                     ) : (
-                                        teacherSat
+                                        `⭐ ${teacherCsat} ( ${teacherCsatCount}명 )`
                                     )}
                                 </div>
                             </ColFlexWrap>
@@ -141,10 +158,10 @@ const LessonItemBox = ({ lessonInfo }) => {
                                     <div>수업 만족도</div>
                                 </strong>
                                 <div>
-                                    {isNaN(lessonSat) ? (
+                                    {lessonCsat === null ? (
                                         <NoneDataText>데이터 없음</NoneDataText>
                                     ) : (
-                                        lessonSat
+                                        `⭐ ${lessonCsat} ( ${lessonCsatCount}명 )`
                                     )}
                                 </div>
                             </ColFlexWrap>
@@ -159,7 +176,7 @@ const LessonItemBox = ({ lessonInfo }) => {
                             {attendRate === "아직 집계할 데이터가 없습니다." ? (
                                 <NoneDataText>데이터 없음</NoneDataText>
                             ) : (
-                                <DataText>{attendRate}</DataText>
+                                <DataText>{attendRate.toFixed(0)} %</DataText>
                             )}
                         </CardFlexWrap>
                         <CardFlexWrap>
@@ -170,7 +187,7 @@ const LessonItemBox = ({ lessonInfo }) => {
                             "아직 집계할 데이터가 없습니다." ? (
                                 <NoneDataText>데이터 없음</NoneDataText>
                             ) : (
-                                <DataText>{homeworkRate}</DataText>
+                                <DataText>{homeworkRate.toFixed(0)} %</DataText>
                             )}
                         </CardFlexWrap>
                     </RowFlexWrap>

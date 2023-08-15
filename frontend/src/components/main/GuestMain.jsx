@@ -82,6 +82,7 @@ const GuestMain = () => {
     // 인기 강의 데이터 get 요청
     useEffect(() => {
         axios.get(`${url}/lesson/list/main`).then((response) => {
+            console.log(response.data.result)
             setPopularLessonDataSet(response.data.result);
         });
     }, []);
@@ -99,7 +100,7 @@ const GuestMain = () => {
 
                         <Link to="/join">
                             <Button $active $fullWidth size="lg">
-                                가입하기
+                                회원가입
                             </Button>
                         </Link>
                     </Container>

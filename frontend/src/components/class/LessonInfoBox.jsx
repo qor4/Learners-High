@@ -60,7 +60,7 @@ const StyledBottomBar = styled.div`
 `;
 
 const BottomBarContents = styled.div`
-    width: 60%;
+    width: 70%;
     height: 100%;
     margin: 0 auto;
     display: flex;
@@ -314,6 +314,9 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                 <span>
                                     <strong>{lessonInfo.lessonName}</strong>
                                 </span>
+                                <Link to={`/profile/${lessonInfo.userNo}`}>
+                                <div>{lessonInfo.userName}</div>
+                            </Link>
                                 <span>
                                     {lessonInfo.lessonPrice.toLocaleString()}원
                                 </span>
@@ -340,7 +343,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                 {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
                                 {userType === "S" &&
                                     lessonStateDataSet === 0 && (
-                                        <div>
+                                        <LessonButtonWrap>
                                             <Button onClick={handleApplyChange}>
                                                 수강 신청 ({" "}
                                                 {lessonInfo.totalStudent} /{" "}
@@ -364,7 +367,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                                     <HiOutlineHeart />
                                                 </Button>
                                             )}
-                                        </div>
+                                        </LessonButtonWrap>
                                     )}
                             </BottomBarContents>
                         </StyledBottomBar>

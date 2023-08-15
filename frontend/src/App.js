@@ -45,6 +45,7 @@ import TeacherRoomFrame from "./pages/room/TeacherRoomFrame";
 import StudentRoomFrame from "./pages/room/StudentRoomFrame";
 import AlertTest from "./pages/room/AlertTest";
 import StudentWaitRoomFrame from "./pages/room/StudentWaitRoomFrame";
+import ChartTest from "./components/test/ChartTest";
 
 import { logOutUser } from "./store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
@@ -125,6 +126,11 @@ function App() {
                     ></Route>
                     <Route path="/lesson" element={<LessonPage />}></Route>
                     {/* @@@ 임시 강의룸 @@@ */}
+
+                    {/* 임시 라인 차트@@@ */}
+                    
+
+                    <Route path="/temp/chart" element={<ChartTest />}></Route>
                     <Route path="/temp" element={<AlertTest />}></Route>
                     <Route
                         path="/temp/teacher/room"
