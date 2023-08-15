@@ -40,7 +40,7 @@ public class CsatController {
     // 만족도 존재하는 지 확인
     @GetMapping("/before/create/dupli/check")
     @ApiOperation("만족도 제출전 증복된 값있는 확인")
-    public ResponseEntity<BaseResponseBody> beforeCreateCheck(@RequestParam Long studentNo, @RequestParam Long teacherNo, @RequestParam Long lessonRoundNo) {
+    public ResponseEntity<BaseResponseBody> beforeCreateCheck(@RequestParam("studentNo") Long studentNo, @RequestParam("teacherNo") Long teacherNo, @RequestParam("lessonRoundNo") Long lessonRoundNo) {
         BaseResponseBody responseBody = new BaseResponseBody("만족도를 제출하지 않았습니다.");
         try {
             satisfactionService.beforeCreateCheck(lessonRoundNo, teacherNo, studentNo);

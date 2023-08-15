@@ -21,6 +21,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
 
     List<Lesson> findByUserNo(User userNo);
 
+
+
     @Query(value = "SELECT C FROM Lesson C WHERE C.userNo.userNo = :userNo AND C.lessonStatus = :status")
     List<Lesson> teacherLessonList(@Param("userNo") Long userNo, @Param("status") String status);
 

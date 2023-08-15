@@ -1,6 +1,7 @@
 package com.learnershigh.repository.lessonhub;
 
 import com.learnershigh.domain.lesson.Lesson;
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lessonhub.Satisfaction;
 import com.learnershigh.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,6 @@ public interface SatisfactionRepository extends JpaRepository<Satisfaction, Inte
 
     List<Satisfaction> findAllByLessonNo(Lesson lessonNo);
 
-    Satisfaction findByLessonRoundNoAndTeacherNoAndStudentNo(Long lessonRoundNo, Long teacherNo, Long studentNo);
+    Satisfaction findByLessonRoundNoAndTeacherNoAndStudentNo(LessonRound lessonRoundNo, User teacherNo, User studentNo);
 
 }
