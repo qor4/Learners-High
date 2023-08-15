@@ -2,6 +2,7 @@ package com.learnershigh.repository.lesson;
 
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,6 +38,8 @@ public interface LessonRoundRepository extends JpaRepository<LessonRound, Long> 
             "AND date(l.lessonRoundStartDatetime) = date(curdate())")
 
     LessonRound isEnterLessonroom(Long lessonNo);
+
+    LessonRound findByLessonNoAndLessonRoundNumber(Long lessonNo, int lessonRoundNumber);
 }
 
 

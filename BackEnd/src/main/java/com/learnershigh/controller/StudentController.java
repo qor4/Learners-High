@@ -7,7 +7,9 @@ import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.dto.lesson.LessonListDto;
 import com.learnershigh.dto.lessonhub.StudentAttendHomeworkDto;
 import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
+import com.learnershigh.repository.lessonhub.WarningRepository;
 import com.learnershigh.service.lesson.LessonService;
+import com.learnershigh.service.lessonhub.WarningService;
 import com.learnershigh.service.user.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +32,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final LessonService lessonService;
+    private final WarningService warningService;
 
     // 강의 찜
     @PostMapping("/wish")
@@ -217,6 +220,27 @@ public class StudentController {
         BaseResponseBody responseBody = new BaseResponseBody("수강 신청이 가능합니다.");
         try {
             studentService.getStudentLessonState(userNo, lessonNo);
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    // 한 수업에 대한 한 학생의 모든 주의 배열
+    @GetMapping("warning/{userNo}/{lessonNo}")
+    @ApiOperation("한 수업에 대한 한 학생의 주의 배열, 모든 학생에 대한 주의 배열")
+    public ResponseEntity<CustomResponseBody> oneLessononeStudentWarning(@PathVariable("userNo")Long userNo,@PathVariable("lessonNo")Long lessonNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("한 수업에 대한 한 학생의 주의 배열, 모든 학생에 대한 주의 배열");
+        try {
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("myWarning", warningService.oneStudentOneLesson(userNo,lessonNo));
+            result.put("allWarning", warningService.allStudentOneLesson(lessonNo));
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
