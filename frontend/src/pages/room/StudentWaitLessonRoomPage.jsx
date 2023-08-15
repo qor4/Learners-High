@@ -277,7 +277,6 @@ const StudentWaitLessonRoomPage = () => {
 
     useEffect(() => {
         if (calibrationData !== null) {
-            eyeTracker.current.startTracking(onGaze, onDebug);
             eyeTracker.current.setCalibrationData(calibrationData);
             eyeTracker.current.setUserStatusCallback(onAttention, null, null);
             eyeTracker.current.setAttentionInterval(10);
