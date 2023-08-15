@@ -50,6 +50,7 @@ import ChartTest from "./components/test/ChartTest";
 
 import { logOutUser } from "./store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
+import FindIDPwdPage from "./pages/auth/FindIDPwdPage";
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -125,12 +126,12 @@ function App() {
                         path="/kakao/join"
                         element={<KakaoUserJoinPage />}
                     ></Route>
+                    
                     <Route path="/lesson" element={<LessonPage />}></Route>
-                    {/* @@@ 임시 강의룸 @@@ */}
+                    {/* @@@ 임시 강의룸 / 아이디 비밀번호 찾기 @@@ */}
+                    <Route path="/find/idpwd" element={<FindIDPwdPage />}></Route>
 
                     {/* 임시 라인 차트@@@ */}
-                    
-
                     <Route path="/temp/chart" element={<ChartTest />}></Route>
                     <Route path="/temp" element={<AlertTest />}></Route>
                     <Route

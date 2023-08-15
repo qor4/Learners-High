@@ -117,8 +117,8 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
 
     const [thumbnailURL, setThumbnailURL] = useState("")
     useEffect(() => {
-        tokenHttp
-        .get(`${url}/s3/thumbnail-load/${Number(lessonNo.lessonNo)}`)
+        axios
+        .get(`${url}/s3/thumbnail-load/${lessonNo.lessonNo}`)
         .then((res) => {
             console.log(res, "S3서버로 간다");
             setThumbnailURL(res.data.resultMsg);
@@ -217,7 +217,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                     {/* 수강신청을 한 경우 */}
                                     {lessonStateDataSet === -1 && (
                                         <Button disabled>
-                                            이미 수강신청을 하셨습니다.
+                                            수강 중
                                         </Button>
                                     )}
 
@@ -334,8 +334,8 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
 
                                 {/* 수강신청을 한 경우 */}
                                 {lessonStateDataSet === -1 && (
-                                    <Button disabled>
-                                        이미 수강신청을 하셨습니다.
+                                    <Button disabled style={{ width: "40%" }}>
+                                        수강 중
                                     </Button>
                                 )}
 
