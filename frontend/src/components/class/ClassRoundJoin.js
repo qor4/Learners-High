@@ -209,13 +209,12 @@ const ClassRoundJoin = ({
         // const standardDate = JSON.parse(
         //     JSON.stringify(standardDate)
         // );
-        for (let i=0; i < lessonTotalRound; i++) {
+        for (let i=0; i < Number(lessonTotalRound); i++) {
             // 배열 절대 바꾸지 마라.
             
             if (i < weekNum) {
                 const startNewDate = standardDate[i % weekNum];
                 const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
-                console.log(startNewDate, endNewDate, "여기 어때")
                 lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
@@ -225,18 +224,12 @@ const ClassRoundJoin = ({
                     // standardRunningTime[(i - 1) % weekNum];
             } else {
                 // 여기다.+
-                
                 const addWeekDate = dayjs(standardDate[i % weekNum]).add(Math.floor(i/weekNum), 'week')
                 const startNewDate = dayjs(addWeekDate)
                 const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
                 lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
                 lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
-                console.log( lessonRoundDataSetCopy[i].lessonRoundStartDatetime, "시작시간들")
-                // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
-                //     standardRunningTime[i % weekNum];
-                // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
-                    // standardRunningTime[(i - 1) % weekNum];
             }
         }
         
