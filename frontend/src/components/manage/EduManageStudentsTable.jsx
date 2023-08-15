@@ -213,6 +213,7 @@ const EduManageStudentsTable = () => {
                 studentDataList[i].lessonAttendStatus = "수업 예정";
             }
         }
+        console.log(studentDataList, NotInProgressIndex, "### 데이터리스트 상태 잘 바꼈니")
         
         const studentDataTable = studentDataList.map((item) => {
             // 강의명 삽입하기
@@ -257,8 +258,7 @@ const EduManageStudentsTable = () => {
         // lessonRoundNumber, lessonRoundTitle, lessonAttendStatus, homeworkStatus
         // axios로 데이터 불러오기 -> 그 데이터를
         tokenHttp
-            .get(`${url}/teacher/1/lesson/1/student`)
-            // .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/student`)
+            .get(`${url}/teacher/${Number(userNo)}/lesson/${Number(lessonNo)}/student`)
             .then((res) => {
               console.log(res)
               if (res.data.resultCode === 0) {
