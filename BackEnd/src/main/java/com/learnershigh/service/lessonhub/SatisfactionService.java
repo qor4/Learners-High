@@ -45,6 +45,16 @@ public class SatisfactionService {
         satisfactionRepository.save(satisfaction);
     }
 
+    // 만족도 제출전 중복 검사
+    public void beforeCreateCheck(Long lessonRoundNo,Long teacherNo ,Long studentNo){
+        Satisfaction satisfaction = satisfactionRepository.findByLessonRoundNoAndTeacherNoAndStudentNo(lessonRoundNo, teacherNo, studentNo);
+
+        if (satisfaction != null){
+            throw new IllegalStateException("이미 제출된 만족도가 있습니다.");
+        }
+    }
+
+
     // 수업 총 만족도 뽑기
     public SatiResultDto lessonAllSati(Long teacherNo) {
 

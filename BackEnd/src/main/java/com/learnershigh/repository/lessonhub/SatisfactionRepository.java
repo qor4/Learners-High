@@ -12,4 +12,6 @@ public interface SatisfactionRepository extends JpaRepository<Satisfaction, Inte
 
     List<Satisfaction> findAllByLessonNo(Lesson lessonNo);
 
+    Satisfaction findByLessonRoundNoAndTeacherNoAndStudentNo(Long lessonRoundNo, Long teacherNo, Long studentNo);
+
 }
