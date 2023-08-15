@@ -181,10 +181,10 @@ public class LessonController {
     }
 
     // 메인페이지 강의 TOP5 출력
-    @ApiOperation("강의 Top5 출력")
+    @ApiOperation("강의 Top4 출력")
     @GetMapping("/list/main")
     public ResponseEntity<CustomResponseBody> mainTop5() {
-        CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP5 강의 출력");
+        CustomResponseBody responseBody = new CustomResponseBody("조회수 TOP4 강의 출력");
         responseBody.setResult(lessonService.mainTop4());
         return ResponseEntity.ok().body(responseBody);
     }

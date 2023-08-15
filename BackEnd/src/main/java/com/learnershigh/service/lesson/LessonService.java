@@ -229,6 +229,7 @@ public class LessonService {
             clas.setTotalStudent(cla.getTotalStudent());
             clas.setLessonTypeName(cla.getLessonTypeNo().getLessonTypeName());
             clas.setViewCount(cla.getLessonViewCount());
+            cla.setUserNo(cla.getUserNo());
 
             returnlist.add(clas);
 
