@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
-import tokenHttp, { url } from "../../api/APIPath";
+import tokenHttp, { url, homeurl } from "../../api/APIPath";
 
 import Modal from "../common/Modal";
 import Button from "../common/Button";
@@ -87,7 +87,7 @@ const LessonSatisfyModal = () => {
         .then(res=>{
             console.log(res)
             if (res.data.resultCode === -1) {
-                navigate('/')
+                window.location.href=homeurl
             }
         })
         .catch(err=>console.log(err, '###$$$$$$$$$$$$$$$$'))

@@ -186,16 +186,14 @@ const EduManageStudentsTable = () => {
     const createData = (studentDataSet, lessonRoundDataSet) => {
         const studentName = studentDataSet.userName;
         // 출석 갱신하기
-        const NotInProgressIndex = studentDataSet.attendHomeworkList.findIndex(
+        console.log(studentDataSet, "학생 리스트")
+        const NotInProgressIndex = lessonRoundDataSet.findIndex(
             (item) => {
+                // const flagDate = new Date(item.lessonRoundEndDatetime)
                 const flagDate = new Date(item.lessonRoundEndDatetime)
-                
+                console.log(flagDate < currentDay, flagDate, currentDay, "SSSS")
                 return (
-                    currentDay.getFullYear() < flagDate.getFullYear() &&
-                        currentDay.getMonth() < flagDate.getMonth() &&
-                        currentDay.getDate() < flagDate.getDate() &&
-                        currentDay.getHours() < flagDate.getHours() &&
-                        currentDay.getMinutes() < flagDate.getMinutes()
+                    flagDate > currentDay
                 );
             }
         );
@@ -209,10 +207,11 @@ const EduManageStudentsTable = () => {
                 let i = NotInProgressIndex;
                 i < lessonRoundDataSet.length;
                 i++
-            ) {
-                studentDataList[i].lessonAttendStatus = "수업 예정";
+                ) {
+                    studentDataList[i].lessonAttendStatus = "수업 예정";
+                }
             }
-        }
+            
         console.log(studentDataList, NotInProgressIndex, "### 데이터리스트 상태 잘 바꼈니")
         
         const studentDataTable = studentDataList.map((item) => {
@@ -221,7 +220,6 @@ const EduManageStudentsTable = () => {
             const lessonRound = lessonRoundDataSet.filter((lessonItem) => lessonItem.lessonRoundNo === itemLessonRoundNo);
             const lessonRoundTitle = lessonRound[0].lessonRoundTitle
             const lessonRoundNumber = lessonRound[0].lessonRoundNumber
-            console.log(lessonRound, "###########, 타티틀과 Number")
             return { ...item, lessonRoundTitle, lessonRoundNumber };
         });
         let countAttend = 0
@@ -234,7 +232,7 @@ const EduManageStudentsTable = () => {
         console.log(studentDataTable, "학생테이블")
         const realAttend = countAttend; // 실질 출결
         const totalAttend = lessonRoundDataSet.length; // 총회차
-        const onGoingAttend = NotInProgressIndex !== -1 ? NotInProgressIndex : totalAttend; // 진행 회차
+        const onGoingAttend = NotInProgressIndex !== -1 ? totalAttend-NotInProgressIndex+1: totalAttend; // 진행 회차
         return {
             studentName,
             realAttend,
@@ -245,11 +243,6 @@ const EduManageStudentsTable = () => {
     };
 
     const [rows, setRows] = useState([]);
-    // createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-    // createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-    // createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    // createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    // createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
 
     useEffect(() => {
         // 하나의 행이다.
@@ -262,6 +255,7 @@ const EduManageStudentsTable = () => {
             .then((res) => {
               console.log(res)
               if (res.data.resultCode === 0) {
+                console.log(res.data.result, "####학생과 강의")
                 const {lessonRoundInfo, studentInfo} = res.data.result
                 const rowsCopy = []
                 studentInfo.map((item, idx) => {
