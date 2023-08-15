@@ -14,7 +14,7 @@ import java.util.Date;
 public class AttentionDto {
 
     public Id id;
-    public float avgValue;
+    public Double avgValue;
     public int count0;
     public int count1;
     public int count2;
