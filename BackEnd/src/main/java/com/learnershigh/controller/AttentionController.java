@@ -93,10 +93,10 @@ public class AttentionController {
 
     // 하나의 수업의 모든 회차 집중도(모든 학생) 20구간
     @GetMapping("lesson/allstudent/all-attention-avg")
-    public ResponseEntity<CustomResponseBody> aggregateAttentionAllstudentAlllessonroundAvg(@RequestParam Long lessonRoundNo) {
+    public ResponseEntity<CustomResponseBody> aggregateAttentionAllstudentAlllessonroundAvg(@RequestParam Long lessonNo) {
         CustomResponseBody responseBody = new CustomResponseBody("하나의 수업의 모든 회차 집중도(모든 학생) 20구간");
         try {
-            responseBody.setResult(attentionService.oneClassAllroundAllstudent(lessonRoundNo));
+            responseBody.setResult(attentionService.oneClassAllroundAllstudent(lessonNo));
         } catch (Exception e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
