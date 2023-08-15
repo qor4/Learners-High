@@ -98,6 +98,7 @@ public class UserService {
         user.setUserInfo(joinDto.getUserInfo());
         user.setProfileImg(joinDto.getProfileImg());
         user.setUserType(joinDto.getUserType());
+        user.setHowJoin("L");
 
         return userRepository.save(user); // 저장한 객체를 반환함.
 
@@ -234,6 +235,7 @@ public class UserService {
             // 이름과 아이디 섞은 해시값을 비밀번호로 설정함.
             String encodePassword = passwordEncoder.encode(kaKaoDto.getId() + kaKaoDto.getProperties().getNickname());
             person.setUserPassword(encodePassword);
+            person.setHowJoin("K");
             System.out.println(encodePassword);
 
             userRepository.save(person);
