@@ -176,65 +176,66 @@ const ClassRoundJoin = ({
         // let standardEndDate = [] 끝나는 시간을 넣으려 했던 노력...
         console.log(days, "days");
         // const standDay = new Date(startDate);
-        for (let i = 0; i < 7; i++) {
-            console.log(startDate, "넌 시작!")
-            const beforeDay = startDate.clone()
-            const standDay = beforeDay.add(i, 'day');
-
-            console.log(standDay.day(), '요일 바뀌니?', standDay)
-            // 요일의 기준을 +1로 할 필요가 없다.
-            days.map((day) => {
-                console.log(standDay.day(), "난 요일")
-                if (
-                    day.isSelected &&
-                    Number(standDay.day()) === Number(day.code)
-                    ) {
-                        console.log(standDay, "널 좀 보자 standDay")
-                        console.log(standDay.year(), standDay.month(), standDay.date(), day.startHour,"연")           
-                        const newDate = dayjs()
-                        .year(standDay.year())
-                        .month(standDay.month())
-                        .day(standDay.date()-7)
-                        .hour(Number(day.startHour))
-                        .minute(Number(day.startMinute))
-                        standardDate.push(newDate)
-                        console.log("날짜 들어옴?", newDate)
-                        return
-                        }
-                }); // 완료!
+        try {
+            for (let i = 0; i < 7; i++) {
+                console.log(startDate, "넌 시작!")
+                const beforeDay = startDate.clone()
+                const standDay = beforeDay.add(i, 'day');
+    
+                console.log(standDay.day(), '요일 바뀌니?', standDay)
+                // 요일의 기준을 +1로 할 필요가 없다.
+                days.map((day) => {
+                    console.log(standDay.day(), "난 요일")
+                    if (
+                        day.isSelected &&
+                        Number(standDay.day()) === Number(day.code)
+                        ) {
+                            console.log(standDay, "널 좀 보자 standDay")
+                            console.log(standDay.year(), standDay.month(), standDay.date(), day.startHour,"연")           
+                            const newDate = dayjs()
+                            .year(standDay.year())
+                            .month(standDay.month())
+                            .day(standDay.date()-14)
+                            .hour(Number(day.startHour))
+                            .minute(Number(day.startMinute))
+                            standardDate.push(newDate)
+                            console.log("날짜 들어옴?", newDate)
+                            return
+                            }
+                    }); // 완료!
+                }
+            let weekNum = standardDate.length;
+            // const standardDate = JSON.parse(
+            //     JSON.stringify(standardDate)
+            // );
+            for (let i=0; i < Number(lessonTotalRound); i++) {
+                // 배열 절대 바꾸지 마라.
+                console.log(i, weekNum, "########")
+                if (i < weekNum) {
+                    const startNewDate = standardDate[i % weekNum];
+                    const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
+                    lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
+                    lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
+                    lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
+                    console.log(lessonRoundDataSetCopy[i].lessonRoundStartDatetime) 
+                    // 종료시간까지 함께 넣을 것
+                    // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
+                        // standardRunningTime[(i - 1) % weekNum];
+                } else {
+                    // 여기다.+
+                    const addWeekDate = dayjs(standardDate[i % weekNum]).add(Math.floor(i/weekNum), 'week')
+                    const startNewDate = dayjs(addWeekDate)
+                    const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
+                    lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
+                    lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
+                    lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
+                }
             }
-        console.log(standardDate, "기준일과 시간")
-        let weekNum = standardDate.length;
-        console.log(weekNum, lessonTotalRound, "날짜 길이");
-        // const standardDate = JSON.parse(
-        //     JSON.stringify(standardDate)
-        // );
-        for (let i=0; i < Number(lessonTotalRound); i++) {
-            // 배열 절대 바꾸지 마라.
             
-            if (i < weekNum) {
-                const startNewDate = standardDate[i % weekNum];
-                const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
-                console.log(lessonRoundDataSetCopy[i].lessonRoundStartDatetime) 
-                // 종료시간까지 함께 넣을 것
-                // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
-                    // standardRunningTime[(i - 1) % weekNum];
-            } else {
-                // 여기다.+
-                const addWeekDate = dayjs(standardDate[i % weekNum]).add(Math.floor(i/weekNum), 'week')
-                const startNewDate = dayjs(addWeekDate)
-                const endNewDate = dayjs(startNewDate).add(Number(lessonRunningTime), 'minute')
-                lessonRoundDataSetCopy[i].lessonRoundStartDatetime = startNewDate.add(9, 'hour').toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundEndDatetime = endNewDate.add(9, 'hour').toISOString()
-                lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
-            }
+            setLessonRoundDataSet(lessonRoundDataSetCopy);
+        } catch (err) {
+            alert("순서대로 진행하세요")
         }
-        
-        setLessonRoundDataSet(lessonRoundDataSetCopy);
-        console.log(lessonRoundDataSetCopy, "카피!");
     };
 
     const getDateData = (

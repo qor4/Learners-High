@@ -8,6 +8,10 @@ import LessonStatusBox from "../common/LessonStatusBox";
 // react-icon import
 import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import tokenHttp from "../../api/APIPath";
+import { url } from "../../api/APIPath";
 
 const StyledItemWrap = styled.div`
     & > *:not(:first-child) {
@@ -46,6 +50,16 @@ const ImageIconWrap = styled.div`
 
 const LessonItem = (props) => {
     const userType = useSelector((state) => state.user.userType);
+    const lessonNo = props.lessonNo
+    const [thumbnailURL, setThumbnailURL] = useState("")
+    useEffect(() => {
+        axios
+        .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
+        .then((res) => {
+            console.log(res, "S3서버로 간다");
+            setThumbnailURL(res.data.resultMsg);
+        });
+    }, [])
     console.log(props)
     return (
         <StyledItemWrap>
@@ -54,11 +68,11 @@ const LessonItem = (props) => {
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <StyledThumbnail
                         src={
-                            props.lessonThumbnailImg
-                                ? props.lessonThumbnailImg
+                            thumbnailURL ? thumbnailURL 
                                 : "/assets/item-banner.png"
                         }
                         alt="Thumbnail"
+                        crossOrigin="anonymous"
                     />
                 </Link>
                 {props.lessonStatus && (

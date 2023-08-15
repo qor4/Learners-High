@@ -175,6 +175,7 @@ const MypageInfo = ({ userNo }) => {
                                     : "/assets/bannerimg.jpg"
                             }
                             alt="teacher-img"
+                            crossOrigin="anonymous"
                         />
                         <InfoWrap>
                             <FlexWrap>
