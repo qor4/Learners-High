@@ -524,6 +524,7 @@ const UserJoin = () => {
                         <FirstJoinWrap>
                             <ButtonWrap>
                                 <Button
+                                    type="button"
                                     className="student"
                                     onClick={userTypeChangeS}
                                     value="S"
@@ -533,6 +534,7 @@ const UserJoin = () => {
                                     학생
                                 </Button>
                                 <Button
+                                    type="button"
                                     className="teacher"
                                     onClick={userTypeChangeT}
                                     $point={userType === "T"}

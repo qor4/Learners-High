@@ -14,8 +14,6 @@ import DropTable from "../components/common/table/DropTable";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Button from "../components/common/Button";
 
-import EduManageStudentsTable from "../components/manage/EduManageStudentsTable";
-
 // 강의 wrap
 const StyledLessonInfoWrap = styled.div`
     width: 100%;
@@ -74,7 +72,7 @@ const EduStudentLessonPage = () => {
 
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
-                    <EduManageStudentsTable />
+                    <DropTable />
                 </div>
             </Container>
         </>

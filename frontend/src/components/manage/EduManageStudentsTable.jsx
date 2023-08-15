@@ -29,9 +29,6 @@ import TableText from "../common/TableText";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import dayjs from "dayjs";
-import { current } from "@reduxjs/toolkit";
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: "#E1E6F9",
@@ -236,7 +233,7 @@ const EduManageStudentsTable = () => {
         console.log(studentDataTable, "학생테이블")
         const realAttend = countAttend; // 실질 출결
         const totalAttend = lessonRoundDataSet.length; // 총회차
-        const onGoingAttend = NotInProgressIndex !== -1 ? totalAttend - NotInProgressIndex : totalAttend; // 진행 회차
+        const onGoingAttend = NotInProgressIndex !== -1 ? NotInProgressIndex : totalAttend; // 진행 회차
         return {
             studentName,
             realAttend,
