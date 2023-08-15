@@ -43,7 +43,6 @@ const LessonSatisfyModal = () => {
     const userNo = useSelector(state=> state.user.userNo) // 학생No
     const { lessonNo, lessonRoundNo, teacherNo } = useParams();
 
-
     const [lessonRoundCsat, setLessonRoundCsat] = useState(5)
     const [teacherCsat, setTeacherCsat] = useState(5)
     const createCsat = () => {
@@ -82,12 +81,14 @@ const LessonSatisfyModal = () => {
         console.log(newteacherCsat, "짠");
     };
 
+    useEffect(()=> {
+
+    }, [])
+
     return (
         <>
             <Modal title="만족도 조사" show={true} onClose={goToHome}>
                 <div>
-                    <span>수업이 종료되었습니다!</span>
-                    <br />
                     <span>
                         강의와 강사 만족도 조사에 참여하여 강의 개선에 도움을
                         주세요!
