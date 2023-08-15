@@ -28,16 +28,18 @@ public class NotificationController {
 //        return notificationService.connectNotification(id, lastEventId);
     }
 
-    @GetMapping(value = "/active/{lessonNo}/{studentId}")
+    @GetMapping(value = "/active/{lessonNo}/{studentId}/{studentStatus}")
     public void active(@PathVariable Long lessonNo,
-                       @PathVariable String studentId) {
-        notificationService.isActive(lessonNo, studentId, true);
+                       @PathVariable String studentId,
+                        @PathVariable Long studentStatus) {
+        notificationService.isActive(lessonNo, studentId, studentStatus);
     }
 
-    @GetMapping(value = "/disactive/{lessonNo}/{studentId}")
+    @GetMapping(value = "/disactive/{lessonNo}/{studentId}/{studentStatus}")
     public void disactive(@PathVariable Long lessonNo,
-                          @PathVariable String studentId) {
-        notificationService.isActive(lessonNo, studentId, false);
+                          @PathVariable String studentId,
+                          @PathVariable Long studentStatus) {
+        notificationService.isActive(lessonNo, studentId,studentStatus);
     }
 
     @PostMapping(value = "/send")

@@ -154,7 +154,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
-        if (session && !token) {
+        if (session) {
             tokenHttp
                 .get(
                     `${url}/lessonroom/student/${lessonNo}/${lessonRoundNo}/${userNo}`
