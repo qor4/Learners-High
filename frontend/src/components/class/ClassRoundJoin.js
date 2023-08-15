@@ -160,7 +160,7 @@ const ClassRoundJoin = ({
     // useEffect(() => {
     //     console.log(lessonRoundDataSet, "실시간 반영");
     // }, [lessonRoundDataSet]);
-
+    
     const handleInsertLessonRoundTime = () => {
         console.log(lessonRoundDataSet, "회차 데이터셋")
         const lessonRoundDataSetCopy = JSON.parse(

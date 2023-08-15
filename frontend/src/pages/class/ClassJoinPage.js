@@ -140,7 +140,7 @@ const ClassJoinPage = () => {
     const [days, setDays] = useState(initialDays);
     const [lessonRunningTime, setLessonRunningTime] = useState(0)
     const [startDate, setStartDate] = useState("")
-
+    
     // ClassJoin <-> ClassRoundJoin
     const changePage = (data, roundData) => {
         if (isLessonJoin) {

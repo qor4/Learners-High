@@ -645,6 +645,7 @@ const UserJoin = () => {
                                                 // onBlur={userEmailFormCheck}
                                             />
                                             <Button
+                                            type="button"
                                                 // onClick={certEmail}
                                                 onClick={userEmailFormCheck}
                                                 disabled={
@@ -833,7 +834,7 @@ const UserJoin = () => {
                 </MenuCard>
             ) : null}
             {userType === "T" && (
-                <Button onClick={signUp} $fullWidth $point $marginTop>
+                <Button onClick={signUp} $fullWidth $point $marginTop type="button">
                     회원가입
                 </Button>
             )}

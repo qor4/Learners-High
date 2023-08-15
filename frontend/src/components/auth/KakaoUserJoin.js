@@ -256,6 +256,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                         <FirstJoinWrap>
                             <ButtonWrap>
                                 <Button
+                                type="button"
                                     className="student"
                                     onClick={userTypeChangeS}
                                     value="S"
@@ -265,6 +266,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                                     학생
                                 </Button>
                                 <Button
+                                type="button"
                                     className="teacher"
                                     onClick={userTypeChangeT}
                                     $point={userType === "T"}
@@ -391,6 +393,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                             {userType === "T" ? (
                                 <>
                                     <Button
+                                    type="button"
                                         onClick={handleOpenAddInfo}
                                         $fullWidth
                                     >
@@ -401,6 +404,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                             <br />
                             {userType === "S" && (
                                 <Button
+                                type="button"
                                     onClick={signUp}
                                     $fullWidth
                                     $point
@@ -439,7 +443,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                 </MenuCard>
             ) : null}
             {userType === "T" && (
-                <Button onClick={signUp} $fullWidth $point $marginTop>
+                <Button onClick={signUp} $fullWidth $point $marginTop type="button">
                     회원가입
                 </Button>
             )}
