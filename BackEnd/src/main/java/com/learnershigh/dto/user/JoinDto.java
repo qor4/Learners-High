@@ -14,5 +14,6 @@ public class JoinDto {
     private String userInfo;
     private String profileImg;
     private String userType;
+    private String howJoin;
 
 }

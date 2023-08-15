@@ -48,7 +48,8 @@ public class CsatController {
         }catch (IllegalStateException i) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(i.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+            return ResponseEntity.ok().body(responseBody);
+
         }catch (Exception e) {
             responseBody.setResultCode(-2);
             responseBody.setResultMsg(e.getMessage());
