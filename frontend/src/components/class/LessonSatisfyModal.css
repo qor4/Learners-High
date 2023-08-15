@@ -1,0 +1,52 @@
+.lessonStar {
+    position: relative;
+    font-size: 2rem;
+    color: #ddd;
+    height: 32px;
+  }
+  
+  .lessonStar input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .lessonStar span {
+    width: 0;
+    height: 100%;
+    position: absolute; 
+    left: 0;
+    color: #ffedbf;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .teacherStar {
+    position: relative;
+    font-size: 2rem;
+    color: #ddd;
+    height: 32px;
+    
+  }
+  
+  .teacherStar input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .teacherStar span {
+    width: 0;
+    height: 100%;
+    position: absolute; 
+    left: 0;
+    color: #ffedbf;
+    overflow: hidden;
+    pointer-events: none;
+  }

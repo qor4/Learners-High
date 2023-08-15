@@ -58,12 +58,12 @@ const ClassRoundItem = (
                 onBlur={lessonRoundTitleChange}
             />
 
-            <label htmlFor="lessonRoundFileOriginName">
+            <label htmlFor={`lessonRoundFileOriginName-${idx}`}>
             강의 자료 등록 
             </label>
             <input
                 type="file"
-                id="lessonRoundFileOriginName"
+                id={`lessonRoundFileOriginName-${idx}`}
                 name="lessonRoundFileOriginName"
                 accept=".pdf, .ppt, .pptx, .doc, .docx, .hwp"
                 onChange={handleFileChange}

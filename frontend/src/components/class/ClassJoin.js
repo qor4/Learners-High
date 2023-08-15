@@ -18,19 +18,19 @@ import Input from "../common/Input";
 import tokenHttp from "../../api/APIPath";
 import Modal from "../common/Modal";
 import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
-import { styled } from "styled-components";
+import { styled, css } from "styled-components";
 import { StyledInput } from "../auth/UserJoinTeacherEdu";
 import { FiftyWrap } from "../user/MypageInfo";
 
 /** display:flex 줄 wrap */
-const FlexWrap = styled.div`
+export const FlexWrap = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
 
 /** 한 줄 스타일 */
-const ColumnWrap = styled.div`
+export const ColumnWrap = styled.div`
     margin-top: 1rem;
     display: flex;
     justify-content: space-between;
@@ -39,7 +39,7 @@ const ColumnWrap = styled.div`
     }
 `;
 
-const JoinInput = styled.input`
+export const JoinInput = styled.input`
     border: 1px solid #000;
     border-radius: 0.75rem;
     box-sizing: border-box;
@@ -47,6 +47,12 @@ const JoinInput = styled.input`
     height: 3rem;
     margin: 0.5rem 0;
     position: relative;
+    
+    ${(props)=> 
+    props.$number &&
+    css`
+    text-align: right ;
+    `}
 `;
 
 /** 검색한 결과물이 들어갈 wrap => 추가수정@@@ */
@@ -86,18 +92,19 @@ const DataLists = styled.div`
 `;
 
 /** 버튼 wrap */
-const ButtonWrap = styled.div`
+export const ButtonWrap = styled.div`
     margin-top: 3rem;
     width: 100%;
+    
     * {
         width: 49%;
-        :first-child {
+        :last-child {
             margin-left: 2%;
         }
     }
 `;
 
-const InputButton = styled.div`
+export const InputButton = styled.div`
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -116,7 +123,7 @@ const SevenWrap = styled.div`
     }
 `;
 
-const JoinTextarea = styled.textarea`
+export const JoinTextarea = styled.textarea`
     width: 100%;
     height: 3rem;
     padding: 1rem;
@@ -124,14 +131,14 @@ const JoinTextarea = styled.textarea`
     border-radius: 0.75rem;
 `;
 
-const JoinTextareaWrap = styled.div`
+export const JoinTextareaWrap = styled.div`
     margin: 2rem 0;
     display: flex;
     justify-content: space-between;
 `;
 
 /** 수업 상세 소개 */
-const StyledClassIntro = styled.div`
+export const StyledClassIntro = styled.div`
     margin: 1.5rem 0;
     line-height: 1.5rem;
     :first-child {
@@ -549,6 +556,7 @@ const ClassJoin = ({
                                     }
                                     value={maxStudent}
                                     onChange={handleMaxStudentChange}
+                                $number
                                 />
                                 <div>명</div>
                             </SevenWrap>
@@ -568,6 +576,7 @@ const ClassJoin = ({
                                     }
                                     value={lessonPrice}
                                     onChange={handlePriceChange}
+                                    $number
                                 />
                                 <div>원</div>
                             </SevenWrap>

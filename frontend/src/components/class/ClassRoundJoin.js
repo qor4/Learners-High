@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import ClassRoundItem from "./ClassRoundItem";
 import ClassRoundTime from "./ClassRoundTime";
@@ -12,10 +13,17 @@ import axios from "axios";
 import tokenHttp from "../../api/APIPath";
 
 import { url } from "../../api/APIPath";
+
+// styled
+import styled from 'styled-components'
+
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
-import { useSelector } from "react-redux";
+import { Container } from "@material-ui/core";
+import { FlexWrap, ColumnWrap, JoinInput, ButtonWrap,
+    InputButton, 
+} from "./ClassJoin";
 
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -23,6 +31,18 @@ import timezone from 'dayjs/plugin/timezone';
 // dayjs.extend(utc);
 // dayjs.extend(timezone);
 // dayjs.tz.setDefault('Asia/Seoul')
+
+
+const TwoButtonWrap = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    & > * {
+        /* margin: 0 0.5rem; */
+        /* width: 20%; */
+    }
+`
 
 
 // console.log(dayjs().format(), '###########')
@@ -442,7 +462,7 @@ const ClassRoundJoin = ({
                                 console.log(
                                     lessonRoundDataSet[i]
                                         .lessonRoundFileName,
-                                    "파일이니?"
+                                    "파일이니? 뭘까?!?!?!"
                                 );
                                 formData.append(
                                     "multipartFile",
@@ -473,6 +493,7 @@ const ClassRoundJoin = ({
                                     );
                             }
                         }
+                        console.log(lessonRoundNoDataSet)
                     });
                     navigate("/");
             })
@@ -486,7 +507,7 @@ const ClassRoundJoin = ({
     return (
         <>
             <MenuCard title="세부 회차 입력">
-                <div>
+            <Container maxWidth="md">
                     <label htmlFor="totalTime">총 회차</label>
                     <input
                         type="number"
@@ -497,7 +518,6 @@ const ClassRoundJoin = ({
                         onBlur={fulFillLessonRoundDataSet}
                     />
                     <span>회</span>
-                </div>
 
                 <div>
                     <p>시작일</p>
@@ -602,15 +622,22 @@ const ClassRoundJoin = ({
                     );
                 })}
                 <span>강의 자료는 pdf, hwp, ppt, doc 형식만 가능합니다.</span>
+                </Container>
 
             </MenuCard>
 
             {/* 버튼 모음 => 이후 수정@@@ */}
-            <div>
+            <Container maxWidth="xs">
+            <ButtonWrap>
+
+                <TwoButtonWrap>
                 <Button onClick={beforePage}>이전</Button>
-                <Button onClick={handleClickTmpStore}>임시 저장</Button>
-                <Button onClick={handleClickRegisterLesson}>강의 등록</Button>
-            </div>
+                <Button $skyBlue onClick={handleClickTmpStore}>임시 저장</Button>
+                </TwoButtonWrap>
+                    
+                </ButtonWrap>
+                    <Button $fullWidth $point onClick={handleClickRegisterLesson}>강의 등록</Button>
+                </Container>
         </>
     );
 };

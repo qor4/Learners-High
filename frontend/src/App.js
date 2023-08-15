@@ -21,6 +21,8 @@ import PayLessonSuccessPage from "./pages/class/PayLessonSuccessPage";
 import PayLessonFailPage from "./pages/class/PayLessonFailPage";
 import PayLessonCancelPage from "./pages/class/PayLessonCancelPage";
 
+import LessonSatisfyModal from "./components/class/LessonSatisfyModal";
+
 // 스타일컴포넌트
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
@@ -194,7 +196,8 @@ function App() {
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
                     />
-                    <Route path="/test" element={<DropTable />} />
+                    <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
+                    element={<LessonSatisfyModal />} />
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>

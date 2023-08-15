@@ -9,10 +9,13 @@ import { url } from "../../api/APIPath";
 import UserJoinTeacherJob from "./UserJoinTeacherJob";
 import UserJoinTeacherEdu from "./UserJoinTeacherEdu";
 
+import { logInUser } from "../../store/UserStore";
+
 import Input from "../common/Input";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import MenuCard from "../common/MenuCard";
+import { useDispatch } from "react-redux";
 
 const FirstJoinWrap = styled.div`
     width: 100%;
@@ -381,6 +384,7 @@ const UserJoin = () => {
         console.log(file, "이미지 넣어봄");
     };
 
+    const dispatch = useDispatch()
     const signUp = () => {
         if (
             userType &&
@@ -409,9 +413,34 @@ const UserJoin = () => {
                     headers: { "Content-Type": "application/json" },
                 })
                 .then((res) => {
+                    const logInForm = {userId, userPassword}
+                    axios
+                    .post(`${url}/user/login`, logInForm, {
+                        headers: { "Content-Type": "application/json" },
+                    })
+                    .then((res) => {
+                        if (res.data.resultCode === 0) {
+                            // 로그인 성공
+                            alert("로그인!"); // 여기 꼭 확인하기!!
+                            localStorage.setItem(
+                                "accessToken",
+                                res.data.result.token.accessToken
+                            );
+                            localStorage.setItem(
+                                "refreshToken",
+                                res.data.result.token.refreshToken
+                            );
+                            dispatch(logInUser(res.data.result));
+                            navigate(`/`);
+                        } else {
+                            alert("로그인 실패!");
+                        }
+                    })
+                    .catch((err) => {
+                        alert("로그인이 실패했습니다.");
+                    });
                     console.log(res.data, "응답");
                     if (res.data.userNo > 0) {
-                        alert("회원가입 성공");
                         console.log(res.data.userNo);
                         setUserNo(res.data.userNo);
                     }

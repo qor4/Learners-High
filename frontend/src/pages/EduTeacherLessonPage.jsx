@@ -20,6 +20,7 @@ import { StyledTitleText } from "../components/class/LessonItemBox";
 
 import Button from "../components/common/Button";
 import DropTable from "../components/common/table/DropTable";
+import EduManageStudentsTable from "../components/manage/EduManageStudentsTable";
 
 export const StyledRateWrap = styled.div`
     width: 100%;
@@ -155,8 +156,7 @@ const EduTeacherLessonPage = () => {
 
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
-                    <DropTable />
-                    {selectedTabBar==="학생" && <></>}
+                    {selectedTabBar==="학생" && <><EduManageStudentsTable/></>}
                     {selectedTabBar==="분석" && <></>}
                     {selectedTabBar==="소개" && <></>}
                     {selectedTabBar==="과제" && <></>}
