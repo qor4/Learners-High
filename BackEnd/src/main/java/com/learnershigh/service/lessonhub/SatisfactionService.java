@@ -1,6 +1,8 @@
 package com.learnershigh.service.lessonhub;
 
+import com.learnershigh.domain.lesson.LessonRound;
 import com.learnershigh.domain.lessonhub.Satisfaction;
+import com.learnershigh.domain.user.User;
 import com.learnershigh.dto.lessonhub.SatiDto;
 import com.learnershigh.dto.lessonhub.SatiResultDto;
 import com.learnershigh.repository.lesson.LessonRepository;
@@ -47,9 +49,16 @@ public class SatisfactionService {
 
     // 만족도 제출전 중복 검사
     public void beforeCreateCheck(Long lessonRoundNo,Long teacherNo ,Long studentNo){
-        Satisfaction satisfaction = satisfactionRepository.findByLessonRoundNoAndTeacherNoAndStudentNo(lessonRoundNo, teacherNo, studentNo);
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+        User teacher = userRepository.findByUserNo(teacherNo);
+        User student = userRepository.findByUserNo(studentNo);
 
+        Satisfaction satisfaction = satisfactionRepository.findByLessonRoundNoAndTeacherNoAndStudentNo(lessonRound, teacher, student);
+
+        System.out.println("서비스 들?");
         if (satisfaction != null){
+            System.out.println("들어왔니?");
+            System.out.println(satisfaction);
             throw new IllegalStateException("이미 제출된 만족도가 있습니다.");
         }
     }

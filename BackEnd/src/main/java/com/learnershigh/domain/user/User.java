@@ -76,6 +76,9 @@ public class User {
     @Column(name = "is_active", nullable = true)
     private boolean isActive;
 
+    @Column(length = 1, name = "how_join", nullable = false)
+    private String howJoin;
+
     @PrePersist
     public void setIsActive() {
         this.isActive = true;
