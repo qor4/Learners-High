@@ -16,11 +16,12 @@ import TeacherProfilePage from "./pages/TeacherProfilePage";
 // 강의 관련
 import LessonPage from "./pages/LessonPage";
 import ClassJoinPage from "./pages/class/ClassJoinPage";
-import ClassRoundJoinPage from "./pages/class/ClassRoundJoinPage";
 import LessonInfoPage from "./pages/LessonInfoPage";
 import PayLessonSuccessPage from "./pages/class/PayLessonSuccessPage";
 import PayLessonFailPage from "./pages/class/PayLessonFailPage";
 import PayLessonCancelPage from "./pages/class/PayLessonCancelPage";
+
+import LessonSatisfyModal from "./components/class/LessonSatisfyModal";
 
 // 스타일컴포넌트
 import Header from "./components/common/Header";
@@ -150,10 +151,6 @@ function App() {
                         element={<ClassJoinPage />}
                     ></Route>
                     <Route
-                        path="/lesson/round/join"
-                        element={<ClassRoundJoinPage />}
-                    ></Route>
-                    <Route
                         path="/lesson/info/:lessonNo"
                         element={<LessonInfoPage />}
                     ></Route>
@@ -205,7 +202,10 @@ function App() {
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
                     />
-                    <Route path="/test" element={<DropTable />} />
+                    {/* <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
+                    element={<LessonSatisfyModal />} /> */}
+                    <Route path="/test" 
+                    element={<LessonSatisfyModal />} />
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
