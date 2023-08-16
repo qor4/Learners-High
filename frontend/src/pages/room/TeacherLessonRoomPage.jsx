@@ -4,8 +4,7 @@ import { useState, useRef } from "react"; // 내꺼.
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import tokenHttp, { url, homeurl } from "../../api/APIPath";
-import axios from "axios";
+import tokenHttp, { url, homeurl} from "../../api/APIPath";
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -259,15 +258,12 @@ const TeacherLessonRoomPage = () => {
             es.current.close();
         };
     }, []);
-    const changeStudentStatus = useCallback(
-        (studentData) => {
-            setStudentList((prev) =>
-                prev
-                    .map((student) => {
-                        console.log(student);
-                        console.log(studentData);
-                        if (student.studentId === studentData.studentId) {
-                            if (studentData.isActive) {
+    const changeStudentStatus = useCallback((studentData)=>{
+        setStudentList((prev)=>
+                prev.map(
+                    (student) => {
+                        if(student.studentId === studentData.studentId){
+                            if(studentData.isActive){
                                 // 버튼 활성화
                                 return {
                                     ...student,
@@ -317,6 +313,7 @@ const TeacherLessonRoomPage = () => {
             setPublisher(undefined);
             setSubscribers([]);
             setToken(undefined);
+            setStudentList([]);
             es.current.close();
         }
         // 메인화면 이동 필요

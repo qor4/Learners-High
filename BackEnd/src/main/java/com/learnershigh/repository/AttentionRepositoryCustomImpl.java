@@ -102,6 +102,10 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
 
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
         List<AttentionDto> attentionList = results.getMappedResults();
+        if(attentionList.size()==0){
+            return null;
+        }
+
         return attentionList.get(0);
     }
 
@@ -125,6 +129,10 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
 
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
         List<AttentionDto> attentionList = results.getMappedResults();
+        if(attentionList.size()==0){
+            return null;
+        }
+
         return attentionList.get(0);
     }
 }

@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import UserStore from "./UserStore";
 import { persistReducer } from "redux-persist";
-// import storageSession from 'redux-persist/es/storage/session' // sessionStorage 구현
 import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({

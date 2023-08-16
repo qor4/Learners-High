@@ -192,7 +192,12 @@ public class AttentionService {
 
         for (LessonRound lessonRound : lessonRoundList) {
             AttentionDto attention = lessonRoundAttentionRateRepository.aggregateTotalAttentionByLessonRoundNo(lessonRound.getLessonRoundNo(), lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime());
-            attentionAvgList.add(attention.getAvgValue());
+            if(attention == null){
+                attentionAvgList.add(0.0);
+            }
+            else{
+                attentionAvgList.add(attention.getAvgValue());
+            }
         }
 
         return attentionAvgList;
@@ -209,7 +214,12 @@ public class AttentionService {
 
         for (LessonRound lessonRound : lessonRoundList) {
             AttentionDto attention = lessonRoundAttentionRateRepository.aggregateTotalAttentionByLessonRoundNoAndUserNo(userNo, lessonRound.getLessonRoundNo(), lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime());
-            attentionAvgList.add(attention.getAvgValue());
+            if(attention == null){
+                attentionAvgList.add(0.0);
+            }
+            else{
+                attentionAvgList.add(attention.getAvgValue());
+            }
         }
 
         return attentionAvgList;
@@ -224,6 +234,9 @@ public class AttentionService {
 
         for (LessonRound lessonRound : lessonRoundList) {
             AttentionDto attention = lessonRoundAttentionRateRepository.aggregateTotalAttentionByLessonRoundNoAndUserNo(userNo, lessonRound.getLessonRoundNo(), lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime());
+            if(attention == null){
+                return 0;
+            }
             sum += attention.getAvgValue();
         }
 
@@ -238,6 +251,9 @@ public class AttentionService {
 
         for (LessonRound lessonRound : lessonRoundList) {
             AttentionDto attention = lessonRoundAttentionRateRepository.aggregateTotalAttentionByLessonRoundNo(lessonRound.getLessonRoundNo(), lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime());
+            if(attention == null){
+                return 0;
+            }
             sum += attention.getAvgValue();
         }
 
