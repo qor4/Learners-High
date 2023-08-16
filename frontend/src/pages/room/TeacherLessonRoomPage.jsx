@@ -22,6 +22,16 @@ import {
     HiDesktopComputer,
     HiOutlineBell,
 } from "react-icons/hi";
+
+import { 
+    PiVideoCameraBold, // 카메라 on
+    PiVideoCameraSlashBold, // 카메라 off
+    PiMicrophoneBold, //마이크 On
+    PiMicrophoneSlashBold, // 마이크 Off
+    PiMonitorBold, // 빈 모니터
+    PiMonitorPlayBold, // 재생버튼 있는 모니터
+} from "react-icons/pi";
+
 import Button from "../../components/common/Button";
 import { useCallback } from "react";
 
@@ -575,20 +585,24 @@ const TeacherLessonRoomPage = () => {
                                 value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
                             >
                                 <HiDesktopComputer />
+                                {shareEnabled && <PiMonitorPlayBold />}
+                                {!shareEnabled && <PiMonitorBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleVideo}
                                 value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiVideoCamera />
+                                {videoEnabled && <PiVideoCameraBold  />}
+                                {!videoEnabled && <PiVideoCameraSlashBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleAudio}
                                 value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiMicrophone />
+                                {audioEnabled && <PiMicrophoneBold /> }
+                                {!audioEnabled && <PiMicrophoneSlashBold  /> }
                             </Button>
                             <Button
                                 type="button"

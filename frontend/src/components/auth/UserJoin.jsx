@@ -431,7 +431,7 @@ const UserJoin = () => {
                                 res.data.result.token.refreshToken
                             );
                             dispatch(logInUser(res.data.result));
-                            navigate(`/`);
+                            // navigate(`/`);
                         } else {
                             alert("로그인 실패!");
                         }

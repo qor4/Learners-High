@@ -14,6 +14,9 @@ import Button from "../common/Button";
 import Card from "../common/Card";
 import MenuCard from "../common/MenuCard";
 
+import { logInUser } from "../../store/UserStore";
+import { useDispatch } from "react-redux";
+
 const FirstJoinWrap = styled.div`
     width: 100%;
     text-align: center;
@@ -116,6 +119,7 @@ const ButtonWrap = styled.div`
 
 const KaKaoUserJoin = ({ kakaoUserInfo }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch()
     const userNo = kakaoUserInfo.userNo;
     const [userType, setUserType] = useState("S");
     const [userId, setUserId] = useState(kakaoUserInfo.userId); // 유저 아이디 : varchar(20)
@@ -201,7 +205,8 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                 })
                 .then((res) => {
                     console.log(res.data, "응답");
-                    if (res.data.userNo > 0) {
+                    dispatch(logInUser(res.data.result))
+                    if (res.data.resultCode === 0) {
                         alert("회원가입 성공");
                     }
                 })

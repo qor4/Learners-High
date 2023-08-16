@@ -50,17 +50,24 @@ const ImageIconWrap = styled.div`
 
 const LessonItem = (props) => {
     const userType = useSelector((state) => state.user.userType);
-    const lessonNo = props.lessonNo
-    const [thumbnailURL, setThumbnailURL] = useState("")
+    const lessonNo = props.lessonNo;
+    const [thumbnailURL, setThumbnailURL] = useState(false);
     useEffect(() => {
         axios
-        .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
-        .then((res) => {
-            console.log(res, "S3서버로 간다");
-            setThumbnailURL(res.data.resultMsg);
-        });
-    }, [])
-    console.log(props)
+            .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
+            .then((res) => {
+                if (res.data.resultCode === -1){
+                    setThumbnailURL(false)
+                    return
+                }
+                setThumbnailURL(res.data.resultMsg);
+            })
+            .catch((err) => {
+                console.log(err);
+                setThumbnailURL(false);
+            });
+    }, []);
+    console.log(props);
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -68,7 +75,8 @@ const LessonItem = (props) => {
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <StyledThumbnail
                         src={
-                            thumbnailURL ? thumbnailURL 
+                            thumbnailURL
+                                ? thumbnailURL
                                 : "/assets/item-banner.png"
                         }
                         alt="Thumbnail"

@@ -231,8 +231,11 @@ const ClassJoin = ({
             tokenHttp
                 .get(`${url}/s3/thumbnail-load/${lessonNo}`)
                 .then((res) => {
-                    console.log(res, "S3서버로 간다");
-                    setThumbnailURL(res.data.resultMsg);
+                    if (res.data.resultCode === -1 ) {
+                        setThumbnailURL(false)
+                    } else {
+                        setThumbnailURL(res.data.resultMsg);
+                    }
                 });
         }
     }, []);
