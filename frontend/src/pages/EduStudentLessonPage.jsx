@@ -23,15 +23,23 @@ const StyledLessonInfoWrap = styled.div`
 
 const EduStudentLessonPage = () => {
     const { lessonNo } = useParams();
-    const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]);
+    const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]); // LessonInfo 다 가져옴
     const [selectedTabBar, setSelectedTabBar] = useState("현황"); // 탭바 선택별
+
+    const [totalRoundNumber, setTotalRoundNumber] = useState(0); // 총 회차 수
+    const [lessonRoundDataSet, setLessonRoundDataSet] = useState([]); // lessonRoundInfo
 
     // 강의 상세 GET 요청
     useEffect(() => {
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
             setLessonInfoDataSet(response.data.result);
+            setTotalRoundNumber(
+                response.data.result.lessonInfo.lessonTotalRound
+            );
+            setLessonRoundDataSet(response.data.result.lessonRoundInfo);
         });
     }, [lessonNo]);
+
     return (
         <>
             <StyledLessonInfoWrap>
@@ -75,13 +83,18 @@ const EduStudentLessonPage = () => {
                 <div>
                     {/* <DropTable /> */}
                     {selectedTabBar === "분석" && (
-                        <EduManageReportTable lessonNo={lessonNo} />
+                        <EduManageReportTable
+                            lessonInfoDataSet={lessonInfoDataSet}
+                            lessonNo={lessonNo}
+                            lessonTotalRound={totalRoundNumber}
+                            lessonRoundInfo={lessonRoundDataSet}
+                        />
                     )}
                     {selectedTabBar === "현황" && (
                         <EduManageReportTable lessonNo={lessonNo} />
                     )}
                     {selectedTabBar === "소개" && (
-                        <LessonInfoPage pathByEduStudentLessonPage={true}/>
+                        <LessonInfoPage pathByEduStudentLessonPage={true} />
                     )}
                 </div>
             </Container>
