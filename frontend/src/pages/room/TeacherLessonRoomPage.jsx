@@ -23,7 +23,6 @@ import {
 } from "react-icons/hi";
 import Button from "../../components/common/Button";
 import { useCallback } from "react";
-import { isAction } from "@reduxjs/toolkit";
 
 // 전체 Wrap (가로, 세로 100%)
 export const RoomFrameWrap = styled.div`
