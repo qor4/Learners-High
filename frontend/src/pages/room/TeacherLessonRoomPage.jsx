@@ -664,6 +664,13 @@ const TeacherLessonRoomPage = () => {
                                                                     console.log(
                                                                         "send 성공"
                                                                     );
+                                                                    const studentListCopy = studentList.map((item, i) => {
+                                                                        if (i===idx) {
+                                                                            item.notificationCnt = item.notificationCnt + 1
+                                                                            item.isActive = false
+                                                                        }
+                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                    setStudentList(studentListCopy)
                                                                 })
                                                                 .catch(
                                                                     (err) => {
