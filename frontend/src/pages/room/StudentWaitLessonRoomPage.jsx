@@ -128,6 +128,8 @@ const StudentWaitLessonRoomPage = () => {
         window.addEventListener("blur", focusOutLessonRoom);
         window.addEventListener("focus", focusInLessonRoom);
 
+        setNotificationCnt(0);
+
         es.current = new EventSource(`${url}/notification/subscribe/${userId}`);
 
         es.current.onopen = (e) => {
@@ -459,7 +461,7 @@ const StudentWaitLessonRoomPage = () => {
                                             disabled={!calibrationData && finishTest}
                                         >
                                             강의 입장
-                                        </Button>
+                                          </Button>
                                     </ControlButtonWrap>
                                 </WaitControlBar>
                             </BottomBarWrap>
