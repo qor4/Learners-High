@@ -248,7 +248,7 @@ public class UserService {
 
             return userInfo;
 
-        } else {
+        } else if(checkuser != null && checkuser.getHowJoin().equals("K")) {
             LoginDto loginDto = new LoginDto();
             loginDto.setUserId(checkuser.getUserId());
             User user = userRepository.findByUserId(checkuser.getUserId());
@@ -260,11 +260,16 @@ public class UserService {
 
             return userInfo;
         }
+        else if(checkuser != null && checkuser.getHowJoin().equals("L")){
+            throw new IllegalStateException("일반 로그인으로 이미 회원가입이 존재합니다.");
+        }
+
+        return null;
 
 
     }
 
-    // 이메일로
+
 
     // 로그인
     public HashMap<String, Object> userLogin(LoginDto loginDto) {

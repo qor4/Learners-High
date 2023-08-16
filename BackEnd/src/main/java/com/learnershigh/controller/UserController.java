@@ -190,23 +190,20 @@ public class UserController {
     //카카오 로그인 추가 정보 받기
     @PostMapping("/kakao/addinfo/{userEmail}")
     @ApiOperation("카카오 로그인 추가 정보 받기")
-    public ResponseEntity<BaseResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("정보들이 추가 되었습니다.");
+    public ResponseEntity<CustomResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("정보들이 추가 되었습니다.");
         try {
-            userService.kakaoPlus(kakaoInfo, userEmail);
-            baseResponseBody.setResultCode(0);
-            return ResponseEntity.ok().body(baseResponseBody);
-
-        } catch (IllegalStateException i) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(i.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
+            responseBody.setResult(userService.kakaoPlus(kakaoInfo, userEmail));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
-            baseResponseBody.setResultCode(-2);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
         }
-
+        return ResponseEntity.ok().body(responseBody);
     }
 
 
@@ -278,8 +275,6 @@ public class UserController {
         }
         return ResponseEntity.ok().body(responseBody);
     }
-
-
 
 
 }
