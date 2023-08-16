@@ -216,7 +216,7 @@ const TeacherLessonRoomPage = () => {
     const [session, setSession] = useState(undefined);
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
-    const [subscribers, setSubscribers] = useState([]);
+    // const [subscribers, setSubscribers] = useState([]);
     const [token, setToken] = useState("");
 
     // video, audio 접근 권한
@@ -311,7 +311,7 @@ const TeacherLessonRoomPage = () => {
             setSession(undefined);
             setMainStreamManager(undefined);
             setPublisher(undefined);
-            setSubscribers([]);
+            // setSubscribers([]);
             setToken(undefined);
             setStudentList([]);
             es.current.close();
@@ -327,19 +327,25 @@ const TeacherLessonRoomPage = () => {
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
-            setSubscribers((subscribers) => [...subscribers, subscriber]);
-
+            // setSubscribers((subscribers) => [...subscribers, subscriber]);
             setStudentList((prev) => [
                 ...prev,
                 {
+                    subscriber : subscriber,
+                    studentName : JSON.parse(
+                        JSON.parse(event.stream.connection.data).clientData
+                    ).userName,
                     studentId: JSON.parse(
                         JSON.parse(event.stream.connection.data).clientData
                     ).userId,
+                    studentNo: JSON.parse(
+                        JSON.parse(event.stream.connection.data).clientData
+                    ).userNo,
                     status: 0,
                     notificationCnt: 0,
                     isActive: false,
                 },
-            ]);
+            ].slice());
             // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
@@ -347,11 +353,11 @@ const TeacherLessonRoomPage = () => {
 
         // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on("streamDestroyed", (event) => {
-            setSubscribers((preSubscribers) =>
-                preSubscribers.filter(
-                    (subscriber) => subscriber !== event.stream.streamManager
-                )
-            );
+            // setSubscribers((preSubscribers) =>
+            //     preSubscribers.filter(
+            //         (subscriber) => subscriber !== event.stream.streamManager
+            //     )
+            // );
             setStudentList((prev) =>
                 prev.filter(
                     (student) =>
@@ -437,23 +443,6 @@ const TeacherLessonRoomPage = () => {
             publisher.publishAudio(enabled);
         }
     };
-
-    // const sendAlertSoundToStudent = useCallback((idx) => {
-    //     tokenHttp.post(
-    //         `${url}/notification/send`,
-    //         {
-    //             lessonNo : Number(lessonNo),
-    //             lessonRoundNo : Number(lessonRoundNo),
-    //             studentNo : Number(JSON.parse(JSON.parse(subscribers[idx].stream.connection.data).clientData).userNo),
-    //             teacherId : userId
-    //         }
-    //     ).then(res=>{
-    //         console.log('send 성공');
-    //     }).catch(err=>{
-    //         console.log('send 실패', err);
-    //     })
-
-    // }, [subscribers]);
 
     const toggleShare = () => {
         if (shareEnabled) {
@@ -542,22 +531,18 @@ const TeacherLessonRoomPage = () => {
                     session.connection !== undefined ? (
                         <>
                             {/* 여기서 강사 아닌 사람들만 */}
-                            {subscribers.map((sub, i) => (
+                            {/* {subscribers.map((sub, i) => ( */}
+                            {studentList.map((sub, i) => (
                                 <>
                                     {console.log(studentList[i], "####")}
                                     <StudentScreen key={`${i}-subscriber1`}>
                                         <StudentName>
                                             {
-                                                JSON.parse(
-                                                    JSON.parse(
-                                                        sub.stream.connection
-                                                            .data
-                                                    ).clientData
-                                                ).userName
+                                                sub.studentName
                                             }
                                         </StudentName>
                                         <UserVideoComponent
-                                            streamManager={sub}
+                                            streamManager={sub.subscriber}
                                         />
                                     </StudentScreen>
                                 </>
@@ -628,17 +613,13 @@ const TeacherLessonRoomPage = () => {
                     {/* 학생 상태 경고 바 */}
                     <StateNotification>
                         {/* 학생 개개인의 상태와 주의 표시 버튼을 나타낼 박스 */}
-                        {subscribers.map((sub, idx) => (
+                        {studentList.map((sub, idx) => (
                             // 여기에 div Box 만들면 됩니다.
                             <>
                                 <StateWrap>
                                     <div>
                                         {
-                                            JSON.parse(
-                                                JSON.parse(
-                                                    sub.stream.connection.data
-                                                ).clientData
-                                            ).userName
+                                            sub.studentName
                                         }
                                     </div>
                                     <StateFlex>
@@ -673,18 +654,7 @@ const TeacherLessonRoomPage = () => {
                                                                             ),
                                                                         studentNo:
                                                                             Number(
-                                                                                JSON.parse(
-                                                                                    JSON.parse(
-                                                                                        subscribers[
-                                                                                            idx
-                                                                                        ]
-                                                                                            .stream
-                                                                                            .connection
-                                                                                            .data
-                                                                                    )
-                                                                                        .clientData
-                                                                                )
-                                                                                    .userNo
+                                                                                sub.studentNo
                                                                             ),
                                                                         teacherId:
                                                                             userId,
@@ -733,18 +703,7 @@ const TeacherLessonRoomPage = () => {
                                                                         ),
                                                                     studentNo:
                                                                         Number(
-                                                                            JSON.parse(
-                                                                                JSON.parse(
-                                                                                    subscribers[
-                                                                                        idx
-                                                                                    ]
-                                                                                        .stream
-                                                                                        .connection
-                                                                                        .data
-                                                                                )
-                                                                                    .clientData
-                                                                            )
-                                                                                .userNo
+                                                                            sub.userNo
                                                                         ),
                                                                     teacherId:
                                                                         userId,
