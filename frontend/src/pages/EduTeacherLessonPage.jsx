@@ -19,8 +19,8 @@ import { StyledChart } from "../components/class/TeacherLessonCsatBox";
 import { StyledTitleText } from "../components/class/LessonItemBox";
 
 import Button from "../components/common/Button";
-import DropTable from "../components/common/table/DropTable";
 import EduManageStudentsTable from "../components/manage/EduManageStudentsTable";
+import LessonInfoPage from "./LessonInfoPage";
 
 export const StyledRateWrap = styled.div`
     width: 100%;
@@ -159,7 +159,9 @@ const EduTeacherLessonPage = () => {
                     {selectedTabBar==="학생" && <><EduManageStudentsTable/></>}
                     {selectedTabBar==="분석" && <></>}
                     {selectedTabBar==="소개" && <></>}
-                    {selectedTabBar==="과제" && <></>}
+                    {selectedTabBar === "소개" && (
+                        <LessonInfoPage pathByEduStudentLessonPage={true}/>
+                    )}
                 </div>
             </Container>
         </>

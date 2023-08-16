@@ -16,7 +16,7 @@ import { url } from "../../api/APIPath";
 
 // styled
 import styled, { css } from "styled-components";
-import Card from "../common/Card";
+
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -643,7 +643,6 @@ const ClassRoundJoin = ({
                                     onDataChange={handleStartDateChange}
                                     initial={true}
                                     initialDate={startDate}
-                                    lessonRunningTime={lessonRunningTime}
                                 />
                                 <InputMsg>
                                     시작은 일주일 이후부터 가능합니다.
@@ -729,64 +728,60 @@ const ClassRoundJoin = ({
                 {openDetailRoundSet && (
                     <>
                         <Container maxWidth="md">
-                            {/* 캘린더 */}
-                            <div style={{ marginBottom: "1rem" }}>
-                                강의 자료는 pdf, hwp, ppt, doc 형식만
-                                가능합니다.
-                            </div>
-
                             {lessonRoundDataSet.map((item, idx) => {
                                 return (
                                     <>
-                                        <Card>
-                                            <div>
-
-                                            <DatePickerComponent
-                                                key={idx}
-                                                idx={idx}
-                                                initial={false}
-                                                initialDate={
-                                                    item.lessonRoundStartDatetime
-                                                }
-                                                miniDisabledDate={
-                                                    idx !== 0
-                                                        ? lessonRoundDataSet[
-                                                              idx - 1
-                                                          ]
-                                                              ?.lessonRoundStartDatetime
-                                                        : startDate
-                                                }
-                                                maxDisabledDate={
-                                                    idx !== lessonTotalRound
-                                                        ? lessonRoundDataSet[
-                                                              idx + 1
-                                                          ]
-                                                              ?.lessonRoundStartDatetime
-                                                        : false
-                                                }
-                                                onDataChange={getDateData}
-                                                lessonRunningTime={lessonRunningTime}
-                                            />
-                                                </div>
-                                                <div>
-
-                                            <ClassRoundItem
-                                                key={idx}
-                                                idx={idx}
-                                                onDataChange={getLessonData}
-                                                title={item.lessonRoundTitle}
-                                                fileOriginName={
-                                                    item.lessonRoundFileOriginName
-                                                }
-                                                fileName={
-                                                    item.lessonRoundFileName
-                                                }
-                                            />
-                                            </div>
-                                        </Card>
+                                        <p>{idx + 1}번째 강의</p>
+                                        <DatePickerComponent
+                                            key={idx}
+                                            idx={idx}
+                                            initial={false}
+                                            initialDate={
+                                                item.lessonRoundStartDatetime
+                                            }
+                                            miniDisabledDate={
+                                                idx !== 0
+                                                    ? lessonRoundDataSet[
+                                                          idx - 1
+                                                      ]
+                                                          ?.lessonRoundStartDatetime
+                                                    : startDate
+                                            }
+                                            maxDisabledDate={
+                                                idx !== lessonTotalRound
+                                                    ? lessonRoundDataSet[
+                                                          idx + 1
+                                                      ]
+                                                          ?.lessonRoundStartDatetime
+                                                    : false
+                                            }
+                                            onDataChange={getDateData}
+                                        />
                                     </>
                                 );
                             })}
+
+                            {/* 캘린더 */}
+                            <div>수업 일자 확인 및 추가 일정 수정</div>
+
+                            {lessonRoundDataSet.map((item, idx) => {
+                                return (
+                                    <ClassRoundItem
+                                        key={idx}
+                                        idx={idx}
+                                        onDataChange={getLessonData}
+                                        title={item.lessonRoundTitle}
+                                        fileOriginName={
+                                            item.lessonRoundFileOriginName
+                                        }
+                                        // fileName={item.lessonRoundFileName}
+                                    />
+                                );
+                            })}
+                            <span>
+                                강의 자료는 pdf, hwp, ppt, doc 형식만
+                                가능합니다.
+                            </span>
                         </Container>
                     </>
                 )}{" "}

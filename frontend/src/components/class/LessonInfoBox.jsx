@@ -115,6 +115,16 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         }
     }, [isWish]);
 
+    const [thumbnailURL, setThumbnailURL] = useState("")
+    useEffect(() => {
+        tokenHttp
+        .get(`${url}/s3/thumbnail-load/${Number(lessonNo.lessonNo)}`)
+        .then((res) => {
+            console.log(res, "S3서버로 간다");
+            setThumbnailURL(res.data.resultMsg);
+        });
+    }, [])
+
     // 로그인 버튼 클릭 했을 때, 로그인 모달 창
     const handleLoginButtonClick = () => {
         setShowLoginModal(true);
@@ -166,11 +176,12 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                     <ImgInfoWrap>
                         <StyledThumbnail
                             src={
-                                lessonInfo.lessonThumbnailImg
-                                    ? lessonInfo.lessonThumbnailImg
+                                thumbnailURL
+                                    ? thumbnailURL
                                     : "/assets/item-banner.png"
                             }
                             alt="thumbnail-img"
+                            crossOrigin="anonymous"
                         />
                         <InfoWrap>
                             <FlexWrap>

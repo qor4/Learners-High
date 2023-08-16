@@ -202,10 +202,10 @@ function App() {
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
                     />
-                    {/* <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
-                    element={<LessonSatisfyModal />} /> */}
-                    <Route path="/test" 
+                    <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
                     element={<LessonSatisfyModal />} />
+                    {/* <Route path="/test" 
+                    element={<LessonSatisfyModal />} /> */}
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>

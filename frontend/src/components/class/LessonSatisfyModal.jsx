@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
-import tokenHttp, { url } from "../../api/APIPath";
+import tokenHttp, { url, homeurl } from "../../api/APIPath";
 
 import Modal from "../common/Modal";
 import Button from "../common/Button";
@@ -82,16 +82,15 @@ const LessonSatisfyModal = () => {
     };
 
     useEffect(()=> {
-        // tokenHttp.get(`${url}/csat/before/create/dupli/check?studentNo=${Number(userNo)}&teacherNo=${Number(teacherNo)}&lessonRoundNo=${Number(lessonRoundNo)}
-        tokenHttp.get(`${url}/csat/before/create/dupli/check?studentNo=${4}&teacherNo=${1}&lessonRoundNo=${1}
+        tokenHttp.get(`${url}/csat/before/create/dupli/check?studentNo=${Number(userNo)}&teacherNo=${Number(teacherNo)}&lessonRoundNo=${Number(lessonRoundNo)}
         `)
         .then(res=>{
             console.log(res)
-            if (res.resultCode === -1) {
-                navigate('/')
+            if (res.data.resultCode === -1) {
+                window.location.href=homeurl
             }
         })
-        .catch(err=>console.log(err))
+        .catch(err=>console.log(err, '###$$$$$$$$$$$$$$$$'))
     }, [])
 
     return (
