@@ -43,7 +43,7 @@ public class LessonroomController {
         try {
             lessonroomService.checkStudent(userNo,lessonNo);
             String token = openviduService.EnterLessonRoom(lessonNo,lessonRoundNo,userNo);
-//            lessonroomService.Attend(lessonRoundNo, userNo);
+            lessonroomService.Attend(lessonRoundNo, userNo);
             responseBody.setResultCode(200);
             responseBody.setResultMsg(token);
             return ResponseEntity.ok().body(responseBody);
