@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 
 import Button from "../../components/common/Button";
 import axios from "axios";
+import tokenHttp from "../../api/APIPath";
 import { url } from "../../api/APIPath";
 
 const AlertTest = () => {
@@ -22,7 +23,7 @@ const AlertTest = () => {
                 console.log(response);
             });
     };
-
+// 
     // 알림
     useEffect(() => {
         const sse = new EventSource(

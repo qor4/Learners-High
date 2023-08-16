@@ -10,7 +10,6 @@ import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
 import { UserLogOut } from "../auth/UserLogOut";
 
-import axios from "axios";
 
 // 강의 개설 확인 모달
 import ClassJoinCheckModal from "../class/ClassJoinCheckModal";

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 
-import axios from "axios";
 import tokenHttp from "../../api/APIPath";
 import { url } from "../../api/APIPath";
 import Modal from "../common/Modal";

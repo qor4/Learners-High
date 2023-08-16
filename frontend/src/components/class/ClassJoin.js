@@ -267,7 +267,7 @@ const ClassJoin = ({
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([]);
     useEffect(() => {
-        axios.get(`${url}/lesson/type/`).then((res) => {
+        axios.get(`${url}/lesson/type`).then((res) => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
