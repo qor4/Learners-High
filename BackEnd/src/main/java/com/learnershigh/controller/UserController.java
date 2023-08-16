@@ -84,10 +84,10 @@ public class UserController {
     // 비밀번호 변경
     @GetMapping("/pwd-change")
     @ApiOperation("비밀번호 변경")
-    public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("userNo") Long userNo ,@RequestParam("pwd") String pwd) {
+    public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("userId") String userId ,@RequestParam("pwd") String pwd) {
         BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
         try {
-            userService.pwdChange(userNo, pwd);
+            userService.pwdChange(userId, pwd);
         } catch (IllegalStateException e) {
             baseResponseBody.setResultCode(-1);
             baseResponseBody.setResultMsg(e.getMessage());
