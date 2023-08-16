@@ -81,6 +81,22 @@ public class UserController {
 
     }
 
+    // 비밀번호 변경
+    @GetMapping("/pwd-change")
+    @ApiOperation("비밀번호 변경")
+    public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("userNo") Long userNo ,@RequestParam("pwd") String pwd) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
+        try {
+            userService.pwdChange(userNo, pwd);
+        } catch (IllegalStateException e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
+    }
+
 
     // 아이디 중복
     @GetMapping("/duplicate/id/{id}")
@@ -130,7 +146,7 @@ public class UserController {
     // 이메일로 아이디 찾기
     @PostMapping("/find/id")
     @ApiOperation("이메일로 아이디 찾기")
-    public String searchId(@RequestParam String email) {
+    public String searchId(@RequestParam("email") String email) {
         return userService.SearchId(email);
 
     }
