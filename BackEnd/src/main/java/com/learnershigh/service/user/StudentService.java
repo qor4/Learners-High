@@ -137,6 +137,8 @@ public class StudentService {
             lessonListDto.setLessonEndDate(wishLesson.getLessonEndDate());
             lessonListDto.setMaxStudent(wishLesson.getMaxStudent());
             lessonListDto.setTotalStudent(wishLesson.getTotalStudent());
+            lessonListDto.setUserNo(wishLesson.getUserNo().getUserNo());
+            lessonListDto.setLessonNo(wishLesson.getLessonNo());
 
             wishLessonList.add(lessonListDto);
 
