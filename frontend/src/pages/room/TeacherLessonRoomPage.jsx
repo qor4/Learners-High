@@ -21,9 +21,18 @@ import {
     HiDesktopComputer,
     HiOutlineBell,
 } from "react-icons/hi";
+
+import { 
+    PiVideoCameraBold, // 카메라 on
+    PiVideoCameraSlashBold, // 카메라 off
+    PiMicrophoneBold, //마이크 On
+    PiMicrophoneSlashBold, // 마이크 Off
+    PiMonitorBold, // 빈 모니터
+    PiMonitorPlayBold, // 재생버튼 있는 모니터
+} from "react-icons/pi";
+
 import Button from "../../components/common/Button";
 import { useCallback } from "react";
-import { isAction } from "@reduxjs/toolkit";
 
 // 전체 Wrap (가로, 세로 100%)
 export const RoomFrameWrap = styled.div`
@@ -406,7 +415,7 @@ const TeacherLessonRoomPage = () => {
                     setMainStreamManager(publisher);
                 })
                 .catch((error) => {
-                    alert(error.response.data);
+                    alert(error);
                     navigate("/");
                 });
         }
@@ -572,21 +581,24 @@ const TeacherLessonRoomPage = () => {
                                 onClick={toggleShare}
                                 value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiDesktopComputer />
+                                {shareEnabled && <PiMonitorPlayBold />}
+                                {!shareEnabled && <PiMonitorBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleVideo}
                                 value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiVideoCamera />
+                                {videoEnabled && <PiVideoCameraBold  />}
+                                {!videoEnabled && <PiVideoCameraSlashBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleAudio}
                                 value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiMicrophone />
+                                {audioEnabled && <PiMicrophoneBold /> }
+                                {!audioEnabled && <PiMicrophoneSlashBold  /> }
                             </Button>
                             <Button
                                 type="button"
@@ -764,7 +776,11 @@ const TeacherLessonRoomPage = () => {
 
                     {/* 채팅 컴포넌트 */}
                     <ChatWrap>
-                        {mainStreamManager && (
+                        {
+                        session &&
+                        session.connection &&
+                        session.connection.connectionId &&
+                        mainStreamManager && (
                             <ChatComponent
                                 userName={userName}
                                 streamManager={mainStreamManager}

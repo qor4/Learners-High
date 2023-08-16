@@ -21,6 +21,15 @@ import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
 
 import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
 
+import {
+    PiVideoCameraBold, // 카메라 on
+    PiVideoCameraSlashBold, // 카메라 off
+    PiMicrophoneBold, //마이크 On
+    PiMicrophoneSlashBold, // 마이크 Off
+    PiMonitorBold, // 빈 모니터
+    PiMonitorPlayBold, // 재생버튼 있는 모니터
+} from "react-icons/pi";
+
 // Canvas를 담아둘 공간
 const CanvasWrap = styled.div`
     // position: fixed;
@@ -33,7 +42,6 @@ const CanvasWrap = styled.div`
     border-radius: 1.25rem;
     margin: 0 auto;
 `;
-
 
 // 화면을 확인할 수 있는 공간
 const WaitScreen = styled.div`
@@ -77,12 +85,11 @@ const StudentWaitLessonRoomPage = () => {
     const userId = useSelector((state) => state.user.userId);
     const userName = useSelector((state) => state.userName);
 
-
     const location = useLocation();
     const lessonName = location.state.lessonName
         ? location.state.lessonName
         : null;
-    const teacherNo = location.state.teacherNo
+    const teacherNo = location.state.teacherNo;
     let currentX, currentY;
     const { lessonNo, lessonRoundNo } = useParams();
 
@@ -110,18 +117,18 @@ const StudentWaitLessonRoomPage = () => {
     const es = useRef();
 
     const toggleVideo = () => {
-        setVideoEnabled( prevState => !prevState);
+        setVideoEnabled((prevState) => !prevState);
     };
     // 내 마이크 on/off (상대방도 음성 꺼지는지 확인 )
     const toggleAudio = () => {
         setAudioEnabled(!audioEnabled);
     };
 
-    useEffect(() => { 
-        window.addEventListener('blur',focusOutLessonRoom);  
-        window.addEventListener('focus',focusInLessonRoom); 
+    useEffect(() => {
+        window.addEventListener("blur", focusOutLessonRoom);
+        window.addEventListener("focus", focusInLessonRoom);
 
-        es.current = new EventSource(  `${url}/notification/subscribe/${userId}`);
+        es.current = new EventSource(`${url}/notification/subscribe/${userId}`);
 
         es.current.onopen = (e) => {
             console.log("SSEONOPEN==========", es);
@@ -129,17 +136,17 @@ const StudentWaitLessonRoomPage = () => {
 
         es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
-            const sound = new Audio("/assets/audios/karinaCall.mp3")
-            sound.play()
+            const sound = new Audio("/assets/audios/karinaCall.mp3");
+            sound.play();
 
             setTimeout(() => {
-            sound.pause();
-            sound.currentTime = 0
-            }, 3000)
+                sound.pause();
+                sound.currentTime = 0;
+            }, 3000);
         });
 
         es.current.onerror = (err) => {
-            console.log('[sse] error', { err });
+            console.log("[sse] error", { err });
         };
 
         if (!eyeTracker.current && !enterRoom) {
@@ -149,7 +156,7 @@ const StudentWaitLessonRoomPage = () => {
                 await eyeTracker.current.init(
                     licenseKey,
                     async () => {
-                        await eyeTracker.current.startTracking(onGaze,onDebug);
+                        await eyeTracker.current.startTracking(onGaze, onDebug);
                         if (!eyeTracker.current.checkMobile()) {
                             eyeTracker.current.setMonitorSize(16); // 14 inch
                             eyeTracker.current.setFaceDistance(70);
@@ -158,23 +165,20 @@ const StudentWaitLessonRoomPage = () => {
                                 true
                             );
                         }
-
                     }, // callback when init succeeded.
                     () => console.log("callback when init failed."), // callback when init failed.
                     userStatus.current
                 );
                 setSeesoInit(true);
                 setIsTest(true);
-                
             })();
         }
-                    
-        return ()=>{
-            window.removeEventListener('blur',focusOutLessonRoom);  
-            window.removeEventListener('focus',focusInLessonRoom); 
-            es.current.close()
-        }
 
+        return () => {
+            window.removeEventListener("blur", focusOutLessonRoom);
+            window.removeEventListener("focus", focusInLessonRoom);
+            es.current.close();
+        };
     }, []);
     // 다른 화면으로 변경 시 실행되는 callback 함수
     const focusOutLessonRoom = useCallback(() => {
@@ -228,7 +232,7 @@ const StudentWaitLessonRoomPage = () => {
                       console.log("집중도 저장 성공, :",currentScore, currentStatus);
                     })
                     .catch((err) => {
-                      console.log("집중도 저장 중 에러 발생", err);
+                        console.log("집중도 저장 중 에러 발생", err);
                     });
                 
                 let checkAttention;
@@ -273,8 +277,16 @@ const StudentWaitLessonRoomPage = () => {
                 // 현재 주의를 받을 상황인가 파악
                 
             }
-
-    },[isFocus,enterRoom,videoEnabled,attentionList,notificationCnt,isAttention]);
+        },
+        [
+            isFocus,
+            enterRoom,
+            videoEnabled,
+            attentionList,
+            notificationCnt,
+            isAttention,
+        ]
+    );
 
     const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
         console.log(
@@ -341,24 +353,24 @@ const StudentWaitLessonRoomPage = () => {
                 onCalibrationNextPoint,
                 onCalibrationProgress,
                 onCalibrationFinished
-                );
-            }, 2000);
-
+            );
+        }, 2000);
+        setFinishTest(false)
     }, [isSeesoInit]);
 
+    const [finishTest, setFinishTest] = useState(true)
     const enterTheLessonRoom = () => {
         setEnterRoom(true);
     };
-    
-    const lessonRoomClose = ()=>{
+
+    const lessonRoomClose = () => {
         setIsClose(true);
     };
 
-
-    useEffect(()=>{
-        if(isClose){
+    useEffect(() => {
+        if (isClose) {
             setAttentionList([]);
-            userStatus.current =null;
+            userStatus.current = null;
             eyeTracker.current = null;
             setSeesoInit(false);
             setAttentionScore(0);
@@ -366,13 +378,13 @@ const StudentWaitLessonRoomPage = () => {
             setIsTest(false);
             setCalibrationData(null);
             setIsClose(false);
-            
+
             setVideoEnabled(true);
             setAudioEnabled(true);
-            
-            window.location.href=homeurl;
+
+            window.location.href = homeurl;
         }
-    },[isClose])
+    }, [isClose]);
 
     return (
         <>
@@ -382,31 +394,30 @@ const StudentWaitLessonRoomPage = () => {
                         <Container maxWidth="lg">
                             {/* 화면을 확인할 수 있는 공간 */}
                             <WaitScreen>
-                            <canvas
-                            id="output"
-                            style={{
-                                position: "absolute",
-                                height: "100%",
-                                width: "100%",
-                                zIndex:9999
-                            }}
-                        />
-                            {videoEnabled && 
-                            <Webcam 
-                                style={{
-                                    position: "absolute",
-                                    // objectFit: "cover",
-                                    width: "100%",
-                                    
-                                    height: "auto",
-                                    top: "50%",
-                                    left: "50%",
-                                    overFit:"cover",
-                                    transform: "translate(-50%, -50%)"
-                                }}
-                                
-                                /> 
-                            }
+                                <canvas
+                                    id="output"
+                                    style={{
+                                        position: "absolute",
+                                        height: "100%",
+                                        width: "100%",
+                                        zIndex: 9999,
+                                    }}
+                                />
+                                {videoEnabled && (
+                                    <Webcam
+                                        style={{
+                                            position: "absolute",
+                                            // objectFit: "cover",
+                                            width: "100%",
+
+                                            height: "auto",
+                                            top: "50%",
+                                            left: "50%",
+                                            overFit: "cover",
+                                            transform: "translate(-50%, -50%)",
+                                        }}
+                                    />
+                                )}
                             </WaitScreen>
 
                             {/* 하단 바 (강의명 박스 / 컨트롤 바) */}
@@ -419,10 +430,20 @@ const StudentWaitLessonRoomPage = () => {
                                 <WaitControlBar>
                                     <ControlButtonWrap>
                                         <Button onClick={toggleAudio}>
-                                            <HiMicrophone />
+                                            {audioEnabled && (
+                                                <PiMicrophoneBold />
+                                            )}
+                                            {!audioEnabled && (
+                                                <PiMicrophoneSlashBold />
+                                            )}
                                         </Button>
                                         <Button onClick={toggleVideo}>
-                                            <HiVideoCamera />
+                                            {videoEnabled && (
+                                                <PiVideoCameraBold />
+                                            )}
+                                            {!videoEnabled && (
+                                                <PiVideoCameraSlashBold />
+                                            )}
                                         </Button>
                                     </ControlButtonWrap>
 
@@ -433,9 +454,9 @@ const StudentWaitLessonRoomPage = () => {
                                         >
                                             테스트
                                         </Button>
-                                        <Button 
+                                        <Button
                                             onClick={enterTheLessonRoom}
-                                            disabled={!calibrationData}
+                                            disabled={!calibrationData && finishTest}
                                         >
                                             강의 입장
                                         </Button>
@@ -446,15 +467,17 @@ const StudentWaitLessonRoomPage = () => {
                     </>
                 )}
 
-                {enterRoom && <StudentLessonRoomPage
-                    lessonName={lessonName}
-                    teacherNo={teacherNo}
-                    closeRoom={lessonRoomClose}
-                    videoEnabled={videoEnabled}
-                    audioEnabled={audioEnabled}
-                    changeVideo={toggleVideo}
-                    changeAudio={toggleAudio}
-                />}
+                {enterRoom && (
+                    <StudentLessonRoomPage
+                        lessonName={lessonName}
+                        teacherNo={teacherNo}
+                        closeRoom={lessonRoomClose}
+                        videoEnabled={videoEnabled}
+                        audioEnabled={audioEnabled}
+                        changeVideo={toggleVideo}
+                        changeAudio={toggleAudio}
+                    />
+                )}
             </RoomFrameWrap>
         </>
     );

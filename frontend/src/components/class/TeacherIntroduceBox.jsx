@@ -88,6 +88,11 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
             });
 
             axios.get(`${url}/s3/profile-load/${teacherNo}`).then((res) => {
+                console.log(res, "teacher")
+                if (res.data.resultCode === -1){
+                    setProfileImg(false)
+                    return
+                }
                 setProfileImg(res.data);
             });
         }
@@ -99,9 +104,9 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 {/* 강사 이미지 */}
                 <StyledThumbnail
                     src={
-                        profileImg === "no"
-                            ? "/assets/bannerimg.jpg"
-                            : profileImg
+                        profileImg
+                            ?  profileImg
+                            : "/assets/bannerimg.jpg"
                     }
                     alt="teacher-img"
                     crossOrigin="anonymous"

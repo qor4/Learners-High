@@ -71,7 +71,11 @@ const MypageInfo = ({ userNo }) => {
             console.log(res.data);
         });
         axios.get(`${url}/s3/profile-load/${userNo}`).then((res) => {
-            setProfileImg(res.data);
+            if (res.data.resultCode === -1 ) {
+                setProfileImg(false);
+            } else {
+                setProfileImg(res.data);
+            }
         });
     }, []);
     const { userId, userInfo, userName, userTel, userEmail } = mypageInfo;
