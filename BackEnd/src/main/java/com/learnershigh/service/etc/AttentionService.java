@@ -65,29 +65,24 @@ public class AttentionService {
 
     // 학생 한수업의 한 회차당 자기 집중도 20구간 평균
     public double oneStudentOneRoundAttentionAvg(Long userNo, Long lessonRoundNo) { // 들어갈변수값 넣어야 함.
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(1L, 1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(userNo, lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
-        System.out.println(attentionList.toString());
-        System.out.println(attentionList.size());
         double sum = 0.0;
 
         for (AttentionDto attention : attentionList) {
-            System.out.println(attention.getAvgValue());
             sum += attention.getAvgValue();
         }
 
-        System.out.println(sum);
         return sum / 20.0;
 
     }
 
     // 한학생당 한수업의 한회차당 자기 집중도 (20구간)의 최대값,최소값 + 시간
     public AttentionMaxMinTime oneStudentOneRoundAttentionAvgAndMaxMin(Long userNo, Long lessonRoundNo) {
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(userNo, lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(1L, 1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
-
-        System.out.println(attentionList.toString());
-        System.out.println(attentionList.size());
 
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
@@ -99,7 +94,6 @@ public class AttentionService {
         AttentionMaxMinTime attentionMaxMinTime = new AttentionMaxMinTime();
 
         for (AttentionDto attention : attentionList) {
-            System.out.println(attention.getAvgValue());
 
             if (attention.getAvgValue() > max) {
                 max = attention.getAvgValue();
@@ -124,28 +118,23 @@ public class AttentionService {
 
     // 한 수업의 한 회차당 모든 학생의 20구간 집중도 평균
     public double allStudentOneRoundAttentionAvg(Long lessonRoundNo) {
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
-        System.out.println(attentionList.toString());
-        System.out.println(attentionList.size());
         double sum = 0.0;
 
         for (AttentionDto attention : attentionList) {
-            System.out.println(attention.getAvgValue());
             sum += attention.getAvgValue();
         }
 
-        System.out.println(sum);
         return sum / 20.0;
     }
 
     // 한수업의 한회차당 모든 학생의 집중도(20구간)의 최대값,최소값 + 시간
     public AttentionMaxMinTime allStudentOneRoundAttentionAvgAndMaxMin(Long lessonRoundNo) {
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
-
-        System.out.println(attentionList.toString());
-        System.out.println(attentionList.size());
 
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
@@ -157,7 +146,6 @@ public class AttentionService {
         AttentionMaxMinTime attentionMaxMinTime = new AttentionMaxMinTime();
 
         for (AttentionDto attention : attentionList) {
-            System.out.println(attention.getAvgValue());
 
             if (attention.getAvgValue() > max) {
                 max = attention.getAvgValue();
@@ -331,16 +319,18 @@ public class AttentionService {
 
     // 한 회차당 한 학생 집중도 20구간
     public List<AttentionDto> oneStudentOneRoundAttentionList(Long userNo, Long lessonRoundNo) {
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
 
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(1L, 1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNoAndUserNo(userNo, lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
         return attentionList;
     }
 
     // 한 회차당 모든 학생 집중도 20구간
     public List<AttentionDto> allStudentOneRoundAttentionList(Long lessonRoundNo) {
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
 
-        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(1L, LocalDateTime.now(), LocalDateTime.now()); // time 바꿔야 됨. (mysql 에 있는 걸로)
+        List<AttentionDto> attentionList = lessonRoundAttentionRateRepository.aggregateAttentionByLessonRoundNo(lessonRoundNo, lessonRound.getLessonRoundStartDatetime(), lessonRound.getLessonRoundEndDatetime()); // time 바꿔야 됨. (mysql 에 있는 걸로)
 
         return attentionList;
     }
