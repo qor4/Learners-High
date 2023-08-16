@@ -462,7 +462,7 @@ public class S3Service {
 
         User user = userRepository.findByUserNo(userNo);
         if(user.getProfileImg() == null){
-            throw new IllegalStateException("등록된 프로필 사진이 없습니다.")
+            throw new IllegalStateException("등록된 프로필 사진이 없습니다.");
         }
         return URL + user.getProfileImg();
 
