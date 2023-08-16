@@ -42,6 +42,7 @@ import EduStudentManagePage from "./pages/EduStudentManagePage";
 import EduTeacherLessonPage from "./pages/EduTeacherLessonPage";
 import EduStudentLessonPage from "./pages/EduStudentLessonPage";
 
+import SoundAlert from "./pages/room/SoundAlert";
 import TeacherRoomFrame from "./pages/room/TeacherRoomFrame";
 import StudentRoomFrame from "./pages/room/StudentRoomFrame";
 import AlertTest from "./pages/room/AlertTest";
@@ -214,8 +215,8 @@ function App() {
                         path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo"
                         element={<LessonSatisfyModal />}
                     />
-                    {/* <Route path="/test" 
-                    element={<LessonSatisfyModal />} /> */}
+                    <Route path="/test" 
+                    element={<SoundAlert />} />
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>

@@ -131,6 +131,13 @@ const StudentWaitLessonRoomPage = () => {
 
         es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
+            const sound = new Audio("/assets/audios/karinaCall.mp3")
+            sound.play()
+
+            setTimeout(() => {
+            sound.pause();
+            sound.currentTime = 0
+            }, 3000)
         });
 
         es.current.onerror = (err) => {
@@ -230,6 +237,7 @@ const StudentWaitLessonRoomPage = () => {
                 attentionList.push({currentScore,status});
                 if(attentionList.length > 6){
                     attentionList.shift();
+                    if(status!==2){
                     // 집중도가 0.3 이하인 경우
                     checkAttention = attentionList.every(item => item.currentScore < 0.3);
                     if (checkAttention) {
@@ -260,6 +268,7 @@ const StudentWaitLessonRoomPage = () => {
                         setIsAttention(true);
                     }
                 }
+            }
                
                 // 현재 주의를 받을 상황인가 파악
                 

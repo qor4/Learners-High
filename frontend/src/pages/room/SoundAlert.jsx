@@ -5,7 +5,7 @@ const SoundAlert = () => {
 
   const playSound = () => {
     setIsPlaying(true)
-    const sound = new Audio()
+    const sound = new Audio("/assets/audios/karinaCall.mp3")
     sound.play()
 
     setTimeout(() => {
@@ -21,3 +21,5 @@ const SoundAlert = () => {
     </div>
   )
 }
+
+export default SoundAlert;

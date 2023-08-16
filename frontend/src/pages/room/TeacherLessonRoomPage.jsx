@@ -256,7 +256,13 @@ const TeacherLessonRoomPage = () => {
                         console.log(student);
                         console.log(studentData);   
                         if(student.studentId === studentData.studentId){
-                            return {...student,status:Number(studentData.status), notificationCnt : student.notificationCnt+1}
+                            if(studentData.isActive){
+                                // 버튼 활성화
+                                return {...student,status:Number(studentData.status),isActive : studentData.isActive, notificationCnt : 0}
+                            }else{
+                                // 버튼 비 활성화 
+                                return {...student,status:Number(studentData.status),isActive : studentData.isActive, notificationCnt : 0}
+                            }
                         }
                         return student;
                     }
@@ -301,7 +307,8 @@ const TeacherLessonRoomPage = () => {
             
             setStudentList((prev)=>[...prev,{studentId : JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId,
                 status : 0,
-                notificationCnt : 0
+                notificationCnt : 0,
+                isActive: false,
               }]);
              // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
@@ -390,12 +397,15 @@ const TeacherLessonRoomPage = () => {
             publisher.publishAudio(enabled);
         }
 
+    };
+    
+    const sendAlertSoundToStudent = useCallback((idx) => {
         tokenHttp.post(
             `${url}/notification/send`,
             {
                 lessonNo : Number(lessonNo),
                 lessonRoundNo : Number(lessonRoundNo),
-                studentNo : Number(4),
+                studentNo : Number(JSON.parse(JSON.parse(subscribers[idx].stream.connection.data).clientData).userNo),
                 teacherId : userId
             }
         ).then(res=>{
@@ -404,8 +414,7 @@ const TeacherLessonRoomPage = () => {
             console.log('send 실패', err);
         })
 
-
-    };
+    }, [subscribers]);
 
     const toggleShare = () => {
         if (shareEnabled) {
@@ -489,20 +498,6 @@ const TeacherLessonRoomPage = () => {
     return (
         <>
             <RoomFrameWrap>
-                {/* <h1>Room ID: {mySessionId}</h1> */}
-
-                {/* 아래 세션은 아래의 조건에 존재 */}
-                {/* {session !== undefined && session.connection !== undefined ?
-
-                        {/* <div>
-                      {console.log(session, "세션")}
-                      {console.log(session.connection, "세션 커넥션")}
-                      { mainStreamManager && <ChatComponent 
-                      userName={userName}
-                      streamManager={mainStreamManager}
-                      connectionId={session.connection.connectionId}
-                      />}
-                    </div> */}
                 <StudentScreenWrap>
                     {session !== undefined  &&
                     session.connection !== undefined ? (
@@ -510,6 +505,7 @@ const TeacherLessonRoomPage = () => {
                             {/* 여기서 강사 아닌 사람들만 */}
                             {subscribers.map((sub, i) => (
                                 <>
+                                {console.log(studentList[i], '####')}
                                     <StudentScreen key={`${i}-subscriber1`}>
                                         <StudentName>
                                             {JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}
@@ -590,9 +586,20 @@ const TeacherLessonRoomPage = () => {
                                     <div>{JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}</div>
                                     <StateFlex>
                                         {/* 여기에 집중 여부에 따라 바꿀 것. */}
-                                        <div>상태</div>
-                                        {/* {console.log(subscribersStatus,"sssss")} */}
-                                        <StateButton><HiOutlineBell /></StateButton>
+                                        {console.log(studentList[idx], '####')}
+                                        {   studentList[idx].status ===0 &&  studentList[idx].isActive && <>
+                                            {/* 이때 하나. */}
+                                            <div> {studentList[idx].status} </div>
+
+                                        </>}
+                                        {   studentList[idx].status ===1 &&  
+                                         <>
+                                            {/* 이때 하나. */}
+                                            <div> {studentList[idx].status} </div>
+
+                                        </>}
+
+                                        <StateButton onClick={sendAlertSoundToStudent(idx)}>  <HiOutlineBell />  </StateButton>
                                     </StateFlex>
                                 </StateWrap>
                             </>
