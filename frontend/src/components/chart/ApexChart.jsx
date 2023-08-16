@@ -41,11 +41,11 @@ class ApexChart extends React.Component {
                 labels: {
                     minWidth: 40,
                     formatter: function (value) {
-                        return value.toFixed(2); // 소수점 두 자리까지 표시
+                        return value.toFixed(0); // 소수점 두 자리까지 표시
                     },
                 },
                 min: 0, // 데이터의 최소값
-                max: 1, // 데이터의 최대값
+                max: 100, // 데이터의 최대값
                 tickAmount: 5, // 눈금의 개수 설정
             },
         };
@@ -118,18 +118,18 @@ class ApexChart extends React.Component {
             },
 
             // 데이터 없을 때? @@@ 확인
-            noData: {
-                text: undefined,
-                align: "center",
-                verticalAlign: "middle",
-                offsetX: 0,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: "14px",
-                    fontFamily: undefined,
-                },
-            },
+            // noData: {
+            //     text: undefined,
+            //     align: "center",
+            //     verticalAlign: "middle",
+            //     offsetX: 0,
+            //     offsetY: 0,
+            //     style: {
+            //         color: undefined,
+            //         fontSize: "14px",
+            //         fontFamily: undefined,
+            //     },
+            // },
         };
 
         return (

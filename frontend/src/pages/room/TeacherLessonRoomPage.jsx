@@ -710,7 +710,7 @@ const TeacherLessonRoomPage = () => {
                                                                         ),
                                                                     studentNo:
                                                                         Number(
-                                                                            sub.userNo
+                                                                            sub.studentNo
                                                                         ),
                                                                     teacherId:
                                                                         userId,
@@ -720,6 +720,47 @@ const TeacherLessonRoomPage = () => {
                                                                 console.log(
                                                                     "send 성공"
                                                                 );
+                                                                tokenHttp
+                                                                .post(
+                                                                    `${url}/notification/send`,
+                                                                    {
+                                                                        lessonNo:
+                                                                            Number(
+                                                                                lessonNo
+                                                                            ),
+                                                                        lessonRoundNo:
+                                                                            Number(
+                                                                                lessonRoundNo
+                                                                            ),
+                                                                        studentNo:
+                                                                            Number(
+                                                                                sub.studentNo
+                                                                            ),
+                                                                        teacherId:
+                                                                            userId,
+                                                                    }
+                                                                )
+                                                                .then((res) => {
+                                                                    console.log(
+                                                                        "send 성공"
+                                                                    );
+                                                                    const studentListCopy = studentList.map((item, i) => {
+                                                                        if (i===idx) {
+                                                                            item.notificationCnt = item.notificationCnt + 1
+                                                                            item.isActive = false
+                                                                        }
+                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                    setStudentList(studentListCopy)
+                                                                })
+                                                                .catch(
+                                                                    (err) => {
+                                                                        console.log(
+                                                                            "send 실패",
+                                                                            err
+                                                                        );
+                                                                    }
+                                                                );
+                                                                
                                                             })
                                                             .catch((err) => {
                                                                 console.log(
