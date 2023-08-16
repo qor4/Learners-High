@@ -50,7 +50,6 @@ const EduTeacherLessonPage = () => {
     const { lessonNo } = useParams();
 
     const [attendRateDataSet, setAttendRateDataSet] = useState(0); // 출석률
-    const [homeworkRateDataSet, setHomeworkRateDataSet] = useState(0); // 과제 제출률
 
     const [selectedTabBar, setSelectedTabBar] = useState("학생"); // 탭바 선택별
 
@@ -63,7 +62,6 @@ const EduTeacherLessonPage = () => {
             .then((response) => {
                 console.log(response.data);
                 setAttendRateDataSet(response.data.result.attendRate);
-                setHomeworkRateDataSet(response.data.result.homeworkRate);
             });
 
         // 수업 상세 GET 요청 (수업 이름을 불러오기 위한...)
@@ -102,19 +100,6 @@ const EduTeacherLessonPage = () => {
                                         )}
                                     </div>
                                 </InfoRateWrap>
-                                <InfoRateWrap>
-                                    <div>과제 제출률</div>
-                                    <div>
-                                        {homeworkRateDataSet ===
-                                        "아직 집계할 데이터가 없습니다." ? (
-                                            "데이터 없음"
-                                        ) : (
-                                            <StyledTitleText>
-                                                {homeworkRateDataSet.toFixed(0)} %
-                                            </StyledTitleText>
-                                        )}
-                                    </div>
-                                </InfoRateWrap>
                             </StyledRateWrap>
                         </InfoRateWrap>
                     </ImgInfoWrap>
@@ -145,20 +130,12 @@ const EduTeacherLessonPage = () => {
                     >
                         소개
                     </Button>
-                    <Button
-                        onClick={() => setSelectedTabBar("과제")}
-                        $point={selectedTabBar === "과제"}
-                        disabled={selectedTabBar === "과제"}
-                    >
-                        과제
-                    </Button>
                 </StyledButtonWrap>
 
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
                     {selectedTabBar==="학생" && <><EduManageStudentsTable/></>}
                     {selectedTabBar==="분석" && <></>}
-                    {selectedTabBar==="소개" && <></>}
                     {selectedTabBar === "소개" && (
                         <LessonInfoPage pathByEduStudentLessonPage={true}/>
                     )}

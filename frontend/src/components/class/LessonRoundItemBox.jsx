@@ -133,9 +133,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
                 <StyledButtonWrap>
-                    <Button className={"singleEvent"}>
-                        <span className="singleEvent">과제 일괄 다운</span>
-                    </Button>
                     {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
                     state={userName}> */}
                     <Button
@@ -155,9 +152,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                     <Button className={"singleEvent"}>
                         {" "}
                         학습 자료 다운
-                    </Button>
-                    <Button className={"singleEvent"}>
-                        과제 제출
                     </Button>
                     <Button
                         $point

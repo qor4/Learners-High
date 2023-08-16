@@ -274,8 +274,6 @@ const EduManageStudentsTable = () => {
                 elevation={10}
                 sx={{
                     borderRadius: "15px",
-                    paddingTop: "1rem",
-                    paddingBottom: "1rem",
                     marginTop: "2rem",
                     marginBottom: "2rem",
                 }}
