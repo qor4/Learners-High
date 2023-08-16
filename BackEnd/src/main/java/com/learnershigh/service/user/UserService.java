@@ -130,6 +130,7 @@ public class UserService {
         return true;
     }
 
+
     // 비밀번호 변경
     @Transactional
     public Boolean pwdChange(Long userNo, String passWord) {
