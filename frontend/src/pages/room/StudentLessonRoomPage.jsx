@@ -123,9 +123,6 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         });
         mySession.on('streamDestroyed', event => {
             console.log("streamDestroyed 종료됨");
-            if(JSON.parse(JSON.parse(event.stream.connection.data).clientData).userNo === Number(teacherNo)){
-                leaveSession();
-            }
         });
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
