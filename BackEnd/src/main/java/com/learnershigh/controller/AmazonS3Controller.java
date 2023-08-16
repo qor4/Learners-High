@@ -115,16 +115,20 @@ public class AmazonS3Controller {
     @ApiOperation("S3 thumbnail 불러오기")
     @GetMapping("/thumbnail-load/{lessonNo}")
     public ResponseEntity<BaseResponseBody> thumbnailLoad(@PathVariable Long lessonNo) throws IOException {
-        BaseResponseBody responseBody = new BaseResponseBody("사진을 불러오지 못했습니다.");
-        if (s3Service.thumbnailLoad(lessonNo).equals("no")) {
-            responseBody.setResultCode(-1);
-        } else {
-            responseBody.setResultCode(0);
-            responseBody.setResultMsg(s3Service.thumbnailLoad(lessonNo));
-            return ResponseEntity.ok().body(responseBody);
-        }
+        BaseResponseBody responseBody = new BaseResponseBody("사진을 불러왔습니다..");
+     try {
+        responseBody.setResultMsg(s3Service.thumbnailLoad(lessonNo));
+    } catch (IllegalStateException i) {
+        responseBody.setResultCode(-1);
+        responseBody.setResultMsg(i.getMessage());
+        return ResponseEntity.ok().body(responseBody);
+    } catch (Exception e) {
+        responseBody.setResultCode(-2);
+        responseBody.setResultMsg(e.getMessage());
         return ResponseEntity.ok().body(responseBody);
     }
+        return ResponseEntity.ok().body(responseBody);
+}
 
 
     // S3 profile 불러오기
