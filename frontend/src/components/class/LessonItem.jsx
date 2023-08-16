@@ -90,11 +90,11 @@ const LessonItem = (props) => {
                 )}
 
                 {/* 학생일 때만 찜(하트) 아이콘이 보이도록 처리 */}
-                {userType === "S" && (
+                {/* {userType === "S" && (
                     <span>
                         <HiOutlineHeart />
                     </span>
-                )}
+                )} */}
             </ImageIconWrap>
 
             <FlexWrap>
