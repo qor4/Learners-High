@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -21,14 +22,18 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     @Override
     // 한 회차당 한 학생의 20구간의 평균 집중도
     public List<AttentionDto> aggregateAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+
+        startDatetime = startDatetime.minusHours(9L);
+        endDatetime = endDatetime.minusHours(9L);
+        Date startDate = Date.from(Instant.parse(startDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
+        Date endDate = Date.from(Instant.parse(endDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
+
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
-                                .and("metadata.userNo").is(1)
+                                .lte(endDate).and("metadata.lessonRoundNo").is(lessonRoundNo) // lessonRoundNo
+                                .and("metadata.userNo").is(userNo)
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
                 .andOutput("rate").avg().as("avgValue")
@@ -45,20 +50,22 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
                 bucketAutoOperation
         );
         AggregationResults<AttentionDto> results = mongoTemplate.aggregate(aggregation, "lesson_round_attention_rate", AttentionDto.class);
-        List<AttentionDto> AttentionList = results.getMappedResults();
-        return AttentionList;
+        List<AttentionDto> attentionList = results.getMappedResults();
+        return attentionList;
     }
 
     // 한 회차당 모든 학생의 20구간의 평균 집중도
     @Override
     public List<AttentionDto> aggregateAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+        startDatetime = startDatetime.minusHours(9L);
+        endDatetime = endDatetime.minusHours(9L);
+        Date startDate = Date.from(Instant.parse(startDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
+        Date endDate = Date.from(Instant.parse(endDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
+                                .lt(endDate).and("metadata.lessonRoundNo").is(lessonRoundNo) // lessonRoundNo
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 20)
                 .andOutput("rate").avg().as("avgValue")
@@ -84,14 +91,16 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     // 한 회차당 한 학생의 1구간의 평균 집중도
     @Override
     public AttentionDto aggregateTotalAttentionByLessonRoundNoAndUserNo(Long userNo, Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+        startDatetime = startDatetime.minusHours(9L);
+        endDatetime = endDatetime.minusHours(9L);
+        Date startDate = Date.from(Instant.parse(startDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
+        Date endDate = Date.from(Instant.parse(endDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
-                                .and("metadata.userNo").is(1)
+                                .lt(endDate).and("metadata.lessonRoundNo").is(lessonRoundNo) // lessonRoundNo
+                                .and("metadata.userNo").is(userNo)
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 1)
                 .andOutput("rate").avg().as("avgValue");
@@ -112,13 +121,15 @@ public class AttentionRepositoryCustomImpl implements AttentionRepositoryCustom 
     // 한 회차당 모든 학생의 1구간의 평균 집중도
     @Override
     public AttentionDto aggregateTotalAttentionByLessonRoundNo(Long lessonRoundNo, LocalDateTime startDatetime, LocalDateTime endDatetime) {
-        Date startDate = Date.from(Instant.parse("2023-08-14T05:47:36.158Z"));
-        Date endDate = Date.from(Instant.parse("2023-08-14T05:48:05.304Z"));
+        startDatetime = startDatetime.minusHours(9L);
+        endDatetime = endDatetime.minusHours(9L);
+        Date startDate = Date.from(Instant.parse(startDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
+        Date endDate = Date.from(Instant.parse(endDatetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))));
         MatchOperation matchOperation =
                 Aggregation.match(
                         Criteria.where("timestamp")
                                 .gte(startDate)
-                                .lt(endDate).and("metadata.lessonRoundNo").is(3) // lessonRoundNo
+                                .lt(endDate).and("metadata.lessonRoundNo").is(lessonRoundNo) // lessonRoundNo
                 );
         BucketAutoOperation bucketAutoOperation = Aggregation.bucketAuto("timestamp", 1)
                 .andOutput("rate").avg().as("avgValue");
