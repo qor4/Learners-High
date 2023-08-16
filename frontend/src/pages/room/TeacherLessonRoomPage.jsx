@@ -418,7 +418,7 @@ const TeacherLessonRoomPage = () => {
                     setMainStreamManager(publisher);
                 })
                 .catch((error) => {
-                    alert(error.response.data);
+                    alert(error);
                     navigate("/");
                 });
         }
@@ -584,7 +584,6 @@ const TeacherLessonRoomPage = () => {
                                 onClick={toggleShare}
                                 value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiDesktopComputer />
                                 {shareEnabled && <PiMonitorPlayBold />}
                                 {!shareEnabled && <PiMonitorBold  />}
                             </Button>
@@ -780,7 +779,11 @@ const TeacherLessonRoomPage = () => {
 
                     {/* 채팅 컴포넌트 */}
                     <ChatWrap>
-                        {mainStreamManager && (
+                        {
+                        session &&
+                        session.connection &&
+                        session.connection.connectionId &&
+                        mainStreamManager && (
                             <ChatComponent
                                 userName={userName}
                                 streamManager={mainStreamManager}
