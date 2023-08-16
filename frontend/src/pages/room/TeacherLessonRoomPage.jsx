@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url, homeurl} from "../../api/APIPath";
-import axios from "axios"; 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -14,7 +13,7 @@ import ChatComponent from "../../components/chat/ChatComponent";
 // 강사 강의룸 스타일링
 import styled from "styled-components";
 import { Typography } from "@mui/material";
-import "./TeacherLessonRoomPage.css"
+import "./TeacherLessonRoomPage.css";
 
 import {
     HiMicrophone,
@@ -22,6 +21,16 @@ import {
     HiDesktopComputer,
     HiOutlineBell,
 } from "react-icons/hi";
+
+import { 
+    PiVideoCameraBold, // 카메라 on
+    PiVideoCameraSlashBold, // 카메라 off
+    PiMicrophoneBold, //마이크 On
+    PiMicrophoneSlashBold, // 마이크 Off
+    PiMonitorBold, // 빈 모니터
+    PiMonitorPlayBold, // 재생버튼 있는 모니터
+} from "react-icons/pi";
+
 import Button from "../../components/common/Button";
 import { useCallback } from "react";
 
@@ -173,7 +182,7 @@ const StateButton = styled.div`
         cursor: pointer;
         background-color: #e1e6f9;
     }
-`
+`;
 
 // 채팅 컴포넌트 Wrap
 const ChatWrap = styled.div`
@@ -207,7 +216,7 @@ const TeacherLessonRoomPage = () => {
     const [session, setSession] = useState(undefined);
     const [mainStreamManager, setMainStreamManager] = useState(undefined);
     const [publisher, setPublisher] = useState(undefined);
-    const [subscribers, setSubscribers] = useState([]);
+    // const [subscribers, setSubscribers] = useState([]);
     const [token, setToken] = useState("");
 
     // video, audio 접근 권한
@@ -218,7 +227,7 @@ const TeacherLessonRoomPage = () => {
     // 새로운 OpenVidu 객체 생성
     const [OV, setOV] = useState(<OpenVidu />);
     const es = useRef();
-    // 학생 
+    // 학생
     const [studentList, setStudentList] = useState([]);
     // 2) 화면 렌더링 시 최초 1회 실행
     useEffect(() => {
@@ -228,24 +237,24 @@ const TeacherLessonRoomPage = () => {
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
-        es.current = new EventSource( `${url}/notification/subscribe/${userId}`);
+        es.current = new EventSource(`${url}/notification/subscribe/${userId}`);
 
         es.current.onopen = (e) => {
             console.log("SSEONOPEN==========", es);
         };
 
         es.current.addEventListener("isActive", function (event) {
-                console.log("ADDEVENTLISTENER==========");
-                changeStudentStatus(JSON.parse(event.data));
+            console.log("ADDEVENTLISTENER==========");
+            changeStudentStatus(JSON.parse(event.data));
         });
 
         es.current.onerror = (err) => {
-            console.log('[sse] error', { err });
+            console.log("[sse] error", { err });
         };
         // 윈도우 객체에 화면 종료 이벤트 추가
         joinSession(); // 세션 입장
         return () => {
-            window.removeEventListener('beforeunload',leaveSession);
+            window.removeEventListener("beforeunload", leaveSession);
             es.current.close();
         };
     }, []);
@@ -253,41 +262,62 @@ const TeacherLessonRoomPage = () => {
         setStudentList((prev)=>
                 prev.map(
                     (student) => {
-                        console.log(student);
-                        console.log(studentData);   
                         if(student.studentId === studentData.studentId){
-                            return {...student,status:Number(studentData.status), notificationCnt : student.notificationCnt+1}
+                            if(studentData.isActive){
+                                // 버튼 활성화
+                                return {
+                                    ...student,
+                                    status: Number(studentData.status),
+                                    isActive: studentData.isActive,
+                                    notificationCnt: 0,
+                                };
+                            } else {
+                                // 버튼 비 활성화
+                                return {
+                                    ...student,
+                                    status: Number(studentData.status),
+                                    isActive: studentData.isActive,
+                                    notificationCnt: 0,
+                                };
+                            }
                         }
                         return student;
-                    }
-               ).slice()
+                    })
+                    .slice()
             );
-    },[studentList]);
+        },
+        [studentList]
+    );
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
         if (session) {
             session.disconnect();
-            await tokenHttp.delete(`${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`)
-                            .then((res)=>{
-                                if(res.data.resultCode !== 200){
-                                    console.log(res.data.resultMsg);
-                                }
-                            }).catch(err=>{
-                                console.error(err);
-                            });
+            await tokenHttp
+                .delete(
+                    `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
+                )
+                .then((res) => {
+                    if (res.data.resultCode !== 200) {
+                        console.log(res.data.resultMsg);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
             setOV(null);
             setMySessionId(undefined);
             setMyUserName("");
             setSession(undefined);
             setMainStreamManager(undefined);
             setPublisher(undefined);
-            setSubscribers([]);
+            // setSubscribers([]);
             setToken(undefined);
+            setStudentList([]);
             es.current.close();
         }
         // 메인화면 이동 필요
-        window.location.href=homeurl;
+        window.location.href = homeurl;
     };
     // 세션 생성 및 세션에서 이벤트가 발생할 때의 동작을 지정
     const joinSession = async () => {
@@ -297,30 +327,47 @@ const TeacherLessonRoomPage = () => {
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             const subscriber = mySession.subscribe(event.stream, undefined);
-            setSubscribers((subscribers) => [...subscribers, subscriber])
-            
-            setStudentList((prev)=>[...prev,{studentId : JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId,
-                status : 0,
-                notificationCnt : 0
-              }]);
-             // 새 구독자에 대한 상태 업데이트
+            // setSubscribers((subscribers) => [...subscribers, subscriber]);
+            setStudentList((prev) => [
+                ...prev,
+                {
+                    subscriber : subscriber,
+                    studentName : JSON.parse(
+                        JSON.parse(event.stream.connection.data).clientData
+                    ).userName,
+                    studentId: JSON.parse(
+                        JSON.parse(event.stream.connection.data).clientData
+                    ).userId,
+                    studentNo: JSON.parse(
+                        JSON.parse(event.stream.connection.data).clientData
+                    ).userNo,
+                    status: 0,
+                    notificationCnt: 0,
+                    isActive: false,
+                },
+            ].slice());
+            // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
             // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
         });
 
         // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on("streamDestroyed", (event) => {
-            setSubscribers((preSubscribers) =>
-                preSubscribers.filter(
-                    (subscriber) => subscriber !== event.stream.streamManager
-                )
-            );
-            setStudentList((prev)=>
+            // setSubscribers((preSubscribers) =>
+            //     preSubscribers.filter(
+            //         (subscriber) => subscriber !== event.stream.streamManager
+            //     )
+            // );
+            setStudentList((prev) =>
                 prev.filter(
-                    student => student.studentId !== JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId
+                    (student) =>
+                        student.studentId !==
+                        JSON.parse(
+                            JSON.parse(event.stream.connection.data).clientData
+                        ).userId
                 )
             );
-            
+
             console.log("사용자가 나갔습니다.");
             // console.log(JSON.parse(event.stream.connection.data.clientData), "님이 접속을 종료했습니다.")
         });
@@ -346,20 +393,26 @@ const TeacherLessonRoomPage = () => {
                     if (res.data.resultCode !== 200) throw res.data.resultMsg;
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
-                    session.connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName,userId}) })
+                    session.connect(res.data.resultMsg, {
+                        clientData: JSON.stringify({
+                            userNo,
+                            userName,
+                            userId,
+                        }),
+                    });
                 })
                 .then(async () => {
                     // Get your own camera stream ---
                     // publisher 객체 생성
                     let publisher = await OV.initPublisherAsync(undefined, {
-                        audioSource: undefined,     // The source of audio. If undefined default microphone
-                        videoSource: undefined,     // The source of video. If undefined default webcam
+                        audioSource: undefined, // The source of audio. If undefined default microphone
+                        videoSource: undefined, // The source of video. If undefined default webcam
                         publishAudio: audioEnabled, // Whether you want to start publishing with your audio unmuted or not
                         publishVideo: videoEnabled, // Whether you want to start publishing with your video enabled or not
-                        resolution: '640x480',      // The resolution of your video
-                        frameRate: 30,              // The frame rate of your video
-                        insertMode: 'APPEND',       // How the video is inserted in the target element 'video-container'
-                        mirror: true,               // Whether to mirror your local video or not
+                        resolution: "640x480", // The resolution of your video
+                        frameRate: 30, // The frame rate of your video
+                        insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
+                        mirror: true, // Whether to mirror your local video or not
                     });
                     // Publish your stream ---
                     session.publish(publisher);
@@ -367,10 +420,10 @@ const TeacherLessonRoomPage = () => {
                     setPublisher(publisher);
                     setMainStreamManager(publisher);
                 })
-                .catch ((error) => {
-                    alert(error.response.data);
+                .catch((error) => {
+                    alert(error);
                     navigate("/");
-            });
+                });
         }
     }, [session]);
     // 내 웹캠 on/off (상대방도 화면 꺼지는지 확인 필요)
@@ -389,22 +442,6 @@ const TeacherLessonRoomPage = () => {
             setAudioEnabled(enabled);
             publisher.publishAudio(enabled);
         }
-
-        tokenHttp.post(
-            `${url}/notification/send`,
-            {
-                lessonNo : Number(lessonNo),
-                lessonRoundNo : Number(lessonRoundNo),
-                studentNo : Number(4),
-                teacherId : userId
-            }
-        ).then(res=>{
-            console.log('send 성공');
-        }).catch(err=>{
-            console.log('send 실패', err);
-        })
-
-
     };
 
     const toggleShare = () => {
@@ -489,33 +526,23 @@ const TeacherLessonRoomPage = () => {
     return (
         <>
             <RoomFrameWrap>
-                {/* <h1>Room ID: {mySessionId}</h1> */}
-
-                {/* 아래 세션은 아래의 조건에 존재 */}
-                {/* {session !== undefined && session.connection !== undefined ?
-
-                        {/* <div>
-                      {console.log(session, "세션")}
-                      {console.log(session.connection, "세션 커넥션")}
-                      { mainStreamManager && <ChatComponent 
-                      userName={userName}
-                      streamManager={mainStreamManager}
-                      connectionId={session.connection.connectionId}
-                      />}
-                    </div> */}
                 <StudentScreenWrap>
-                    {session !== undefined  &&
+                    {session !== undefined &&
                     session.connection !== undefined ? (
                         <>
                             {/* 여기서 강사 아닌 사람들만 */}
-                            {subscribers.map((sub, i) => (
+                            {/* {subscribers.map((sub, i) => ( */}
+                            {studentList.map((sub, i) => (
                                 <>
+                                    {console.log(studentList[i], "####")}
                                     <StudentScreen key={`${i}-subscriber1`}>
                                         <StudentName>
-                                            {JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}
+                                            {
+                                                sub.studentName
+                                            }
                                         </StudentName>
                                         <UserVideoComponent
-                                            streamManager={sub}
+                                            streamManager={sub.subscriber}
                                         />
                                     </StudentScreen>
                                 </>
@@ -539,21 +566,24 @@ const TeacherLessonRoomPage = () => {
                                 onClick={toggleShare}
                                 value={`공유 ${!shareEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiDesktopComputer />
+                                {shareEnabled && <PiMonitorPlayBold />}
+                                {!shareEnabled && <PiMonitorBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleVideo}
                                 value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiVideoCamera />
+                                {videoEnabled && <PiVideoCameraBold  />}
+                                {!videoEnabled && <PiVideoCameraSlashBold  />}
                             </Button>
                             <Button
                                 type="button"
                                 onClick={toggleAudio}
                                 value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                             >
-                                <HiMicrophone />
+                                {audioEnabled && <PiMicrophoneBold /> }
+                                {!audioEnabled && <PiMicrophoneSlashBold  /> }
                             </Button>
                             <Button
                                 type="button"
@@ -583,16 +613,127 @@ const TeacherLessonRoomPage = () => {
                     {/* 학생 상태 경고 바 */}
                     <StateNotification>
                         {/* 학생 개개인의 상태와 주의 표시 버튼을 나타낼 박스 */}
-                        {subscribers.map((sub, idx) => (
+                        {studentList.map((sub, idx) => (
                             // 여기에 div Box 만들면 됩니다.
                             <>
                                 <StateWrap>
-                                    <div>{JSON.parse(JSON.parse(sub.stream.connection.data).clientData).userName}</div>
+                                    <div>
+                                        {
+                                            sub.studentName
+                                        }
+                                    </div>
                                     <StateFlex>
                                         {/* 여기에 집중 여부에 따라 바꿀 것. */}
-                                        <div>상태</div>
-                                        {/* {console.log(subscribersStatus,"sssss")} */}
-                                        <StateButton><HiOutlineBell /></StateButton>
+                                        {console.log(studentList[idx], "####")}
+                                        {studentList[idx].status === 0 &&
+                                            studentList[idx].isActive && (
+                                                <>
+                                                    {/* 이때 하나. */}
+                                                    <div>
+                                                        {" "}
+                                                        {
+                                                            studentList[idx]
+                                                                .status
+                                                        }{" "}
+                                                        <span style={{color: '#db0000'}}>산만</span>
+                                                    </div>
+
+                                                    <StateButton
+                                                        onClick={() => {
+                                                            tokenHttp
+                                                                .post(
+                                                                    `${url}/notification/send`,
+                                                                    {
+                                                                        lessonNo:
+                                                                            Number(
+                                                                                lessonNo
+                                                                            ),
+                                                                        lessonRoundNo:
+                                                                            Number(
+                                                                                lessonRoundNo
+                                                                            ),
+                                                                        studentNo:
+                                                                            Number(
+                                                                                sub.studentNo
+                                                                            ),
+                                                                        teacherId:
+                                                                            userId,
+                                                                    }
+                                                                )
+                                                                .then((res) => {
+                                                                    console.log(
+                                                                        "send 성공"
+                                                                    );
+                                                                    const studentListCopy = studentList.map((item, i) => {
+                                                                        if (i===idx) {
+                                                                            item.notificationCnt = item.notificationCnt + 1
+                                                                            item.isActive = false
+                                                                        }
+                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                    setStudentList(studentListCopy)
+                                                                })
+                                                                .catch(
+                                                                    (err) => {
+                                                                        console.log(
+                                                                            "send 실패",
+                                                                            err
+                                                                        );
+                                                                    }
+                                                                );
+                                                        }}
+                                                    >
+                                                        {" "}
+                                                        <HiOutlineBell />{" "}
+                                                    </StateButton>
+                                                </>
+                                            )}
+                                        {studentList[idx].status === 1 && (
+                                            <>
+                                                {/* 이때 하나. */}
+                                                <div>
+                                                <span style={{color: '#db0000'}}>딴짓</span>
+                                                </div>
+
+                                                <StateButton
+                                                    onClick={() => {
+                                                        tokenHttp
+                                                            .post(
+                                                                `${url}/notification/send`,
+                                                                {
+                                                                    lessonNo:
+                                                                        Number(
+                                                                            lessonNo
+                                                                        ),
+                                                                    lessonRoundNo:
+                                                                        Number(
+                                                                            lessonRoundNo
+                                                                        ),
+                                                                    studentNo:
+                                                                        Number(
+                                                                            sub.userNo
+                                                                        ),
+                                                                    teacherId:
+                                                                        userId,
+                                                                }
+                                                            )
+                                                            .then((res) => {
+                                                                console.log(
+                                                                    "send 성공"
+                                                                );
+                                                            })
+                                                            .catch((err) => {
+                                                                console.log(
+                                                                    "send 실패",
+                                                                    err
+                                                                );
+                                                            });
+                                                    }}
+                                                >
+                                                    {" "}
+                                                    <HiOutlineBell />{" "}
+                                                </StateButton>
+                                            </>
+                                        )}
                                     </StateFlex>
                                 </StateWrap>
                             </>
@@ -601,7 +742,11 @@ const TeacherLessonRoomPage = () => {
 
                     {/* 채팅 컴포넌트 */}
                     <ChatWrap>
-                        {mainStreamManager && (
+                        {
+                        session &&
+                        session.connection &&
+                        session.connection.connectionId &&
+                        mainStreamManager && (
                             <ChatComponent
                                 userName={userName}
                                 streamManager={mainStreamManager}

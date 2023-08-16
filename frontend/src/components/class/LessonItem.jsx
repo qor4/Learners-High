@@ -51,13 +51,20 @@ const ImageIconWrap = styled.div`
 const LessonItem = (props) => {
     const userType = useSelector((state) => state.user.userType);
     const lessonNo = props.lessonNo;
-    const [thumbnailURL, setThumbnailURL] = useState("");
+    const [thumbnailURL, setThumbnailURL] = useState(false);
     useEffect(() => {
         axios
             .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
             .then((res) => {
-                console.log(res, "S3서버로 간다");
+                if (res.data.resultCode === -1){
+                    setThumbnailURL(false)
+                    return
+                }
                 setThumbnailURL(res.data.resultMsg);
+            })
+            .catch((err) => {
+                console.log(err);
+                setThumbnailURL(false);
             });
     }, []);
     console.log(props);

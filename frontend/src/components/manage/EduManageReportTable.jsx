@@ -17,7 +17,6 @@ import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { Container } from "@mui/material";
-import axios from "axios";
 import Button from "../common/Button";
 import MenuCard from "../common/MenuCard";
 

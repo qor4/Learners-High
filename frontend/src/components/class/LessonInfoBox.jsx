@@ -120,7 +120,10 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         axios
         .get(`${url}/s3/thumbnail-load/${lessonNo.lessonNo}`)
         .then((res) => {
-            console.log(res, "S3서버로 간다");
+            if (res.data.resultCode === -1){
+                setThumbnailURL(false)
+                return
+            }
             setThumbnailURL(res.data.resultMsg);
         });
     }, [])

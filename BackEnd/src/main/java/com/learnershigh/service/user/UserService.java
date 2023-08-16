@@ -13,6 +13,7 @@ import com.learnershigh.repository.user.JobRepository;
 import com.learnershigh.repository.user.UserRepository;
 import com.learnershigh.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.mapping.Join;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -128,6 +129,7 @@ public class UserService {
 
         return true;
     }
+
 
     // 비밀번호 변경
     @Transactional
@@ -248,7 +250,7 @@ public class UserService {
 
             return userInfo;
 
-        } else {
+        } else if (checkuser != null && checkuser.getHowJoin().equals("K")) {
             LoginDto loginDto = new LoginDto();
             loginDto.setUserId(checkuser.getUserId());
             User user = userRepository.findByUserId(checkuser.getUserId());
@@ -259,12 +261,15 @@ public class UserService {
             HashMap<String, Object> userInfo = userLogin(loginDto);
 
             return userInfo;
+        } else if (checkuser != null && checkuser.getHowJoin().equals("L")) {
+            throw new IllegalStateException("일반 로그인으로 이미 회원가입이 존재합니다.");
         }
+
+        return null;
 
 
     }
 
-    // 이메일로
 
     // 로그인
     public HashMap<String, Object> userLogin(LoginDto loginDto) {
@@ -309,7 +314,7 @@ public class UserService {
 
     // 카카오 로그인 이후 더 받을 정보들 받는 것.
     @Transactional
-    public User kakaoPlus(KakaoInfo kakaoInfo, String userEmail) {
+    public HashMap<String, Object> kakaoPlus(KakaoInfo kakaoInfo, String userEmail) {
 
         System.out.println("들어왔냐?");
         User user = userRepository.findByUserEmail(userEmail);
@@ -328,8 +333,14 @@ public class UserService {
         user.setUserTel(kakaoInfo.getUserTel());
         user.setUserInfo(kakaoInfo.getUserInfo());
 
+        User user1 = userRepository.save(user);
 
-        return userRepository.save(user); // 저장한 객체를 반환함.
+        LoginDto loginDto = new LoginDto();
+
+        loginDto.setUserId(user1.getUserId());
+        loginDto.setUserPassword(user.getUserId() + user.getUserName());
+
+        return userLogin(loginDto); // 저장한 객체를 반환함.
 
 
     }

@@ -90,7 +90,7 @@ function Row(props) {
         <StyledTableCell align="right">{row.fat}</StyledTableCell> */}
                 <StyledTableCell />
                 <StyledTableCell align="right">
-                    {row.realAttend}/ {row.onGoingAttend} /{row.totalAttend}
+                    {row.realAttend}/ {row.onGoingAttend}
                 </StyledTableCell>
                 {/* 과제 공간 */}
                 <StyledTableCell align="right" />
@@ -142,7 +142,24 @@ function Row(props) {
                                                 </StyledTableCell>
                                                 <StyledTableCell align="right">
                                                     {
-                                                        studentRow.lessonAttendStatus
+                                                        studentRow.lessonAttendStatus === "출석" && (<>
+                                                        <span style={{color: '#008F5b'}}>{studentRow.lessonAttendStatus}</span>
+                                                        </>)
+                                                    }
+                                                    {
+                                                        studentRow.lessonAttendStatus === "지각" && (<>
+                                                        <span style={{color: '#ffd872'}}>{studentRow.lessonAttendStatus}</span>
+                                                        </>)
+                                                    }
+                                                    {
+                                                        studentRow.lessonAttendStatus === "결석" && (<>
+                                                        <span style={{color: '#db0000'}}>{studentRow.lessonAttendStatus}</span>
+                                                        </>)
+                                                    }
+                                                    {
+                                                        studentRow.lessonAttendStatus === "수업 예정" && (<>
+                                                        <span style={{color: '#474747'}}>{studentRow.lessonAttendStatus}</span>
+                                                        </>)
                                                     }
                                                 </StyledTableCell>
                                                 <StyledTableCell align="right" />
@@ -216,7 +233,7 @@ const EduManageStudentsTable = () => {
         console.log(studentDataTable, "학생테이블")
         const realAttend = countAttend; // 실질 출결
         const totalAttend = lessonRoundDataSet.length; // 총회차
-        const onGoingAttend = NotInProgressIndex !== -1 ? totalAttend-NotInProgressIndex+1: totalAttend; // 진행 회차
+        const onGoingAttend = NotInProgressIndex !== -1 ? NotInProgressIndex: totalAttend; // 진행 회차
         return {
             studentName,
             realAttend,
@@ -276,7 +293,7 @@ const EduManageStudentsTable = () => {
                             {/* <StyledTableCell /> */}
                             <StyledTableCell align="right">
                                 {" "}
-                                <span>출석(출결 / 진행 / 총회)</span>
+                                <span>출석(출결 / 진행)</span>
                             </StyledTableCell>
                             <StyledTableCell align="right">
                                 {/* <span>과제</span> */}

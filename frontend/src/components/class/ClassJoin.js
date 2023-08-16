@@ -231,8 +231,11 @@ const ClassJoin = ({
             tokenHttp
                 .get(`${url}/s3/thumbnail-load/${lessonNo}`)
                 .then((res) => {
-                    console.log(res, "S3서버로 간다");
-                    setThumbnailURL(res.data.resultMsg);
+                    if (res.data.resultCode === -1 ) {
+                        setThumbnailURL(false)
+                    } else {
+                        setThumbnailURL(res.data.resultMsg);
+                    }
                 });
         }
     }, []);
@@ -267,7 +270,7 @@ const ClassJoin = ({
     //lessonTypeList 요청해서 담았다.
     const [lessonTypeList, setLessonTypeList] = useState([]);
     useEffect(() => {
-        axios.get(`${url}/lesson/type/`).then((res) => {
+        axios.get(`${url}/lesson/type`).then((res) => {
             // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });

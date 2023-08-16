@@ -91,17 +91,20 @@ const FindIDPwd = () => {
             .post(`${url}/user/find/id?email=${userEmail}`)
             .then((response) => {
                 console.log(response);
+                // ID가 나온다. //response.data에 존재함.
+
             });
     };
 
     // 비밀번호 찾기 버튼을 눌렀을 때
     // axios 관련 혜빈이한테 물어보기 @@@
     const handleFindPwd = () => {
-        // axios
-        // .post(`${url}//user/find/pwd?email=${userEmail}`)
-        // .then((response) => {
-        //     console.log(response);
-        // });
+        axios
+        .post(`${url}/user/find/pwd?userId=${userId}&userEmail=${userEmail}`)
+        .then((response) => {
+            console.log(response);
+            // 비밀번호 변경.
+        });
     };
 
     return (

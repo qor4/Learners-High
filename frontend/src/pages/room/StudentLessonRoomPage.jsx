@@ -24,6 +24,17 @@ import {
 } from "./TeacherRoomFrame";
 import Button from "../../components/common/Button";
 
+import {
+    PiVideoCameraBold, // 카메라 on
+    PiVideoCameraSlashBold, // 카메라 off
+    PiMicrophoneBold, //마이크 On
+    PiMicrophoneSlashBold, // 마이크 Off
+    PiMonitorBold, // 빈 모니터
+    PiMonitorPlayBold, // 재생버튼 있는 모니터
+} from "react-icons/pi";
+
+import JSConfetti from "js-confetti";
+import { conteffi } from "../../App";
 // 수업 컨트롤 바, 화면 공유 Wrap
 const ControlBarShareWrap = styled.div`
     width: 75%;
@@ -50,7 +61,15 @@ const ChatWrap = styled.div`
     background-color: #e1e6f9;
 `;
 
-const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,audioEnabled,changeVideo,changeAudio }) => {
+const StudentLessonRoomPage = ({
+    lessonName,
+    closeRoom,
+    teacherNo,
+    videoEnabled,
+    audioEnabled,
+    changeVideo,
+    changeAudio,
+}) => {
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
@@ -76,8 +95,6 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         setMySessionId(`${lessonNo}_${lessonRoundNo}`);
         setMyUserName(myUserName);
 
-
-        
         // 윈도우 객체에 화면 종료 이벤트 추가
         window.addEventListener("beforeunload", onBeforeUnload);
         joinSession(); // 세션 입장
@@ -88,8 +105,8 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
     }, []);
 
     // session이 바뀌면 하는 것
-    const leaveSession = useCallback(async() => {
-        console.log(session)
+    const leaveSession = useCallback(async () => {
+        console.log(session);
         if (session) {
             await session.disconnect();
         }
@@ -105,7 +122,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
 
         // 메인화면 이동 필요
         closeRoom();
-    },[session]);
+    }, [session]);
 
     // 페이지를 언로드하기 전에 leaveSession 메서드를 호출
     const onBeforeUnload = () => {
@@ -117,21 +134,21 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         const newOV = new OpenVidu();
         let mySession = newOV.initSession();
 
-        mySession.on('sessionDisconnected', event => {
+        mySession.on("sessionDisconnected", (event) => {
             console.log("sessionDisconnected 종료됨");
             leaveSession();
         });
-        mySession.on('streamDestroyed', event => {
+        mySession.on("streamDestroyed", (event) => {
             console.log("streamDestroyed 종료됨");
-            if(JSON.parse(JSON.parse(event.stream.connection.data).clientData).userNo === Number(teacherNo)){
-                leaveSession();
-            }
         });
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
             ///////////////// 여기서 선생 찾기
-            if(JSON.parse(JSON.parse(event.stream.connection.data).clientData).userNo === Number(teacherNo)){
+            if (
+                JSON.parse(JSON.parse(event.stream.connection.data).clientData)
+                    .userNo === Number(teacherNo)
+            ) {
                 const subscriber = mySession.subscribe(event.stream, undefined);
                 setTeacher(subscriber);
             }
@@ -141,7 +158,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         // 서버 측에서 예기치 않은 비동기 오류가 발생할 때 Session 개체에 의해 트리거 되는 이벤트
         mySession.on("exception", async (exception) => {
             console.warn(exception);
-            if(exception.name === 'ICE_CONNECTION_DISCONNECTED'){
+            if (exception.name === "ICE_CONNECTION_DISCONNECTED") {
                 setOV(null);
                 leaveSession();
             }
@@ -150,7 +167,7 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         // 세션 갱신
         setOV(newOV);
         setSession(mySession);
-    },[]);
+    }, []);
 
     // 사용자의 토큰으로 세션 연결 (session 객체 변경 시에만 실행)
     useEffect(() => {
@@ -163,7 +180,13 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
                     setToken(res.data.resultMsg);
                     // 첫 번째 매개변수는 OpenVidu deployment로 부터 얻은 토큰, 두 번째 매개변수는 이벤트의 모든 사용자가 검색할 수 있음.
                     session
-                        .connect(res.data.resultMsg, { clientData: JSON.stringify({userNo,userName,userId}) })
+                        .connect(res.data.resultMsg, {
+                            clientData: JSON.stringify({
+                                userNo,
+                                userName,
+                                userId,
+                            }),
+                        })
                         .then(async () => {
                             // Get your own camera stream ---
                             // publisher 객체 생성
@@ -200,15 +223,20 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
         }
     }, [session]);
 
-
-
-    useEffect(()=>{
-        if(publisher){
+    useEffect(() => {
+        if (publisher) {
             publisher.publishVideo(videoEnabled);
             publisher.publishAudio(audioEnabled);
         }
-    },[videoEnabled,audioEnabled,publisher]);
-    
+    }, [videoEnabled, audioEnabled, publisher]);
+
+    const showConteffi = () => {
+        conteffi.addConfetti({
+            emojis: ["🍔", "🍕", "🍺"],
+            emojiSize: 100,
+            confettiNumber: 30,
+          });
+        };
 
     return (
         <>
@@ -228,7 +256,8 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
                             onClick={changeAudio}
                             value={`마이크 ${audioEnabled ? "OFF" : "ON"}`}
                         >
-                        <HiMicrophone />
+                            {audioEnabled && <PiMicrophoneBold />}
+                            {!audioEnabled && <PiMicrophoneSlashBold />}
                         </Button>
                         {/* 마이크 */}
                         <Button
@@ -236,10 +265,11 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
                             onClick={changeVideo}
                             value={`비디오 ${videoEnabled ? "OFF" : "ON"}`}
                         >
-                        <HiVideoCamera />
+                            {videoEnabled && <PiVideoCameraBold />}
+                            {!videoEnabled && <PiVideoCameraSlashBold />}
                         </Button>
                         {/* 수업 나가기 */}
-                            <Button
+                        <Button
                             type="button"
                             onClick={leaveSession}
                             value="나가기"
@@ -250,9 +280,9 @@ const StudentLessonRoomPage = ({ lessonName,closeRoom, teacherNo,videoEnabled,au
                 </LessonControlBar>
 
                 {/* 화면 공유 박스, 여기가 맞다. 추후 선생님 찾아야 함. */}
-                    <ScreenShare>
-                        <UserVideoComponent streamManager={teacher} />
-                    </ScreenShare>
+                <ScreenShare>
+                    <UserVideoComponent streamManager={teacher} />
+                </ScreenShare>
             </ControlBarShareWrap>
 
             {/* 학생 화면 / 채팅 컴포넌트가 담길 div 박스 */}

@@ -50,13 +50,16 @@ public class NotificationService {
         return sseEmitter;
     }
 
-    public void isActive(Long lessonNo, String studentId, Long status) {
+    public void isActive(Long lessonNo, String studentId, Long status,boolean isActive) {
         Lesson lesson = lessonRepository.findByLessonNo(lessonNo);
         Optional<SseEmitter> sseEmitter = emitterRepository.get(lesson.getUserNo().getUserId());
         if (sseEmitter.isPresent()) {
             try {
                 sseEmitter.get().send(SseEmitter.event().id(studentId).name("isActive")
-                        .data("{").data("\"status\":" + status + ",").data("\"studentId\":\"" + studentId + "\"").data("}"));
+                        .data("{").data("\"status\":" + status + ",")
+                        .data("\"studentId\":\"" + studentId + "\",")
+                        .data("\"isActive\":" + isActive)
+                        .data("}"));
             } catch (IOException exception) {
                 // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.delete(lesson.getUserNo().getUserId());

@@ -34,6 +34,7 @@ import { useLocation } from "react-router-dom";
 
 // test용
 import DropTable from "./components/common/table/DropTable";
+import Emoji from "./components/test/Emoji";
 
 // test용
 import MyPagePage from "./pages/user/MyPagePage";
@@ -42,6 +43,7 @@ import EduStudentManagePage from "./pages/EduStudentManagePage";
 import EduTeacherLessonPage from "./pages/EduTeacherLessonPage";
 import EduStudentLessonPage from "./pages/EduStudentLessonPage";
 
+import SoundAlert from "./pages/room/SoundAlert";
 import TeacherRoomFrame from "./pages/room/TeacherRoomFrame";
 import StudentRoomFrame from "./pages/room/StudentRoomFrame";
 import AlertTest from "./pages/room/AlertTest";
@@ -51,6 +53,10 @@ import ChartTest from "./components/test/ChartTest";
 import { logOutUser } from "./store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
 import FindIDPwdPage from "./pages/auth/FindIDPwdPage";
+
+import JSConfetti from "js-confetti";
+export const conteffi = new JSConfetti();
+
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -104,7 +110,11 @@ function App() {
 
     // 로그인 여부
     const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
-    const isLoginData = JSON.parse(persistRoot.user).isLogin;
+    if (persistRoot) {
+        const isLoginData = JSON.parse(persistRoot.user).isLogin;
+    }
+    const isLoginData = false;
+
 
     // useEffect(() => {
     //     if (!localStorage.getItem("accessToken") && isLoginData === true) {
@@ -214,8 +224,8 @@ function App() {
                         path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo"
                         element={<LessonSatisfyModal />}
                     />
-                    {/* <Route path="/test" 
-                    element={<LessonSatisfyModal />} /> */}
+                    <Route path="/test" 
+                    element={<Emoji />} />
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>

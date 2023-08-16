@@ -31,15 +31,15 @@ public class NotificationController {
     @GetMapping(value = "/active/{lessonNo}/{studentId}/{studentStatus}")
     public void active(@PathVariable Long lessonNo,
                        @PathVariable String studentId,
-                        @PathVariable Long studentStatus) {
-        notificationService.isActive(lessonNo, studentId, studentStatus);
+                       @PathVariable Long studentStatus) {
+        notificationService.isActive(lessonNo, studentId, studentStatus, true);
     }
 
     @GetMapping(value = "/disactive/{lessonNo}/{studentId}/{studentStatus}")
     public void disactive(@PathVariable Long lessonNo,
                           @PathVariable String studentId,
                           @PathVariable Long studentStatus) {
-        notificationService.isActive(lessonNo, studentId,studentStatus);
+        notificationService.isActive(lessonNo, studentId, studentStatus, false);
     }
 
     @PostMapping(value = "/send")

@@ -25,8 +25,9 @@ const KakaoUserJoinPage = () => {
         axios.get(`${url}/user/login/kakao/callback`, {params: {code}})
         .then(res=>{
             console.log(res)
-            if(res.data.resultCode < 0) {
-                alert("회원가입에 실패했습니다.")
+            if(res.data.resultCode === -1) {
+                alert("일반 로그인을 이용해 주세요.")
+                navigate('/')
                 // 기존 회원
             } else if (res.data.resultCode === 0 && res.data.result.userInfo !== null) {
                 // JWT

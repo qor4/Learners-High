@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import styled from "styled-components";
 
-import { url } from "../../api/APIPath";
+import { url, kakaoURL } from "../../api/APIPath";
 import { clientId } from "../../api/Ignore";
 
 import { logInUser } from "../../store/UserStore";
@@ -86,7 +86,7 @@ const UserLogIn = (props) => {
     };
 
     const kakaoLogIn = (e) => {
-        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${url}/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`;
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${kakaoURL}/kakao/join&response_type=code&scope=account_email,profile_nickname,profile_image`;
     };
     return (
         <>

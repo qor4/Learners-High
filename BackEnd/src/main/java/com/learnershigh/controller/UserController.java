@@ -81,6 +81,22 @@ public class UserController {
 
     }
 
+    // 비밀번호 변경
+    @GetMapping("/pwd-change")
+    @ApiOperation("비밀번호 변경")
+    public ResponseEntity<BaseResponseBody> pwdChange(@RequestParam("userNo") Long userNo ,@RequestParam("pwd") String pwd) {
+        BaseResponseBody baseResponseBody = new BaseResponseBody("비밀번호가 변경되었습니다.");
+        try {
+            userService.pwdChange(userNo, pwd);
+        } catch (IllegalStateException e) {
+            baseResponseBody.setResultCode(-1);
+            baseResponseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(baseResponseBody);
+        }
+        return ResponseEntity.ok().body(baseResponseBody);
+
+    }
+
 
     // 아이디 중복
     @GetMapping("/duplicate/id/{id}")
@@ -130,7 +146,7 @@ public class UserController {
     // 이메일로 아이디 찾기
     @PostMapping("/find/id")
     @ApiOperation("이메일로 아이디 찾기")
-    public String searchId(@RequestParam String email) {
+    public String searchId(@RequestParam("email") String email) {
         return userService.SearchId(email);
 
     }
@@ -190,23 +206,21 @@ public class UserController {
     //카카오 로그인 추가 정보 받기
     @PostMapping("/kakao/addinfo/{userEmail}")
     @ApiOperation("카카오 로그인 추가 정보 받기")
-    public ResponseEntity<BaseResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
-        BaseResponseBody baseResponseBody = new BaseResponseBody("정보들이 추가 되었습니다.");
+    public ResponseEntity<CustomResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("정보들이 추가 되었습니다.");
         try {
-            userService.kakaoPlus(kakaoInfo, userEmail);
-            baseResponseBody.setResultCode(0);
-            return ResponseEntity.ok().body(baseResponseBody);
-
-        } catch (IllegalStateException i) {
-            baseResponseBody.setResultCode(-1);
-            baseResponseBody.setResultMsg(i.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
+            System.out.println(userService.kakaoPlus(kakaoInfo, userEmail));
+            responseBody.setResult(userService.kakaoPlus(kakaoInfo, userEmail));
+        } catch (IllegalStateException e) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
-            baseResponseBody.setResultCode(-2);
-            baseResponseBody.setResultMsg(e.getMessage());
-            return ResponseEntity.ok().body(baseResponseBody);
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return ResponseEntity.ok().body(responseBody);
         }
-
+        return ResponseEntity.ok().body(responseBody);
     }
 
 

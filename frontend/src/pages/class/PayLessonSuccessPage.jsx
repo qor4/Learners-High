@@ -19,7 +19,7 @@ const PayLessonSuccessPage = () => {
     console.log("왔어?")
     const pg_token = new URL(window.location.href).searchParams.get("pg_token")
     console.log(pg_token)
-    axios.get(`${url}/kakaoPay/success`, {params: {pg_token}})
+    tokenHttp.get(`${url}/kakaoPay/success`, {params: {pg_token}})
     .then(res=>{
         const lessonNo = Number(res.data.item_code)
         const data = {userNo, lessonNo}
