@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import tokenHttp, { url, homeurl} from "../../api/APIPath";
-import axios from "axios"; 
 // OpenViduu
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "../../components/stream/UserVideoComponent";
@@ -24,6 +23,7 @@ import {
 } from "react-icons/hi";
 import Button from "../../components/common/Button";
 import { useCallback } from "react";
+import { isAction } from "@reduxjs/toolkit";
 
 // 전체 Wrap (가로, 세로 100%)
 export const RoomFrameWrap = styled.div`
@@ -253,10 +253,14 @@ const TeacherLessonRoomPage = () => {
         setStudentList((prev)=>
                 prev.map(
                     (student) => {
-                        console.log(student);
-                        console.log(studentData);   
                         if(student.studentId === studentData.studentId){
-                            return {...student,status:Number(studentData.status), notificationCnt : student.notificationCnt+1}
+                            if(studentData.isActive){
+                                // 버튼 활성화
+                                return {...student,status:Number(studentData.status),isActive : studentData.isActive, notificationCnt : 0}
+                            }else{
+                                // 버튼 비 활성화 
+                                return {...student,status:Number(studentData.status),isActive : studentData.isActive, notificationCnt : 0}
+                            }
                         }
                         return student;
                     }
@@ -284,6 +288,7 @@ const TeacherLessonRoomPage = () => {
             setPublisher(undefined);
             setSubscribers([]);
             setToken(undefined);
+            setStudentList([]);
             es.current.close();
         }
         // 메인화면 이동 필요
@@ -301,7 +306,8 @@ const TeacherLessonRoomPage = () => {
             
             setStudentList((prev)=>[...prev,{studentId : JSON.parse(JSON.parse(event.stream.connection.data).clientData).userId,
                 status : 0,
-                notificationCnt : 0
+                notificationCnt : 0,
+                isActive : false
               }]);
              // 새 구독자에 대한 상태 업데이트
             console.log("사용자가 입장하였습니다.");
