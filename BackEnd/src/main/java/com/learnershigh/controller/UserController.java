@@ -193,6 +193,7 @@ public class UserController {
     public ResponseEntity<CustomResponseBody> kakaoPlus(@RequestBody KakaoInfo kakaoInfo, @PathVariable("userEmail") String userEmail) {
         CustomResponseBody responseBody = new CustomResponseBody<>("정보들이 추가 되었습니다.");
         try {
+            System.out.println(userService.kakaoPlus(kakaoInfo, userEmail));
             responseBody.setResult(userService.kakaoPlus(kakaoInfo, userEmail));
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
