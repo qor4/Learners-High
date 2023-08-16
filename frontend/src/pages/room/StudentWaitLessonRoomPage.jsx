@@ -29,6 +29,8 @@ import {
     PiMonitorBold, // 빈 모니터
     PiMonitorPlayBold, // 재생버튼 있는 모니터
 } from "react-icons/pi";
+import JSConfetti from "js-confetti";
+import { conteffi } from "../../App";
 
 // Canvas를 담아둘 공간
 const CanvasWrap = styled.div`
@@ -139,6 +141,12 @@ const StudentWaitLessonRoomPage = () => {
             const sound = new Audio("/assets/audios/karinaCall.mp3");
             sound.play();
 
+            conteffi.addConfetti({
+                emojis: ["🍔", "🍕", "🍺"],
+                emojiSize: 100,
+                confettiNumber: 30,
+              });
+    
             setTimeout(() => {
                 sound.pause();
                 sound.currentTime = 0;
