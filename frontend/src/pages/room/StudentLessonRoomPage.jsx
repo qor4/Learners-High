@@ -33,6 +33,8 @@ import {
     PiMonitorPlayBold, // 재생버튼 있는 모니터
 } from "react-icons/pi";
 
+import JSConfetti from "js-confetti";
+import { conteffi } from "../../App";
 // 수업 컨트롤 바, 화면 공유 Wrap
 const ControlBarShareWrap = styled.div`
     width: 75%;
@@ -227,6 +229,14 @@ const StudentLessonRoomPage = ({
             publisher.publishAudio(audioEnabled);
         }
     }, [videoEnabled, audioEnabled, publisher]);
+
+    const showConteffi = () => {
+        conteffi.addConfetti({
+            emojis: ["🍔", "🍕", "🍺"],
+            emojiSize: 100,
+            confettiNumber: 30,
+          });
+        };
 
     return (
         <>
