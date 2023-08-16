@@ -277,61 +277,6 @@ const StudentWaitLessonRoomPage = () => {
                 // 현재 주의를 받을 상황인가 파악
                 
             }
-
-                let checkAttention;
-                attentionList.push({ currentScore, status });
-                if (attentionList.length > 6) {
-                    attentionList.shift();
-                    if (status !== 2) {
-                        // 집중도가 0.3 이하인 경우
-                        checkAttention = attentionList.every(
-                            (item) => item.currentScore < 0.3
-                        );
-                        if (checkAttention) {
-                            axios
-                                .get(
-                                    `${url}/notification/active/${lessonNo}/${userId}/${status}`
-                                )
-                                .then((res) => {
-                                    console.log("선생님께 주의 알림 신호 성공");
-                                })
-                                .catch((err) => {
-                                    console.log(
-                                        "선생님께 주의 알림 신호 중 에러 발생",
-                                        err
-                                    );
-                                });
-                            console.log(notificationCnt, " : 주의 알림");
-                            setNotificationCnt((prev) => (prev += 1));
-                            setAttentionList([]);
-                            setIsAttention(false);
-                        }
-                    }
-                    if (!isAttention && attentionList.length > 5) {
-                        checkAttention = attentionList.every(
-                            (item) => item.currentScore >= 0.3
-                        );
-                        if (checkAttention) {
-                            axios
-                                .get(
-                                    `${url}/notification/disactive/${lessonNo}/${userId}${status}`
-                                )
-                                .then((res) => {
-                                    console.log("선생님께 집중 알림 신호 성공");
-                                })
-                                .catch((err) => {
-                                    console.log(
-                                        "선생님께 집중 알림 신호 중 에러 발생",
-                                        err
-                                    );
-                                });
-                            setIsAttention(true);
-                        }
-                    }
-                }
-
-                // 현재 주의를 받을 상황인가 파악
-            }
         },
         [
             isFocus,
