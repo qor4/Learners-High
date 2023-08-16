@@ -164,6 +164,7 @@ public class StudentService {
             cla.setLessonName(lessonAll.getLessonNo().getLessonName());
             cla.setUserName(lessonAll.getLessonNo().getUserNo().getUserName());
             cla.setLessonNo(lessonAll.getLessonNo().getLessonNo());
+            cla.setLessonTypeName(lessonAll.getLessonNo().getLessonTypeNo().getLessonTypeName());
 
             clalist.add(cla);
         }
