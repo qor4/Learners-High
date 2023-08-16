@@ -9,9 +9,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
-import axios from "axios";
 import { licenseKey } from "../../api/Ignore";
-import tokenHttp, { seesoUrl,homeurl,url } from "../../api/APIPath";
+import tokenHttp, { homeurl,url } from "../../api/APIPath";
 
 // 스타일
 import styled from "styled-components";
@@ -21,7 +20,6 @@ import { Typography } from "@mui/material";
 import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
 
 import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
-import { isAction } from "@reduxjs/toolkit";
 
 // Canvas를 담아둘 공간
 const CanvasWrap = styled.div`
@@ -206,7 +204,7 @@ const StudentWaitLessonRoomPage = () => {
                 console.log("AttentScore : ", currentScore, status);
                 // mongodb server와 통신
 
-                axios.post(
+                tokenHttp.post(
                     `${url}/attention/save`,
                     {
                       lessonRoundNo: Number(lessonRoundNo),
@@ -233,7 +231,7 @@ const StudentWaitLessonRoomPage = () => {
                     // 집중도가 0.3 이하인 경우
                     checkAttention = attentionList.every(item => item.currentScore < 0.3);
                     if (checkAttention) {
-                        axios.get(
+                        tokenHttp.get(
                             `${url}/notification/active/${lessonNo}/${userId}/${status}`,
                           ).then(res =>{
                             console.log("선생님께 주의 알림 신호 성공");
@@ -242,7 +240,9 @@ const StudentWaitLessonRoomPage = () => {
                             console.log("선생님께 주의 알림 신호 중 에러 발생", err);
                         });
                         console.log(notificationCnt , " : 주의 알림");
-                        setNotificationCnt((prev) => prev += 1);
+                        setNotificationCnt((prev) => {
+                            prev >= 5 ?prev += 1 : prev = 0;
+                        });
                         setAttentionList([]);
                         setIsAttention(false);
                     }
@@ -250,7 +250,7 @@ const StudentWaitLessonRoomPage = () => {
                 if(!isAttention && attentionList.length > 5){
                     checkAttention = attentionList.every(item => item.currentScore >= 0.3);
                     if (checkAttention) {
-                        axios.get(
+                        tokenHttp.get(
                             `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
                           ).then(res =>{
                             console.log("선생님께 집중 알림 신호 성공");
