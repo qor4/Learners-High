@@ -196,19 +196,19 @@ const StudentWaitLessonRoomPage = () => {
     const saveAttentionScore = useCallback(
         (score) => {
             let currentScore = score;
-            let status = 0;
+            let currentStatus = 0;
             if (!isFocus) {
                 console.log("다른 화면 보는 중");
                 currentScore = 0;
-                status = 2;
+                currentStatus = 1;
             }else if(!videoEnabled){
                 console.log("캠 꺼져 있음");
                 currentScore = 0;
-                status = 1;
+                currentStatus = 2;
             }
             // 조건
             if (enterRoom) {
-                console.log("AttentScore : ", currentScore, status);
+                console.log("AttentScore : ", currentScore, currentStatus);
                 // mongodb server와 통신
 
                 tokenHttp.post(
@@ -217,30 +217,30 @@ const StudentWaitLessonRoomPage = () => {
                       lessonRoundNo: Number(lessonRoundNo),
                       lessonNo: Number(lessonNo),
                       userNo: Number(userNo),
-                      rate: Number(score),
-                      status: Number(status)
+                      rate: Number(currentScore),
+                      status: Number(currentStatus)
                     },
                     {
                       headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
                     }
                   )
                     .then((res) => {
-                      console.log("집중도 저장 성공");
+                      console.log("집중도 저장 성공, :",currentScore, currentStatus);
                     })
                     .catch((err) => {
                       console.log("집중도 저장 중 에러 발생", err);
                     });
                 
                 let checkAttention;
-                attentionList.push({currentScore,status});
+                attentionList.push({currentScore,currentStatus});
                 if(attentionList.length > 6){
                     attentionList.shift();
-                    if(status !== 2){
+                    if(currentStatus !== 2){
                         // 집중도가 0.3 이하인 경우
                         checkAttention = attentionList.every(item => item.currentScore < 0.3);
                         if (checkAttention) {
                             tokenHttp.get(
-                                `${url}/notification/active/${lessonNo}/${userId}/${status}`,
+                                `${url}/notification/active/${lessonNo}/${userId}/${currentStatus}`,
                             ).then(res =>{
                                 console.log("선생님께 주의 알림 신호 성공");
                                 
@@ -259,7 +259,7 @@ const StudentWaitLessonRoomPage = () => {
                         checkAttention = attentionList.every(item => item.currentScore >= 0.3);
                         if (checkAttention) {
                             tokenHttp.get(
-                                `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
+                                `${url}/notification/disactive/${lessonNo}/${userId}${currentStatus}`,
                             ).then(res =>{
                                 console.log("선생님께 집중 알림 신호 성공");
                             }).catch(err=>{
