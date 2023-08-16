@@ -710,7 +710,7 @@ const TeacherLessonRoomPage = () => {
                                                                         ),
                                                                     studentNo:
                                                                         Number(
-                                                                            sub.userNo
+                                                                            sub.studentNo
                                                                         ),
                                                                     teacherId:
                                                                         userId,
