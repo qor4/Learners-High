@@ -141,7 +141,7 @@ public class AmazonS3Controller {
         } catch (Exception e) {
             responseBody.setResultCode(-2);
             responseBody.setResultMsg(e.getMessage());
-            return return ResponseEntity.ok().body(responseBody);
+            return ResponseEntity.ok().body(responseBody);
         }
         return ResponseEntity.ok().body(responseBody);
     }
