@@ -129,6 +129,13 @@ const StudentWaitLessonRoomPage = () => {
 
         es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
+            const sound = new Audio("/assets/audios/karinaCall.mp3")
+            sound.play()
+
+            setTimeout(() => {
+            sound.pause();
+            sound.currentTime = 0
+            }, 3000)
         });
 
         es.current.onerror = (err) => {
@@ -228,38 +235,40 @@ const StudentWaitLessonRoomPage = () => {
                 attentionList.push({currentScore,status});
                 if(attentionList.length > 6){
                     attentionList.shift();
-                    // 집중도가 0.3 이하인 경우
-                    checkAttention = attentionList.every(item => item.currentScore < 0.3);
-                    if (checkAttention) {
-                        tokenHttp.get(
-                            `${url}/notification/active/${lessonNo}/${userId}/${status}`,
-                          ).then(res =>{
-                            console.log("선생님께 주의 알림 신호 성공");
-                            
-                        }).catch(err=>{
-                            console.log("선생님께 주의 알림 신호 중 에러 발생", err);
-                        });
-                        console.log(notificationCnt , " : 주의 알림");
-                        setNotificationCnt((prev) => {
-                            prev >= 5 ?prev += 1 : prev = 0;
-                        });
-                        setAttentionList([]);
-                        setIsAttention(false);
+                    if(status !== 2){
+                        // 집중도가 0.3 이하인 경우
+                        checkAttention = attentionList.every(item => item.currentScore < 0.3);
+                        if (checkAttention) {
+                            tokenHttp.get(
+                                `${url}/notification/active/${lessonNo}/${userId}/${status}`,
+                            ).then(res =>{
+                                console.log("선생님께 주의 알림 신호 성공");
+                                
+                            }).catch(err=>{
+                                console.log("선생님께 주의 알림 신호 중 에러 발생", err);
+                            });
+                            console.log(notificationCnt , " : 주의 알림");
+                            setNotificationCnt((prev) => {
+                                prev >= 5 ?prev += 1 : prev = 0;
+                            });
+                            setAttentionList([]);
+                            setIsAttention(false);
+                        }
                     }
-                }
-                if(!isAttention && attentionList.length > 5){
-                    checkAttention = attentionList.every(item => item.currentScore >= 0.3);
-                    if (checkAttention) {
-                        tokenHttp.get(
-                            `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
-                          ).then(res =>{
-                            console.log("선생님께 집중 알림 신호 성공");
-                          }).catch(err=>{
-                            console.log("선생님께 집중 알림 신호 중 에러 발생", err);
-                          });
-                        setIsAttention(true);
+                    if(!isAttention && attentionList.length > 5){
+                        checkAttention = attentionList.every(item => item.currentScore >= 0.3);
+                        if (checkAttention) {
+                            tokenHttp.get(
+                                `${url}/notification/disactive/${lessonNo}/${userId}${status}`,
+                            ).then(res =>{
+                                console.log("선생님께 집중 알림 신호 성공");
+                            }).catch(err=>{
+                                console.log("선생님께 집중 알림 신호 중 에러 발생", err);
+                            });
+                            setIsAttention(true);
+                        }
                     }
-                }
+                }               
                
                 // 현재 주의를 받을 상황인가 파악
                 
