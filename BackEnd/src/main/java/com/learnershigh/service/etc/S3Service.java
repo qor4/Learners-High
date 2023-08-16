@@ -453,7 +453,7 @@ public class S3Service {
     public String thumbnailLoad(Long lessonNo) {
         Lesson cla = lessonRepository.findByLessonNo(lessonNo);
 
-        if(cla == null){
+        if(cla.getLessonThumbnailImg() == null){
             throw new IllegalStateException("등록된 썸네일이 없습니다.");
         }
         return URL + cla.getLessonThumbnailImg();
