@@ -50,17 +50,17 @@ const ImageIconWrap = styled.div`
 
 const LessonItem = (props) => {
     const userType = useSelector((state) => state.user.userType);
-    const lessonNo = props.lessonNo
-    const [thumbnailURL, setThumbnailURL] = useState("")
+    const lessonNo = props.lessonNo;
+    const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(() => {
         axios
-        .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
-        .then((res) => {
-            console.log(res, "S3서버로 간다");
-            setThumbnailURL(res.data.resultMsg);
-        });
-    }, [])
-    console.log(props)
+            .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
+            .then((res) => {
+                console.log(res, "S3서버로 간다");
+                setThumbnailURL(res.data.resultMsg);
+            });
+    }, []);
+    console.log(props);
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
@@ -68,7 +68,8 @@ const LessonItem = (props) => {
                 <Link to={`/lesson/info/${props.lessonNo}`}>
                     <StyledThumbnail
                         src={
-                            thumbnailURL ? thumbnailURL 
+                            thumbnailURL
+                                ? thumbnailURL
                                 : "/assets/item-banner.png"
                         }
                         alt="Thumbnail"
@@ -82,11 +83,11 @@ const LessonItem = (props) => {
                 )}
 
                 {/* 학생일 때만 찜(하트) 아이콘이 보이도록 처리 */}
-                {userType === "S" && (
+                {/* {userType === "S" && (
                     <span>
                         <HiOutlineHeart />
                     </span>
-                )}
+                )} */}
             </ImageIconWrap>
 
             <FlexWrap>
