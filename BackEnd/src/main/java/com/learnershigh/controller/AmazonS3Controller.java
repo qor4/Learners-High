@@ -1,10 +1,12 @@
 package com.learnershigh.controller;
 
 import com.learnershigh.dto.etc.BaseResponseBody;
+import com.learnershigh.dto.etc.CustomResponseBody;
 import com.learnershigh.service.etc.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -128,8 +130,20 @@ public class AmazonS3Controller {
     // S3 profile 불러오기
     @ApiOperation("S3 profile 불러오기")
     @GetMapping("/profile-load/{userNo}")
-    public String profileLoad(@PathVariable Long userNo) {
-        return s3Service.profileLoad(userNo);
+   public ResponseEntity<CustomResponseBody> profileLoad(@PathVariable Long userNo) {
+        CustomResponseBody responseBody = new CustomResponseBody<>("등록된 사진이 있습니다.");
+        try {
+            responseBody.setResult(s3Service.profileLoad(userNo));
+        } catch (IllegalStateException i) {
+            responseBody.setResultCode(-1);
+            responseBody.setResultMsg(i.getMessage());
+            return ResponseEntity.ok().body(responseBody);
+        } catch (Exception e) {
+            responseBody.setResultCode(-2);
+            responseBody.setResultMsg(e.getMessage());
+            return return ResponseEntity.ok().body(responseBody);
+        }
+        return ResponseEntity.ok().body(responseBody);
     }
 
 
