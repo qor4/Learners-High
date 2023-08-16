@@ -72,7 +72,7 @@ const DataLists = styled.div`
     border: 1px solid black;
     box-sizing: border-box;
 
-    display: ${({ show }) => (show ? "block" : "none")};
+    display: ${({ $show }) => ($show ? "block" : "none")};
 
     & > ul > li {
         padding: 0rem 1rem;
@@ -237,6 +237,8 @@ const ClassJoin = ({
         }
     }, []);
 
+    // console.log(lessonNo) @@@@@@@
+
     const nextPage = () => {
         const data = {
             lessonInfo: lessonInfo,
@@ -304,7 +306,7 @@ const ClassJoin = ({
 
     // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
     // 썸네일 이미지 넣는 URL -> 문제 1순위
-    const [thumbnailURL, setThumbnailURL] = useState("");
+    const [thumbnailURL, setThumbnailURL] = useState("/assets/all-banner1.png");
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -494,7 +496,7 @@ const ClassJoin = ({
                                         placeholder="과목명"
                                         onChange={handleSubjectChange}
                                     />
-                                    <DataLists show={searchClicked}>
+                                    <DataLists $show={searchClicked}>
                                         <ul>
                                             {searchClicked &&
                                             searchResults.length > 0
@@ -688,7 +690,7 @@ const ClassJoin = ({
             <Container maxWidth="xs">
                 <ButtonWrap>
                     <Button onClick={sendDataToServer}>임시 저장</Button>
-                    <Button point onClick={nextPage}>
+                    <Button $point onClick={nextPage}>
                         다음
                     </Button>
                 </ButtonWrap>

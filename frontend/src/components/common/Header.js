@@ -157,6 +157,7 @@ const Header = () => {
                                     수업 관리
                                 </NavStyle>
                                 <NavStyle onClick={goToLessonJoin}>
+                                {/* <NavStyle to={`/lesson/join`}> */}
                                     <span>강의 개설</span>
                                 </NavStyle>
                             </HeaderCommonNav>

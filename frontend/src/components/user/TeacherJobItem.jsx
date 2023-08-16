@@ -30,7 +30,6 @@ const TeacherJobItem = ({ item }) => {
         tokenHttp.put(`${url}/mypage/modify/job/${jobCareerNo}`, jobItem, {
             headers: { "Content-Type": "application/json" },
         });
-        // 마이페이지로 리다이렉트해야할듯.
         setIsEditing(false);
     };
 

@@ -17,7 +17,7 @@ import Card from "../common/Card";
 import MenuCard from "../common/MenuCard";
 import { useDispatch } from "react-redux";
 
-const FirstJoinWrap = styled.div`
+export const FirstJoinWrap = styled.div`
     width: 100%;
     text-align: center;
     margin: 2rem 0;
@@ -80,14 +80,14 @@ export const StyledTextarea = styled.textarea`
 `;
 
 // 추가 메시지
-const StyledMessage = styled.div`
+export const StyledMessage = styled.div`
     font-size: 0.75rem;
     text-align: right;
     color: #db0000;
 `;
 
 /** 성공 메시지 박스 컴포넌트 */
-const StyledSuccess = styled.div`
+export const StyledSuccess = styled.div`
     font-size: 0.75rem;
     text-align: right;
     color: #008f5b;
@@ -112,7 +112,7 @@ const EduJobWrap = styled.div`
 `;
 
 // button wrapper
-const ButtonWrap = styled.div`
+export const ButtonWrap = styled.div`
     width: 50%;
     margin: 0 auto;
     & > * {

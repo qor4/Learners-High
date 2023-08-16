@@ -134,7 +134,7 @@ const UserLogIn = (props) => {
                         </Button>
                     </Link>
                 </ButtonWrap>
-                <Link to="">
+                <Link to="/find/idpwd" onClick={props.onClose}>
                     <StyledSmallText>아이디 / 비밀번호 찾기</StyledSmallText>
                 </Link>
             </form>

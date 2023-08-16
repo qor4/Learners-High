@@ -50,6 +50,7 @@ import ChartTest from "./components/test/ChartTest";
 
 import { logOutUser } from "./store/UserStore";
 import { useDispatch, useSelector } from "react-redux";
+import FindIDPwdPage from "./pages/auth/FindIDPwdPage";
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -64,6 +65,10 @@ const GlobalStyle = createGlobalStyle`
         font-family: "Pretendard-Regular", sans-serif;
         margin: 0;
         padding: 0;
+    }
+    html {
+        /* 페이지 이동 시, 스크롤을 더 부드럽게 올려주는 역할 */
+        scroll-behavior: smooth;
     }
     html,
     body {
@@ -125,12 +130,15 @@ function App() {
                         path="/kakao/join"
                         element={<KakaoUserJoinPage />}
                     ></Route>
+
                     <Route path="/lesson" element={<LessonPage />}></Route>
-                    {/* @@@ 임시 강의룸 @@@ */}
+                    {/* @@@ 임시 강의룸 / 아이디 비밀번호 찾기 @@@ */}
+                    <Route
+                        path="/find/idpwd"
+                        element={<FindIDPwdPage />}
+                    ></Route>
 
                     {/* 임시 라인 차트@@@ */}
-                    
-
                     <Route path="/temp/chart" element={<ChartTest />}></Route>
                     <Route path="/temp" element={<AlertTest />}></Route>
                     <Route
@@ -202,8 +210,10 @@ function App() {
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
                     />
-                    <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
-                    element={<LessonSatisfyModal />} />
+                    <Route
+                        path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo"
+                        element={<LessonSatisfyModal />}
+                    />
                     {/* <Route path="/test" 
                     element={<LessonSatisfyModal />} /> */}
 
