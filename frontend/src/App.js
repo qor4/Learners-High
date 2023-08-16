@@ -66,6 +66,10 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
     }
+    html {
+        /* 페이지 이동 시, 스크롤을 더 부드럽게 올려주는 역할 */
+        scroll-behavior: smooth;
+    }
     html,
     body {
         background-color: #f9faff;
@@ -126,10 +130,13 @@ function App() {
                         path="/kakao/join"
                         element={<KakaoUserJoinPage />}
                     ></Route>
-                    
+
                     <Route path="/lesson" element={<LessonPage />}></Route>
                     {/* @@@ 임시 강의룸 / 아이디 비밀번호 찾기 @@@ */}
-                    <Route path="/find/idpwd" element={<FindIDPwdPage />}></Route>
+                    <Route
+                        path="/find/idpwd"
+                        element={<FindIDPwdPage />}
+                    ></Route>
 
                     {/* 임시 라인 차트@@@ */}
                     <Route path="/temp/chart" element={<ChartTest />}></Route>
@@ -203,8 +210,10 @@ function App() {
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
                     />
-                    <Route path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo" 
-                    element={<LessonSatisfyModal />} />
+                    <Route
+                        path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo"
+                        element={<LessonSatisfyModal />}
+                    />
                     {/* <Route path="/test" 
                     element={<LessonSatisfyModal />} /> */}
 

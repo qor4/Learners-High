@@ -98,8 +98,8 @@ class ApexChart extends React.Component {
 
         const options = {
             chart: {
-                width: { width },
-                type: { chartType },
+                width: width,
+                type: chartType,
                 fontFamily: "Pretendard-Regular, sans-serif",
                 borderColor: "#000",
             },

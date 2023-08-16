@@ -213,15 +213,17 @@ const EduManageReportTable = ({ lessonNo }) => {
     const [analysisData, setAnalysisData] = useState([]);
     // const lessonNo = 1;
     useEffect(() => {
-        // 종합 데이터 가져올 Axios @@@
+        // 전체 학생에 대한 집중도 평균 => 추가 수정@@@
         tokenHttp
             .get(
                 `${url}/attention/lesson/allstudent/all-attention-avg?lessonNo=${lessonNo}`
             )
             .then((response) => {
+                console.log(response)
                 const analyDataSet = [];
                 for (let i = 1; i <= 20; i++) {
                     analyDataSet.push(response.data.result[i]);
+                    // 회차별 데이터면 0번째부터 데이터가 들어가는 게 맞는지!@@@
                 }
                 setAnalysisData(analyDataSet);
             });

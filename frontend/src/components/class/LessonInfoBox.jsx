@@ -348,7 +348,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
 
                                 {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
                                 {userType === "T" && (
-                                    <Button disabled>수강신청 불가</Button>
+                                    <Button disabled style={{ width: "40%" }}>수강신청 불가</Button>
                                 )}
 
                                 {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}
