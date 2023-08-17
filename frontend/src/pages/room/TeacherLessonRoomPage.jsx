@@ -258,36 +258,36 @@ const TeacherLessonRoomPage = () => {
             es.current.close();
         };
     }, []);
-    const changeStudentStatus = useCallback((studentData)=>{
-        setStudentList((prev)=>
-                prev.map(
-                    (student) => {
-                        if(student.studentId === studentData.studentId){
-                            if(studentData.isActive){
-                                // 버튼 활성화
-                                return {
-                                    ...student,
-                                    status: Number(studentData.status),
-                                    isActive: studentData.isActive,
-                                    notificationCnt: 0,
-                                };
-                            } else {
-                                // 버튼 비 활성화
-                                return {
-                                    ...student,
-                                    status: Number(studentData.status),
-                                    isActive: studentData.isActive,
-                                    notificationCnt: 0,
-                                };
-                            }
-                        }
-                        return student;
-                    })
-                    .slice()
+    const changeStudentStatus = useCallback((studentData) => {
+        setStudentList((prev) => {
+            const updatedStudentList = prev.map((student) => {
+                if (student.studentId === studentData.studentId) {
+                    const notificationCnt = studentData.isActive
+                        ? student.notificationCnt + 1
+                        : 0;
+    
+                    return {
+                        ...student,
+                        status: Number(studentData.status),
+                        isActive: studentData.isActive,
+                        notificationCnt: notificationCnt,
+                    };
+                }
+                return student;
+            });
+    
+            const targetIndex = updatedStudentList.findIndex(
+                (student) => student.studentId === studentData.studentId
             );
-        },
-        [studentList]
-    );
+    
+            if (targetIndex !== -1) {
+                const targetStudent = updatedStudentList.splice(targetIndex, 1)[0];
+                updatedStudentList.unshift(targetStudent);
+            }
+    
+            return updatedStudentList;
+        });
+    }, [studentList]);
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
@@ -630,12 +630,7 @@ const TeacherLessonRoomPage = () => {
                                                 <>
                                                     {/* 이때 하나. */}
                                                     <div>
-                                                        {" "}
-                                                        {
-                                                            studentList[idx]
-                                                                .status
-                                                        }{" "}
-                                                        <span style={{color: '#db0000'}}>산만</span>
+                                                        <span style={{color: '#db0000'}}>주의</span>
                                                     </div>
 
                                                     <StateButton
@@ -666,10 +661,10 @@ const TeacherLessonRoomPage = () => {
                                                                     );
                                                                     const studentListCopy = studentList.map((item, i) => {
                                                                         if (i===idx) {
-                                                                            item.notificationCnt = item.notificationCnt + 1
-                                                                            item.isActive = false
+                                                                            return {...item,notificationCnt :0,isActive:false}
                                                                         }
-                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                        return item;
+                                                                    });
                                                                     setStudentList(studentListCopy)
                                                                 })
                                                                 .catch(
@@ -691,7 +686,7 @@ const TeacherLessonRoomPage = () => {
                                             <>
                                                 {/* 이때 하나. */}
                                                 <div>
-                                                <span style={{color: '#db0000'}}>딴짓</span>
+                                                <span style={{color: '#db0000'}}>주의</span>
                                                 </div>
 
                                                 <StateButton
@@ -710,7 +705,7 @@ const TeacherLessonRoomPage = () => {
                                                                         ),
                                                                     studentNo:
                                                                         Number(
-                                                                            sub.userNo
+                                                                            sub.studentNo
                                                                         ),
                                                                     teacherId:
                                                                         userId,
@@ -746,10 +741,10 @@ const TeacherLessonRoomPage = () => {
                                                                     );
                                                                     const studentListCopy = studentList.map((item, i) => {
                                                                         if (i===idx) {
-                                                                            item.notificationCnt = item.notificationCnt + 1
-                                                                            item.isActive = false
+                                                                            return {...item,notificationCnt :0,isActive:false}
                                                                         }
-                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                        return item;
+                                                                    });
                                                                     setStudentList(studentListCopy)
                                                                 })
                                                                 .catch(

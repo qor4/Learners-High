@@ -66,11 +66,11 @@ const LessonPage = () => {
     const limitItem = 12;
     const [page, setPage] = useState(1);
     const offset = (page - 1) * limitItem; // 첫 게시물의 위치 계산
-    // 페이지 내 게시물 데이터
-    const pageLessonListData = lessonListDataSet.slice(
-        offset,
-        offset + limitItem
-    );
+    // // 페이지 내 게시물 데이터
+    // const pageLessonListData = lessonListDataSet.slice(
+    //     offset,
+    //     offset + limitItem
+    // );
 
     // 검색 버튼 눌렀을 때
     const handleSearchChange = () => {
@@ -92,17 +92,26 @@ const LessonPage = () => {
             );
             setLessonListDataSet(filteredData);
         }
+
+        setPage(1);
     };
 
     // 과목 분류를 눌렀을 때, 필터링
-    const filteredLessonListData = pageLessonListData.filter((item) => {
+    const filteredLessonListData = lessonListDataSet.filter((item) => {
         if (selectedLessonType === "전체") {
             return true;
         } else {
             console.log(item);
             return item.lessonTypeName === selectedLessonType;
         }
+        setPage(1);
     });
+
+    const numPages = Math.ceil(filteredLessonListData.length / limitItem);
+    const pageLessonListData = filteredLessonListData.slice(
+        (page - 1) * limitItem,
+        page * limitItem
+    );
 
     // GET 요청
     useEffect(() => {
@@ -202,8 +211,8 @@ const LessonPage = () => {
                 </FilterWrapper>
                 {/* 강의 목록 아이템이 보이는 공간 */}
                 <div>
-                    {filteredLessonListData.length > 0 ? (
-                        <LessonList items={filteredLessonListData} />
+                    {pageLessonListData.length > 0 ? (
+                        <LessonList items={pageLessonListData} />
                     ) : (
                         <Card style={{ textAlign: "center" }}>데이터 없음</Card>
                     )}
@@ -211,9 +220,17 @@ const LessonPage = () => {
 
                 {/* 페이지네이션 */}
                 <div>
-                    {lessonListDataSet && lessonListDataSet.length > 0 && (
+                    {/* {lessonListDataSet && lessonListDataSet.length > 0 && (
                         <Pagination
                             total={lessonListDataSet.length}
+                            limit={limitItem}
+                            page={page}
+                            setPage={setPage}
+                        />
+                    )} */}
+                    {filteredLessonListData.length > limitItem && (
+                        <Pagination
+                            total={filteredLessonListData.length}
                             limit={limitItem}
                             page={page}
                             setPage={setPage}

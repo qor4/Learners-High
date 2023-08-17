@@ -21,6 +21,8 @@ import { StyledTitleText } from "../components/class/LessonItemBox";
 import Button from "../components/common/Button";
 import EduManageStudentsTable from "../components/manage/EduManageStudentsTable";
 import LessonInfoPage from "./LessonInfoPage";
+import EduManageReportTable from "../components/manage/EduManageReportTable";
+import { StyledThumbnail } from "../components/class/LessonInfoBox";
 
 export const StyledRateWrap = styled.div`
     width: 100%;
@@ -49,40 +51,67 @@ const EduTeacherLessonPage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const { lessonNo } = useParams();
 
+    const [lessonInfoDataSet, setLessonInfoDataSet] = useState([]); // LessonInfo 다 가져옴
+
     const [attendRateDataSet, setAttendRateDataSet] = useState(0); // 출석률
-    const [homeworkRateDataSet, setHomeworkRateDataSet] = useState(0); // 과제 제출률
 
     const [selectedTabBar, setSelectedTabBar] = useState("학생"); // 탭바 선택별
 
     const [lessonNameData, setLessonNameData] = useState("");
+    const [totalRoundNumber, setTotalRoundNumber] = useState(0); // 총 회차 수
+    const [lessonRoundDataSet, setLessonRoundDataSet] = useState([]); // lessonRoundInfo
 
     useEffect(() => {
         // 수업 출석 / 과제 체출 GET 요청
         tokenHttp
             .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/rate`)
             .then((response) => {
-                console.log(response.data);
                 setAttendRateDataSet(response.data.result.attendRate);
-                setHomeworkRateDataSet(response.data.result.homeworkRate);
             });
 
         // 수업 상세 GET 요청 (수업 이름을 불러오기 위한...)
         axios.get(`${url}/lesson/${lessonNo}`).then((response) => {
-            console.log(response);
+            setLessonInfoDataSet(response.data.result);
             setLessonNameData(response.data.result.lessonInfo.lessonName);
+
+            setTotalRoundNumber(
+                response.data.result.lessonInfo.lessonTotalRound
+            );
+            setLessonRoundDataSet(response.data.result.lessonRoundInfo);
         });
 
         // table에 필요한 기반 데이터 불러오기
-        
     }, []);
+
+    const [thumbnailURL, setThumbnailURL] = useState("")
+    useEffect(() => {
+        axios
+        .get(`${url}/s3/thumbnail-load/${lessonNo}`)
+        .then((res) => {
+            if (res.data.resultCode === -1){
+                setThumbnailURL(false)
+                return
+            }
+            setThumbnailURL(res.data.resultMsg);
+        });
+    }, [])
     return (
         <>
             {/* 수업 출석률과 과제 제출률에 관한 차트와 수업 이름 등이 들어갈 정보박스 */}
             <StyledTeacherInfoWrap>
                 <Container maxWidth="md">
                     <ImgInfoWrap>
-                        {/* 분석 차트가 들어갈 공간입니다!@@@ */}
-                        <StyledChart>차트 들어가욧</StyledChart>
+                        {/* 썸네일 */}
+                        <StyledThumbnail
+                            src={
+                                thumbnailURL
+                                    ? thumbnailURL
+                                    : "/assets/item-banner.png"
+                            }
+                            alt="thumbnail-img"
+                            crossOrigin="anonymous"
+                        />
+
                         {/* 수업 총 만족도와 강사 총 만족도 */}
                         <InfoRateWrap>
                             {/* 수업 이름 */}
@@ -98,19 +127,6 @@ const EduTeacherLessonPage = () => {
                                         ) : (
                                             <StyledTitleText>
                                                 {attendRateDataSet.toFixed(0)} %
-                                            </StyledTitleText>
-                                        )}
-                                    </div>
-                                </InfoRateWrap>
-                                <InfoRateWrap>
-                                    <div>과제 제출률</div>
-                                    <div>
-                                        {homeworkRateDataSet ===
-                                        "아직 집계할 데이터가 없습니다." ? (
-                                            "데이터 없음"
-                                        ) : (
-                                            <StyledTitleText>
-                                                {homeworkRateDataSet.toFixed(0)} %
                                             </StyledTitleText>
                                         )}
                                     </div>
@@ -145,22 +161,21 @@ const EduTeacherLessonPage = () => {
                     >
                         소개
                     </Button>
-                    <Button
-                        onClick={() => setSelectedTabBar("과제")}
-                        $point={selectedTabBar === "과제"}
-                        disabled={selectedTabBar === "과제"}
-                    >
-                        과제
-                    </Button>
                 </StyledButtonWrap>
 
                 {/* 해당 탭바에 따른 정보가 담긴 테이블 */}
                 <div>
-                    {selectedTabBar==="학생" && <><EduManageStudentsTable/></>}
-                    {selectedTabBar==="분석" && <></>}
-                    {selectedTabBar==="소개" && <></>}
+                    {selectedTabBar === "학생" && <EduManageStudentsTable />}
+                    {selectedTabBar === "분석" && (
+                        <EduManageReportTable
+                            lessonInfoDataSet={lessonInfoDataSet}
+                            lessonNo={lessonNo}
+                            lessonTotalRound={totalRoundNumber}
+                            lessonRoundInfo={lessonRoundDataSet}
+                        />
+                    )}
                     {selectedTabBar === "소개" && (
-                        <LessonInfoPage pathByEduStudentLessonPage={true}/>
+                        <LessonInfoPage pathByEduStudentLessonPage={true} />
                     )}
                 </div>
             </Container>
