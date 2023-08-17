@@ -9,31 +9,37 @@ const Nav = styled.nav`
     align-items: center;
     gap: 8px;
     margin: 16px;
+    margin-top: 4rem;
 `;
 
 const SytledButton = styled.button`
+    width: 2rem;
+    height: 2rem;
     border: none;
     border-radius: 8px;
-    padding: 8px;
     margin: 0;
-    background: black;
-    color: white;
+    background: #fff;
+    color: #293c81;
+    border: 1px solid #293c81;
     font-size: 1rem;
 
     &:hover {
-        background: #fff0ae;
+        background: #e1e6f9;
         cursor: pointer;
-        transform: translateY(-2px);
     }
 
     &[disabled] {
-        background: grey;
+        background: #fff;
+        color: #a5a5a5;
+        border: 1px solid #a5a5a5;
+        box-sizing: border-box;
         cursor: revert;
         transform: revert;
     }
 
     &[aria-current] {
         background: #293c81;
+        color: #fff;
         font-weight: bold;
         cursor: revert;
         transform: revert;

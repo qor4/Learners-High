@@ -49,7 +49,7 @@ const FindIDPwd = () => {
         setUserEmailVailidCheck(true);
         certEmail();
     };
-    
+
     // 이메일 인증
     const [certEmailCode, setCertEmailCode] = useState("");
     const [emailCerti, setEmailCerti] = useState(false);
@@ -86,25 +86,98 @@ const FindIDPwd = () => {
     };
 
     // 아이디 찾기 버튼을 눌렀을 때 => 추가 수정@@@
+    const [findIdCheck, setFindIdCheck] = useState(false);
+    const [findId, setFindId] = useState("");
     const handleFindID = () => {
         axios
             .post(`${url}/user/find/id?email=${userEmail}`)
             .then((response) => {
                 console.log(response);
                 // ID가 나온다. //response.data에 존재함.
-
+                setFindIdCheck(true);
+                setFindId(response.data);
             });
     };
 
     // 비밀번호 찾기 버튼을 눌렀을 때
     // axios 관련 혜빈이한테 물어보기 @@@
+    const [findPwdCheck, setFindPwdCheck] = useState(false);
     const handleFindPwd = () => {
         axios
-        .post(`${url}/user/find/pwd?userId=${userId}&userEmail=${userEmail}`)
-        .then((response) => {
-            console.log(response);
-            // 비밀번호 변경.
-        });
+            .post(
+                `${url}/user/find/pwd?userId=${userId}&userEmail=${userEmail}`
+            )
+            .then((response) => {
+                console.log(response);
+                // 비밀번호 변경.
+                setFindPwdCheck(response.data);
+            });
+    };
+    const [userPassword, setUserPassword] = useState(""); // 비밀번호 1번 varchar(256) 9 ~ 16
+    const [userPasswordCheck, setUserPasswordCheck] = useState(""); // 비밀번호 확인 varchar(256) (임의)
+    const [passwordMSG, setPasswordMSG] = useState("");
+    const [passwordSuccessMSG, setPasswordSuccessMSG] = useState("");
+    const [passwordValidFirstCheck, setPasswordVailidFirstCheck] =
+        useState(false);
+    const [passwordValidCheck, setPasswordVailidCheck] = useState(false);
+    const passwordFormCheck = (e) => {
+        const pattern1 = /[0-9]/;
+        const pattern2 = /[a-zA-Z]/;
+        const pattern3 = /[~!@#$%^&*()-_+|<>?:{}]/;
+        if (userPassword.length === 0) {
+            setPasswordSuccessMSG("");
+            setPasswordMSG("공백 제외하고 비밀번호를 입력해 주세요.");
+            setPasswordVailidFirstCheck(false);
+            return;
+        } else if (
+            !pattern1.test(userPassword) ||
+            !pattern2.test(userPassword) ||
+            !pattern3.test(userPassword) ||
+            userPassword.length < 9 ||
+            userPassword.length > 16
+        ) {
+            setPasswordSuccessMSG("");
+            setPasswordMSG(
+                "비밀번호는 숫자, 특수문자 포함 9~16자로 작성해주세요."
+            );
+            setPasswordVailidFirstCheck(false);
+            return;
+        }
+        // else if (userPassword === userPasswordCheck) {
+        //     setPasswordSuccessMSG("사용 가능한 비밀번호입니다.");
+        // }
+        setPasswordVailidFirstCheck(true);
+        setPasswordMSG("");
+    };
+    const passwordDuplicateCheck = (e) => {
+        if (userPassword !== userPasswordCheck) {
+            setPasswordMSG("비밀번호가 일치하지 않습니다.");
+            setPasswordVailidCheck(false);
+            return;
+        } else if (
+            userPassword === userPasswordCheck &&
+            passwordValidFirstCheck === true
+        ) {
+            setPasswordSuccessMSG("사용 가능한 비밀번호입니다.");
+            setPasswordVailidCheck(true);
+        }
+        // setPasswordMSG("");
+        // setPasswordVailidCheck(false);
+    };
+
+    // onBlur 두 개 이벤트
+    const handleBlurPwd = () => {
+        passwordFormCheck();
+        passwordDuplicateCheck();
+    };
+
+    const pwdRegister = () => {
+        axios
+            .get(`${url}/user/pwd-change?userId=${userId}&pwd=${userPassword}`)
+            .then((res) => {
+                alert("비밀번호 변경 성공");
+            })
+            .catch((err) => console.log(err));
     };
 
     return (
@@ -218,23 +291,93 @@ const FindIDPwd = () => {
                         </div>{" "}
                     </div>
                     {selectedType === "ID" ? (
-                        <Button
-                            onClick={handleFindID}
-                            $fullWidth
-                            $point
-                            $marginTop
-                        >
-                            아이디 찾기
-                        </Button>
+                        <>
+                            <Button
+                                onClick={handleFindID}
+                                $fullWidth
+                                $point
+                                $marginTop
+                            >
+                                아이디 찾기
+                            </Button>
+                            {findIdCheck && (
+                                <>
+                                    {" "}
+                                    <Input
+                                    label="아이디"
+                                        value={findId}
+                                        $disabled
+                                        readOnly
+                                    />{" "}
+                                </>
+                            )}{" "}
+                        </>
                     ) : (
-                        <Button
-                            onClick={handleFindPwd}
-                            $fullWidth
-                            $point
-                            $marginTop
-                        >
-                            비밀번호 찾기
-                        </Button>
+                        <>
+                            <Button
+                                onClick={handleFindPwd}
+                                $fullWidth
+                                $point
+                                $marginTop
+                            >
+                                비밀번호 찾기
+                            </Button>
+                            {findPwdCheck && (
+                                <>
+                                    {" "}
+                                    <Input
+                                        label="비밀번호"
+                                        type="password"
+                                        // value={userPassword}
+                                        name="userPassword"
+                                        id="userPassword"
+                                        placeholder="특수문자 포함 9~16자로 입력해 주세요."
+                                        onChange={(e) =>
+                                            setUserPassword(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={passwordFormCheck}
+                                    />
+                                    <Input
+                                        label="비밀번호 확인"
+                                        type="password"
+                                        // value={userPassword}
+                                        name="userPasswordCheck"
+                                        id="userPasswordCheck"
+                                        placeholder="동일한 비밀번호를 입력해 주세요."
+                                        onChange={(e) =>
+                                            setUserPasswordCheck(
+                                                removeAllEmpty(
+                                                    e.currentTarget.value
+                                                )
+                                            )
+                                        }
+                                        onBlur={handleBlurPwd}
+                                    />
+                                    <StyledMessage>
+                                        {" "}
+                                        {passwordMSG}{" "}
+                                    </StyledMessage>
+                                    {passwordMSG === "" && (
+                                        <StyledSuccess>
+                                            {passwordSuccessMSG}
+                                        </StyledSuccess>
+                                    )}
+                                    <Button
+                                        onClick={pwdRegister}
+                                        $fullWidth
+                                        $point
+                                        $marginTop
+                                        type="button"
+                                    >
+                                        비밀번호 입력
+                                    </Button>
+                                </>
+                            )}{" "}
+                        </>
                     )}
                 </FirstJoinWrap>
             </Container>

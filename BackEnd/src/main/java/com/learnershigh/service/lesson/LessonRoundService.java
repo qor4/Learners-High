@@ -25,7 +25,7 @@ public class LessonRoundService {
     private final LessonRoundRepository lessonRoundRepository;
 
     // 강의 회차 정보 추가
-    @Transactional
+    @Transactional(noRollbackFor= Exception.class)
     public List<HashMap<String, Object>> lessonRoundJoin(List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
         List<HashMap<String, Object>> result = new ArrayList<>();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
@@ -37,24 +37,35 @@ public class LessonRoundService {
         LocalDate now = LocalDate.now();
         if(lessonRoundJoinDtoList.get(0).getLessonRoundStartDatetime().toLocalDate().isBefore(now.plusDays(6))){
             lessonEntity.setLessonStatus("작성 중");
+            lessonRepository.save(lessonEntity);
             throw new IllegalStateException("수업 시작 일시는 현재 날짜에서 7일 이후부터 가능합니다.");
         }
         for (LessonRoundJoinDto lessonRoundJoinDto : lessonRoundJoinDtoList) {
             LessonRound lessonRound = new LessonRound();
             if (lessonRepository.findByLessonNo(lessonRoundJoinDto.getLessonNo()) == null) {
+                lessonEntity.setLessonStatus("작성 중");
+                lessonRepository.save(lessonEntity);
                 throw new IllegalStateException("유효한 수업이 아닙니다.");
             }
             // 수업 회차가 0회차 일 때
             if (lessonRoundJoinDto.getLessonRoundNumber() == 0) {
+                lessonEntity.setLessonStatus("작성 중");
+                lessonRepository.save(lessonEntity);
                 throw new IllegalStateException("수업 회차가 유효하지 않습니다.");
             }
             if (lessonRoundJoinDto.getLessonRoundTitle().isBlank()) {
+                lessonEntity.setLessonStatus("작성 중");
+                lessonRepository.save(lessonEntity);
                 throw new IllegalStateException("수업 이름을 입력해주세요.");
             }
             if (lessonRoundJoinDto.getLessonRoundStartDatetime() == null) {
+                lessonEntity.setLessonStatus("작성 중");
+                lessonRepository.save(lessonEntity);
                 throw new IllegalStateException("수업 시작 일시가 올바르지 않습니다.");
             }
             if (lessonRoundJoinDto.getLessonRoundEndDatetime() == null) {
+                lessonEntity.setLessonStatus("작성 중");
+                lessonRepository.save(lessonEntity);
                 throw new IllegalStateException("수업 종료 일시가 올바르지 않습니다.");
             }
             // 회차 정보 저장

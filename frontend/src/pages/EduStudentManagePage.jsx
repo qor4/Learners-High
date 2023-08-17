@@ -1,19 +1,23 @@
 // 학생 수업 관리 목록 페이지
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import tokenHttp, { url } from "../api/APIPath";
 
 import { styled } from "styled-components";
 import { Container } from "@mui/material";
 
-import Button from "../components/common/Button";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import tokenHttp, { url } from "../api/APIPath";
-import LessonItemBoxList from "../components/class/LessonItemBoxList";
-import LessonList from "../components/class/LessonList";
-import axios from "axios";
 import { ImgInfoWrap } from "../components/class/TeacherIntroduceBox";
 import { StyledChart } from "../components/class/TeacherLessonCsatBox";
 import { InfoRateWrap } from "./EduTeacherLessonPage";
+import { StyledTitleText } from "../components/class/LessonItemBox";
+
 import Card from "../components/common/Card";
+import Button from "../components/common/Button";
+import LessonItemBoxList from "../components/class/LessonItemBoxList";
+import LessonList from "../components/class/LessonList";
+
+import ApexChart from "../components/chart/ApexChart";
 
 // 강의 wrap
 const StyledCsatInfoWrap = styled.div`
@@ -55,6 +59,10 @@ const EduStudentManagePage = () => {
             });
     }, []);
 
+    const lessonDataSet = {
+        science: 5,
+        math: 1,
+    };
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
@@ -62,14 +70,24 @@ const EduStudentManagePage = () => {
                 <Container maxWidth="md">
                     <ImgInfoWrap>
                         {/* 분석 차트가 들어갈 공간입니다!@@@ */}
-                        <StyledChart>차트 들어갈 공간</StyledChart>
+                        <StyledChart>
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                type="csatpie"
+                                seriesData={lessonDataSet}
+                            />
+                        </StyledChart>
                         <InfoRateWrap>
-                            <div>
+                            <StyledTitleText>
+                                최학생님의 수강 목록 분석
+                            </StyledTitleText>
+                            <Card>
                                 최학생이 열심히 공부한 과목은 프로그래밍입니다.
-                            </div>
-                            <div>
+                            </Card>
+                            <Card>
                                 프로그래밍에서 가장 집중한 강사는 김강사입니다.
-                            </div>
+                            </Card>
                         </InfoRateWrap>
                     </ImgInfoWrap>
                 </Container>

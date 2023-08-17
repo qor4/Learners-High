@@ -142,6 +142,8 @@ public class StudentService {
             lessonListDto.setLessonEndDate(wishLesson.getLessonEndDate());
             lessonListDto.setMaxStudent(wishLesson.getMaxStudent());
             lessonListDto.setTotalStudent(wishLesson.getTotalStudent());
+            lessonListDto.setUserNo(wishLesson.getUserNo().getUserNo());
+            lessonListDto.setLessonNo(wishLesson.getLessonNo());
 
             wishLessonList.add(lessonListDto);
 
@@ -154,8 +156,12 @@ public class StudentService {
     // 학생 수강 목록 전체 출력
     public List<LessonListDto> userLessonAll(Long userNo, String status) {
         User user = userRepository.findByUserNo(userNo);
-
-        List<StudentLessonList> userlessonlist = studentLessonListRepository.findAllByUserNoAndStatus(user, status);
+        List<StudentLessonList> userlessonlist;
+        if (status.equals("강의 완료")) {
+            userlessonlist = studentLessonListRepository.findAllByUserNoAndStatusEnd(user, status);
+        } else {
+            userlessonlist = studentLessonListRepository.findAllByUserNoAndStatusStart(user, status);
+        }
         List<LessonListDto> clalist = new ArrayList<>();
 
         for (StudentLessonList lessonAll : userlessonlist) {
@@ -167,6 +173,7 @@ public class StudentService {
             cla.setLessonName(lessonAll.getLessonNo().getLessonName());
             cla.setUserName(lessonAll.getLessonNo().getUserNo().getUserName());
             cla.setLessonNo(lessonAll.getLessonNo().getLessonNo());
+            cla.setLessonTypeName(lessonAll.getLessonNo().getLessonTypeNo().getLessonTypeName());
 
             clalist.add(cla);
         }

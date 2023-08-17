@@ -96,11 +96,12 @@ public class TeacherService {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
         if (status.equals("전체")) { // 상태를 선택하지 않았을 경우
-            lessonList = lessonRepository.findByUserNo(user);
-        } else if (status.equals("강의 종료")) { // 상태가 강의 종료일 경우
+            lessonList = lessonRepository.findByUserNoOrderByLessonStartDateAsc(user);
+        } else if (status.equals("강의 완료")) { // 상태가 강의 종료일 경우
+            lessonList = lessonRepository.teacherLessonListEnd(userNo, status);
             // 별점 포함 목록 출력
         } else if (status.equals("강의 중") || status.equals("강의 전")) { // 상태가 강의 전, 강의 중일경우
-            lessonList = lessonRepository.teacherLessonList(userNo, status);
+            lessonList = lessonRepository.teacherLessonListStart(userNo, status);
         }
 
         for (Lesson lessonDomain : lessonList) {
@@ -115,6 +116,7 @@ public class TeacherService {
             lessonListDto.setLessonEndDate(lessonDomain.getLessonEndDate());
             lessonListDto.setMaxStudent(lessonDomain.getMaxStudent());
             lessonListDto.setLessonPrice(lessonDomain.getLessonPrice());
+            lessonListDto.setLessonStatus(lessonDomain.getLessonStatus());
             lessonListDtoList.add(lessonListDto);
         }
         return lessonListDtoList;
