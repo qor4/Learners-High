@@ -498,7 +498,7 @@ public class S3Service {
     public String thumbnailLoad(Long lessonNo) {
         Lesson cla = lessonRepository.findByLessonNo(lessonNo);
 
-        if (cla.getLessonThumbnailImg() == null) {
+        if (cla.getLessonThumbnailImg() == null || cla.getLessonThumbnailImg().isBlank()) {
             throw new IllegalStateException("등록된 썸네일이 없습니다.");
         }
         return URL + cla.getLessonThumbnailImg();
@@ -509,7 +509,7 @@ public class S3Service {
     public String profileLoad(Long userNo) {
 
         User user = userRepository.findByUserNo(userNo);
-        if (user.getProfileImg() == null) {
+        if (user.getProfileImg() == null || user.getProfileImg().isBlank()) {
             throw new IllegalStateException("등록된 프로필 사진이 없습니다.");
         }
         return URL + user.getProfileImg();
