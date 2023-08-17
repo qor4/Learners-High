@@ -630,11 +630,6 @@ const TeacherLessonRoomPage = () => {
                                                 <>
                                                     {/* 이때 하나. */}
                                                     <div>
-                                                        {" "}
-                                                        {
-                                                            studentList[idx]
-                                                                .status
-                                                        }{" "}
                                                         <span style={{color: '#db0000'}}>산만</span>
                                                     </div>
 
