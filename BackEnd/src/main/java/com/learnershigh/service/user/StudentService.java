@@ -2,6 +2,7 @@ package com.learnershigh.service.user;
 
 import com.learnershigh.domain.lesson.Lesson;
 import com.learnershigh.domain.lesson.LessonRound;
+import com.learnershigh.domain.lesson.LessonType;
 import com.learnershigh.domain.lessonhub.LessonAttend;
 import com.learnershigh.domain.lessonhub.LessonHomework;
 import com.learnershigh.domain.lessonhub.StudentLessonList;
@@ -14,12 +15,14 @@ import com.learnershigh.dto.lessonhub.StudentAttendHomeworkDto;
 import com.learnershigh.dto.lessonhub.StudentLessonActionDto;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
+import com.learnershigh.repository.lesson.LessonTypeRepository;
 import com.learnershigh.repository.lessonhub.LessonAttendRepository;
 import com.learnershigh.repository.lessonhub.LessonHomeworkRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
 import com.learnershigh.repository.lessonhub.StudentWishlistRepository;
 import com.learnershigh.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.BSONObject;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +46,8 @@ public class StudentService {
     private final StudentLessonListRepository studentLessonListRepository;
     private final LessonHomeworkRepository lessonHomeworkRepository;
     private final LessonAttendRepository lessonAttendRepository;
+    private final LessonTypeRepository lessonTypeRepository;
+
 
     public boolean isStudent(User user) {
         if (user == null) {
@@ -296,5 +301,36 @@ public class StudentService {
         return result;
     }
 
+    // 한 학생에 대한 수업 분류의 갯수
+    public HashMap<String, Integer> lessonTypeCnt(Long userNo) {
+
+
+        HashMap<String, Integer> map = new HashMap<>();
+
+
+        User user = userRepository.findByUserNo(userNo);
+
+        System.out.println(user.toString());
+
+        List<StudentLessonList> lessonLists = studentLessonListRepository.findAllByUserNo(user);
+
+
+        for (StudentLessonList sl : lessonLists) {
+
+            System.out.println(sl.getLessonNo());
+
+            Lesson lesson = lessonRepository.findByLessonNo(sl.getLessonNo().getLessonNo());
+
+
+            LessonType lessonType = lessonTypeRepository.findByLessonTypeNo(lesson.getLessonTypeNo().getLessonTypeNo());
+
+
+            map.put(lessonType.getLessonTypeName(), map.getOrDefault(lessonType.getLessonTypeName(), 0) + 1);
+        }
+
+
+        return map;
+
+    }
 
 }
