@@ -657,7 +657,7 @@ const TeacherLessonRoomPage = () => {
                                                     </div>
                                                 </>
                                             )}
-                                        {studentList[idx].status === 1 && studentList[idx].isActive ( //여긴 무조건 무조건 주의임
+                                        {studentList[idx].status === 1 &&  ( //여긴 무조건 무조건 주의임
                                             <>
                                                 {/* 이때 하나. */}
                                                 <div>
