@@ -13,7 +13,9 @@ import { StyledButtonWrap } from "./EduTeacherManagePage";
 import LessonInfoBox from "../components/class/LessonInfoBox";
 import Button from "../components/common/Button";
 import EduManageReportTable from "../components/manage/EduManageReportTable";
+import EduManageStudentsCurrentTable from "../components/manage/EduManageStudentsCurrentTable";
 import LessonInfoPage from "./LessonInfoPage";
+
 
 // 강의 wrap
 const StyledLessonInfoWrap = styled.div`
@@ -64,13 +66,6 @@ const EduStudentLessonPage = () => {
                         분석
                     </Button>
                     <Button
-                        onClick={() => setSelectedTabBar("과제")}
-                        $point={selectedTabBar === "과제"}
-                        disabled={selectedTabBar === "과제"}
-                    >
-                        과제
-                    </Button>
-                    <Button
                         onClick={() => setSelectedTabBar("소개")}
                         $point={selectedTabBar === "소개"}
                         disabled={selectedTabBar === "소개"}
@@ -91,7 +86,7 @@ const EduStudentLessonPage = () => {
                         />
                     )}
                     {selectedTabBar === "현황" && (
-                        <EduManageReportTable lessonNo={lessonNo} />
+                        <EduManageStudentsCurrentTable lessonNo={lessonNo} />
                     )}
                     {selectedTabBar === "소개" && (
                         <LessonInfoPage pathByEduStudentLessonPage={true} />
