@@ -55,8 +55,8 @@ import { useDispatch, useSelector } from "react-redux";
 import FindIDPwdPage from "./pages/auth/FindIDPwdPage";
 
 import JSConfetti from "js-confetti";
+import TopButton from "./components/common/TopButton";
 export const conteffi = new JSConfetti();
-
 
 // Styled-Components를 활용한 전체 스타일 변경
 const GlobalStyle = createGlobalStyle`
@@ -95,9 +95,13 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: space-between; */
     min-height: 100vh;
-    padding-bottom: 12rem;
+    /* ${(props) => (props.hideComponent ? "padding-bottom: 12rem;" : "")} */
     box-sizing: border-box;
     position: relative;
+`;
+
+const StyledDiv = styled.div`
+    padding-bottom: 12rem;
 `;
 
 // const ContentWrapper = styled.div`
@@ -117,7 +121,6 @@ function App() {
         const isLoginData = JSON.parse(persistRoot.user).isLogin;
     }
     const isLoginData = false;
-
 
     // useEffect(() => {
     //     if (!localStorage.getItem("accessToken") && isLoginData === true) {
@@ -227,13 +230,14 @@ function App() {
                         path="/satisfy/lesson/:lessonNo/:lessonRoundNo/teacher/:teacherNo"
                         element={<LessonSatisfyModal />}
                     />
-                    <Route path="/test" 
-                    element={<Emoji />} />
+                    <Route path="/test" element={<Emoji />} />
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
 
                 {/* <div>TOP</div> */}
+                {!hideComponent && <TopButton />}
+                {!hideComponent && <StyledDiv></StyledDiv>}
                 {!hideComponent && <Footer />}
             </Wrapper>
         </>

@@ -12,7 +12,7 @@ import LessonStatusBox from "../common/LessonStatusBox";
 
 import { useNavigate } from "react-router-dom";
 import { StyledTitleText } from "./LessonItemBox";
-import tokenHttp, {url} from "../../api/APIPath";
+import tokenHttp, { url } from "../../api/APIPath";
 import axios from "axios";
 
 const StyledButtonWrap = styled.div`
@@ -58,7 +58,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
         // const today = new Date();
         // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
-    
+
         // if (startDatetime > enableTimeStart || endDatetime < today ) {
         //     console.log(enableTimeStart, today, "끝과 기준")
         //     alert("강의 시간이 아닙니다.");
@@ -110,7 +110,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
         // const today = new Date();
         // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
-    
+
         // if (startDatetime > enableTimeStart || endDatetime < today ) {
         //     console.log(enableTimeStart, today, "끝과 기준")
         //     alert("강의 시간이 아닙니다.");
@@ -124,30 +124,39 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     // 강의자료 관련 함수
     const downloadLessonData = () => {
-        // const url = 
+        // const url =
         try {
+            tokenHttp
+                .post(
+                    `${url}/s3/download/data?lessonRoundNo=${Number(
+                        lessonRoundNo
+                    )}`
+                )
+                .then((res) => {
+                    console.log(res, "이게 뭘까");
+                    if (res.data.resultCode === -1) return;
+                    // window.open(res.data.resultCode)
+                    var a = document.createElement("a");
+                    a.href = res.data.resultMsg; // xhr.response is a blob
+                    a.download = "download"; // Set the file name.
+                    a.style.display = "none";
+                    document.body.appendChild(a);
+                    a.click();
+                    // const blobURL = URL.createObjectURL(res.data.resultCode)
+                    // const a = document.createElement('a')
+                    // a.href = blobURL
+                    // document.body.appendChild(a)
+                    // a.click()
+                    // setTimeout(_ => {
+                    //     window.URL.revokeObjectURL(blobURL);
+                    // }, 60000);
+                    // a.remove()
+                })
+                .catch((err) => {
+                    console.log(err, "##");
+                    alert("다운 실패");
+                });
 
-            tokenHttp.post(`${url}/s3/download/data?lessonRoundNo=${Number(lessonRoundNo)}`)
-            .then((res)=>{
-                console.log(res, "이게 뭘까")
-                if (res.data.resultCode === -1) return
-                window.open(res.data.resultCode)
-                // const blobURL = URL.createObjectURL(res.data.resultCode)
-                // const a = document.createElement('a')
-                // a.href = blobURL
-                // document.body.appendChild(a)
-                // a.click()
-                // setTimeout(_ => {
-                //     window.URL.revokeObjectURL(blobURL);
-                // }, 60000);
-                // a.remove()
-            })
-            .catch(err => {
-                console.log(err, "##")
-                alert("다운 실패")
-            })
-
-                            
             //     axios.get(res.data.resultMsg)
             //     .then(res => {
             //         return
@@ -158,8 +167,8 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             //         document.body.appendChild(a)
             //         a.click()
             //         setTimeout(_ => {
-			// 			window.URL.revokeObjectURL(blobURL);
-			// 		}, 60000);
+            // 			window.URL.revokeObjectURL(blobURL);
+            // 		}, 60000);
             //         a.remove()
             //     })
             //     .catch(err => {
@@ -169,9 +178,9 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             // })
             // .catch(err=>console.log(err))
         } catch (err) {
-            alert("강의 자료가 없습니다.")
+            alert("강의 자료가 없습니다.");
         }
-    }
+    };
 
     return (
         <>
@@ -210,7 +219,10 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 학생일 때 보일 버튼 */}
             {userType === "S" && (
                 <StyledButtonWrap>
-                    <Button className={"singleEvent"} onClick={downloadLessonData}>
+                    <Button
+                        className={"singleEvent"}
+                        onClick={downloadLessonData}
+                    >
                         {" "}
                         학습 자료 다운
                     </Button>

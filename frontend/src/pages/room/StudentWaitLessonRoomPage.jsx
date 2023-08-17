@@ -375,7 +375,7 @@ const StudentWaitLessonRoomPage = () => {
     const onDebug = (FPS, latency_min, latency_max, latency_avg) => {};
 
     const tmpClick = useCallback(() => {
-        alert("테스트를 시작합니다.")
+        alert("테스트를 시작합니다.");
         setIsTest(false);
         setTimeout(function () {
             eyeTracker.current.startCalibration(
@@ -476,9 +476,36 @@ const StudentWaitLessonRoomPage = () => {
                                         </Button>
                                     </ControlButtonWrap>
                                     <ControlButtonWrap>
-                                        <Typography fontWeight={"bold"} color={"white"}>
-                                            당신의 집중도를 파악합니다.
-                                        </Typography>
+                                        {!isTest ? (
+                                            <div
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "#fff",
+                                                }}
+                                            >
+                                                화면의{" "}
+                                                <span
+                                                    style={{
+                                                        color: "#DB0000",
+                                                        backgroundColor: "#fff",
+                                                        borderRadius: "4px",
+                                                        padding: "2px",
+                                                    }}
+                                                >
+                                                    빨간 점
+                                                </span>
+                                                을 따라가세요.
+                                            </div>
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "#fff",
+                                                }}
+                                            >
+                                                테스트를 시작해주세요.
+                                            </div>
+                                        )}
                                     </ControlButtonWrap>
 
                                     <ControlButtonWrap>

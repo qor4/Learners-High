@@ -86,7 +86,7 @@ function Row(props) {
                 <StyledTableCell align="right" />
                 <StyledTableCell component="th" scope="row">
                     <LessonStatusBox $point>
-                        {row.lessonRoundNumber} 회차
+                        {row.lessonRoundNumber}회차
                     </LessonStatusBox>
                 </StyledTableCell>
 
@@ -130,7 +130,6 @@ function Row(props) {
                     style={{ paddingBottom: 0, paddingTop: 0 }}
                     colSpan={6}
                 ></StyledTableCell>
-                
             </StyledTableRow>
         </React.Fragment>
     );
@@ -146,13 +145,13 @@ const EduManageStudentsCurrentTable = () => {
         const lessonRoundTitle = lessonRoundDataSet.lessonRoundTitle;
         let lessonTempAttendStatus = studentDataSet.lessonAttendStatus;
 
-        const flagDate = new Date(studentDataSet.lessonRoundEndDatetime)
+        const flagDate = new Date(studentDataSet.lessonRoundEndDatetime);
         const currentDay = new Date();
         if (flagDate > currentDay) {
-            lessonTempAttendStatus = "수업 예정"
+            lessonTempAttendStatus = "수업 예정";
         }
 
-        const lessonAttendStatus = lessonTempAttendStatus
+        const lessonAttendStatus = lessonTempAttendStatus;
 
         return {
             lessonRoundNumber,
@@ -183,7 +182,9 @@ const EduManageStudentsCurrentTable = () => {
                         res.data.result.lessonRoundFileInfo;
                     let cntAttend = 0;
                     for (let i = 0; i < lessonRoundFileInfo.length; i++) {
-                        if (attendHomeworkList[i]?.lessonAttendStatus === "출석")
+                        if (
+                            attendHomeworkList[i]?.lessonAttendStatus === "출석"
+                        )
                             cntAttend++;
                     }
                     setRealAttend(cntAttend);
@@ -228,7 +229,7 @@ const EduManageStudentsCurrentTable = () => {
                         <StyledTableCell align="right">
                             {" "}
                             <span>
-                                출석 {realAttend} / {totalAttend}{" "}
+                                출석 ( {realAttend} / {totalAttend} )
                             </span>
                         </StyledTableCell>
                         <StyledTableCell align="right"></StyledTableCell>

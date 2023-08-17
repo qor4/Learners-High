@@ -59,6 +59,9 @@ const StyledBottomBar = styled.div`
     height: 5rem;
     background-color: #e1e6f9;
     z-index: 1;
+
+    bottom: ${({ $isVisible }) => ($isVisible ? "0" : "-5rem")};
+    transition: bottom 0.3s ease-in-out;
 `;
 
 const BottomBarContents = styled.div`
@@ -167,6 +170,24 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                 setIsWish(1);
             });
     };
+
+    // 하단바 설정
+    const [isVisible, setIsVisible] = useState(false);
+
+    const handleScroll = () => {
+        if (window.scrollY > 200) {
+            setIsVisible(true);
+        } else {
+            setIsVisible(false);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     /** 강의룸 입장 */
 
@@ -323,7 +344,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
 
                     {/* 하단바 */}
                     {$info && (
-                        <StyledBottomBar>
+                        <StyledBottomBar $isVisible={isVisible}>
                             <BottomBarContents>
                                 <span>
                                     <strong>{lessonInfo.lessonName}</strong>

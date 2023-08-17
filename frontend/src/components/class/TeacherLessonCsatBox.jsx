@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import { url } from "../../api/APIPath";
 import axios from "axios";
-import tokenHttp from "../../api/APIPath";
 import { ImgInfoWrap } from "./TeacherIntroduceBox";
 import { styled } from "styled-components";
 import { InfoRateWrap, StyledRateWrap } from "../../pages/EduTeacherLessonPage";

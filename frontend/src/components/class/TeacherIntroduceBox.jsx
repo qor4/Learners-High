@@ -93,8 +93,10 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 if (res.data.resultCode === -1) {
                     setProfileImg(false);
                     return;
+                } else if (res.data.resultCode === 0) {
+                    setProfileImg(res.data.result);
                 }
-                setProfileImg(res.data);
+                console.log(res.data)
             });
         }
     }, [teacherNo]);
