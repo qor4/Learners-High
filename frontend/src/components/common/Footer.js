@@ -8,12 +8,15 @@ const StyledFooter = styled.footer`
     height: 8rem;
     line-height: 8rem;
     background-color: #e1e6f9;
+
+    position: absolute;
+    bottom: 0;
 `;
 
 const Footer = () => {
     return (
         <StyledFooter>
-            <span>푸터에 들어갈 내용을 입력해 주세요.</span>
+            <span>LEARNERS HIGH</span>
         </StyledFooter>
     );
 };

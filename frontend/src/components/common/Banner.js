@@ -8,10 +8,9 @@ const StyledBanner = styled.div`
     ${(props) =>
         props.$image &&
         `
-    background-image: url(${props.$image});
-  `}
+            background-image: url(${props.$image});
+        `}
     background-repeat : no-repeat;
-    /* background-size : cover; */
     background-size: 100%;
     margin-top: 2.5rem;
     height: 22rem;

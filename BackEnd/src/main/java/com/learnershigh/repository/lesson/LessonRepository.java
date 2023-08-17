@@ -21,12 +21,20 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
 
     List<Lesson> findByUserNo(User userNo);
 
+    @Query(value = "SELECT lesson FROM Lesson lesson WHERE lesson.userNo.userNo = :userNo AND lesson.lessonStatus != '작성 중' " +
+            "ORDER BY lesson.lessonStartDate ASC")
 
+    List<Lesson> findByUserNoOrderByLessonStartDateAsc(Long userNo);
 
-    @Query(value = "SELECT C FROM Lesson C WHERE C.userNo.userNo = :userNo AND C.lessonStatus = :status")
-    List<Lesson> teacherLessonList(@Param("userNo") Long userNo, @Param("status") String status);
+    @Query(value = "SELECT lesson FROM Lesson lesson WHERE lesson.userNo.userNo = :userNo AND lesson.lessonStatus = :status " +
+            "ORDER BY lesson.lessonStartDate ASC")
+    List<Lesson> teacherLessonListStart(@Param("userNo") Long userNo, @Param("status") String status);
 
-    @Query(value = "SELECT C FROM Lesson C WHERE C.lessonStatus = '강의 전'")
+    @Query(value = "SELECT lesson FROM Lesson lesson WHERE lesson.userNo.userNo = :userNo AND lesson.lessonStatus = :status " +
+            "ORDER BY lesson.lessonEndDate DESC")
+    List<Lesson> teacherLessonListEnd(@Param("userNo") Long userNo, @Param("status") String status);
+
+    @Query(value = "SELECT C FROM Lesson C WHERE C.lessonStatus = '강의 전' ORDER BY C.lessonNo DESC")
     List<Lesson> findByUpcomingLesson();
 
     @Query(value = "SELECT C FROM Lesson C WHERE C.lessonStatus = '작성 중' AND C.userNo.userNo = :userNo")

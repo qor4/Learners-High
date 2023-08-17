@@ -66,6 +66,7 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
         if (teacherNo) {
             // 강사의 모든 수업 총 만족도 GET 요청
             axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
+                console.log(response)
                 const lessonData = response.data.result;
                 if (response.data.resultCode === 0) {
                     setTeacherCsatLesson(lessonData.result.toFixed(1));
@@ -96,14 +97,14 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 setProfileImg(res.data);
             });
         }
-    }, []);
+    }, [teacherNo]);
 
     return (
         <Container maxWidth="md">
             <ImgInfoWrap>
                 {/* 강사 이미지 */}
                 <StyledThumbnail
-                    src={ profileImg ? profileImg : "/assets/bannerimg.jpg"}
+                    src={ profileImg ? profileImg : "/assets/blank-profile.png"}
                     alt="teacher-img"
                     crossOrigin="anonymous"
                 />

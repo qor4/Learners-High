@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
 import { licenseKey } from "../../api/Ignore";
-import tokenHttp, { homeurl,url } from "../../api/APIPath";
+import tokenHttp, { homeurl, url } from "../../api/APIPath";
 
 // 스타일
 import styled from "styled-components";
@@ -146,8 +146,8 @@ const StudentWaitLessonRoomPage = () => {
                 emojis: ["🍔", "🍕", "🍺"],
                 emojiSize: 100,
                 confettiNumber: 30,
-              });
-    
+            });
+
             setTimeout(() => {
                 sound.pause();
                 sound.currentTime = 0;
@@ -214,7 +214,7 @@ const StudentWaitLessonRoomPage = () => {
                 console.log("다른 화면 보는 중");
                 currentScore = 0;
                 currentStatus = 1;
-            }else if(!videoEnabled){
+            } else if (!videoEnabled) {
                 console.log("캠 꺼져 있음");
                 currentScore = 0;
                 currentStatus = 2;
@@ -224,67 +224,86 @@ const StudentWaitLessonRoomPage = () => {
                 console.log("AttentScore : ", currentScore, currentStatus);
                 // mongodb server와 통신
 
-                tokenHttp.post(
-                    `${url}/attention/save`,
-                    {
-                      lessonRoundNo: Number(lessonRoundNo),
-                      lessonNo: Number(lessonNo),
-                      userNo: Number(userNo),
-                      rate: Number(currentScore),
-                      status: Number(currentStatus)
-                    },
-                    {
-                      headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
-                    }
-                  )
+                tokenHttp
+                    .post(
+                        `${url}/attention/save`,
+                        {
+                            lessonRoundNo: Number(lessonRoundNo),
+                            lessonNo: Number(lessonNo),
+                            userNo: Number(userNo),
+                            rate: Number(currentScore),
+                            status: Number(currentStatus),
+                        },
+                        {
+                            headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
+                        }
+                    )
                     .then((res) => {
-                      console.log("집중도 저장 성공, :",currentScore, currentStatus);
+                        console.log(
+                            "집중도 저장 성공, :",
+                            currentScore,
+                            currentStatus
+                        );
                     })
                     .catch((err) => {
                         console.log("집중도 저장 중 에러 발생", err);
                     });
-                
+
                 let checkAttention;
-                attentionList.push({currentScore,currentStatus});
-                if(attentionList.length > 6){
+                attentionList.push({ currentScore, currentStatus });
+                if (attentionList.length > 6) {
                     attentionList.shift();
-                    if(currentStatus !== 2){
+                    if (currentStatus !== 2) {
                         // 집중도가 0.3 이하인 경우
-                        checkAttention = attentionList.every(item => item.currentScore < 0.3);
+                        checkAttention = attentionList.every(
+                            (item) => item.currentScore < 0.3
+                        );
                         if (checkAttention) {
-                            tokenHttp.get(
-                                `${url}/notification/active/${lessonNo}/${userId}/${currentStatus}`,
-                            ).then(res =>{
-                                console.log("선생님께 주의 알림 신호 성공");
-                                
-                            }).catch(err=>{
-                                console.log("선생님께 주의 알림 신호 중 에러 발생", err);
-                            });
-                            console.log(notificationCnt , " : 주의 알림");
+                            tokenHttp
+                                .get(
+                                    `${url}/notification/active/${lessonNo}/${userId}/${currentStatus}`
+                                )
+                                .then((res) => {
+                                    console.log("선생님께 주의 알림 신호 성공");
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "선생님께 주의 알림 신호 중 에러 발생",
+                                        err
+                                    );
+                                });
+                            console.log(notificationCnt, " : 주의 알림");
                             setNotificationCnt((prev) => {
-                                prev >= 5 ?prev += 1 : prev = 0;
+                                prev >= 5 ? (prev += 1) : (prev = 0);
                             });
                             setAttentionList([]);
                             setIsAttention(false);
                         }
                     }
-                    if(!isAttention && attentionList.length > 5){
-                        checkAttention = attentionList.every(item => item.currentScore >= 0.3);
+                    if (!isAttention && attentionList.length > 5) {
+                        checkAttention = attentionList.every(
+                            (item) => item.currentScore >= 0.3
+                        );
                         if (checkAttention) {
-                            tokenHttp.get(
-                                `${url}/notification/disactive/${lessonNo}/${userId}${currentStatus}`,
-                            ).then(res =>{
-                                console.log("선생님께 집중 알림 신호 성공");
-                            }).catch(err=>{
-                                console.log("선생님께 집중 알림 신호 중 에러 발생", err);
-                            });
+                            tokenHttp
+                                .get(
+                                    `${url}/notification/disactive/${lessonNo}/${userId}${currentStatus}`
+                                )
+                                .then((res) => {
+                                    console.log("선생님께 집중 알림 신호 성공");
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "선생님께 집중 알림 신호 중 에러 발생",
+                                        err
+                                    );
+                                });
                             setIsAttention(true);
                         }
                     }
-                }               
-               
+                }
+
                 // 현재 주의를 받을 상황인가 파악
-                
             }
         },
         [
@@ -356,6 +375,7 @@ const StudentWaitLessonRoomPage = () => {
     const onDebug = (FPS, latency_min, latency_max, latency_avg) => {};
 
     const tmpClick = useCallback(() => {
+        alert("테스트를 시작합니다.")
         setIsTest(false);
         setTimeout(function () {
             eyeTracker.current.startCalibration(
@@ -364,10 +384,10 @@ const StudentWaitLessonRoomPage = () => {
                 onCalibrationFinished
             );
         }, 2000);
-        setFinishTest(false)
+        setFinishTest(false);
     }, [isSeesoInit]);
 
-    const [finishTest, setFinishTest] = useState(true)
+    const [finishTest, setFinishTest] = useState(true);
     const enterTheLessonRoom = () => {
         setEnterRoom(true);
     };
@@ -391,7 +411,7 @@ const StudentWaitLessonRoomPage = () => {
             setVideoEnabled(true);
             setAudioEnabled(true);
 
-            window.location.href = homeurl;
+            window.location.href = `${homeurl}/satisfy/lesson/${lessonNo}/${lessonRoundNo}/teacher/${teacherNo}`;
         }
     }, [isClose]);
 
@@ -455,6 +475,11 @@ const StudentWaitLessonRoomPage = () => {
                                             )}
                                         </Button>
                                     </ControlButtonWrap>
+                                    <ControlButtonWrap>
+                                        <Typography fontWeight={"bold"} color={"white"}>
+                                            당신의 집중도를 파악합니다.
+                                        </Typography>
+                                    </ControlButtonWrap>
 
                                     <ControlButtonWrap>
                                         <Button
@@ -465,10 +490,12 @@ const StudentWaitLessonRoomPage = () => {
                                         </Button>
                                         <Button
                                             onClick={enterTheLessonRoom}
-                                            disabled={!calibrationData && finishTest}
+                                            disabled={
+                                                !calibrationData && finishTest
+                                            }
                                         >
                                             강의 입장
-                                          </Button>
+                                        </Button>
                                     </ControlButtonWrap>
                                 </WaitControlBar>
                             </BottomBarWrap>
