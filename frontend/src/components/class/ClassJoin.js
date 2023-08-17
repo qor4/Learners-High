@@ -462,6 +462,7 @@ const ClassJoin = ({
                             }
                         }
                     });
+                    alert("임시저장 성공")
             })
             .catch((err) => {
                 alert("임시저장 실패");

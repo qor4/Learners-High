@@ -421,6 +421,10 @@ const ClassRoundJoin = ({
             )
             .then((res) => {
                 console.log(res, "개별강의");
+                if (res.data.resultCode===-1) {
+                    alert("유효하지 않습니다. 수업을 다시 입력해주세요.")
+                    return
+                }
                 return res.data.result.lessonNo;
             })
             .then((lessonNo) => {
@@ -502,6 +506,7 @@ const ClassRoundJoin = ({
                             }
                         }
                     });
+                alert("임시저장 성공")
             })
             .catch((err) => {
                 alert("임시저장 실패");
@@ -615,6 +620,7 @@ const ClassRoundJoin = ({
                         }
                         console.log(lessonRoundNoDataSet);
                     });
+                alert("강의 개설 성공")
                 navigate("/");
             })
             .catch((err) => {
