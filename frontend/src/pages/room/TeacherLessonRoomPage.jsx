@@ -258,36 +258,36 @@ const TeacherLessonRoomPage = () => {
             es.current.close();
         };
     }, []);
-    const changeStudentStatus = useCallback((studentData)=>{
-        setStudentList((prev)=>
-                prev.map(
-                    (student) => {
-                        if(student.studentId === studentData.studentId){
-                            if(studentData.isActive){
-                                // 버튼 활성화
-                                return {
-                                    ...student,
-                                    status: Number(studentData.status),
-                                    isActive: studentData.isActive,
-                                    notificationCnt: 0,
-                                };
-                            } else {
-                                // 버튼 비 활성화
-                                return {
-                                    ...student,
-                                    status: Number(studentData.status),
-                                    isActive: studentData.isActive,
-                                    notificationCnt: 0,
-                                };
-                            }
-                        }
-                        return student;
-                    })
-                    .slice()
+    const changeStudentStatus = useCallback((studentData) => {
+        setStudentList((prev) => {
+            const updatedStudentList = prev.map((student) => {
+                if (student.studentId === studentData.studentId) {
+                    const notificationCnt = studentData.isActive
+                        ? student.notificationCnt + 1
+                        : 0;
+    
+                    return {
+                        ...student,
+                        status: Number(studentData.status),
+                        isActive: studentData.isActive,
+                        notificationCnt: notificationCnt,
+                    };
+                }
+                return student;
+            });
+    
+            const targetIndex = updatedStudentList.findIndex(
+                (student) => student.studentId === studentData.studentId
             );
-        },
-        [studentList]
-    );
+    
+            if (targetIndex !== -1) {
+                const targetStudent = updatedStudentList.splice(targetIndex, 1)[0];
+                updatedStudentList.unshift(targetStudent);
+            }
+    
+            return updatedStudentList;
+        });
+    }, [studentList]);
 
     // session이 바뀌면 하는 것
     const leaveSession = async () => {
@@ -739,14 +739,7 @@ const TeacherLessonRoomPage = () => {
                                                                     console.log(
                                                                         "send 성공"
                                                                     );
-                                                                    const studentListCopy = studentList.map((item, i) => {
-                                                                        if (i===idx) {
-                                                                            const student = {...item, notificationCnt : item.notificationCnt +1, isActive : false}
-                                                                            return student
-                                                                        }
-                                                                        return item;
-                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
-                                                                    setStudentList(studentListCopy)
+                                                                    
                                                                 })
                                                                 .catch(
                                                                     (err) => {
