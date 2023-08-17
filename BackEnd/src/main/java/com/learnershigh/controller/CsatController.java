@@ -86,7 +86,7 @@ public class CsatController {
     public ResponseEntity<CustomResponseBody> teacherSati(@PathVariable("teacherNo") Long teacherNo) {
         CustomResponseBody responseBody = new CustomResponseBody<>("한 수업당 강사 총 만족도 뽑기");
         try {
-            responseBody.setResult(satisfactionService.lessonAllSati(teacherNo));
+            responseBody.setResult(satisfactionService.teacherAllSati(teacherNo));
         } catch (IllegalStateException e) {
             responseBody.setResultCode(-1);
             responseBody.setResultMsg(e.getMessage());
