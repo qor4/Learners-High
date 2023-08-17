@@ -13,6 +13,7 @@ import com.learnershigh.repository.LessonRoundAttentionRateRepository;
 import com.learnershigh.repository.lesson.LessonRepository;
 import com.learnershigh.repository.lesson.LessonRoundRepository;
 import com.learnershigh.repository.lessonhub.StudentLessonListRepository;
+import com.learnershigh.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,8 @@ public class AttentionService {
     private final StudentLessonListRepository studentLessonListRepository;
 
     private final LessonRepository lessonRepository;
+
+    private final UserRepository userRepository;
 
     @Transactional
     public void saveAttentionRate(SaveAttentionRateDto saveAttentionRateDto) {
@@ -338,17 +341,23 @@ public class AttentionService {
 
 
     // 한 학생이 들은 모든 강의중 가장 집중도가 높은 수업이름 출력
-    public String oneStudentMaxlessonAvg(Long userNo, Long lessonNo) {
+    public String oneStudentMaxlessonAvg(Long userNo) {
+
+        System.out.println("userNo");
 
         double max = Integer.MIN_VALUE;
 
         String rs = "";
 
-        List<StudentLessonList> list = studentLessonListRepository.findByUserNo(userNo);
+        System.out.println("되니?");
+        List<StudentLessonList> list = studentLessonListRepository.findAllByUserNo(userRepository.findByUserNo(userNo));
+        System.out.println(list.toString());
 
         for (StudentLessonList sll : list) {
 
-            List<LessonRound> lrlist = lessonRoundRepository.findByLessonNo(sll.getLessonNo().getLessonNo());
+            List<LessonRound> lrlist = lessonRoundRepository.findAllByLessonNo(sll.getLessonNo());
+
+            System.out.println("lrlist :" + lrlist.toString());
 
             Long result = 0L;
 
@@ -356,7 +365,7 @@ public class AttentionService {
 
             for (LessonRound lr : lrlist) {
 
-                sum += oneStudentOneRoundAttentionAvg(userNo, lessonNo); // 들어갈 변수값들 넣어야함.
+                sum += oneStudentOneRoundAttentionAvg(userNo, lr.getLessonRoundNo()); // 들어갈 변수값들 넣어야함.
 
             }
             if (sum > max) {
