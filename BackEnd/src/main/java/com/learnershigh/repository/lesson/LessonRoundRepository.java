@@ -43,7 +43,6 @@ public interface LessonRoundRepository extends JpaRepository<LessonRound, Long> 
 
     List<LessonRound> findAllByLessonNo(Lesson lessonNo);
 }
-g
 
 
 
