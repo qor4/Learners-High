@@ -412,7 +412,32 @@ const ClassRoundJoin = ({
             maxStudent: ParentLessonDataSet.maxStudent,
             userNo: userNo, // 임시
         };
-        console.log(lessonRoundDataSet, "보내는값!!!!");
+        let flagTitle = 0
+        let flagDate = 0
+        console.log("?? 등록?", lessonRoundDataSet)
+        if (lessonRoundDataSet.length === 0) {
+            alert("모든 회차를 입력해주세요.")
+            return
+        }
+        lessonRoundDataSet.map(item=> {
+            if (item.lessonRoundTitle.trim() ==="" ) {
+                flagTitle=1
+                return
+            }
+            if (item.lessonRoundStartDatetime === "") {
+                flagDate=1
+                return
+            }
+        })
+        if (flagTitle > 0) {
+            alert("모든 회차를 입력해주세요.")
+            return
+        }
+        if (flagDate > 0) {
+            alert("날짜를 입력해주세요.")
+            return
+        }
+        console.log("?? 여기?", flagDate, flagTitle)
         tokenHttp
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
@@ -421,6 +446,10 @@ const ClassRoundJoin = ({
             )
             .then((res) => {
                 console.log(res, "개별강의");
+                if (res.data.resultCode===-1) {
+                    alert("유효하지 않습니다. 수업을 다시 입력해주세요.")
+                    return
+                }
                 return res.data.result.lessonNo;
             })
             .then((lessonNo) => {
@@ -502,6 +531,7 @@ const ClassRoundJoin = ({
                             }
                         }
                     });
+                alert("임시저장 성공")
             })
             .catch((err) => {
                 alert("임시저장 실패");
@@ -511,6 +541,7 @@ const ClassRoundJoin = ({
 
     // 강의등록
     const handleClickRegisterLesson = () => {
+        console.log("?? 등록?", lessonRoundDataSet)
         // ParentLessonDataSet.lessonTotalRound = lessonTotalRound
         const data = {
             lessonInfo: ParentLessonDataSet.lessonInfo,
@@ -523,6 +554,30 @@ const ClassRoundJoin = ({
             maxStudent: ParentLessonDataSet.maxStudent,
             userNo: userNo, // 임시
         };
+        if (lessonRoundDataSet.length === 0) {
+            alert("모든 회차를 입력해주세요.")
+            return
+        }
+        let flagTitle = 0
+        let flagDate = 0
+        lessonRoundDataSet.map(item=> {
+            if (item.lessonRoundTitle.trim() ==="" ) {
+                flagTitle=1
+                return
+            }
+            if (item.lessonRoundStartDatetime === "") {
+                flagDate=1
+                return
+            }
+        })
+        if (flagTitle > 0) {
+            alert("모든 회차를 입력해주세요.")
+            return
+        }
+        if (flagDate > 0) {
+            alert("날짜를 입력해주세요.")
+            return
+        }
         tokenHttp
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
@@ -615,6 +670,7 @@ const ClassRoundJoin = ({
                         }
                         console.log(lessonRoundNoDataSet);
                     });
+                alert("강의 개설 성공")
                 navigate("/");
             })
             .catch((err) => {

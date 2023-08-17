@@ -144,7 +144,15 @@ const EduManageStudentsCurrentTable = () => {
     const createData = (studentDataSet, lessonRoundDataSet) => {
         const lessonRoundNumber = lessonRoundDataSet.lessonRoundNumber;
         const lessonRoundTitle = lessonRoundDataSet.lessonRoundTitle;
-        const lessonAttendStatus = studentDataSet.lessonAttendStatus;
+        let lessonTempAttendStatus = studentDataSet.lessonAttendStatus;
+
+        const flagDate = new Date(studentDataSet.lessonRoundEndDatetime)
+        const currentDay = new Date();
+        if (flagDate > currentDay) {
+            lessonTempAttendStatus = "수업 예정"
+        }
+
+        const lessonAttendStatus = lessonTempAttendStatus
 
         return {
             lessonRoundNumber,
@@ -175,7 +183,7 @@ const EduManageStudentsCurrentTable = () => {
                         res.data.result.lessonRoundFileInfo;
                     let cntAttend = 0;
                     for (let i = 0; i < lessonRoundFileInfo.length; i++) {
-                        if (attendHomeworkList[i].lessonAttendStatus === "출석")
+                        if (attendHomeworkList[i]?.lessonAttendStatus === "출석")
                             cntAttend++;
                     }
                     setRealAttend(cntAttend);
