@@ -444,17 +444,23 @@ const TeacherLessonRoomPage = () => {
         }
     };
 
-    const toggleShare = () => {
-        if (shareEnabled) {
-            console.log("공유 시작  ");
-            screenShare();
-        } else {
-            showCam();
-            console.log("공유 종료");
+    const toggleShare = async () => {
+        try {
+            if (shareEnabled) {
+                console.log("공유 시작");
+                await screenShare();
+            } else {
+                console.log("공유 종료");
+                await showCam();
+            }
+        } catch (error) {
+            console.error("Error toggling share:", error);
+            // 에러 발생 시 카메라 화면으로 변경하는 동작을 수행
+            await showCam();
         }
     };
 
-    const screenShare = async () => {
+    const screenShare =  async () => {
         const videoSource =
             navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
         const sharePublisher = await OV.initPublisher(
@@ -484,8 +490,17 @@ const TeacherLessonRoomPage = () => {
                     );
                 }
             }
+
         );
 
+
+        
+        sharePublisher.once("accessDenied", (event) => {
+            console.warn("ScreenShare: Access Denied");
+            if(event.name == 'SCREEN_CAPTURE_DENIED'){
+                showCam();
+            }
+        });
         sharePublisher.once("accessAllowed", async () => {
             sharePublisher.stream
                 .getMediaStream()
@@ -493,18 +508,16 @@ const TeacherLessonRoomPage = () => {
                 .addEventListener("ended", showCam);
         });
         sharePublisher.once("streamPlaying", async () => {
-            setShareEnabled(!shareEnabled);
+            setShareEnabled(true);
         });
-        publisher.once("accessDenied", (event) => {
-            console.warn("ScreenShare: Access Denied");
-        });
-
+        
         await session.unpublish(publisher);
         setPublisher(sharePublisher);
         await session.publish(sharePublisher);
+        setMainStreamManager(sharePublisher);
     };
 
-    const showCam = async () => {
+    const showCam = useCallback(async () => {
         let newPublisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined, // The source of audio. If undefined default microphone
             videoSource: undefined, // The source of video. If undefined default webcam
@@ -519,9 +532,10 @@ const TeacherLessonRoomPage = () => {
         await session.unpublish(publisher);
         setPublisher(newPublisher);
         await session.publish(newPublisher);
+        setMainStreamManager(newPublisher);
 
-        setShareEnabled(!shareEnabled);
-    };
+        setShareEnabled(false);
+    },[audioEnabled,videoEnabled,OV,session,publisher]);
 
     return (
         <>
