@@ -173,6 +173,7 @@ const EduManageStudentsCurrentTable = () => {
         tokenHttp
             .get(`${url}/student/${Number(userNo)}/lesson/${Number(lessonNo)}`)
             .then((res) => {
+                if (res.data.result.length === 0) return
                 if (res.data.resultCode === 0) {
                     console.log(res.data.result, "####학생과 강의");
                     const attendHomeworkList =
@@ -182,7 +183,7 @@ const EduManageStudentsCurrentTable = () => {
                         res.data.result.lessonRoundFileInfo;
                     let cntAttend = 0;
                     for (let i = 0; i < lessonRoundFileInfo.length; i++) {
-                        if (attendHomeworkList[i].lessonAttendStatus === "출석")
+                        if (attendHomeworkList[i]?.lessonAttendStatus === "출석")
                             cntAttend++;
                     }
                     setRealAttend(cntAttend);

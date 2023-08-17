@@ -13,6 +13,7 @@ import LessonStatusBox from "../common/LessonStatusBox";
 import { useNavigate } from "react-router-dom";
 import { StyledTitleText } from "./LessonItemBox";
 import tokenHttp, {url} from "../../api/APIPath";
+import axios from "axios";
 
 const StyledButtonWrap = styled.div`
     text-align: right;
@@ -121,12 +122,55 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
         });
     };
 
+    // 강의자료 관련 함수
     const downloadLessonData = () => {
         // const url = 
+        try {
 
-        tokenHttp.post(`${url}/s3/download/data?lessonRoundNo=${Number(lessonRoundNo)}`)
-        .then(res=>console.log(res))
-        .catch(err=>console.log(err))
+            tokenHttp.post(`${url}/s3/download/data?lessonRoundNo=${Number(lessonRoundNo)}`)
+            .then((res)=>{
+                console.log(res, "이게 뭘까")
+                if (res.data.resultCode === -1) return
+                window.open(res.data.resultCode)
+                // const blobURL = URL.createObjectURL(res.data.resultCode)
+                // const a = document.createElement('a')
+                // a.href = blobURL
+                // document.body.appendChild(a)
+                // a.click()
+                // setTimeout(_ => {
+                //     window.URL.revokeObjectURL(blobURL);
+                // }, 60000);
+                // a.remove()
+            })
+            .catch(err => {
+                console.log(err, "##")
+                alert("다운 실패")
+            })
+
+                            
+            //     axios.get(res.data.resultMsg)
+            //     .then(res => {
+            //         return
+            //     })
+            //     .then(blob => {
+            //         const a = document.createElement('a')
+            //         a.href = blobURL
+            //         document.body.appendChild(a)
+            //         a.click()
+            //         setTimeout(_ => {
+			// 			window.URL.revokeObjectURL(blobURL);
+			// 		}, 60000);
+            //         a.remove()
+            //     })
+            //     .catch(err => {
+            //         console.log(err, "##")
+            //         alert("다운 실패")
+            //     })
+            // })
+            // .catch(err=>console.log(err))
+        } catch (err) {
+            alert("강의 자료가 없습니다.")
+        }
     }
 
     return (
