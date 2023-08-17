@@ -186,12 +186,12 @@ const EduManageReportTable = ({
 
         if (userType === "S") {
             if (myData.length > 0) {
-                for (let j = 0; j < 20; j++) {
+                for (let j = 0; j < myData.length; j++) {
                     myDataSet.push(myData[j].avgValue * 100);
                 }
             }
             if (otherData.length > 0) {
-                for (let j = 0; j < 20; j++) {
+                for (let j = 0; j < otherData.length; j++) {
                     otherDataSet.push(otherData[j].avgValue * 100);
                 }
             }
@@ -207,7 +207,7 @@ const EduManageReportTable = ({
             ];
         } else if (userType === "T") {
             if (teacherData.length > 0) {
-                for (let j = 0; j < 20; j++) {
+                for (let j = 0; j < teacherData.length; j++) {
                     teacherDataSet.push(teacherData[j].avgValue * 100);
                 }
             }
@@ -302,7 +302,7 @@ const EduManageReportTable = ({
             try {
                 const responses = await Promise.all(requests);
                 for (let i = 0; i < lessonTotalRound; i++) {
-                    console.log(responses[i].data.result);
+                    // console.log(responses[i].data.result);
                     const lessonRoundNo = lessonRoundInfo[i].lessonRoundNo;
                     rowsCopy.push(
                         createData(lessonRoundInfo[i], responses[i].data.result)
