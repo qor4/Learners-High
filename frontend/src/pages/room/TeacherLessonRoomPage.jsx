@@ -630,7 +630,7 @@ const TeacherLessonRoomPage = () => {
                                                 <>
                                                     {/* 이때 하나. */}
                                                     <div>
-                                                        <span style={{color: '#db0000'}}>산만</span>
+                                                        <span style={{color: '#db0000'}}>주의</span>
                                                     </div>
 
                                                     <StateButton
@@ -661,10 +661,10 @@ const TeacherLessonRoomPage = () => {
                                                                     );
                                                                     const studentListCopy = studentList.map((item, i) => {
                                                                         if (i===idx) {
-                                                                            item.notificationCnt = item.notificationCnt + 1
-                                                                            item.isActive = false
+                                                                            return {...item,notificationCnt :0,isActive:false}
                                                                         }
-                                                                    }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
+                                                                        return item;
+                                                                    });
                                                                     setStudentList(studentListCopy)
                                                                 })
                                                                 .catch(
@@ -686,7 +686,7 @@ const TeacherLessonRoomPage = () => {
                                             <>
                                                 {/* 이때 하나. */}
                                                 <div>
-                                                <span style={{color: '#db0000'}}>딴짓</span>
+                                                <span style={{color: '#db0000'}}>주의</span>
                                                 </div>
 
                                                 <StateButton
@@ -739,7 +739,13 @@ const TeacherLessonRoomPage = () => {
                                                                     console.log(
                                                                         "send 성공"
                                                                     );
-                                                                    
+                                                                    const studentListCopy = studentList.map((item, i) => {
+                                                                        if (i===idx) {
+                                                                            return {...item,notificationCnt :0,isActive:false}
+                                                                        }
+                                                                        return item;
+                                                                    });
+                                                                    setStudentList(studentListCopy)
                                                                 })
                                                                 .catch(
                                                                     (err) => {
