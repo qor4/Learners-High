@@ -132,15 +132,15 @@ public class SatisfactionService {
 
         for (Satisfaction satisfaction : satiList) {
 
-            if (satisfaction.getLessonRoundCsat() == 1) {
+            if (satisfaction.getTeacherCsat() == 1) {
                 one++;
-            } else if (satisfaction.getLessonRoundCsat() == 2) {
+            } else if (satisfaction.getTeacherCsat() == 2) {
                 two++;
-            } else if (satisfaction.getLessonRoundCsat() == 3) {
+            } else if (satisfaction.getTeacherCsat() == 3) {
                 three++;
-            } else if (satisfaction.getLessonRoundCsat() == 4) {
+            } else if (satisfaction.getTeacherCsat() == 4) {
                 four++;
-            } else if (satisfaction.getLessonRoundCsat() == 5) {
+            } else if (satisfaction.getTeacherCsat() == 5) {
                 five++;
             }
             totalCnt++;

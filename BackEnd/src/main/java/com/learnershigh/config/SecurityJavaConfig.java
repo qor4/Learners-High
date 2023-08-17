@@ -77,7 +77,8 @@ public class SecurityJavaConfig {
                         HttpMethod.OPTIONS, "/**"
                 ).permitAll()
                 .antMatchers(
-//                        "/api/s3/**",
+                        "/api/s3/**",
+
                         "/api/teacher/**",
                         "/api/mypage/**",
                         "/api/csat/create",
