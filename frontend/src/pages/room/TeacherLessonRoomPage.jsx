@@ -746,9 +746,10 @@ const TeacherLessonRoomPage = () => {
                                                                     );
                                                                     const studentListCopy = studentList.map((item, i) => {
                                                                         if (i===idx) {
-                                                                            item.notificationCnt = item.notificationCnt + 1
-                                                                            item.isActive = false
+                                                                            const student = {...item, notificationCnt : item.notificationCnt +1, isActive : false}
+                                                                            return student
                                                                         }
+                                                                        return item;
                                                                     }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
                                                                     setStudentList(studentListCopy)
                                                                 })
