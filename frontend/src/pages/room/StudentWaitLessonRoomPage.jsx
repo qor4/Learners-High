@@ -139,11 +139,11 @@ const StudentWaitLessonRoomPage = () => {
 
         es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
-            const sound = new Audio("/assets/audios/karinaCall.mp3");
+            const sound = new Audio("/assets/audios/action.mp3");
             sound.play();
 
             conteffi.addConfetti({
-                emojis: ["🍔", "🍕", "🍺"],
+                emojis: ["✨", "🔔", "💥"],
                 emojiSize: 100,
                 confettiNumber: 30,
             });
@@ -151,7 +151,7 @@ const StudentWaitLessonRoomPage = () => {
             setTimeout(() => {
                 sound.pause();
                 sound.currentTime = 0;
-            }, 3000);
+            }, 2000);
         });
 
         es.current.onerror = (err) => {

@@ -113,7 +113,7 @@ public class S3Service {
 
         UUID ui = UUID.randomUUID();
 
-        String key = dirName + "/" + ui + "_" + encodedOriginName;
+        String key = dirName + "/" + ui;
 
 
         System.out.println("key: " + key);  // ---> 키를 넣어놓기
@@ -268,19 +268,19 @@ public class S3Service {
 //----------------------------------------------------------------------------------------------------------------
 
     // 학생이 올린 과제 다운로드
-    public boolean homeworkDownload(Long lessonHomeworkNo, HttpServletRequest request, HttpServletResponse
+    public boolean homeworkDownload(Long lessonRoundNo, HttpServletRequest request, HttpServletResponse
             response) {
         System.out.println("서비스 다운로드");
 
-        LessonHomework lessonHomework = lessonHomeworkRepository.findByLessonHomeworkNo(lessonHomeworkNo);
+        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
 
 
         // origin name
-        String originName = lessonHomework.getHomeworkFileOriginName();
+        String originName = lessonRound.getLessonRoundFileOriginName();
         System.out.println(originName);
 
         // s3file name
-        String s3FileName = lessonHomework.getHomeworkFileName();
+        String s3FileName = lessonRound.getLessonRoundFileName();
         System.out.println(s3FileName);
 
         if (s3FileName == null) {
@@ -310,9 +310,10 @@ public class S3Service {
             } else {
                 fileName = getEncodedFilename(request, s3FileName); // URLEncoder.encode(fileKey, "UTF-8").replaceAll("\\+", "%20");
             }
-
+            System.out.println("fileName"+fileName);
             response.setContentType("application/octet-stream;charset=UTF-8");
             response.setHeader("Content-Transfer-Encoding", "binary");
+//            response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\";");
             response.setHeader("Content-Length", String.valueOf(fullObject.getObjectMetadata().getContentLength()));
             response.setHeader("Set-Cookie", "fileDownload=true; path=/");
@@ -338,7 +339,6 @@ public class S3Service {
         }
         return success;
     }
-
 
     // 강사가 올린 학습자료 다운로드
 //    public String dataDownload(Long lessonRoundNo, HttpServletRequest request, HttpServletResponse
@@ -440,7 +440,7 @@ public class S3Service {
 
 
         System.out.println(URL+s3FileName+encodedOriginName);
-        return URL+encodedOriginName;
+        return URL+s3FileName;
     }
 
     //
