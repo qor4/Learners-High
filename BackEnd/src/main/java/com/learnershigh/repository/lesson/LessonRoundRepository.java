@@ -40,10 +40,10 @@ public interface LessonRoundRepository extends JpaRepository<LessonRound, Long> 
     LessonRound isEnterLessonroom(Long lessonNo);
 
     LessonRound findByLessonNoAndLessonRoundNumber(Long lessonNo, int lessonRoundNumber);
-
+    
     List<LessonRound> findAllByLessonNo(Lesson lessonNo);
 }
-g
+
 
 
 
