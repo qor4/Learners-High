@@ -380,14 +380,16 @@ const ClassRoundJoin = ({
 
     const getLessonData = (roundData, idx) => {
         console.log(roundData, "이전거 드렁옴?");
+        console.log("idx :",idx);
         const {
             lessonRoundTitle,
             lessonRoundFileOriginName,
             lessonRoundFileName,
         } = roundData;
-        const lessonRoundDataSetCopy = JSON.parse(
-            JSON.stringify(lessonRoundDataSet)
-        );
+        const lessonRoundDataSetCopy = [...lessonRoundDataSet];
+
+        console.log("lessonRoundDataSe :",lessonRoundDataSetCopy)
+        console.log("lessonRoundDataSe :",lessonRoundDataSet)
         lessonRoundDataSetCopy[idx].lessonRoundTitle = lessonRoundTitle;
         lessonRoundDataSetCopy[idx].lessonRoundFileOriginName =
             lessonRoundFileOriginName;
@@ -449,6 +451,7 @@ const ClassRoundJoin = ({
                 lessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
+                
                 tokenHttp
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
@@ -457,6 +460,7 @@ const ClassRoundJoin = ({
                         console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
                         for (let i = 0; i < lessonRoundDataSet.length; i++) {
+
                             if (
                                 lessonRoundDataSet[i].lessonRoundFileOriginName
                             ) {
@@ -467,7 +471,7 @@ const ClassRoundJoin = ({
                                 const formData = new FormData();
                                 console.log(
                                     lessonRoundDataSet[i].lessonRoundFileName,
-                                    "파일이니?"
+                                    "파일이 니?"
                                 );
                                 formData.append(
                                     "multipartFile",
@@ -528,14 +532,16 @@ const ClassRoundJoin = ({
             .then((res) => {
                 return res.data.result.lessonNo;
             })
-            .then((lessonNo) => {
+            .then(async (lessonNo) => {
                 if (ParentLessonDataSet.lessonThumbnailImg) {
                     const formData = new FormData();
                     formData.append(
                         "multipartFile",
                         ParentLessonDataSet.lessonThumbnailImg
                     );
-                    tokenHttp
+                    console.log(ParentLessonDataSet," : formData");
+                    console.log(formData," : formData");
+                    await tokenHttp
                         .post(
                             `${url}/s3/upload/thumbnail/${lessonNo}`,
                             formData,
@@ -553,9 +559,11 @@ const ClassRoundJoin = ({
             // 강의 회차 갑니다.
             .then((lessonNo) => {
                 if (lessonRoundDataSet.length === 0) return;
+                console.log("전 : ",lessonRoundDataSet);
                 lessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
+                console.log("후 : ",lessonRoundDataSet);
                 tokenHttp
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
@@ -564,6 +572,7 @@ const ClassRoundJoin = ({
                         console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
                         for (let i = 0; i < lessonRoundDataSet.length; i++) {
+                            console.log(lessonRoundDataSet[i], i);
                             if (
                                 lessonRoundDataSet[i].lessonRoundFileOriginName
                             ) {

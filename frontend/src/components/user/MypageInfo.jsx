@@ -118,9 +118,9 @@ const MypageInfo = ({ userNo }) => {
                     {/* 강사 이미지 */}
                     <StyledThumbnail
                         src={
-                            profileImg === "no"
-                                ? "/assets/bannerimg.jpg"
-                                : profileImg
+                            profileImg
+                                ? profileImg
+                                : "/assets/bannerimg.jpg"
                         }
                         alt="teacher-img"
                         crossOrigin="anonymous"
