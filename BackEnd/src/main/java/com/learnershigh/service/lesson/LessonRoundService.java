@@ -25,7 +25,7 @@ public class LessonRoundService {
     private final LessonRoundRepository lessonRoundRepository;
 
     // 강의 회차 정보 추가
-    @Transactional
+    @Transactional(noRollbackFor= Exception.class)
     public List<HashMap<String, Object>> lessonRoundJoin(List<LessonRoundJoinDto> lessonRoundJoinDtoList) {
         List<HashMap<String, Object>> result = new ArrayList<>();
         List<LessonRound> lessonRoundList = lessonRoundRepository.findByLessonNo(lessonRoundJoinDtoList.get(0).getLessonNo());
