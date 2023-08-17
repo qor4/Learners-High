@@ -96,7 +96,7 @@ public class TeacherService {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
         if (status.equals("전체")) { // 상태를 선택하지 않았을 경우
-            lessonList = lessonRepository.findByUserNo(user);
+            lessonList = lessonRepository.findByUserNoOrderByLessonStartDateAsc(user);
         } else if (status.equals("강의 완료")) { // 상태가 강의 종료일 경우
             lessonList = lessonRepository.teacherLessonListEnd(userNo, status);
             // 별점 포함 목록 출력
