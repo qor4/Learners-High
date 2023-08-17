@@ -81,7 +81,7 @@ public class AmazonS3Controller {
         // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
         // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
     public ResponseEntity<BaseResponseBody> dataDownload(@RequestParam("lessonRoundNo") Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException{
-        BaseResponseBody responseBody = new BaseResponseBody("강사가 올린 학습자료 다운로드");\
+        BaseResponseBody responseBody = new BaseResponseBody("강사가 올린 학습자료 다운로드");
         try{
             responseBody.setResultCode(0);
             responseBody.setResultMsg(s3Service.dataDownload(lessonRoundNo, request, response));
