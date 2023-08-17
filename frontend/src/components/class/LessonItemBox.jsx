@@ -111,7 +111,7 @@ const LessonItemBox = ({ lessonInfo }) => {
                     setAttendRate(response.data.result.attendRate);
                 });
         }
-    }, []);
+    }, [lessonNo, userNo, userType]);
     return (
         <>
             <Card>
