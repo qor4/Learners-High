@@ -440,7 +440,7 @@ public class S3Service {
 
 
         System.out.println(URL+s3FileName+encodedOriginName);
-        return URL+s3FileName+"_"+encodedOriginName;
+        return URL+encodedOriginName;
     }
 
     //
