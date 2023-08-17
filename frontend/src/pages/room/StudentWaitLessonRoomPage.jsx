@@ -391,7 +391,7 @@ const StudentWaitLessonRoomPage = () => {
             setVideoEnabled(true);
             setAudioEnabled(true);
 
-            window.location.href = homeurl;
+            window.location.href = `${homeurl}/satisfy/lesson/${lessonNo}/${lessonRoundNo}/teacher/${teacherNo}`;
         }
     }, [isClose]);
 
