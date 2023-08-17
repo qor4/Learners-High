@@ -21,6 +21,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
 
     List<Lesson> findByUserNo(User userNo);
 
+    List<Lesson> findByUserNoOrderByLessonStartDateAsc(User userNo);
 
     @Query(value = "SELECT lesson FROM Lesson lesson WHERE lesson.userNo.userNo = :userNo AND lesson.lessonStatus = :status " +
             "ORDER BY lesson.lessonStartDate ASC")
