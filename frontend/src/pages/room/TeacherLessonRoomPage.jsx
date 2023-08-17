@@ -630,11 +630,6 @@ const TeacherLessonRoomPage = () => {
                                                 <>
                                                     {/* 이때 하나. */}
                                                     <div>
-                                                        {" "}
-                                                        {
-                                                            studentList[idx]
-                                                                .status
-                                                        }{" "}
                                                         <span style={{color: '#db0000'}}>산만</span>
                                                     </div>
 
@@ -746,9 +741,10 @@ const TeacherLessonRoomPage = () => {
                                                                     );
                                                                     const studentListCopy = studentList.map((item, i) => {
                                                                         if (i===idx) {
-                                                                            item.notificationCnt = item.notificationCnt + 1
-                                                                            item.isActive = false
+                                                                            const student = {...item, notificationCnt : item.notificationCnt +1, isActive : false}
+                                                                            return student
                                                                         }
+                                                                        return item;
                                                                     }).sort((a, b)=> a.notificationCnt - b.notificationCnt )
                                                                     setStudentList(studentListCopy)
                                                                 })
