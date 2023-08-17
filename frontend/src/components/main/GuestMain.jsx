@@ -71,7 +71,7 @@ const StyledTitleText = styled.div`
 `;
 
 /** 설명 텍스트박스 (line-height 16px 16px) */
-const StyledExplainText = styled.div`
+export const StyledExplainText = styled.div`
     font-size: 1rem;
     line-height: 1.5rem;
 `;

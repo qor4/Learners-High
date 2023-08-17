@@ -47,7 +47,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 
     "&:nth-of-type(odd)": {
-        backgroundColor: "#F9FAFF",
+        // backgroundColor: "#F9FAFF",
     },
     // hide last border
     "&:last-child td, &:last-child th": {
@@ -130,6 +130,7 @@ function Row(props) {
                     style={{ paddingBottom: 0, paddingTop: 0 }}
                     colSpan={6}
                 ></StyledTableCell>
+                
             </StyledTableRow>
         </React.Fragment>
     );
@@ -173,7 +174,6 @@ const EduManageStudentsCurrentTable = () => {
         tokenHttp
             .get(`${url}/student/${Number(userNo)}/lesson/${Number(lessonNo)}`)
             .then((res) => {
-                if (res.data.result.length === 0) return
                 if (res.data.resultCode === 0) {
                     console.log(res.data.result, "####학생과 강의");
                     const attendHomeworkList =
@@ -204,46 +204,44 @@ const EduManageStudentsCurrentTable = () => {
     }, []);
 
     return (
-        <Container>
-            <TableContainer
-                component={Paper}
-                elevation={10}
-                sx={{
-                    borderRadius: "15px",
-                    marginTop: "2rem",
-                    marginBottom: "2rem",
-                }}
-            >
-                <Table aria-label="collapsible table">
-                    <TableHead
-                    // style={{background: "#F9FAFF"}}
-                    >
-                        <StyledTableRow>
-                            <StyledTableCell />
-                            {/* <StyledTableCell /> */}
-                            <StyledTableCell />
-                            <StyledTableCell align="left">
-                                {" "}
-                                <span>강의명</span>
-                            </StyledTableCell>
-                            <StyledTableCell align="right">
-                                {" "}
-                                <span>
-                                    출석 {realAttend} / {totalAttend}{" "}
-                                </span>
-                            </StyledTableCell>
-                            <StyledTableCell align="right"></StyledTableCell>
-                            <StyledTableCell align="right" />
-                        </StyledTableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <Row key={row.name} row={row} />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Container>
+        <TableContainer
+            component={Paper}
+            elevation={4}
+            sx={{
+                borderRadius: "20px",
+                marginTop: "2rem",
+                marginBottom: "2rem",
+            }}
+        >
+            <Table aria-label="collapsible table">
+                <TableHead
+                // style={{background: "#F9FAFF"}}
+                >
+                    <StyledTableRow>
+                        <StyledTableCell />
+                        {/* <StyledTableCell /> */}
+                        <StyledTableCell />
+                        <StyledTableCell align="left">
+                            {" "}
+                            <span>강의명</span>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                            {" "}
+                            <span>
+                                출석 {realAttend} / {totalAttend}{" "}
+                            </span>
+                        </StyledTableCell>
+                        <StyledTableCell align="right"></StyledTableCell>
+                        <StyledTableCell align="right" />
+                    </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row, index) => (
+                        <Row key={`current-${index}`} row={row} />
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 

@@ -17,9 +17,19 @@ public interface StudentLessonListRepository extends JpaRepository<StudentLesson
 
     List<StudentLessonList> findByUserNo(Long userNo);
 
+    List<StudentLessonList> findAllByUserNo(User userNo);
+
     @Query(value = "SELECT studentLesson FROM StudentLessonList studentLesson " +
             "RIGHT JOIN Lesson lesson ON studentLesson.lessonNo.lessonNo = lesson.lessonNo " +
-            "WHERE studentLesson.userNo = :userNo AND lesson.lessonStatus = :status")
-    List<StudentLessonList> findAllByUserNoAndStatus(User userNo, String status);
+            "WHERE studentLesson.userNo = :userNo AND lesson.lessonStatus = :status " +
+            "ORDER BY lesson.lessonStartDate ASC")
+    List<StudentLessonList> findAllByUserNoAndStatusStart(User userNo, String status);
+
+    @Query(value = "SELECT studentLesson FROM StudentLessonList studentLesson " +
+            "RIGHT JOIN Lesson lesson ON studentLesson.lessonNo.lessonNo = lesson.lessonNo " +
+            "WHERE studentLesson.userNo = :userNo AND lesson.lessonStatus = :status " +
+            "ORDER BY lesson.lessonEndDate DESC")
+    List<StudentLessonList> findAllByUserNoAndStatusEnd(User userNo, String status);
+
 }
 

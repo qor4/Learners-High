@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -102,14 +103,23 @@ public class S3Service {
 
     // 수업 회차마다 수업 자료를 DB와 S3에 모두 저장
     @Transactional
-    public String dataUploadToAWS(MultipartFile file, String dirName, Long lessonRoundNo) {
-        String key = dirName + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+    public String dataUploadToAWS(MultipartFile file, String dirName, Long lessonRoundNo) throws UnsupportedEncodingException {
 
         String originName = file.getOriginalFilename();
+
+        String encodedOriginName = URLEncoder.encode(originName, StandardCharsets.UTF_8.toString());
+
+        System.out.println("야야ㅑ야 : " + encodedOriginName);
+
+        UUID ui = UUID.randomUUID();
+
+        String key = dirName + "/" + ui + "_" + encodedOriginName;
+
 
         System.out.println("key: " + key);  // ---> 키를 넣어놓기
 
         System.out.println(file.getOriginalFilename()); // ---> origin name 에 넣어놓기
+
         try {
 
             ObjectMetadata metadata = new ObjectMetadata();
@@ -126,7 +136,9 @@ public class S3Service {
 
             LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
 
-            lessonRound.setLessonRoundFileName(key);
+            String uuidString = ui.toString();
+
+            lessonRound.setLessonRoundFileName(dirName+"/"+uuidString);
             lessonRound.setLessonRoundFileOriginName(originName);
 
             lessonRoundRepository.save(lessonRound);
@@ -152,10 +164,11 @@ public class S3Service {
 
     //  수업 회차마다 과제파일을 DB와 S3에 모두 저장
     @Transactional
-    public String homeworkUploadToAWS(MultipartFile file, String dirName, Long lessonHomeworkNo) {
+    public String homeworkUploadToAWS(MultipartFile file, String dirName, Long lessonHomeworkNo) throws UnsupportedEncodingException {
         String key = dirName + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         String originName = file.getOriginalFilename();
+
 
         System.out.println("key: " + key);  // ---> 키를 넣어놓기
 
@@ -328,75 +341,107 @@ public class S3Service {
 
 
     // 강사가 올린 학습자료 다운로드
-    public boolean dataDownload(Long lessonRoundNo, HttpServletRequest request, HttpServletResponse
-            response) {
+//    public String dataDownload(Long lessonRoundNo, HttpServletRequest request, HttpServletResponse
+//            response) throws UnsupportedEncodingException {
+//        LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
+//        System.out.println("서비스 다운로드");
+//
+//
+//
+//        // origin name
+//        String originName = lessonRound.getLessonRoundFileOriginName();
+//        System.out.println(lessonRound.getLessonRoundFileOriginName());
+//
+//        String encodedOriginName = URLEncoder.encode(originName, StandardCharsets.UTF_8.toString());
+//
+//        // s3file name
+//        String s3FileName = lessonRound.getLessonRoundFileName();
+//        System.out.println(lessonRound.getLessonRoundFileName());
+//
+//        if (s3FileName == null) {
+////            return false;
+//        }
+//        S3Object fullObject = null;
+//        try {
+//            fullObject = amazonS3.getObject(bucket, s3FileName);
+//            if (fullObject == null) {
+////                return false;
+//            }
+//        } catch (AmazonS3Exception e) {
+//            throw new IllegalStateException("다운로드 파일이 존재하지 않습니다.");
+//        }
+//
+//        OutputStream os = null;
+//        FileInputStream fis = null;
+//        boolean success = false;
+//        try {
+//            S3ObjectInputStream objectInputStream = fullObject.getObjectContent();
+//            byte[] bytes = IOUtils.toByteArray(objectInputStream);
+//
+//            String fileName = null;
+//            if (originName != null) {
+////                fileName= URLEncoder.encode(downloadFileName, "UTF-8").replaceAll("\\+", "%20");
+//                fileName = getEncodedFilename(request, originName);
+//            } else {
+//                fileName = getEncodedFilename(request, s3FileName); // URLEncoder.encode(fileKey, "UTF-8").replaceAll("\\+", "%20");
+//            }
+//
+//            response.setContentType("application/octet-stream;charset=UTF-8");
+//            response.setHeader("Content-Transfer-Encoding", "binary");
+//            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\";");
+//            response.setHeader("Content-Length", String.valueOf(fullObject.getObjectMetadata().getContentLength()));
+//            response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+//            FileCopyUtils.copy(bytes, response.getOutputStream());
+//            success = true;
+//        } catch (IOException e) {
+//            log.debug(e.getMessage(), e);
+//        } finally {
+//            try {
+//                if (fis != null) {
+//                    fis.close();
+//                }
+//            } catch (IOException e) {
+//                log.debug(e.getMessage(), e);
+//            }
+//            try {
+//                if (os != null) {
+//                    os.close();
+//                }
+//            } catch (IOException e) {
+//                log.debug(e.getMessage(), e);
+//            }
+//        }
+//        return URL+s3FileName+encodedOriginName;
+//    }
+
+
+    // 강사가 올린 학습자료 다운로드
+    public String dataDownload(Long lessonRoundNo, HttpServletRequest request, HttpServletResponse
+            response) throws UnsupportedEncodingException {
+
         LessonRound lessonRound = lessonRoundRepository.findByLessonRoundNo(lessonRoundNo);
         System.out.println("서비스 다운로드");
+
+
 
         // origin name
         String originName = lessonRound.getLessonRoundFileOriginName();
         System.out.println(lessonRound.getLessonRoundFileOriginName());
+
+        String encodedOriginName = URLEncoder.encode(originName, StandardCharsets.UTF_8.toString());
 
         // s3file name
         String s3FileName = lessonRound.getLessonRoundFileName();
         System.out.println(lessonRound.getLessonRoundFileName());
 
         if (s3FileName == null) {
-            return false;
-        }
-        S3Object fullObject = null;
-        try {
-            fullObject = amazonS3.getObject(bucket, s3FileName);
-            if (fullObject == null) {
-                return false;
-            }
-        } catch (AmazonS3Exception e) {
             throw new IllegalStateException("다운로드 파일이 존재하지 않습니다.");
         }
 
-        OutputStream os = null;
-        FileInputStream fis = null;
-        boolean success = false;
-        try {
-            S3ObjectInputStream objectInputStream = fullObject.getObjectContent();
-            byte[] bytes = IOUtils.toByteArray(objectInputStream);
 
-            String fileName = null;
-            if (originName != null) {
-                //fileName= URLEncoder.encode(downloadFileName, "UTF-8").replaceAll("\\+", "%20");
-                fileName = getEncodedFilename(request, originName);
-            } else {
-                fileName = getEncodedFilename(request, s3FileName); // URLEncoder.encode(fileKey, "UTF-8").replaceAll("\\+", "%20");
-            }
-
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Transfer-Encoding", "binary");
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\";");
-            response.setHeader("Content-Length", String.valueOf(fullObject.getObjectMetadata().getContentLength()));
-            response.setHeader("Set-Cookie", "fileDownload=true; path=/");
-            FileCopyUtils.copy(bytes, response.getOutputStream());
-            success = true;
-        } catch (IOException e) {
-            log.debug(e.getMessage(), e);
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (IOException e) {
-                log.debug(e.getMessage(), e);
-            }
-            try {
-                if (os != null) {
-                    os.close();
-                }
-            } catch (IOException e) {
-                log.debug(e.getMessage(), e);
-            }
-        }
-        return success;
+        System.out.println(URL+s3FileName+encodedOriginName);
+        return URL+s3FileName+"_"+encodedOriginName;
     }
-
 
     //
 //    /**/
@@ -453,7 +498,7 @@ public class S3Service {
     public String thumbnailLoad(Long lessonNo) {
         Lesson cla = lessonRepository.findByLessonNo(lessonNo);
 
-        if(cla.getLessonThumbnailImg() == null){
+        if (cla.getLessonThumbnailImg() == null) {
             throw new IllegalStateException("등록된 썸네일이 없습니다.");
         }
         return URL + cla.getLessonThumbnailImg();
@@ -464,7 +509,7 @@ public class S3Service {
     public String profileLoad(Long userNo) {
 
         User user = userRepository.findByUserNo(userNo);
-        if(user.getProfileImg() == null){
+        if (user.getProfileImg() == null) {
             throw new IllegalStateException("등록된 프로필 사진이 없습니다.");
         }
         return URL + user.getProfileImg();

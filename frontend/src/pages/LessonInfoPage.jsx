@@ -63,11 +63,13 @@ const LessonInfoPage = (props) => {
 
     // 조회수 증가 요청
     useEffect(() => {
-        axios
-            .put(`${url}/lesson/viewcount?lessonNo=${lessonNo}`)
-            .then((response) => {
-                console.log("viewCount +1 성공!");
-            });
+        if (!pathByEduStudentLessonPage) {
+            axios
+                .put(`${url}/lesson/viewcount?lessonNo=${lessonNo}`)
+                .then((response) => {
+                    console.log("viewCount +1 성공!");
+                });
+        }
     }, []);
 
     // 강의 상세 GET 요청
@@ -164,11 +166,13 @@ const LessonInfoPage = (props) => {
                             )}
                         </FlexWrap>
 
-                {lessonInfoDataSet.lessonInfo && (
-                    <Card>
-                    <TeacherIntroduceBox teacherInfo={teacherInfoDataSet} />
-                    </Card>
-                    )}
+                        {lessonInfoDataSet.lessonInfo && (
+                            <Card>
+                                <TeacherIntroduceBox
+                                    teacherInfo={teacherInfoDataSet}
+                                />
+                            </Card>
+                        )}
                     </>
                 )}
                 {/* 수업 소개 */}
@@ -200,7 +204,14 @@ const LessonInfoPage = (props) => {
                                     <LessonStatusBox $point>
                                         {round.lessonRoundNumber}회
                                     </LessonStatusBox>
-                                    <strong>{round.lessonRoundTitle}</strong>
+                                    <strong title={round.lessonRoundTitle}>
+                                        {round.lessonRoundTitle.length > 20
+                                            ? `${round.lessonRoundTitle.substring(
+                                                  0,
+                                                  30
+                                              )}...`
+                                            : round.lessonRoundTitle}
+                                    </strong>
                                     <span>
                                         {`${formatDate(
                                             new Date(
