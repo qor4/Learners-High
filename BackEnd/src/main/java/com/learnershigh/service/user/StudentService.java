@@ -137,6 +137,8 @@ public class StudentService {
             lessonListDto.setLessonEndDate(wishLesson.getLessonEndDate());
             lessonListDto.setMaxStudent(wishLesson.getMaxStudent());
             lessonListDto.setTotalStudent(wishLesson.getTotalStudent());
+            lessonListDto.setUserNo(wishLesson.getUserNo().getUserNo());
+            lessonListDto.setLessonNo(wishLesson.getLessonNo());
 
             wishLessonList.add(lessonListDto);
 
@@ -162,6 +164,7 @@ public class StudentService {
             cla.setLessonName(lessonAll.getLessonNo().getLessonName());
             cla.setUserName(lessonAll.getLessonNo().getUserNo().getUserName());
             cla.setLessonNo(lessonAll.getLessonNo().getLessonNo());
+            cla.setLessonTypeName(lessonAll.getLessonNo().getLessonTypeNo().getLessonTypeName());
 
             clalist.add(cla);
         }

@@ -65,7 +65,6 @@ const LessonItemBox = ({ lessonInfo }) => {
     const [lessonCsatCount, setLessonCsatCount] = useState(0); // 수업 하나당 수업 만족도 참여 인원
 
     const [attendRate, setAttendRate] = useState(0); // 출석률
-    const [homeworkRate, setHomeworkRate] = useState(0); // 과제 제출률
 
     useEffect(() => {
         if (userType === "T") {
@@ -102,7 +101,6 @@ const LessonItemBox = ({ lessonInfo }) => {
                 .then((response) => {
                     console.log(response.data);
                     setAttendRate(response.data.result.attendRate);
-                    setHomeworkRate(response.data.result.homeworkRate);
                 });
         } else if (userType === "S") {
             // 학생 출석률 / 과제 제출률
@@ -110,7 +108,6 @@ const LessonItemBox = ({ lessonInfo }) => {
                 .get(`${url}/student/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
                     setAttendRate(response.data.result.attendRate);
-                    setHomeworkRate(response.data.result.attendRate);
                 });
         }
     }, []);
@@ -177,17 +174,6 @@ const LessonItemBox = ({ lessonInfo }) => {
                                 <NoneDataText>데이터 없음</NoneDataText>
                             ) : (
                                 <DataText>{attendRate.toFixed(0)} %</DataText>
-                            )}
-                        </CardFlexWrap>
-                        <CardFlexWrap>
-                            <strong>
-                                <div>과제 제출률</div>
-                            </strong>
-                            {homeworkRate ===
-                            "아직 집계할 데이터가 없습니다." ? (
-                                <NoneDataText>데이터 없음</NoneDataText>
-                            ) : (
-                                <DataText>{homeworkRate.toFixed(0)} %</DataText>
                             )}
                         </CardFlexWrap>
                     </RowFlexWrap>

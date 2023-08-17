@@ -133,8 +133,8 @@ public class UserService {
 
     // 비밀번호 변경
     @Transactional
-    public Boolean pwdChange(Long userNo, String passWord) {
-        User user = userRepository.findByUserNo(userNo);
+    public Boolean pwdChange(String  userId, String passWord) {
+        User user = userRepository.findByUserId(userId);
 
         // 비밀번호 유효성 검사
         if (!Pattern.matches("^.*(?=^.{9,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$", passWord)) {
