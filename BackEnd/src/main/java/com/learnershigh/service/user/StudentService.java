@@ -314,6 +314,10 @@ public class StudentService {
 
         List<StudentLessonList> lessonLists = studentLessonListRepository.findAllByUserNo(user);
 
+        if(lessonLists == null){
+            throw new IllegalStateException("수강하는 강의가 없습니다.");
+        }
+
 
         for (StudentLessonList sl : lessonLists) {
 
