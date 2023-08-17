@@ -116,20 +116,61 @@ class ApexChart extends React.Component {
             stroke: {
                 show: false,
             },
+        };
 
-            // 데이터 없을 때? @@@ 확인
-            // noData: {
-            //     text: undefined,
-            //     align: "center",
-            //     verticalAlign: "middle",
-            //     offsetX: 0,
-            //     offsetY: 0,
-            //     style: {
-            //         color: undefined,
-            //         fontSize: "14px",
-            //         fontFamily: undefined,
-            //     },
-            // },
+        return (
+            <div id="chart">
+                <ReactApexChart
+                    key={Math.random()} // 애니메이션 렌더링마다 반복
+                    options={options}
+                    series={series}
+                    type={chartType}
+                    width={width}
+                />
+            </div>
+        );
+    }
+
+    renderPieTypeChart() {
+        const { seriesData, chartType, width } = this.props;
+
+        if (seriesData === null || seriesData === undefined) {
+            return (
+                <div id="chart">
+                    <NoneDataText style={{ margin: 0 }}>
+                        데이터 없음
+                    </NoneDataText>
+                </div>
+            );
+        }
+
+        const labels = Object.keys(seriesData).map((key) => {
+            const countName = key;
+            return countName;
+        }); // labels에 필드명들을 넣음
+
+        const series = Object.values(seriesData); // series에 해당 필드값들을 넣음
+
+        const options = {
+            chart: {
+                width: width,
+                type: chartType,
+                fontFamily: "Pretendard-Regular, sans-serif",
+                borderColor: "#000",
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        offset: -10,
+                    },
+                },
+            },
+            labels: labels,
+            colors: ["#90E0EF", "#00B4D8", "#0077B6", "#023E8A", "#03045E"],
+
+            stroke: {
+                show: false,
+            },
         };
 
         return (
@@ -152,6 +193,10 @@ class ApexChart extends React.Component {
             <div id="chart">
                 {/* 차트 타입이 파이일 때 + 강사, 강의 만족도 */}
                 {type === "csatpie" && this.renderPieCsatChart()}
+
+                {/* 차트 타입이 파이일 때 + 강의 타입 개수 */}
+                {type === "typepie" && this.renderPieTypeChart()}
+
                 {/* 라인 분석 차트 */}
                 {type === "analyline" && this.renderLineAnalyChart()}
             </div>

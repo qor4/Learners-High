@@ -76,16 +76,16 @@ public class SecurityJavaConfig {
                 .antMatchers(
                         HttpMethod.OPTIONS, "/**"
                 ).permitAll()
-//                .antMatchers(
+                .antMatchers(
 //                        "/api/s3/**",
-//                        "/api/teacher/**",
-//                        "/api/mypage/**",
-//                        "/api/csat/create",
-//                        "/api/user/delete/**",
-//                        "/api/lesson/join/**", "/api/lesson/writing/**",
-//                        "/api/lessonroom/**",
-////                        "/api/notification/**",
-//                        "/api/student/**").authenticated()
+                        "/api/teacher/**",
+                        "/api/mypage/**",
+                        "/api/csat/create",
+                        "/api/user/delete/**",
+                        "/api/lesson/join/**", "/api/lesson/writing/**",
+                        "/api/lessonroom/**",
+//                        "/api/notification/**",
+                        "/api/student/**").authenticated()
                 .and()
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)

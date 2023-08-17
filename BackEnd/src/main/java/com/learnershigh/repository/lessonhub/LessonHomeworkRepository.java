@@ -18,8 +18,10 @@ public interface LessonHomeworkRepository extends JpaRepository<LessonHomework, 
 //            "WHERE attend.lessonNo.lessonNo = :lessonNo AND attend.userNo.userNo = :userNo")
     @Query(value = "SELECT a.lesson_round_no AS lessonRoundNo, " +
             "a.lesson_attend_status AS lessonAttendStatus, h.homework_status AS homeworkStatus, " +
-            "h.lesson_homework_no AS homeworkNo " +
-            "FROM lesson_homework h RIGHT JOIN lesson_attend a ON h.lesson_round_no = a.lesson_round_no " +
+            "h.lesson_homework_no AS homeworkNo, l.lesson_round_start_datetime AS lessonRoundStartDatetime," +
+            "l.lesson_round_end_datetime AS lessonRoundEndDatetime " +
+            "FROM lesson_attend a LEFT JOIN lesson_homework h ON h.lesson_round_no = a.lesson_round_no " +
+            "JOIN lesson_round l ON l.lesson_round_no = a.lesson_round_no " +
             "where a.lesson_no = :lessonNo and a.user_no = :userNo", nativeQuery = true)
     List<AttendHomeworkProjectionInterface> getAttendHomeworkByUserNo(@Param("userNo") Long userNo, @Param("lessonNo") Long lessonNo);
 

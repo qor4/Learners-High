@@ -771,7 +771,7 @@ const UserJoin = () => {
                                                 />
                                             ) : (
                                                 <StyledImg
-                                                    src="assets/bannerimg.jpg"
+                                                    src="assets/blank-profile.png"
                                                     alt="임시 프로필 사진"
                                                 />
                                             )}

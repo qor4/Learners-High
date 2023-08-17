@@ -73,9 +73,9 @@ const StyledButton = styled.button`
         props.$danger &&
         css`
             background-color: #fff;
-            border: 1px solid #black   ;
+            border: 1px solid #black;
             &:not(:disabled):hover {
-                background: #FFeF00;
+                background: #ffef00;
                 color: #000;
             }
         `}
@@ -87,7 +87,7 @@ const StyledButton = styled.button`
             border: 1px solid #fee500;
             color: #191919;
             &:not(:disabled):hover {
-                background: #f1d900;
+                background: #ffec3e;
                 color: #000;
             }
         `}

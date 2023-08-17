@@ -34,7 +34,7 @@ const EduTeacherManagePage = () => {
     const [selectedStatus, setSelectedStatus] = useState("전체");
 
     useEffect(() => {
-        axios
+        tokenHttp
             .get(
                 `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
             )
@@ -42,7 +42,7 @@ const EduTeacherManagePage = () => {
                 console.log(response.data.result);
                 setTeacherLessonDataSet(response.data.result);
             });
-    }, [selectedStatus]);
+    }, [selectedStatus, userNo]);
 
     return (
         <>

@@ -71,7 +71,7 @@ const StyledTitleText = styled.div`
 `;
 
 /** 설명 텍스트박스 (line-height 16px 16px) */
-const StyledExplainText = styled.div`
+export const StyledExplainText = styled.div`
     font-size: 1rem;
     line-height: 1.5rem;
 `;
@@ -151,7 +151,7 @@ const GuestMain = () => {
 
                     <FlexWrap>
                         <StyledThumbnail
-                            src="assets/item-banner.png"
+                            src="assets/teacher-banner.png"
                             alt="강사장점이미지"
                         />
                         <TitleExplainWrap>
@@ -178,7 +178,7 @@ const GuestMain = () => {
                             </StyledExplainText>
                         </TitleExplainWrap>
                         <StyledThumbnail
-                            src="assets/item-banner.png"
+                            src="assets/student-banner.png"
                             alt="학생장점이미지"
                         />
                     </FlexWrap>
