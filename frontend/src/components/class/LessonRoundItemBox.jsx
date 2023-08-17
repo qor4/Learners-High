@@ -12,6 +12,7 @@ import LessonStatusBox from "../common/LessonStatusBox";
 
 import { useNavigate } from "react-router-dom";
 import { StyledTitleText } from "./LessonItemBox";
+import tokenHttp, {url} from "../../api/APIPath";
 
 const StyledButtonWrap = styled.div`
     text-align: right;
@@ -49,27 +50,31 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     console.log(userType, "userType");
     // const userType = "T";
-    console.log(lessonInfo);
+    console.log(lessonInfo, "lessonInfo");
     // const [token, setToken] = useState("")
     const handleEnter = () => {
         setBool(true);
-        const today = new Date();
-        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        // if (
-        //     // endDatetime.getFullYear() === today.getFullYear() &&
-        //     // endDatetime.getMonth() === today.getMonth() &&
-        //     // endDatetime.getDate() === today.getDate()
-        // ) {
-        //     // 여기!
+        // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        // const today = new Date();
+        // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
+    
+        // if (startDatetime > enableTimeStart || endDatetime < today ) {
+        //     console.log(enableTimeStart, today, "끝과 기준")
+        //     alert("강의 시간이 아닙니다.");
+        //     return;
         // }
-        navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {state: {lessonName}});
+
+        navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {
+            state: { lessonName },
+        });
     };
+
     const lessonNo = lessonInfo.lessonNo;
     const lessonRoundNo = lessonInfo.lessonRoundNo; // 임시
     const lessonName = lessonInfo.lessonName;
 
     // 선생님 no
-    const teacherNo = lessonInfo.userNo
+    const teacherNo = lessonInfo.userNo;
 
     // 날짜 format
     const startDatetime = new Date(lessonInfo.lessonRoundStartDatetime);
@@ -101,16 +106,28 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     const enterStudentRoom = (event) => {
         event.stopPropagation();
-        const today = new Date();
-        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        // if (
-        //     endDatetime.getFullYear() === today.getFullYear() &&
-        //     endDatetime.getMonth() === today.getMonth() &&
-        //     endDatetime.getDate() === today.getDate() // 여기!
-        // ) {
+        // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        // const today = new Date();
+        // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
+    
+        // if (startDatetime > enableTimeStart || endDatetime < today ) {
+        //     console.log(enableTimeStart, today, "끝과 기준")
+        //     alert("강의 시간이 아닙니다.");
+        //     return;
         // }
-        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName, teacherNo}});
+
+        navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {
+            state: { lessonName: lessonInfo.lessonName, teacherNo },
+        });
     };
+
+    const downloadLessonData = () => {
+        // const url = 
+
+        tokenHttp.post(`${url}/s3/download/data?lessonRoundNo=${Number(lessonRoundNo)}`)
+        .then(res=>console.log(res))
+        .catch(err=>console.log(err))
+    }
 
     return (
         <>
@@ -149,7 +166,7 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 학생일 때 보일 버튼 */}
             {userType === "S" && (
                 <StyledButtonWrap>
-                    <Button className={"singleEvent"}>
+                    <Button className={"singleEvent"} onClick={downloadLessonData}>
                         {" "}
                         학습 자료 다운
                     </Button>

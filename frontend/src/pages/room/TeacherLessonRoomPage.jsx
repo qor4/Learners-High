@@ -676,7 +676,7 @@ const TeacherLessonRoomPage = () => {
                                         <StateButton
                                             disabled={(studentList[idx].status === 1 && !studentList[idx].isActive)||
                                                 (studentList[idx].status===0 && !studentList[idx].isActive)}
-                                            style={{color: "#008F5B", padding: 0}  }
+                                            style={{padding: 0} }
                                             onClick={() => {
                                                 tokenHttp
                                                     .post(
