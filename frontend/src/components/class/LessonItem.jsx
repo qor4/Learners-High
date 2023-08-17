@@ -71,7 +71,7 @@ const LessonItem = (props) => {
                 console.log(err);
                 setThumbnailURL(false);
             });
-    }, []);
+    }, [lessonNo]);
     console.log(props);
     return (
         <StyledItemWrap>

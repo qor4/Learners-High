@@ -151,7 +151,7 @@ const GuestMain = () => {
 
                     <FlexWrap>
                         <StyledThumbnail
-                            src="assets/main_teacher.png"
+                            src="assets/teacher-banner.png"
                             alt="강사장점이미지"
                         />
                         <TitleExplainWrap>
@@ -178,7 +178,7 @@ const GuestMain = () => {
                             </StyledExplainText>
                         </TitleExplainWrap>
                         <StyledThumbnail
-                            src="assets/item-banner.png"
+                            src="assets/student-banner.png"
                             alt="학생장점이미지"
                         />
                     </FlexWrap>

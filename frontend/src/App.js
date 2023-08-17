@@ -90,12 +90,15 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 // 콘텐츠의 양이 짧을 때, 하단에 푸터 고정하기 (보류)
-// const Wrapper = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: space-between;
-//     height: 100vh;
-// `;
+const Wrapper = styled.div`
+    /* display: flex;
+    flex-direction: column;
+    justify-content: space-between; */
+    min-height: 100vh;
+    padding-bottom: 12rem;
+    box-sizing: border-box;
+    position: relative;
+`;
 
 // const ContentWrapper = styled.div`
 //     display: flex;
@@ -130,7 +133,7 @@ function App() {
     return (
         <>
             <GlobalStyle />
-            <div className="App">
+            <Wrapper className="App">
                 {!hideComponent && <Header />}
 
                 <Routes>
@@ -232,7 +235,7 @@ function App() {
 
                 {/* <div>TOP</div> */}
                 {!hideComponent && <Footer />}
-            </div>
+            </Wrapper>
         </>
     );
 }
