@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,13 +76,13 @@ public class AmazonS3Controller {
     //    강사가 올린 학습자료 다운로드,
     @PostMapping("/download/data")
     @ApiOperation("강사가 올린 학습자료 다운로드")
-    public void dataDownload(@RequestParam("lessonRoundNo") Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) {
+    public String dataDownload(@RequestParam("lessonRoundNo") Long lessonRoundNo, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         // 파일네임은 완전한 파일네임 ex) cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp
         // 파일네임 값 넣을 때 주소 그대로 넣어줘야함. 예를들어 lesson/수업no/thumbnail 이라면
         // lesson/수업no/thumbnail/cb32dc25-8d6d-4c49-a4d5-af011221a57c_cute.png.webp  --> 이렇게 넣어줘야함.
         // 다운로드파일네임은 다운로드를 누를 사람에게 저장될 이름 ex) cute.png.webp
         System.out.println("다운로드");
-        s3Service.dataDownload(lessonRoundNo, request, response);
+        return s3Service.dataDownload(lessonRoundNo, request, response);
 
     }
 
