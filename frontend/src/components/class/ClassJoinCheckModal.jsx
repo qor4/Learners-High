@@ -10,6 +10,7 @@ import Button from "../common/Button";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { StyledExplainText } from "../main/GuestMain";
 
 const ButtonWrap = styled.div`
     margin: 0 auto;
@@ -50,7 +51,13 @@ const ClassJoinCheckModal = (props) => {
                     console.log(res);
                     navigate(
                         `/lesson/join`,
-                        { state: { lessonNo, isUpdated: true, isInterLoading: false } },
+                        {
+                            state: {
+                                lessonNo,
+                                isUpdated: true,
+                                isInterLoading: false,
+                            },
+                        },
                         { replace: false }
                     );
                 });
@@ -58,15 +65,21 @@ const ClassJoinCheckModal = (props) => {
     };
     const handleDeleteLesson = () => {
         if (lessonNo !== null) {
-            tokenHttp.delete(`${url}/lesson/delete/${Number(lessonNo)}`)
-            .then(res => console.log("삭제 성공"))
-            .catch((err) => console.log(err, "삭제 실패"))
-            ;
+            tokenHttp
+                .delete(`${url}/lesson/delete/${Number(lessonNo)}`)
+                .then((res) => console.log("삭제 성공"))
+                .catch((err) => console.log(err, "삭제 실패"));
             setshowLessonModal(false);
             document.body.classList.remove("overflow-hidden");
             navigate(
                 "/lesson/join",
-                { state: { lessonNo: null, isUpdated: false, isInterLoading:true } },
+                {
+                    state: {
+                        lessonNo: null,
+                        isUpdated: false,
+                        isInterLoading: true,
+                    },
+                },
                 { replace: false }
             );
         }
@@ -82,14 +95,14 @@ const ClassJoinCheckModal = (props) => {
                 show={showLessonModal}
                 onClose={handleCloseModal}
             >
-                <div>
-                    "새로 작성하기"를 누를 시, 기존에 작성하던 강의는
-                    삭제됩니다.
-                </div>
+                <StyledExplainText>
+                    "새로 작성하기"를 누를 시,
+                    <br />
+                    <strong>기존에 작성하던 강의는 삭제됩니다.</strong>
+                </StyledExplainText>
                 <ButtonWrap>
                     <Button
                         type="button"
-                        // 스타일링 필요
                         $danger
                         onClick={handleDeleteLesson}
                     >

@@ -47,12 +47,12 @@ export const JoinInput = styled.input`
     height: 3rem;
     margin: 0.5rem 0;
     position: relative;
-    
-    ${(props)=> 
-    props.$number &&
-    css`
-    text-align: right ;
-    `}
+
+    ${(props) =>
+        props.$number &&
+        css`
+            text-align: right;
+        `}
 `;
 
 /** 검색한 결과물이 들어갈 wrap => 추가수정@@@ */
@@ -95,7 +95,7 @@ const DataLists = styled.div`
 export const ButtonWrap = styled.div`
     margin-top: 3rem;
     width: 100%;
-    
+
     * {
         width: 49%;
         :last-child {
@@ -231,8 +231,8 @@ const ClassJoin = ({
             tokenHttp
                 .get(`${url}/s3/thumbnail-load/${lessonNo}`)
                 .then((res) => {
-                    if (res.data.resultCode === -1 ) {
-                        setThumbnailURL(false)
+                    if (res.data.resultCode === -1) {
+                        setThumbnailURL(false);
                     } else {
                         setThumbnailURL(res.data.resultMsg);
                     }
@@ -561,7 +561,7 @@ const ClassJoin = ({
                                     }
                                     value={maxStudent}
                                     onChange={handleMaxStudentChange}
-                                $number
+                                    $number
                                 />
                                 <div>명</div>
                             </SevenWrap>
@@ -693,7 +693,11 @@ const ClassJoin = ({
             <Container maxWidth="xs">
                 <ButtonWrap>
                     <Button onClick={sendDataToServer}>임시 저장</Button>
-                    <Button $point onClick={nextPage}>
+                    <Button
+                        $point
+                        onClick={nextPage}
+                        style={{ marginLeft: "2%" }}
+                    >
                         다음
                     </Button>
                 </ButtonWrap>
