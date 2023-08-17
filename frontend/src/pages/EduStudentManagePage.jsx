@@ -14,6 +14,7 @@ import { ImgInfoWrap } from "../components/class/TeacherIntroduceBox";
 import { StyledChart } from "../components/class/TeacherLessonCsatBox";
 import { InfoRateWrap } from "./EduTeacherLessonPage";
 import Card from "../components/common/Card";
+import ApexChart from "../components/chart/ApexChart";
 
 // 강의 wrap
 const StyledCsatInfoWrap = styled.div`
@@ -55,6 +56,10 @@ const EduStudentManagePage = () => {
             });
     }, []);
 
+    const lessonDataSet = {
+        science: 5,
+        math: 1,
+    };
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
@@ -62,7 +67,14 @@ const EduStudentManagePage = () => {
                 <Container maxWidth="md">
                     <ImgInfoWrap>
                         {/* 분석 차트가 들어갈 공간입니다!@@@ */}
-                        <StyledChart>차트 들어갈 공간</StyledChart>
+                        <StyledChart>
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                type="csatpie"
+                                seriesData={lessonDataSet}
+                            />
+                        </StyledChart>
                         <InfoRateWrap>
                             <div>
                                 최학생이 열심히 공부한 과목은 프로그래밍입니다.

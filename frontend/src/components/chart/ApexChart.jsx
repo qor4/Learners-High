@@ -111,7 +111,7 @@ class ApexChart extends React.Component {
                 },
             },
             labels: labels,
-            colors: ["#CAF0F8", "#90E0EF", "#00B4D8", "#0077B6", "#023E8A"],
+            colors: ["#90E0EF", "#00B4D8", "#0077B6", "#023E8A", "#03045E"],
 
             stroke: {
                 show: false,

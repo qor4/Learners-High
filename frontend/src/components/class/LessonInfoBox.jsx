@@ -24,9 +24,11 @@ const ImgInfoWrap = styled.div`
 `;
 
 // image styled
-const StyledThumbnail = styled.img`
+export const StyledThumbnail = styled.img`
     width: 40%;
     border-radius: 1.25rem;
+    height: 14rem;
+    object-fit: cover;
 `;
 
 // info wrap
