@@ -47,7 +47,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 
     "&:nth-of-type(odd)": {
-        backgroundColor: "#F9FAFF",
+        // backgroundColor: "#F9FAFF",
     },
     // hide last border
     "&:last-child td, &:last-child th": {
@@ -79,56 +79,62 @@ const StyledSubTableRow = styled(TableRow)(({ theme }) => ({
 function Row(props) {
     const { row } = props;
     const [open, setOpen] = useState(false);
-    
+
     return (
         <React.Fragment>
             <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-            <StyledTableCell align="right" />
+                <StyledTableCell align="right" />
                 <StyledTableCell component="th" scope="row">
-                <LessonStatusBox $point>
-
-                    {row.lessonRoundNumber} 회차
+                    <LessonStatusBox $point>
+                        {row.lessonRoundNumber} 회차
                     </LessonStatusBox>
-
                 </StyledTableCell>
 
-                <StyledTableCell align="left">{row.lessonRoundTitle}</StyledTableCell>
-        <StyledTableCell align="right">
-        {
-                                                        row.lessonAttendStatus === "출석" && (<>
-                                                        <span style={{color: '#008F5b'}}>{row.lessonAttendStatus}</span>
-                                                        </>)
-                                                    }
-                                                    {
-                                                        row.lessonAttendStatus === "지각" && (<>
-                                                        <span style={{color: '#ffd872'}}>{row.lessonAttendStatus}</span>
-                                                        </>)
-                                                    }
-                                                    {
-                                                        row.lessonAttendStatus === "결석" && (<>
-                                                        <span style={{color: '#db0000'}}>{row.lessonAttendStatus}</span>
-                                                        </>)
-                                                    }
-                                                    {
-                                                        row.lessonAttendStatus === "수업 예정" && (<>
-                                                        <span style={{color: '#474747'}}>{row.lessonAttendStatus}</span>
-                                                        </>)
-                                                    }
-            </StyledTableCell>
+                <StyledTableCell align="left">
+                    {row.lessonRoundTitle}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                    {row.lessonAttendStatus === "출석" && (
+                        <>
+                            <span style={{ color: "#008F5b" }}>
+                                {row.lessonAttendStatus}
+                            </span>
+                        </>
+                    )}
+                    {row.lessonAttendStatus === "지각" && (
+                        <>
+                            <span style={{ color: "#ffd872" }}>
+                                {row.lessonAttendStatus}
+                            </span>
+                        </>
+                    )}
+                    {row.lessonAttendStatus === "결석" && (
+                        <>
+                            <span style={{ color: "#db0000" }}>
+                                {row.lessonAttendStatus}
+                            </span>
+                        </>
+                    )}
+                    {row.lessonAttendStatus === "수업 예정" && (
+                        <>
+                            <span style={{ color: "#474747" }}>
+                                {row.lessonAttendStatus}
+                            </span>
+                        </>
+                    )}
+                </StyledTableCell>
                 {/* 과제 공간 */}
             </StyledTableRow>
             <StyledTableRow>
                 <StyledTableCell
                     style={{ paddingBottom: 0, paddingTop: 0 }}
                     colSpan={6}
-                >
-                </StyledTableCell>
+                ></StyledTableCell>
+                
             </StyledTableRow>
         </React.Fragment>
     );
 }
-
-
 
 const EduManageStudentsCurrentTable = () => {
     const userNo = useSelector((state) => state.user.userNo);
@@ -138,7 +144,7 @@ const EduManageStudentsCurrentTable = () => {
     const createData = (studentDataSet, lessonRoundDataSet) => {
         const lessonRoundNumber = lessonRoundDataSet.lessonRoundNumber;
         const lessonRoundTitle = lessonRoundDataSet.lessonRoundTitle;
-        const lessonAttendStatus = studentDataSet.lessonAttendStatus
+        const lessonAttendStatus = studentDataSet.lessonAttendStatus;
 
         return {
             lessonRoundNumber,
@@ -149,8 +155,8 @@ const EduManageStudentsCurrentTable = () => {
 
     const [rows, setRows] = useState([]);
 
-    const [realAttend, setRealAttend] = useState(0)
-    const [totalAttend, setTotalAttend] = useState(0)
+    const [realAttend, setRealAttend] = useState(0);
+    const [totalAttend, setTotalAttend] = useState(0);
     useEffect(() => {
         // 하나의 행이다.
         // userName, lessonAttendRealStatus(실제 출결), lessonAttendTotalStatus(진행 수업), homeworkRealSubmit, homeworkTotalSubmit
@@ -160,67 +166,74 @@ const EduManageStudentsCurrentTable = () => {
         tokenHttp
             .get(`${url}/student/${Number(userNo)}/lesson/${Number(lessonNo)}`)
             .then((res) => {
-              if (res.data.resultCode === 0) {
-                console.log(res.data.result, "####학생과 강의")
-                const attendHomeworkList = res.data.result.lessonAttendHomeworkInfo.attendHomeworkList
-                const lessonRoundFileInfo = res.data.result.lessonRoundFileInfo
-                let cntAttend = 0
-                for (let i=0; i< lessonRoundFileInfo.length; i++) {
-                    if (attendHomeworkList[i].lessonAttendStatus==="출석")
-                    cntAttend++
-                }
-                setRealAttend(cntAttend)
-                setTotalAttend(lessonRoundFileInfo.length)
-                const rowsCopy = []
-                for (let i=0; i<lessonRoundFileInfo.length ; i++){
-                    rowsCopy.push(createData(attendHomeworkList[i], lessonRoundFileInfo[i]))
-                }
+                if (res.data.resultCode === 0) {
+                    console.log(res.data.result, "####학생과 강의");
+                    const attendHomeworkList =
+                        res.data.result.lessonAttendHomeworkInfo
+                            .attendHomeworkList;
+                    const lessonRoundFileInfo =
+                        res.data.result.lessonRoundFileInfo;
+                    let cntAttend = 0;
+                    for (let i = 0; i < lessonRoundFileInfo.length; i++) {
+                        if (attendHomeworkList[i].lessonAttendStatus === "출석")
+                            cntAttend++;
+                    }
+                    setRealAttend(cntAttend);
+                    setTotalAttend(lessonRoundFileInfo.length);
+                    const rowsCopy = [];
+                    for (let i = 0; i < lessonRoundFileInfo.length; i++) {
+                        rowsCopy.push(
+                            createData(
+                                attendHomeworkList[i],
+                                lessonRoundFileInfo[i]
+                            )
+                        );
+                    }
 
-                setRows(rowsCopy)
-              }
+                    setRows(rowsCopy);
+                }
             });
     }, []);
 
     return (
-        <Container>
-            <TableContainer
-                component={Paper}
-                elevation={10}
-                sx={{
-                    borderRadius: "15px",
-                    marginTop: "2rem",
-                    marginBottom: "2rem",
-                }}
-            >
-                <Table aria-label="collapsible table">
-                    <TableHead
-                    // style={{background: "#F9FAFF"}}
-                    >
-                        <StyledTableRow>
-                            <StyledTableCell />
-                            {/* <StyledTableCell /> */}
-                            <StyledTableCell />
-                            <StyledTableCell align="left">
-                                {" "}
-                                <span>강의명</span>
-                            </StyledTableCell>
-                            <StyledTableCell align="right">
-                                {" "}
-                                <span>출석 {realAttend} / {totalAttend} </span>
-                            </StyledTableCell>
-                            <StyledTableCell align="right">
-                            </StyledTableCell>
-                            <StyledTableCell align="right" />
-                        </StyledTableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <Row key={row.name} row={row} />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Container>
+        <TableContainer
+            component={Paper}
+            elevation={4}
+            sx={{
+                borderRadius: "20px",
+                marginTop: "2rem",
+                marginBottom: "2rem",
+            }}
+        >
+            <Table aria-label="collapsible table">
+                <TableHead
+                // style={{background: "#F9FAFF"}}
+                >
+                    <StyledTableRow>
+                        <StyledTableCell />
+                        {/* <StyledTableCell /> */}
+                        <StyledTableCell />
+                        <StyledTableCell align="left">
+                            {" "}
+                            <span>강의명</span>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                            {" "}
+                            <span>
+                                출석 {realAttend} / {totalAttend}{" "}
+                            </span>
+                        </StyledTableCell>
+                        <StyledTableCell align="right"></StyledTableCell>
+                        <StyledTableCell align="right" />
+                    </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row, index) => (
+                        <Row key={`current-${index}`} row={row} />
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 

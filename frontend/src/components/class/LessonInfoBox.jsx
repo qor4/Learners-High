@@ -117,18 +117,18 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         }
     }, [isWish]);
 
-    const [thumbnailURL, setThumbnailURL] = useState("")
+    const [thumbnailURL, setThumbnailURL] = useState("");
     useEffect(() => {
         axios
-        .get(`${url}/s3/thumbnail-load/${lessonNo.lessonNo}`)
-        .then((res) => {
-            if (res.data.resultCode === -1){
-                setThumbnailURL(false)
-                return
-            }
-            setThumbnailURL(res.data.resultMsg);
-        });
-    }, [])
+            .get(`${url}/s3/thumbnail-load/${lessonNo.lessonNo}`)
+            .then((res) => {
+                if (res.data.resultCode === -1) {
+                    setThumbnailURL(false);
+                    return;
+                }
+                setThumbnailURL(res.data.resultMsg);
+            });
+    }, []);
 
     // 로그인 버튼 클릭 했을 때, 로그인 모달 창
     const handleLoginButtonClick = () => {
@@ -169,10 +169,6 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
     };
 
     /** 강의룸 입장 */
-    const enterStudentRoom = (event) => {
-        // event.stopPropagation();
-        // navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {state: {lessonName: lessonInfo.lessonName}});
-    };
 
     return (
         <Container maxWidth="md">
@@ -221,9 +217,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                 <>
                                     {/* 수강신청을 한 경우 */}
                                     {lessonStateDataSet === -1 && (
-                                        <Button disabled>
-                                            수강 중
-                                        </Button>
+                                        <Button disabled>수강 중</Button>
                                     )}
 
                                     {/* 비회원인 경우 수강신청 불가 => 로그인 모달 이동? */}
@@ -297,9 +291,13 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                         <Button
                                             $fullWidth
                                             $point
-                                            onClick={enterStudentRoom}
+                                            // onClick={enterInfoPage}
                                         >
-                                            강의 입장
+                                            <Link
+                                                to={`/lesson/info/${lessonNo.lessonNo}`}
+                                            >
+                                                강의 상세 페이지
+                                            </Link>
                                         </Button>
 
                                         {/* 수강신청을 하지 않았을 때 */}
@@ -331,8 +329,8 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                                     <strong>{lessonInfo.lessonName}</strong>
                                 </span>
                                 <Link to={`/profile/${lessonInfo.userNo}`}>
-                                <div>{lessonInfo.userName}</div>
-                            </Link>
+                                    <div>{lessonInfo.userName}</div>
+                                </Link>
                                 <span>
                                     {lessonInfo.lessonPrice.toLocaleString()}원
                                 </span>
@@ -353,7 +351,9 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
 
                                 {/* 강사인 경우 수강신청 불가 => 비활성화 버튼 */}
                                 {userType === "T" && (
-                                    <Button disabled style={{ width: "40%" }}>수강신청 불가</Button>
+                                    <Button disabled style={{ width: "40%" }}>
+                                        수강신청 불가
+                                    </Button>
                                 )}
 
                                 {/* 학생이고, 해당 과목을 아직 수강신청하지 않았을 때 */}

@@ -229,6 +229,8 @@ function App() {
 
                     <Route path="*" element={<MainPage />} />
                 </Routes>
+
+                {/* <div>TOP</div> */}
                 {!hideComponent && <Footer />}
             </div>
         </>

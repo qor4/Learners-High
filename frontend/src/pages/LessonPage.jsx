@@ -71,6 +71,10 @@ const LessonPage = () => {
     //     offset,
     //     offset + limitItem
     // );
+    
+    useEffect(() => {
+        setPage(1);
+    }, [selectedLessonType]);
 
     // 검색 버튼 눌렀을 때
     const handleSearchChange = () => {
@@ -104,7 +108,6 @@ const LessonPage = () => {
             console.log(item);
             return item.lessonTypeName === selectedLessonType;
         }
-        setPage(1);
     });
 
     const numPages = Math.ceil(filteredLessonListData.length / limitItem);

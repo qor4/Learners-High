@@ -6,11 +6,10 @@ import { styled } from "styled-components";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 // react-icon import
-import { HiOutlineHeart, HiOutlineUserCircle } from "react-icons/hi";
+import { HiOutlineUserCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import tokenHttp from "../../api/APIPath";
 import { url } from "../../api/APIPath";
 
 const StyledItemWrap = styled.div`
@@ -42,17 +41,16 @@ const ImageIconWrap = styled.div`
     width: 100%;
     position: relative;
 
-    & > LessonStatusBox {
-        position: absolute;
-        top: 1.25rem;
-        left: 1.25rem;
-    }
-
     & > span {
         position: absolute;
-        top: 1.25rem;
-        right: 1.25rem;
+        top: 0.75rem;
+        left: 0.75rem;
     }
+`;
+
+/** 강의 제목 */
+const StyledLessonName = styled.div`
+    width: 70%;
 `;
 
 const LessonItem = (props) => {
@@ -92,7 +90,9 @@ const LessonItem = (props) => {
                 </Link>
                 {props.lessonStatus && (
                     <LessonStatusBox $point>
-                        {props.lessonStatus}
+                        {props.lessonStatus === "강의 중" && "진행 중"}
+                        {props.lessonStatus === "강의 전" && "수업 예정"}
+                        {props.lessonStatus === "강의 완료" && "종료"}
                     </LessonStatusBox>
                 )}
 
@@ -109,15 +109,17 @@ const LessonItem = (props) => {
 
                 {!props.$popular && (
                     <FlexWrap>
-                        <HiOutlineUserCircle />
+                        <HiOutlineUserCircle style={{ marginRight: "4px" }} />
                         {`${props.totalStudent} / ${props.maxStudent}`}
                     </FlexWrap>
                 )}
             </FlexWrap>
             <FlexWrap>
-                <Link to={`/lesson/info/${props.lessonNo}`}>
-                    <strong>{props.lessonName}</strong>
-                </Link>
+                <StyledLessonName>
+                    <Link to={`/lesson/info/${props.lessonNo}`}>
+                        <strong>{props.lessonName}</strong>
+                    </Link>
+                </StyledLessonName>
                 <Link to={`/profile/${props.userNo}`}>
                     <span>{props.userName}</span>
                 </Link>

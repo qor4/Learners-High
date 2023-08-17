@@ -107,6 +107,7 @@ const LessonItemBox = ({ lessonInfo }) => {
             tokenHttp
                 .get(`${url}/student/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
+                    console.log(response.data)
                     setAttendRate(response.data.result.attendRate);
                 });
         }

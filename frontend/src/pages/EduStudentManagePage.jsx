@@ -10,7 +10,10 @@ import { Container } from "@mui/material";
 import { ImgInfoWrap } from "../components/class/TeacherIntroduceBox";
 import { StyledChart } from "../components/class/TeacherLessonCsatBox";
 import { InfoRateWrap } from "./EduTeacherLessonPage";
-import { StyledTitleText } from "../components/class/LessonItemBox";
+import {
+    NoneDataText,
+    StyledTitleText,
+} from "../components/class/LessonItemBox";
 
 import Card from "../components/common/Card";
 import Button from "../components/common/Button";
@@ -35,9 +38,13 @@ export const StyledButtonWrap = styled.div`
 
 const EduStudentManagePage = () => {
     const userNo = useSelector((state) => state.user.userNo);
+    const userName = useSelector((state) => state.user.userName);
     const [studentLessonDataSet, setStudentLessonDataSet] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("강의 중");
     const [studentWishDataSet, setStudentWishDataSet] = useState([]);
+
+    const [highAttentionLesson, setHighAttentionLesson] = useState("");
+    const [lessonTypeCountDataSet, setLessonTypeCountDataSet] = useState([]);
 
     useEffect(() => {
         tokenHttp
@@ -45,7 +52,6 @@ const EduStudentManagePage = () => {
                 `${url}/student/lesson/list/${userNo}?status=${selectedStatus}`
             )
             .then((response) => {
-                console.log(response.data);
                 setStudentLessonDataSet(response.data.result);
             });
     }, [selectedStatus]);
@@ -54,15 +60,35 @@ const EduStudentManagePage = () => {
         tokenHttp
             .get(`${url}/student/wish/list?userNo=${userNo}`)
             .then((response) => {
-                console.log(response.data);
                 setStudentWishDataSet(response.data);
+            });
+
+        tokenHttp
+            .get(
+                `${url}/attention/allLesson/onestudent/allavg?userNo=${userNo}`
+            )
+            .then((response) => {
+                if (response.data.resultCode === 0) {
+                    setHighAttentionLesson(response.data.result);
+                } else if (response.data.resultCode === -1) {
+                    setHighAttentionLesson("데이터 없음");
+                }
+            });
+
+        tokenHttp
+            .get(`${url}/student/allLesson/lesson-type-cnt/${userNo}`)
+            .then((response) => {
+                if (response.data.resultCode === 0) {
+                    setLessonTypeCountDataSet(response.data.result);
+                } else if (response.data.resultCode === -1) {
+                    setLessonTypeCountDataSet(null);
+                }
+                // -1이면 데이터가 없는 것
             });
     }, []);
 
-    const lessonDataSet = {
-        science: 5,
-        math: 1,
-    };
+
+
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
@@ -74,20 +100,25 @@ const EduStudentManagePage = () => {
                             <ApexChart
                                 width={350}
                                 chartType="pie"
-                                type="csatpie"
-                                seriesData={lessonDataSet}
+                                type="typepie"
+                                seriesData={lessonTypeCountDataSet}
                             />
                         </StyledChart>
                         <InfoRateWrap>
                             <StyledTitleText>
-                                최학생님의 수강 목록 분석
+                                {userName}님의 수강 목록 분석
                             </StyledTitleText>
-                            <Card>
-                                최학생이 열심히 공부한 과목은 프로그래밍입니다.
-                            </Card>
-                            <Card>
-                                프로그래밍에서 가장 집중한 강사는 김강사입니다.
-                            </Card>
+                            {highAttentionLesson !== "데이터 없음" ? (
+                                <Card>
+                                    {userName}님의 가장 집중도가 높은 수업은{" "}
+                                    <strong>{highAttentionLesson}</strong>
+                                    입니다.
+                                </Card>
+                            ) : (
+                                <NoneDataText style={{ marginLeft: 0 }}>
+                                    데이터 없음
+                                </NoneDataText>
+                            )}
                         </InfoRateWrap>
                     </ImgInfoWrap>
                 </Container>
