@@ -55,7 +55,7 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
     const [csatLessonCount, setCsatLessonCount] = useState(0); // 강의 총 만족도 참여 인원 수
     const [csatTeacherCount, setCsatTeacherCount] = useState(0); // 강사 총 만족도 참여 인원 수
 
-    const [profileImg, setProfileImg] = useState("");
+    const [profileImg, setProfileImg] = useState(false);
 
     const teacherNo = teacherInfo.userNo;
     const eduInfo = teacherInfo.eduInfos;
@@ -86,28 +86,24 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     setTeacherCsatTeacher(null);
                 }
             });
-
+            console.log("??");
             axios.get(`${url}/s3/profile-load/${teacherNo}`).then((res) => {
-                console.log(res, "teacher")
-                if (res.data.resultCode === -1){
-                    setProfileImg(false)
-                    return
+                console.log(res, "teacher");
+                if (res.data.resultCode === -1) {
+                    setProfileImg(false);
+                    return;
                 }
                 setProfileImg(res.data);
             });
         }
-    }, [teacherNo]);
+    }, []);
 
     return (
         <Container maxWidth="md">
             <ImgInfoWrap>
                 {/* 강사 이미지 */}
                 <StyledThumbnail
-                    src={
-                        profileImg
-                            ?  profileImg
-                            : "/assets/bannerimg.jpg"
-                    }
+                    src={ profileImg ? profileImg : "/assets/bannerimg.jpg"}
                     alt="teacher-img"
                     crossOrigin="anonymous"
                 />
