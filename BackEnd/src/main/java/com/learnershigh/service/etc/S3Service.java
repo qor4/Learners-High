@@ -113,7 +113,7 @@ public class S3Service {
 
         UUID ui = UUID.randomUUID();
 
-        String key = dirName + "/" + ui + "_" + originName;
+        String key = dirName + "/" + ui + "_" + encodedOriginName;
 
 
         System.out.println("key: " + key);  // ---> 키를 넣어놓기
