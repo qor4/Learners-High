@@ -25,6 +25,13 @@ export const StyledThumbnail = styled.img`
     /* position: relative; */
 `;
 
+const StyledItemThumb = styled.img`
+    width: 100%;
+    height: 11rem;
+    object-fit: cover;
+    border-radius: 1.25rem;
+`;
+
 const FlexWrap = styled.div`
     display: flex;
     align-items: center;
@@ -56,9 +63,9 @@ const LessonItem = (props) => {
         axios
             .get(`${url}/s3/thumbnail-load/${Number(lessonNo)}`)
             .then((res) => {
-                if (res.data.resultCode === -1){
-                    setThumbnailURL(false)
-                    return
+                if (res.data.resultCode === -1) {
+                    setThumbnailURL(false);
+                    return;
                 }
                 setThumbnailURL(res.data.resultMsg);
             })
@@ -73,7 +80,7 @@ const LessonItem = (props) => {
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}
             <ImageIconWrap>
                 <Link to={`/lesson/info/${props.lessonNo}`}>
-                    <StyledThumbnail
+                    <StyledItemThumb
                         src={
                             thumbnailURL
                                 ? thumbnailURL

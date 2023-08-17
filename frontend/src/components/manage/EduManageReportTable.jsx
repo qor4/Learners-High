@@ -76,10 +76,15 @@ function Row(props) {
                 <StyledTableCell component="th" scope="row">
                     {row.lessonRoundTitle}
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
+                <StyledTableCell />
+                <StyledTableCell
+                    component="th"
+                    scope="row"
+                    style={{ textAlign: "right" }}
+                >
                     {row.lessonRoundStartDatetime}
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell style={{ textAlign: "right" }}>
                     <IconButton
                         aria-label="expand row"
                         size="small"
@@ -157,9 +162,12 @@ const EduManageReportTable = ({
     lessonTotalRound,
     lessonRoundInfo,
 
+    $teacher,
+
     lessonInfoDataSet, // 강의 상세 데이터
 }) => {
     const userNo = useSelector((state) => state.user.userNo);
+    const userType = useSelector((state) => state.user.userType);
 
     const [totalMyAttentionData, setTotalMyAttentionData] = useState([]); // 종합분석 내 데이터
     const [totalOtherAttentionData, setTotalOtherAttentionData] = useState([]); // 종합분석 다른학생 데이터
@@ -171,34 +179,56 @@ const EduManageReportTable = ({
         const otherData = rawRoundChartDataSet.otherAttentionSegment;
         const myDataSet = [];
         const otherDataSet = [];
-        if (myData.length > 0) {
-            for (let j = 0; j < 20; j++) {
-                myDataSet.push(myData[j].avgValue * 100);
-            }
-        }
-        if (otherData.length > 0) {
-            for (let j = 0; j < 20; j++) {
-                otherDataSet.push(otherData[j].avgValue * 100);
-            }
-        }
 
-        const RoundChartDataSet = [
-            {
-                name: "나의 평균",
-                data: myDataSet,
-            },
-            {
-                name: "학생 평균",
-                data: otherDataSet,
-            },
-        ];
+        const teacherData = rawRoundChartDataSet.otherAttentionSegment;
+        const teacherDataSet = [];
+        let RoundChartDataSet = [];
+
+        if (userType === "S") {
+            if (myData.length > 0) {
+                for (let j = 0; j < 20; j++) {
+                    myDataSet.push(myData[j].avgValue * 100);
+                }
+            }
+            if (otherData.length > 0) {
+                for (let j = 0; j < 20; j++) {
+                    otherDataSet.push(otherData[j].avgValue * 100);
+                }
+            }
+            RoundChartDataSet = [
+                {
+                    name: "나의 평균",
+                    data: myDataSet,
+                },
+                {
+                    name: "학생 평균",
+                    data: otherDataSet,
+                },
+            ];
+        } else if (userType === "T") {
+            if (teacherData.length > 0) {
+                for (let j = 0; j < 20; j++) {
+                    teacherDataSet.push(teacherData[j].avgValue * 100);
+                }
+            }
+            RoundChartDataSet = [
+                {
+                    name: "학생 평균",
+                    data: teacherDataSet,
+                },
+            ];
+        }
 
         const lessonRoundTitle = lessonRoundDataSet.lessonRoundTitle;
         const lessonRoundNumber = lessonRoundDataSet.lessonRoundNumber;
-        const lessonRoundStartDatetime =
-            lessonRoundDataSet.lessonRoundStartDatetime;
+        const lessonRoundStartDatetime = `${new Date(
+            lessonRoundDataSet.lessonRoundStartDatetime
+        ).getFullYear()}-${String(
+            new Date(lessonRoundDataSet.lessonRoundStartDatetime).getMonth() + 1
+        ).padStart(2, "0")}-${String(
+            new Date(lessonRoundDataSet.lessonRoundStartDatetime).getDate()
+        ).padStart(2, "0")}`;
 
-        console.log(RoundChartDataSet);
         return {
             lessonRoundNumber,
             lessonRoundTitle,
@@ -208,44 +238,83 @@ const EduManageReportTable = ({
     };
 
     useEffect(() => {
-        // 학생 수업의 종합 분석
-        tokenHttp
-            .get(
-                `${url}/attention/analysis/student/${userNo}/lesson/${lessonNo}`
-            )
-            .then((response) => {
-                // 종합분석 내 데이터, 다른 학생 데이터 넣기
-                const myData = response.data.result.myAttentionSegment;
-                const otherData = response.data.result.otherAttentionSegment;
-                const myDataSet = [];
-                const otherDataSet = [];
-
-                for (let i = 0; i < lessonTotalRound; i++) {
-                    myDataSet.push(myData[i] * 100);
-                    otherDataSet.push(otherData[i] * 100);
-                }
-                setTotalMyAttentionData(myDataSet);
-                setTotalOtherAttentionData(otherDataSet);
-            });
-    }, []);
-
-    // 학생 수업의 회차별 분석
-    useEffect(() => {
-        const rowsCopy = [];
-        for (let i = 0; i < lessonTotalRound; i++) {
-            const lessonRoundNo = lessonRoundInfo[i].lessonRoundNo;
+        if (userType === "S") {
+            // 학생 수업의 종합 분석
             tokenHttp
                 .get(
-                    `${url}/attention/analysis/student/${userNo}/round/${lessonRoundNo}`
+                    `${url}/attention/analysis/student/${userNo}/lesson/${lessonNo}`
                 )
                 .then((response) => {
-                    console.log(response.data.result);
-                    rowsCopy.push(
-                        createData(lessonRoundInfo[i], response.data.result)
-                    );
+                    // 종합분석 내 데이터, 다른 학생 데이터 넣기
+                    const myData = response.data.result.myAttentionSegment;
+                    const otherData =
+                        response.data.result.otherAttentionSegment;
+                    const myDataSet = [];
+                    const otherDataSet = [];
+
+                    for (let i = 0; i < lessonTotalRound; i++) {
+                        myDataSet.push(myData[i] * 100);
+                        otherDataSet.push(otherData[i] * 100);
+                    }
+                    setTotalMyAttentionData(myDataSet);
+                    setTotalOtherAttentionData(otherDataSet);
+                });
+        } else if (userType === "T") {
+            // 강사 수업의 종합 분석
+            tokenHttp
+                .get(
+                    `${url}/attention/analysis/teacher/${userNo}/lesson/${lessonNo}`
+                )
+                .then((response) => {
+                    // 종합분석 내 데이터 데이터 넣기
+                    const myData = response.data.result.studentAttentionSegment;
+                    const myDataSet = [];
+
+                    for (let i = 0; i < lessonTotalRound; i++) {
+                        myDataSet.push(myData[i] * 100);
+                    }
+                    setTotalMyAttentionData(myDataSet);
                 });
         }
-        setRows(rowsCopy);
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const rowsCopy = [];
+            const requests = [];
+
+            for (let i = 0; i < lessonTotalRound; i++) {
+                const lessonRoundNo = lessonRoundInfo[i].lessonRoundNo;
+
+                let request;
+                if (userType === "S") {
+                    request = tokenHttp.get(
+                        `${url}/attention/analysis/student/${userNo}/round/${lessonRoundNo}`
+                    );
+                } else if (userType === "T") {
+                    request = tokenHttp.get(
+                        `${url}/attention/analysis/teacher/${userNo}/round/${lessonRoundNo}`
+                    );
+                }
+                requests.push(request);
+            }
+
+            try {
+                const responses = await Promise.all(requests);
+                for (let i = 0; i < lessonTotalRound; i++) {
+                    console.log(responses[i].data.result);
+                    const lessonRoundNo = lessonRoundInfo[i].lessonRoundNo;
+                    rowsCopy.push(
+                        createData(lessonRoundInfo[i], responses[i].data.result)
+                    );
+                }
+                setRows(rowsCopy);
+            } catch (error) {
+                console.error("데이터 불러오기 오류:", error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     // dataset에 담아서 보내기
@@ -260,6 +329,13 @@ const EduManageReportTable = ({
         },
     ];
 
+    const TeacherTotalDataSet = [
+        {
+            name: "평균",
+            data: totalMyAttentionData,
+        },
+    ];
+
     return (
         <>
             {/* 종합 분석 */}
@@ -268,7 +344,11 @@ const EduManageReportTable = ({
                     <ApexChart
                         chartType="line"
                         type="analyline"
-                        seriesData={TotalDataSet}
+                        seriesData={
+                            userType === "S"
+                                ? TotalDataSet
+                                : TeacherTotalDataSet
+                        }
                         width="500"
                     />
                 </StyledTextCenter>
