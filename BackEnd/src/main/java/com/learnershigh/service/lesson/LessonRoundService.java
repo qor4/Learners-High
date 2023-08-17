@@ -42,19 +42,24 @@ public class LessonRoundService {
         for (LessonRoundJoinDto lessonRoundJoinDto : lessonRoundJoinDtoList) {
             LessonRound lessonRound = new LessonRound();
             if (lessonRepository.findByLessonNo(lessonRoundJoinDto.getLessonNo()) == null) {
+                lessonEntity.setLessonStatus("작성 중");
                 throw new IllegalStateException("유효한 수업이 아닙니다.");
             }
             // 수업 회차가 0회차 일 때
             if (lessonRoundJoinDto.getLessonRoundNumber() == 0) {
+                lessonEntity.setLessonStatus("작성 중");
                 throw new IllegalStateException("수업 회차가 유효하지 않습니다.");
             }
             if (lessonRoundJoinDto.getLessonRoundTitle().isBlank()) {
+                lessonEntity.setLessonStatus("작성 중");
                 throw new IllegalStateException("수업 이름을 입력해주세요.");
             }
             if (lessonRoundJoinDto.getLessonRoundStartDatetime() == null) {
+                lessonEntity.setLessonStatus("작성 중");
                 throw new IllegalStateException("수업 시작 일시가 올바르지 않습니다.");
             }
             if (lessonRoundJoinDto.getLessonRoundEndDatetime() == null) {
+                lessonEntity.setLessonStatus("작성 중");
                 throw new IllegalStateException("수업 종료 일시가 올바르지 않습니다.");
             }
             // 회차 정보 저장
