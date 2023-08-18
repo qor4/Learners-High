@@ -5,7 +5,6 @@ import { ko } from "date-fns/esm/locale";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat"; // day.js의 플러그인을 import
 import styled, { css } from "styled-components";
-import Input from "../common/Input";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 const JoinInput = styled.input`
@@ -43,7 +42,6 @@ const RoundInput = styled.input`
     margin: 0.5rem 0.5rem;
     position: relative;
     width: 110px;
-    
 `;
 const FiftyWrap = styled.div`
     width: 45%;
@@ -77,51 +75,25 @@ const DatePickerComponent = ({
 }) => {
     const currentDate = dayjs();
     const firstDate = currentDate.add(7, "day");
-    console.log(firstDate, "나와?");
     const standDay = initial
         ? firstDate
         : initialDate !== ""
         ? dayjs(initialDate)
         : firstDate;
 
-    const customDateFormat = "yyyy-MM-dd aa h:mm";
-    console.log(initialDate, "여기222?");
-
     const [lessonRoundDate, setLessonRoundDate] = useState(standDay);
-    const refRoundDate = useRef(standDay)
-    // const [miniDisabledDay, setMiniDisibleDay] = useState(miniDisabledDate) // 너야!!!!
-    // const [maxDisabledDay, setMaxDisibleDay] = useState(maxDisabledDate)
-    // new Date()로 감싸면 반영이 안되고,.,. 안 감싸니까 즉각 반응됨
+    const refRoundDate = useRef(standDay);
 
     useEffect(() => {
-        console.log(typeof initialDate, "여기33?");
         if (initialDate) {
-            setLessonRoundDate(dayjs(initialDate)); // 얘가 문제다.
+            setLessonRoundDate(dayjs(initialDate));
         }
     }, [initialDate, miniDisabledDate, maxDisabledDate]);
-
-    // const changeLessonRoundDate = (date) => {
-    //   setLessonRoundDate(date)
-    //   onDataChange(idx, date)
-    // }
 
     const miniLimitDay = miniDisabledDate
         ? dayjs(miniDisabledDate)
         : currentDate;
     const maxLimitDay = maxDisabledDate ? dayjs(maxDisabledDate) : false;
-    console.log(initialDate, "여기?555");
-    const [startTime, setStartTime] = useState(dayjs())
-    const [endTime, setEndTime] = useState(dayjs())
-    // useEffect(()=> {
-    //   const ModiTime = dayjs(lessonRoundDate)
-    //   const addTime = dayjs(lessonRoundDate)
-    //   ModiTime.subtract(9, 'hour')
-    //   setStartTime(ModiTime)
-      
-    //   addTime.add(Number(lessonRunningTime), 'minute')
-    //   console.log(addTime.toDate(), "#시간시간")
-    //   setEndTime(addTime)
-    // }, [lessonRoundDate])
 
     return (
         <>
@@ -170,11 +142,10 @@ const DatePickerComponent = ({
                                                 : false
                                         }
                                         closeOnScroll={true}
-                                        // locale={ko}
                                         onChange={(date) => {
                                             setLessonRoundDate(dayjs(date));
                                             onDataChange(idx, dayjs(date));
-                                            refRoundDate.current = dayjs(date)
+                                            refRoundDate.current = dayjs(date);
                                         }}
                                         showTimeSelect={!initial}
                                         timeFormat="HH:mm"
@@ -184,7 +155,25 @@ const DatePickerComponent = ({
                                         customInput={<RoundInput />}
                                     />
                                     <div>
-                                      {lessonRoundDate.subtract(9, 'hour').hour()}시 {lessonRoundDate.minute()}분 ~ {lessonRoundDate.subtract(9, 'hour').add(Number(lessonRunningTime), 'minute').hour()}시 {lessonRoundDate.add(Number(lessonRunningTime), 'minute').minute()}분 
+                                        {lessonRoundDate
+                                            .subtract(9, "hour")
+                                            .hour()}
+                                        시 {lessonRoundDate.minute()}분 ~{" "}
+                                        {lessonRoundDate
+                                            .subtract(9, "hour")
+                                            .add(
+                                                Number(lessonRunningTime),
+                                                "minute"
+                                            )
+                                            .hour()}
+                                        시{" "}
+                                        {lessonRoundDate
+                                            .add(
+                                                Number(lessonRunningTime),
+                                                "minute"
+                                            )
+                                            .minute()}
+                                        분
                                     </div>
                                 </RightContent>
                             </FiftyWrap>

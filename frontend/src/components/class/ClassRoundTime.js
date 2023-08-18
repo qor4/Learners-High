@@ -1,10 +1,9 @@
 import { useState } from "react";
 
 import styled, { css } from "styled-components";
-import Input from "../common/Input";
 import LessonStatusBox from "../common/LessonStatusBox";
 
-import { FlexWrap, ColumnWrap, ButtonWrap, InputButton } from "./ClassJoin";
+import { FlexWrap } from "./ClassJoin";
 const FiftyWrap = styled.div`
     width: 75%;
     display: flex;

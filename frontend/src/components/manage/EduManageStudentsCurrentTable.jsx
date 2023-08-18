@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 
-import { HiChevronDown, HiChevronUp } from "react-icons/hi";
-import { Container } from "@mui/material";
-import axios from "axios";
 import styled from "@emotion/styled";
 
 import { url } from "../../api/APIPath";
 import tokenHttp from "../../api/APIPath";
-import Button from "../common/Button";
 
 // styled 컴포넌트
 import LessonStatusBox from "../common/LessonStatusBox";
-import TableText from "../common/TableText";
 
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -46,10 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         font: "inherit",
     },
 
-    "&:nth-of-type(odd)": {
-        // backgroundColor: "#F9FAFF",
-    },
-    // hide last border
+    "&:nth-of-type(odd)": {},
     "&:last-child td, &:last-child th": {
         border: 0,
     },
@@ -71,14 +58,8 @@ const StyledSubTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-// 하나의 행이다.
-// userName, lessonAttendRealStatus(실제 출결), lessonAttendTotalStatus(진행 수업), homeworkRealSubmit, homeworkTotalSubmit
-// 그 밑의 리스트는 또 채워야 한다. (비어있는 배열 3개)
-// lessonRoundNumber, lessonRoundTitle, lessonAttendStatus, homeworkStatus
-
 function Row(props) {
     const { row } = props;
-    const [open, setOpen] = useState(false);
 
     return (
         <React.Fragment>
@@ -139,7 +120,6 @@ const EduManageStudentsCurrentTable = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const { lessonNo } = useParams();
 
-    const currentDay = new Date();
     const createData = (studentDataSet, lessonRoundDataSet) => {
         const lessonRoundNumber = lessonRoundDataSet.lessonRoundNumber;
         const lessonRoundTitle = lessonRoundDataSet.lessonRoundTitle;
@@ -165,16 +145,10 @@ const EduManageStudentsCurrentTable = () => {
     const [realAttend, setRealAttend] = useState(0);
     const [totalAttend, setTotalAttend] = useState(0);
     useEffect(() => {
-        // 하나의 행이다.
-        // userName, lessonAttendRealStatus(실제 출결), lessonAttendTotalStatus(진행 수업), homeworkRealSubmit, homeworkTotalSubmit
-        // 그 밑의 리스트는 또 채워야 한다. (비어있는 배열 3개)
-        // lessonRoundNumber, lessonRoundTitle, lessonAttendStatus, homeworkStatus
-        // axios로 데이터 불러오기 -> 그 데이터를
         tokenHttp
             .get(`${url}/student/${Number(userNo)}/lesson/${Number(lessonNo)}`)
             .then((res) => {
                 if (res.data.resultCode === 0) {
-                    console.log(res.data.result, "####학생과 강의");
                     const attendHomeworkList =
                         res.data.result.lessonAttendHomeworkInfo
                             .attendHomeworkList;

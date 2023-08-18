@@ -8,7 +8,6 @@ import { url } from "../../api/APIPath";
 import Modal from "../common/Modal";
 import Button from "../common/Button";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StyledExplainText } from "../main/GuestMain";
 
@@ -30,10 +29,8 @@ const ClassJoinCheckModal = (props) => {
     const navigate = useNavigate();
     const [showLessonModal, setshowLessonModal] = useState(props.isUpdated);
     const [lessonNo, setLessonNo] = useState(props.lessonNo);
-    const userNo = useSelector((state) => state.user.userNo);
     const initControllLessonJoin = props.initControllLessonJoin;
 
-    // 모달을 닫을 때 -> 그냥 닫기 아니지... 아니지..! -> 닫기
     const handleCloseModal = () => {
         setshowLessonModal(false);
         initControllLessonJoin();
@@ -44,11 +41,9 @@ const ClassJoinCheckModal = (props) => {
             setshowLessonModal(false);
             initControllLessonJoin();
             document.body.classList.remove("overflow-hidden");
-            console.log(lessonNo, "강의No");
             tokenHttp
                 .get(`${url}/lesson/writing/info/${Number(lessonNo)}`)
                 .then((res) => {
-                    console.log(res);
                     navigate(
                         `/lesson/join`,
                         {
@@ -67,7 +62,7 @@ const ClassJoinCheckModal = (props) => {
         if (lessonNo !== null) {
             tokenHttp
                 .delete(`${url}/lesson/delete/${Number(lessonNo)}`)
-                .then((res) => console.log("삭제 성공"))
+                .then((res) => {})
                 .catch((err) => console.log(err, "삭제 실패"));
             setshowLessonModal(false);
             document.body.classList.remove("overflow-hidden");
@@ -101,11 +96,7 @@ const ClassJoinCheckModal = (props) => {
                     <strong>기존에 작성하던 강의는 삭제됩니다.</strong>
                 </StyledExplainText>
                 <ButtonWrap>
-                    <Button
-                        type="button"
-                        $danger
-                        onClick={handleDeleteLesson}
-                    >
+                    <Button type="button" $danger onClick={handleDeleteLesson}>
                         새로 작성하기
                     </Button>
                     <Button type="button" $point onClick={handleUpdateLesson}>

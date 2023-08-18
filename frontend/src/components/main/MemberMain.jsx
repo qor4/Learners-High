@@ -10,7 +10,6 @@ import { Container } from "@material-ui/core";
 import LessonRoundItemBoxList from "../class/LessonRoundItemBoxList";
 import Card from "../common/Card";
 import Button from "../common/Button";
-import { Link } from "react-router-dom";
 
 const NumberBox = styled.span`
     display: inline-block;

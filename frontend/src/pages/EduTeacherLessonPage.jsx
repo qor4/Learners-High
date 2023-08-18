@@ -15,7 +15,6 @@ import { Container } from "@mui/material";
 import { StyledButtonWrap } from "./EduTeacherManagePage";
 import { StyledTeacherInfoWrap } from "./TeacherProfilePage";
 import { ImgInfoWrap } from "../components/class/TeacherIntroduceBox";
-import { StyledChart } from "../components/class/TeacherLessonCsatBox";
 import { StyledTitleText } from "../components/class/LessonItemBox";
 
 import Button from "../components/common/Button";

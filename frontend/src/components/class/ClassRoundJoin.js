@@ -1,6 +1,6 @@
 // 강의 개설 두 번째 페이지 (세부 회차 입력)
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -18,23 +18,14 @@ import styled, { css } from "styled-components";
 import Card from "../common/Card";
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
-import Input from "../common/Input";
 import { Container } from "@material-ui/core";
-import { FlexWrap, ColumnWrap, ButtonWrap, InputButton } from "./ClassJoin";
-
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-
-// dayjs.extend(utc);
-// dayjs.extend(timezone);
-// dayjs.tz.setDefault('Asia/Seoul')
+import { FlexWrap, ButtonWrap } from "./ClassJoin";
 
 const FiftyWrap = styled.div`
     width: 45%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin-bottom: 1rem;
 `;
 const SevenWrap = styled.div`
@@ -66,7 +57,6 @@ const JoinInput = styled.input`
 const StartDateWrap = styled.div`
     width: 70%;
     display: flex;
-    /* justify-content: end; */
     align-items: center;
     flex-wrap: wrap;
 `;
@@ -81,10 +71,6 @@ const TwoButtonWrap = styled.div`
     width: 100%;
     justify-content: center;
     margin-bottom: 0.5rem;
-    & > * {
-        /* margin: 0 0.5rem; */
-        /* width: 20%; */
-    }
 `;
 
 const DayInput = styled.input`
@@ -135,7 +121,6 @@ const WeekBox = styled.div`
     margin-right: 2rem;
 `;
 
-// console.log(dayjs().format(), '###########')
 const ClassRoundJoin = ({
     changeChildPage,
     ParentLessonDataSet,
@@ -201,21 +186,17 @@ const ClassRoundJoin = ({
         lessonNo: "", // 임시
         lessonRoundNumber: "",
         lessonRoundTitle: "",
-        // classRoundFileName: "", // S3 접근
         lessonRoundFileOriginName: "",
         lessonRoundStartDatetime: "",
         lessonRoundEndDatetime: "",
         isHomework: false,
-
-        lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
+        lessonRunningTimeForEnd: "",
     };
     const fulFillLessonRoundDataSet = (event) => {
         const enterTotalRound = Number(event.currentTarget.value);
-        console.log(typeof enterTotalRound, lessonRoundDataSet.length);
         // 강의 회차 길이가 2 이상이면 채우는게 아닌, 더하는/빼는 형식
         if (lessonRoundDataSet.length > 1) {
             const lessonRoundDataSetCopy = [...lessonRoundDataSet];
-            // 채우자
             if (enterTotalRound >= lessonRoundDataSet.length) {
                 for (
                     let i = 0;
@@ -235,7 +216,6 @@ const ClassRoundJoin = ({
             const lessonRoundDataSetCopy = new Array(enterTotalRound).fill(
                 initialLessonRoundItem
             );
-            console.log(lessonRoundDataSetCopy, "너 뭐니");
             setLessonRoundDataSet(lessonRoundDataSetCopy);
         }
     };
@@ -245,7 +225,6 @@ const ClassRoundJoin = ({
     };
     const [runningTimeMSG, setRunningTimeMSG] = useState("");
     const runningTimeValid = (e) => {
-        // 일단 놓겠지만 논의 필요.
         if (e.currentTarget.value < 30) {
             setLessonRunningTime(30);
             setRunningTimeMSG("30분 이상 입력해 주세요.");
@@ -255,49 +234,26 @@ const ClassRoundJoin = ({
     const handleStartDateChange = (idx, newStartDate) => {
         setStartDate(newStartDate);
     };
-    // useEffect(() => {
-    //     console.log(lessonRoundDataSet, "실시간 반영");
-    // }, [lessonRoundDataSet]);
 
     const [openDetailRoundSet, setOpenDetailRoundSet] = useState(false);
     const handleInsertLessonRoundTime = () => {
         setOpenDetailRoundSet(true);
-        console.log(lessonRoundDataSet, "회차 데이터셋");
         const lessonRoundDataSetCopy = JSON.parse(
             JSON.stringify(lessonRoundDataSet)
         );
 
-        // 시작일은 대략적인 기준. 딱 그 시간 시작이 아님
-        // 이날을 기점으로 가는데, 단, 그 시작시간의 minDate는 "startDate"
-
-        // addDay가 startDate가 아니라, days의 startDate여야 함.
         let standardDate = [];
-        // let standardRunningTime = [];
-        // let standardEndDate = [] 끝나는 시간을 넣으려 했던 노력...
-        console.log(days, "days");
-        // const standDay = new Date(startDate);
         try {
             for (let i = 0; i < 7; i++) {
-                console.log(startDate, "넌 시작!");
                 const beforeDay = startDate.clone();
                 const standDay = beforeDay.add(i, "day");
 
-                console.log(standDay.day(), "요일 바뀌니?", standDay);
                 // 요일의 기준을 +1로 할 필요가 없다.
                 days.map((day) => {
-                    console.log(standDay.day(), "난 요일");
                     if (
                         day.isSelected &&
                         Number(standDay.day()) === Number(day.code)
                     ) {
-                        console.log(standDay, "널 좀 보자 standDay");
-                        console.log(
-                            standDay.year(),
-                            standDay.month(),
-                            standDay.date(),
-                            day.startHour,
-                            "연"
-                        );
                         const newDate = dayjs()
                             .year(standDay.year())
                             .month(standDay.month())
@@ -305,18 +261,12 @@ const ClassRoundJoin = ({
                             .hour(Number(day.startHour))
                             .minute(Number(day.startMinute));
                         standardDate.push(newDate);
-                        console.log("날짜 들어옴?", newDate);
-                        return;
                     }
-                }); // 완료!
+                });
             }
             let weekNum = standardDate.length;
-            // const standardDate = JSON.parse(
-            //     JSON.stringify(standardDate)
-            // );
+
             for (let i = 0; i < Number(lessonTotalRound); i++) {
-                // 배열 절대 바꾸지 마라.
-                console.log(i, weekNum, "########");
                 if (i < weekNum) {
                     const startNewDate = standardDate[i % weekNum];
                     const endNewDate = dayjs(startNewDate).add(
@@ -328,14 +278,7 @@ const ClassRoundJoin = ({
                     lessonRoundDataSetCopy[i].lessonRoundEndDatetime =
                         endNewDate.add(9, "hour").toISOString();
                     lessonRoundDataSetCopy[i].lessonRoundNumber = i + 1;
-                    console.log(
-                        lessonRoundDataSetCopy[i].lessonRoundStartDatetime
-                    );
-                    // 종료시간까지 함께 넣을 것
-                    // lessonRoundDataSetCopy[i].lessonRunningTimeForEnd =
-                    // standardRunningTime[(i - 1) % weekNum];
                 } else {
-                    // 여기다.+
                     const addWeekDate = dayjs(standardDate[i % weekNum]).add(
                         Math.floor(i / weekNum),
                         "week"
@@ -379,8 +322,6 @@ const ClassRoundJoin = ({
     };
 
     const getLessonData = (roundData, idx) => {
-        console.log(roundData, "이전거 드렁옴?");
-        console.log("idx :",idx);
         const {
             lessonRoundTitle,
             lessonRoundFileOriginName,
@@ -388,56 +329,47 @@ const ClassRoundJoin = ({
         } = roundData;
         const lessonRoundDataSetCopy = [...lessonRoundDataSet];
 
-        console.log("lessonRoundDataSe :",lessonRoundDataSetCopy)
-        console.log("lessonRoundDataSe :",lessonRoundDataSet)
         lessonRoundDataSetCopy[idx].lessonRoundTitle = lessonRoundTitle;
         lessonRoundDataSetCopy[idx].lessonRoundFileOriginName =
             lessonRoundFileOriginName;
         lessonRoundDataSetCopy[idx].lessonRoundFileName = lessonRoundFileName;
 
-        console.log(lessonRoundDataSetCopy, "회차 들어옴?");
         setLessonRoundDataSet(lessonRoundDataSetCopy);
     };
 
     const handleClickTmpStore = () => {
-        // ParentLessonDataSet.lessonTotalRound = lessonTotalRound
         const data = {
             lessonInfo: ParentLessonDataSet.lessonInfo,
             lessonName: ParentLessonDataSet.lessonName,
             lessonPrice: ParentLessonDataSet.lessonPrice,
             lessonStatus: "작성 중",
-            // lessonThumbnailImg: lessonThumbnailImg,
             lessonThumbnailInfo: ParentLessonDataSet.lessonThumbnailInfo,
             lessonTypeNo: ParentLessonDataSet.lessonTypeNo, // 미정
             maxStudent: ParentLessonDataSet.maxStudent,
             userNo: userNo, // 임시
         };
-        let flagTitle = 0
-        let flagDate = 0
-        console.log("?? 등록?", lessonRoundDataSet)
+        let flagTitle = 0;
+        let flagDate = 0;
         if (lessonRoundDataSet.length === 0) {
-            alert("모든 회차를 입력해주세요.")
-            return
+            alert("모든 회차를 입력해주세요.");
+            return;
         }
-        lessonRoundDataSet.map(item=> {
-            if (item.lessonRoundTitle.trim() ==="" ) {
-                flagTitle=1
-                return
+        lessonRoundDataSet.map((item) => {
+            if (item.lessonRoundTitle.trim() === "") {
+                flagTitle = 1;
             }
             if (item.lessonRoundStartDatetime === "") {
-                flagDate=1
-                return
+                flagDate = 1;
             }
-        })
+        });
         if (flagTitle > 0) {
-            alert("모든 회차를 입력해주세요.")
-            return
+            alert("모든 회차를 입력해주세요.");
+            return;
         }
         if (flagDate > 0) {
-            alert("날짜를 입력해주세요.")
-            return
+            alert("날짜를 입력해주세요.");
+            return;
         }
-        console.log("?? 여기?", flagDate, flagTitle)
         tokenHttp
             .post(
                 `${url}/lesson/join`, // 강의 데이터 갑니다.
@@ -445,10 +377,9 @@ const ClassRoundJoin = ({
                 { headers: { "Content-Type": "application/json" } }
             )
             .then((res) => {
-                console.log(res, "개별강의");
-                if (res.data.resultCode===-1) {
-                    alert("유효하지 않습니다. 수업을 다시 입력해주세요.")
-                    return
+                if (res.data.resultCode === -1) {
+                    alert("유효하지 않습니다. 수업을 다시 입력해주세요.");
+                    return;
                 }
                 return res.data.result.lessonNo;
             })
@@ -469,39 +400,29 @@ const ClassRoundJoin = ({
                                 },
                             }
                         )
-                        .then((res) => console.log(res))
+                        .then((res) => {})
                         .catch((err) => console.log(err));
                 }
                 return lessonNo;
             })
-            // 강의 회차 갑니다.
             .then((lessonNo) => {
                 if (lessonRoundDataSet.length === 0) return;
                 lessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
-                
+
                 tokenHttp
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
                     })
                     .then((res) => {
-                        console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
                         for (let i = 0; i < lessonRoundDataSet.length; i++) {
-
                             if (
                                 lessonRoundDataSet[i].lessonRoundFileOriginName
                             ) {
-                                console.log(
-                                    lessonRoundNoDataSet[i],
-                                    "회차정보"
-                                );
                                 const formData = new FormData();
-                                console.log(
-                                    lessonRoundDataSet[i].lessonRoundFileName,
-                                    "파일이 니?"
-                                );
+
                                 formData.append(
                                     "multipartFile",
                                     lessonRoundDataSet[i].lessonRoundFileName
@@ -522,16 +443,14 @@ const ClassRoundJoin = ({
                                             },
                                         }
                                     )
-                                    .then((res) =>
-                                        console.log(res, "학습자료 전송 성공")
-                                    )
+                                    .then((res) => {})
                                     .catch((err) =>
                                         console.log(err, "학습자료 전송 실패")
                                     );
                             }
                         }
                     });
-                alert("임시저장 성공")
+                alert("임시저장 성공");
             })
             .catch((err) => {
                 alert("임시저장 실패");
@@ -541,49 +460,42 @@ const ClassRoundJoin = ({
 
     // 강의등록
     const handleClickRegisterLesson = () => {
-        console.log("?? 등록?", lessonRoundDataSet)
-        // ParentLessonDataSet.lessonTotalRound = lessonTotalRound
         const data = {
             lessonInfo: ParentLessonDataSet.lessonInfo,
             lessonName: ParentLessonDataSet.lessonName,
             lessonPrice: ParentLessonDataSet.lessonPrice,
             lessonStatus: "강의 전",
-            // lessonThumbnailImg: lessonThumbnailImg,
             lessonThumbnailInfo: ParentLessonDataSet.lessonThumbnailInfo,
             lessonTypeNo: ParentLessonDataSet.lessonTypeNo, // 미정
             maxStudent: ParentLessonDataSet.maxStudent,
             userNo: userNo, // 임시
         };
         if (lessonRoundDataSet.length === 0) {
-            alert("모든 회차를 입력해주세요.")
-            return
+            alert("모든 회차를 입력해주세요.");
+            return;
         }
-        let flagTitle = 0
-        let flagDate = 0
-        lessonRoundDataSet.map(item=> {
-            if (item.lessonRoundTitle.trim() ==="" ) {
-                flagTitle=1
-                return
+        let flagTitle = 0;
+        let flagDate = 0;
+        lessonRoundDataSet.map((item) => {
+            if (item.lessonRoundTitle.trim() === "") {
+                flagTitle = 1;
             }
             if (item.lessonRoundStartDatetime === "") {
-                flagDate=1
-                return
+                flagDate = 1;
             }
-        })
+        });
         if (flagTitle > 0) {
-            alert("모든 회차를 입력해주세요.")
-            return
+            alert("모든 회차를 입력해주세요.");
+            return;
         }
         if (flagDate > 0) {
-            alert("날짜를 입력해주세요.")
-            return
+            alert("날짜를 입력해주세요.");
+            return;
         }
         tokenHttp
-            .post(
-                `${url}/lesson/join`, // 강의 데이터 갑니다.
-                data,
-                { headers: { "Content-Type": "application/json" } }
-            )
+            .post(`${url}/lesson/join`, data, {
+                headers: { "Content-Type": "application/json" },
+            })
             .then((res) => {
                 return res.data.result.lessonNo;
             })
@@ -594,8 +506,6 @@ const ClassRoundJoin = ({
                         "multipartFile",
                         ParentLessonDataSet.lessonThumbnailImg
                     );
-                    console.log(ParentLessonDataSet," : formData");
-                    console.log(formData," : formData");
                     await tokenHttp
                         .post(
                             `${url}/s3/upload/thumbnail/${lessonNo}`,
@@ -606,40 +516,28 @@ const ClassRoundJoin = ({
                                 },
                             }
                         )
-                        .then((res) => console.log(res))
+                        .then((res) => {})
                         .catch((err) => console.log(err));
                 }
                 return lessonNo;
             })
-            // 강의 회차 갑니다.
             .then((lessonNo) => {
                 if (lessonRoundDataSet.length === 0) return;
-                console.log("전 : ",lessonRoundDataSet);
                 lessonRoundDataSet.map((item) => {
                     item.lessonNo = lessonNo;
                 });
-                console.log("후 : ",lessonRoundDataSet);
                 tokenHttp
                     .post(`${url}/lesson/join/round`, lessonRoundDataSet, {
                         headers: { "Content-Type": "application/json" },
                     })
                     .then((res) => {
-                        console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
                         for (let i = 0; i < lessonRoundDataSet.length; i++) {
-                            console.log(lessonRoundDataSet[i], i);
                             if (
                                 lessonRoundDataSet[i].lessonRoundFileOriginName
                             ) {
-                                console.log(
-                                    lessonRoundNoDataSet[i],
-                                    "회차정보"
-                                );
                                 const formData = new FormData();
-                                console.log(
-                                    lessonRoundDataSet[i].lessonRoundFileName,
-                                    "파일이니? 뭘까?!?!?!"
-                                );
+
                                 formData.append(
                                     "multipartFile",
                                     lessonRoundDataSet[i].lessonRoundFileName
@@ -660,17 +558,14 @@ const ClassRoundJoin = ({
                                             },
                                         }
                                     )
-                                    .then((res) =>
-                                        console.log(res, "학습자료 전송 성공")
-                                    )
+                                    .then((res) => {})
                                     .catch((err) =>
                                         console.log(err, "학습자료 전송 실패")
                                     );
                             }
                         }
-                        console.log(lessonRoundNoDataSet);
                     });
-                alert("강의 개설 성공")
+                alert("강의 개설 성공");
                 navigate("/");
             })
             .catch((err) => {
@@ -679,7 +574,6 @@ const ClassRoundJoin = ({
             }); // 여기에 강의개설 실패 메시지
     };
 
-    console.log(ParentLessonDataSet);
     return (
         <>
             <MenuCard title="수업 일정 입력">
@@ -733,7 +627,6 @@ const ClassRoundJoin = ({
                         </FiftyWrap>
                     </FlexWrap>
                     <FlexWrap>
-                        {/* 나중에!! */}
                         <span>기본 수업 요일</span>
                         <WeekWrap>
                             {days.map((day) => {
@@ -765,7 +658,6 @@ const ClassRoundJoin = ({
                         if (day.isSelected) {
                             return (
                                 <>
-                                    {/* <span>{day.week}</span>, */}
                                     <ClassRoundTime
                                         id={day.code}
                                         startHour={day.startHour}
@@ -788,7 +680,6 @@ const ClassRoundJoin = ({
                     </Button>
                 </Container>
             </MenuCard>
-            {/* 하나씩 하나씩. */}
             <MenuCard title="수업 일자 확인 및 추가 일정 수정">
                 {openDetailRoundSet && (
                     <>
@@ -804,48 +695,50 @@ const ClassRoundJoin = ({
                                     <>
                                         <Card>
                                             <div>
-
-                                            <DatePickerComponent
-                                                key={idx}
-                                                idx={idx}
-                                                initial={false}
-                                                initialDate={
-                                                    item.lessonRoundStartDatetime
-                                                }
-                                                miniDisabledDate={
-                                                    idx !== 0
-                                                        ? lessonRoundDataSet[
-                                                              idx - 1
-                                                          ]
-                                                              ?.lessonRoundStartDatetime
-                                                        : startDate
-                                                }
-                                                maxDisabledDate={
-                                                    idx !== lessonTotalRound
-                                                        ? lessonRoundDataSet[
-                                                              idx + 1
-                                                          ]
-                                                              ?.lessonRoundStartDatetime
-                                                        : false
-                                                }
-                                                onDataChange={getDateData}
-                                                lessonRunningTime={lessonRunningTime}
-                                            />
-                                                </div>
-                                                <div>
-
-                                            <ClassRoundItem
-                                                key={idx}
-                                                idx={idx}
-                                                onDataChange={getLessonData}
-                                                title={item.lessonRoundTitle}
-                                                fileOriginName={
-                                                    item.lessonRoundFileOriginName
-                                                }
-                                                fileName={
-                                                    item.lessonRoundFileName
-                                                }
-                                            />
+                                                <DatePickerComponent
+                                                    key={idx}
+                                                    idx={idx}
+                                                    initial={false}
+                                                    initialDate={
+                                                        item.lessonRoundStartDatetime
+                                                    }
+                                                    miniDisabledDate={
+                                                        idx !== 0
+                                                            ? lessonRoundDataSet[
+                                                                  idx - 1
+                                                              ]
+                                                                  ?.lessonRoundStartDatetime
+                                                            : startDate
+                                                    }
+                                                    maxDisabledDate={
+                                                        idx !== lessonTotalRound
+                                                            ? lessonRoundDataSet[
+                                                                  idx + 1
+                                                              ]
+                                                                  ?.lessonRoundStartDatetime
+                                                            : false
+                                                    }
+                                                    onDataChange={getDateData}
+                                                    lessonRunningTime={
+                                                        lessonRunningTime
+                                                    }
+                                                />
+                                            </div>
+                                            <div>
+                                                <ClassRoundItem
+                                                    key={idx}
+                                                    idx={idx}
+                                                    onDataChange={getLessonData}
+                                                    title={
+                                                        item.lessonRoundTitle
+                                                    }
+                                                    fileOriginName={
+                                                        item.lessonRoundFileOriginName
+                                                    }
+                                                    fileName={
+                                                        item.lessonRoundFileName
+                                                    }
+                                                />
                                             </div>
                                         </Card>
                                     </>
@@ -856,7 +749,6 @@ const ClassRoundJoin = ({
                 )}{" "}
             </MenuCard>
 
-            {/* 버튼 모음 => 이후 수정@@@ */}
             <Container maxWidth="xs">
                 <ButtonWrap>
                     <TwoButtonWrap>

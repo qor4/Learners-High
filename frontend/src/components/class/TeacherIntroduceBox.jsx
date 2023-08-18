@@ -66,7 +66,6 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
         if (teacherNo) {
             // 강사의 모든 수업 총 만족도 GET 요청
             axios.get(`${url}/csat/lesson/${teacherNo}`).then((response) => {
-                console.log(response)
                 const lessonData = response.data.result;
                 if (response.data.resultCode === 0) {
                     setTeacherCsatLesson(lessonData.result.toFixed(1));
@@ -74,7 +73,6 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 } else if (response.data.resultCode === -1) {
                     setTeacherCsatLesson(null);
                 }
-                console.log(response.data);
             });
 
             // 강사에 대한 모든 총 만족도 GET 요청
@@ -87,16 +85,13 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                     setTeacherCsatTeacher(null);
                 }
             });
-            console.log("??");
             axios.get(`${url}/s3/profile-load/${teacherNo}`).then((res) => {
-                console.log(res, "teacher");
                 if (res.data.resultCode === -1) {
                     setProfileImg(false);
                     return;
                 } else if (res.data.resultCode === 0) {
                     setProfileImg(res.data.result);
                 }
-                console.log(res.data)
             });
         }
     }, [teacherNo]);
@@ -106,7 +101,7 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
             <ImgInfoWrap>
                 {/* 강사 이미지 */}
                 <StyledThumbnail
-                    src={ profileImg ? profileImg : "/assets/blank-profile.png"}
+                    src={profileImg ? profileImg : "/assets/blank-profile.png"}
                     alt="teacher-img"
                     crossOrigin="anonymous"
                 />
@@ -114,7 +109,6 @@ const TeacherIntroduceBox = ({ teacherInfo, $profile }) => {
                 <InfoWrap>
                     {!$profile && (
                         <FlexWrap>
-                            {/* 수업 만족도 / 강사 만족도 데이터 받아와서 써야돼요!@@@ */}
                             <div>
                                 <strong>수업 만족도</strong>
                                 <span>

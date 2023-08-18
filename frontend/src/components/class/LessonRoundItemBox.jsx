@@ -1,19 +1,15 @@
 // 메인 페이지에서 사용되는 수업 회차별 박스
 // 들어가는 내용 : 현재 회차, 일시, 수업 이름, 회차 제목, 강사 이름, 과제 일괄 다운, 강의룸 만들기
-import { useEffect, useState } from "react"; // 내꺼.
+import { useState } from "react"; // 내꺼.
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { Typography } from "@mui/material";
 import Button from "../common/Button";
-import Card from "../common/Card";
 import LessonStatusBox from "../common/LessonStatusBox";
 
 import { useNavigate } from "react-router-dom";
 import { StyledTitleText } from "./LessonItemBox";
 import tokenHttp, { url } from "../../api/APIPath";
-import axios from "axios";
 
 const StyledButtonWrap = styled.div`
     text-align: right;
@@ -45,25 +41,21 @@ const RoundDateWrap = styled.div`
 
 const LessonRoundItemBox = ({ lessonInfo }) => {
     const userType = useSelector((state) => state.user.userType);
-    const userName = useSelector((state) => state.user.userName);
     const [bool, setBool] = useState(false);
     const navigate = useNavigate();
 
-    console.log(userType, "userType");
-    // const userType = "T";
-    console.log(lessonInfo, "lessonInfo");
-    // const [token, setToken] = useState("")
     const handleEnter = () => {
         setBool(true);
-        // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        // const today = new Date();
-        // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
 
-        // if (startDatetime > enableTimeStart || endDatetime < today ) {
-        //     console.log(enableTimeStart, today, "끝과 기준")
-        //     alert("강의 시간이 아닙니다.");
-        //     return;
-        // }
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        const today = new Date();
+        const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
+
+        if (startDatetime > enableTimeStart || endDatetime < today) {
+            console.log(enableTimeStart, today, "끝과 기준");
+            alert("강의 시간이 아닙니다.");
+            return;
+        }
 
         navigate(`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`, {
             state: { lessonName },
@@ -107,15 +99,16 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     const enterStudentRoom = (event) => {
         event.stopPropagation();
-        // // 종료시간과 오늘 날짜가 동일하면 비활성화하기
-        // const today = new Date();
-        // const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
 
-        // if (startDatetime > enableTimeStart || endDatetime < today ) {
-        //     console.log(enableTimeStart, today, "끝과 기준")
-        //     alert("강의 시간이 아닙니다.");
-        //     return;
-        // }
+        // 종료시간과 오늘 날짜가 동일하면 비활성화하기
+        const today = new Date();
+        const enableTimeStart = today.setMinutes(today.getMinutes() + 30);
+
+        if (startDatetime > enableTimeStart || endDatetime < today ) {
+            console.log(enableTimeStart, today, "끝과 기준")
+            alert("강의 시간이 아닙니다.");
+            return;
+        }
 
         navigate(`/lessonroom/wait/${lessonNo}/${lessonRoundNo}`, {
             state: { lessonName: lessonInfo.lessonName, teacherNo },
@@ -124,7 +117,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
 
     // 강의자료 관련 함수
     const downloadLessonData = () => {
-        // const url =
         try {
             tokenHttp
                 .post(
@@ -133,50 +125,18 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                     )}`
                 )
                 .then((res) => {
-                    console.log(res, "이게 뭘까");
                     if (res.data.resultCode === -1) return;
-                    // window.open(res.data.resultCode)
                     var a = document.createElement("a");
-                    a.href = res.data.resultMsg; // xhr.response is a blob
-                    a.download = "download"; // Set the file name.
+                    a.href = res.data.resultMsg;
+                    a.download = "download";
                     a.style.display = "none";
                     document.body.appendChild(a);
                     a.click();
-                    // const blobURL = URL.createObjectURL(res.data.resultCode)
-                    // const a = document.createElement('a')
-                    // a.href = blobURL
-                    // document.body.appendChild(a)
-                    // a.click()
-                    // setTimeout(_ => {
-                    //     window.URL.revokeObjectURL(blobURL);
-                    // }, 60000);
-                    // a.remove()
                 })
                 .catch((err) => {
                     console.log(err, "##");
                     alert("다운 실패");
                 });
-
-            //     axios.get(res.data.resultMsg)
-            //     .then(res => {
-            //         return
-            //     })
-            //     .then(blob => {
-            //         const a = document.createElement('a')
-            //         a.href = blobURL
-            //         document.body.appendChild(a)
-            //         a.click()
-            //         setTimeout(_ => {
-            // 			window.URL.revokeObjectURL(blobURL);
-            // 		}, 60000);
-            //         a.remove()
-            //     })
-            //     .catch(err => {
-            //         console.log(err, "##")
-            //         alert("다운 실패")
-            //     })
-            // })
-            // .catch(err=>console.log(err))
         } catch (err) {
             alert("강의 자료가 없습니다.");
         }
@@ -203,8 +163,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
             {/* 강사일 때 보일 버튼 */}
             {userType === "T" && (
                 <StyledButtonWrap>
-                    {/* <Link to={`/lessonroom/teacher/${lessonNo}/${lessonRoundNo}`} 
-                    state={userName}> */}
                     <Button
                         $point
                         onClick={handleEnter}
@@ -212,7 +170,6 @@ const LessonRoundItemBox = ({ lessonInfo }) => {
                     >
                         <span className="singleEvent">강의룸 만들기</span>
                     </Button>
-                    {/* </Link> */}
                 </StyledButtonWrap>
             )}
 

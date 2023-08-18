@@ -1,6 +1,6 @@
 // 강의 개설 두 번째 페이지 (세부 회차 입력)
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -9,7 +9,6 @@ import ClassRoundTime from "./ClassRoundTime";
 
 import DatePickerComponent from "./DatePickerComponent";
 import dayjs from "dayjs";
-import axios from "axios";
 import tokenHttp from "../../api/APIPath";
 
 import { url } from "../../api/APIPath";
@@ -19,16 +18,8 @@ import styled, { css } from "styled-components";
 
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
-import Input from "../common/Input";
 import { Container } from "@material-ui/core";
-import { FlexWrap, ColumnWrap, ButtonWrap, InputButton } from "./ClassJoin";
-
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-
-// dayjs.extend(utc);
-// dayjs.extend(timezone);
-// dayjs.tz.setDefault('Asia/Seoul')
+import { FlexWrap, ButtonWrap } from "./ClassJoin";
 
 const FiftyWrap = styled.div`
     width: 45%;
@@ -136,7 +127,6 @@ const WeekBox = styled.div`
     margin-right: 2rem;
 `;
 
-// console.log(dayjs().format(), '###########')
 const ClassRoundJoin = ({
     changeChildPage,
     ParentLessonDataSet,
@@ -202,21 +192,18 @@ const ClassRoundJoin = ({
         lessonNo: "", // 임시
         lessonRoundNumber: "",
         lessonRoundTitle: "",
-        // classRoundFileName: "", // S3 접근
         lessonRoundFileOriginName: "",
         lessonRoundStartDatetime: "",
         lessonRoundEndDatetime: "",
         isHomework: false,
 
-        lessonRunningTimeForEnd: "", // 여기서 런닝타임 넣어서 더할 겁니다.
+        lessonRunningTimeForEnd: "",
     };
     const fulFillLessonRoundDataSet = (event) => {
         const enterTotalRound = Number(event.currentTarget.value);
-        console.log(typeof enterTotalRound, lessonRoundDataSet.length);
         // 강의 회차 길이가 2 이상이면 채우는게 아닌, 더하는/빼는 형식
         if (lessonRoundDataSet.length > 1) {
             const lessonRoundDataSetCopy = [...lessonRoundDataSet];
-            // 채우자
             if (enterTotalRound >= lessonRoundDataSet.length) {
                 for (
                     let i = 0;

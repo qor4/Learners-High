@@ -5,13 +5,12 @@ import axios from "axios";
 import styled from "styled-components";
 import { HiSearch } from "react-icons/hi";
 import { url } from "../api/APIPath";
-import { Grid, MenuItem } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
 
 import LessonList from "../components/class/LessonList";
 import Banner from "../components/common/Banner";
 import Pagination from "../components/common/Pagination";
-import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
 import { StyledInput } from "../components/auth/UserJoin";
@@ -71,7 +70,7 @@ const LessonPage = () => {
     //     offset,
     //     offset + limitItem
     // );
-    
+
     useEffect(() => {
         setPage(1);
     }, [selectedLessonType]);
@@ -105,12 +104,10 @@ const LessonPage = () => {
         if (selectedLessonType === "전체") {
             return true;
         } else {
-            console.log(item);
             return item.lessonTypeName === selectedLessonType;
         }
     });
 
-    const numPages = Math.ceil(filteredLessonListData.length / limitItem);
     const pageLessonListData = filteredLessonListData.slice(
         (page - 1) * limitItem,
         page * limitItem

@@ -14,7 +14,7 @@ const FindIDPwdPage = () => {
                 <FindIDPwd />
             </Container>
         </Box>
-    )
-}
+    );
+};
 
 export default FindIDPwdPage;
