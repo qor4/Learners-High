@@ -121,7 +121,7 @@ const StudentWaitLessonRoomPage = () => {
 
         es.current.addEventListener("send", function (event) {
             console.log("ADDEVENTLISTENER==========", event.data);
-            const sound = new Audio("/assets/audios/karinaCall.mp3");
+            const sound = new Audio("/assets/audios/action.mp3");
             sound.play();
 
             setTimeout(() => {
