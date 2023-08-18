@@ -3,13 +3,12 @@
 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import tokenHttp, { url } from "../../api/APIPath";
 import styled from "styled-components";
 
 import LessonRoundItemBox from "./LessonRoundItemBox";
 import Card from "../common/Card";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const StyledBox = styled.div`
     background-color: #fff;
@@ -79,12 +78,13 @@ const LessonRoundItemBoxList = ({
             <Card $skyBlue>
                 {selectedDayLessons && selectedDayLessons.length > 0 ? (
                     selectedDayLessons.map((lessonItem, index) => (
-
                         <StyledBox
                             key={index}
                             $hover
                             onClick={(e) => {
-                                if (!e.target.className.includes('singleEvent')) {
+                                if (
+                                    !e.target.className.includes("singleEvent")
+                                ) {
                                     if (userType === "T") {
                                         navigate(
                                             `/edu/teacher/${userNo}/${lessonItem.lessonNo}`

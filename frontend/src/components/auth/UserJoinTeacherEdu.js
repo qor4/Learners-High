@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
-import { url } from "../../api/APIPath";
 
 import styled from "styled-components";
 import { Grid } from "@mui/material";
@@ -78,7 +76,6 @@ const UserJoinTeacherEdu = (props) => {
     };
     // input 객체 삭제 이벤트
     const deleteEduInputItem = (index) => {
-        console.log(index);
         setEduInputList(eduInputList.filter((item) => item.id !== index));
     };
 
@@ -91,31 +88,13 @@ const UserJoinTeacherEdu = (props) => {
         const EduInputListCopy = JSON.parse(JSON.stringify(eduInputList));
         EduInputListCopy[index][name] = value;
         setEduInputList(EduInputListCopy);
-        console.log(eduInputList);
     };
-
-    // const [hireStartDateYear, setHireStartDateYear] = useState('')
-    // const [hireStartDateMonth, setHireStartDateMonth] = useState('')
-    // const [hireEndDateYear, setHireEndDateYear] = useState('')
-    // const [hireEndDateMonth, setHireEndDateMonth] = useState('')
-
-    // const postTeacherEdu = () => {
-    //     // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
-    //     eduInputList.map((item) =>
-    //         axios
-    //             .post(`${url}/user/join/edu/${userNo}`, item, {
-    //                 headers: { "Content-Type": "application/json" },
-    //             })
-    //             .then((res) => console.log(res))
-    //     );
-    // };
 
     const handleEduChange = () => {
         const updatedEduInputList = [...eduInputList];
         props.onEduChange(updatedEduInputList);
     };
 
-    console.log();
     return (
         <>
             <LessonStatusBox size="lg" $point $round>

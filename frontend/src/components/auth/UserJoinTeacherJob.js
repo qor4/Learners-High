@@ -1,11 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
-import { url } from "../../api/APIPath";
 import { Grid } from "@mui/material";
 
-import Input from "../common/Input";
-import Button from "../common/Button";
 import LessonStatusBox from "../common/LessonStatusBox";
 import { HiOutlinePlusCircle, HiMinusCircle } from "react-icons/hi";
 
@@ -46,7 +42,6 @@ const UserJoinTeacherJob = (props) => {
     };
     // input 객체 삭제 이벤트
     const deleteJobInputItem = (index) => {
-        console.log(index);
         setJobInputList(jobInputList.filter((item) => item.id !== index));
     };
 
@@ -59,24 +54,7 @@ const UserJoinTeacherJob = (props) => {
         const jobInputListCopy = JSON.parse(JSON.stringify(jobInputList));
         jobInputListCopy[index][name] = value;
         setJobInputList(jobInputListCopy);
-        console.log(jobInputList);
     };
-
-    const [hireStartDateYear, setHireStartDateYear] = useState("");
-    const [hireStartDateMonth, setHireStartDateMonth] = useState("");
-    const [hireEndDateYear, setHireEndDateYear] = useState("");
-    const [hireEndDateMonth, setHireEndDateMonth] = useState("");
-
-    // const postTeacherJob = () => {
-    //     // 데이터를 [id: id, {data들} // or {id: userId, ... 이렇게?}]
-    //     jobInputList.map((item) =>
-    //         axios
-    //             .post(`${url}/user/join/job/${userNo}`, item, {
-    //                 headers: { "Content-Type": "application/json" },
-    //             })
-    //             .then((res) => console.log(res))
-    //     );
-    // };
 
     const handleJobChange = () => {
         const updatedJobInputList = [...jobInputList];

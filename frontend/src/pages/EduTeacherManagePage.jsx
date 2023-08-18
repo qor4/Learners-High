@@ -9,7 +9,6 @@ import { Container } from "@mui/material";
 import Button from "../components/common/Button";
 import LessonItemBoxList from "../components/class/LessonItemBoxList";
 import tokenHttp, { url } from "../api/APIPath";
-import axios from "axios";
 import { StyledTeacherInfoWrap } from "./TeacherProfilePage";
 import TeacherLessonCsatBox from "../components/class/TeacherLessonCsatBox";
 import Card from "../components/common/Card";
@@ -39,7 +38,6 @@ const EduTeacherManagePage = () => {
                 `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
             )
             .then((response) => {
-                console.log(response.data.result);
                 setTeacherLessonDataSet(response.data.result);
             });
     }, [selectedStatus, userNo]);

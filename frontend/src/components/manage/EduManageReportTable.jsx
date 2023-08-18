@@ -1,7 +1,6 @@
 // 학생 수강상세 분석탭
 
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
@@ -9,15 +8,10 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
-import { Container } from "@mui/material";
-import Button from "../common/Button";
 import MenuCard from "../common/MenuCard";
 
 import styled from "@emotion/styled";
@@ -302,8 +296,6 @@ const EduManageReportTable = ({
             try {
                 const responses = await Promise.all(requests);
                 for (let i = 0; i < lessonTotalRound; i++) {
-                    // console.log(responses[i].data.result);
-                    const lessonRoundNo = lessonRoundInfo[i].lessonRoundNo;
                     rowsCopy.push(
                         createData(lessonRoundInfo[i], responses[i].data.result)
                     );

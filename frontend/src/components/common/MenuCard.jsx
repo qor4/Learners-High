@@ -1,6 +1,6 @@
 // 타이틀 있고 내부 넣을 수 있는 카드 컴포넌트
 
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const StyledCard = styled.div`
     margin-top: 1.25rem;

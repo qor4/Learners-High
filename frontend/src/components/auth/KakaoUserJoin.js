@@ -142,15 +142,11 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
         setJobInputList(updatedJobInputList);
     };
 
-    console.log("학력이에욥~~~!!!", eduInputList);
-    console.log("경력이에욥~~~!!!", jobInputList);
-
     // 경력 및 학력 입력 버튼을 누를 때,
     const [openAddInfo, setOpenAddInfo] = useState(false);
     const handleOpenAddInfo = () => {
         setOpenAddInfo(true);
     };
-    console.log(openAddInfo);
     // #### 공통 사용 #####
     // 모든 공백 제거 함수
     const removeAllEmpty = (value) => value.replace(/ /g, "");
@@ -159,7 +155,6 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
     const [userTelMSG, setUserTelMSG] = useState("");
     const [userTelValidCheck, setUserTelValidCheck] = useState(false);
     const userTelFormCheck = (e) => {
-        console.log(userTel, userTelValidCheck);
         const pattern1 = /[0-9]/;
         if (!pattern1.test(userTel)) {
             setUserTelMSG("숫자만 입력해 주세요.");
@@ -197,14 +192,11 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                 userTel,
                 userInfo,
             });
-            console.log(data);
-            console.log(url);
             axios
                 .post(`${url}/user/kakao/addinfo/${userEmail}`, data, {
                     headers: { "Content-Type": "application/json" },
                 })
                 .then((res) => {
-                    console.log(res.data, "응답");
                     dispatch(logInUser(res.data.result))
                     if (res.data.resultCode === 0) {
                         alert("회원가입 성공");
@@ -219,7 +211,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                                         "Content-Type": "application/json",
                                     },
                                 })
-                                .then((res) => console.log(res))
+                                .then((res) => {})
                         );
                     }
 
@@ -231,7 +223,7 @@ const KaKaoUserJoin = ({ kakaoUserInfo }) => {
                                         "Content-Type": "application/json",
                                     },
                                 })
-                                .then((res) => console.log(res))
+                                .then((res) => {})
                         );
                     }
                     navigate(`/`);

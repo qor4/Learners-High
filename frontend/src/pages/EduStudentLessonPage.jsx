@@ -16,7 +16,6 @@ import EduManageReportTable from "../components/manage/EduManageReportTable";
 import EduManageStudentsCurrentTable from "../components/manage/EduManageStudentsCurrentTable";
 import LessonInfoPage from "./LessonInfoPage";
 
-
 // 강의 wrap
 const StyledLessonInfoWrap = styled.div`
     width: 100%;

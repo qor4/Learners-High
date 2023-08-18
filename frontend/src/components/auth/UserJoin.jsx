@@ -155,7 +155,6 @@ const UserJoin = () => {
     const handleOpenAddInfo = () => {
         setOpenAddInfo(true);
     };
-    console.log(openAddInfo);
     // #### 공통 사용 #####
     // 모든 공백 제거 함수
     const removeAllEmpty = (value) => value.replace(/ /g, "");
@@ -193,7 +192,6 @@ const UserJoin = () => {
         // 2. id 중복확인
         // idMSG = "아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요."
         axios.get(`${url}/user/duplicate/id/${userId}`).then((response) => {
-            console.log(response);
             if (response.data.resultCode !== 0) {
                 setIdMSG("중복된 아이디입니다.");
                 setIdSuccessMSG("");
@@ -271,7 +269,6 @@ const UserJoin = () => {
     const [userTelMSG, setUserTelMSG] = useState("");
     const [userTelValidCheck, setUserTelValidCheck] = useState(false);
     const userTelFormCheck = (e) => {
-        console.log(userTel, userTelValidCheck);
         const pattern1 = /[0-9]/;
         if (!pattern1.test(userTel)) {
             setUserTelMSG("숫자만 입력해 주세요.");
@@ -304,8 +301,6 @@ const UserJoin = () => {
         axios
             .get(`${url}/user/duplicate/email/${userEmail}`)
             .then((response) => {
-                console.log(response.data);
-                console.log(userEmail);
                 if (response.data.resultCode !== 0) {
                     setUserEmailMSG("중복된 이메일입니다.");
                     setUserEmailVailidCheck(false);
@@ -328,29 +323,16 @@ const UserJoin = () => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data);
                 setCertEmailCode(res.data);
             })
             .catch((err) => console.log(err));
     };
-    // 타이머해야 함
-    // const [certTime, setCertTime] = useState(null)
-    // const [startTimer, setStartTimer] = useState(false)
-    // useEffect(()=> {
-    //     const timer = setTimeout(()=> {
-    //         setStartTimer(true)
-    //     }, certTime)
-
-    //     return () => clearTimeout(timer)
-    // }, [certTime])
     const [certEmailCheck, setCertEmailCheck] = useState("");
     const [certEmailValidCheck, setCertEmailValidCheck] = useState(false);
     const [certEmailCheckMSG, setCertEmailCheckMSG] = useState("");
     const [certEmailCheckSuccessMSG, setCertEmailCheckSuccessMSG] =
         useState("");
     const certEmailFormCheck = () => {
-        console.log(certEmailCheck, "이메일코드");
-        console.log(certEmailCheck, "내가 입력");
         if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
             setCertEmailValidCheck(true);
             setCertEmailCheckMSG("");
@@ -381,7 +363,6 @@ const UserJoin = () => {
         const imageURL = URL.createObjectURL(file);
         setProfileImgURL(imageURL);
         setProfileImg(file);
-        console.log(file, "이미지 넣어봄");
     };
 
     const dispatch = useDispatch()
@@ -396,7 +377,6 @@ const UserJoin = () => {
             userInfoValidCheck &&
             userNameValidCheck
         ) {
-            alert("성공!");
             const data = JSON.stringify({
                 userType,
                 userId,
@@ -406,8 +386,6 @@ const UserJoin = () => {
                 userTel,
                 userInfo,
             });
-            console.log(data);
-            console.log(url);
             axios
                 .post(`${url}/user/join`, data, {
                     headers: { "Content-Type": "application/json" },
@@ -439,19 +417,14 @@ const UserJoin = () => {
                     .catch((err) => {
                         alert("로그인이 실패했습니다.");
                     });
-                    console.log(res.data, "응답");
                     if (res.data.userNo > 0) {
-                        console.log(res.data.userNo);
                         setUserNo(res.data.userNo);
                     }
                     return res.data.userNo;
                 })
                 .then((userNo) => {
-                    console.log(userNo, "갔어요?!");
                     setUserNo(userNo);
 
-                    console.log(profileImg, "프로필이미지- 회원가입중");
-                    // console.log(formData)
                     if (profileImg) {
                         const formData = new FormData();
                         formData.append("multipartFile", profileImg);
@@ -465,7 +438,7 @@ const UserJoin = () => {
                                     },
                                 }
                             )
-                            .then((res) => console.log(res))
+                            .then((res) => {})
                             .catch((err) => console.log(err));
                     }
 
@@ -477,7 +450,7 @@ const UserJoin = () => {
                                         "Content-Type": "application/json",
                                     },
                                 })
-                                .then((res) => console.log(res))
+                                .then((res) => {})
                         );
                     }
 
@@ -489,7 +462,7 @@ const UserJoin = () => {
                                         "Content-Type": "application/json",
                                     },
                                 })
-                                .then((res) => console.log(res))
+                                .then((res) => {})
                         );
                     }
                     navigate(`/`);

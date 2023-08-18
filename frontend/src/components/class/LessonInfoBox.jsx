@@ -144,9 +144,7 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         document.body.classList.remove("overflow-hidden");
     };
 
-    /** 찜하기 버튼을 눌렀을 때 @@@ */
     const handleWishChange = () => {
-        console.log("찜하기를 눌렀어용", lessonNo.lessonNo, userNo);
         const data = {
             lessonNo: lessonNo.lessonNo,
             userNo: userNo,
@@ -156,7 +154,6 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res);
                 setIsWish(0);
             });
     };
@@ -166,7 +163,6 @@ const LessonInfoBox = ({ lessonInfo, handleApplyChange, $info, $edu }) => {
         tokenHttp
             .delete(`${url}/student/wish/${userNo}/${lessonNo.lessonNo}`)
             .then((response) => {
-                console.log(response);
                 setIsWish(1);
             });
     };

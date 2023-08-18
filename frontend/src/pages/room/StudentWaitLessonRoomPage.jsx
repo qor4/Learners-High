@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import Webcam from "react-webcam";
 import Button from "../../components/common/Button";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import StudentLessonRoomPage from "./StudentLessonRoomPage";
 import { licenseKey } from "../../api/Ignore";
@@ -17,8 +16,6 @@ import styled from "styled-components";
 import { Container } from "@material-ui/core";
 import { Typography } from "@mui/material";
 
-import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
-
 import { ControlButtonWrap, RoomFrameWrap } from "./TeacherRoomFrame";
 
 import {
@@ -26,23 +23,8 @@ import {
     PiVideoCameraSlashBold, // 카메라 off
     PiMicrophoneBold, //마이크 On
     PiMicrophoneSlashBold, // 마이크 Off
-    PiMonitorBold, // 빈 모니터
-    PiMonitorPlayBold, // 재생버튼 있는 모니터
 } from "react-icons/pi";
 import { conteffi } from "../../App";
-
-// Canvas를 담아둘 공간
-const CanvasWrap = styled.div`
-    // position: fixed;
-    width: 80%;
-    height: calc(100vh - 6.75rem);
-    left: 50%;
-    transform: translate(-50%, 0);
-    top: 0.75rem;
-    background-color: red;
-    border-radius: 1.25rem;
-    margin: 0 auto;
-`;
 
 // 화면을 확인할 수 있는 공간
 const WaitScreen = styled.div`
@@ -142,16 +124,15 @@ const StudentWaitLessonRoomPage = () => {
             const sound = new Audio("/assets/audios/karinaCall.mp3");
             sound.play();
 
-            conteffi.addConfetti({
-                emojis: ["🍔", "🍕", "🍺"],
-                emojiSize: 100,
-                confettiNumber: 30,
-            });
-
             setTimeout(() => {
                 sound.pause();
                 sound.currentTime = 0;
-            }, 3000);
+                conteffi.addConfetti({
+                    emojis: ["🔔", "✨", "💥"],
+                    emojiSize: 100,
+                    confettiNumber: 30,
+                });
+            }, 2100);
         });
 
         es.current.onerror = (err) => {
@@ -191,13 +172,11 @@ const StudentWaitLessonRoomPage = () => {
     }, []);
     // 다른 화면으로 변경 시 실행되는 callback 함수
     const focusOutLessonRoom = useCallback(() => {
-        console.log("다른 화면 봄");
         setIsFocus(false);
     });
 
     // 강의실 화면으로 변경 시 실행되는 callback 함수
     const focusInLessonRoom = useCallback(() => {
-        console.log("강의룸으로 돌아 옴");
         setIsFocus(true);
     });
 
@@ -211,17 +190,14 @@ const StudentWaitLessonRoomPage = () => {
             let currentScore = score;
             let currentStatus = 0;
             if (!isFocus) {
-                console.log("다른 화면 보는 중");
                 currentScore = 0;
                 currentStatus = 1;
             } else if (!videoEnabled) {
-                console.log("캠 꺼져 있음");
                 currentScore = 0;
                 currentStatus = 2;
             }
             // 조건
             if (enterRoom) {
-                console.log("AttentScore : ", currentScore, currentStatus);
                 // mongodb server와 통신
 
                 tokenHttp
@@ -238,15 +214,9 @@ const StudentWaitLessonRoomPage = () => {
                             headers: { "Content-Type": "application/json" }, // 요청 헤더 설정
                         }
                     )
-                    .then((res) => {
-                        console.log(
-                            "집중도 저장 성공, :",
-                            currentScore,
-                            currentStatus
-                        );
-                    })
+                    .then((res) => {})
                     .catch((err) => {
-                        console.log("집중도 저장 중 에러 발생", err);
+                        console.log(err);
                     });
 
                 let checkAttention;
@@ -263,16 +233,10 @@ const StudentWaitLessonRoomPage = () => {
                                 .get(
                                     `${url}/notification/active/${lessonNo}/${userId}/${currentStatus}`
                                 )
-                                .then((res) => {
-                                    console.log("선생님께 주의 알림 신호 성공");
-                                })
+                                .then((res) => {})
                                 .catch((err) => {
-                                    console.log(
-                                        "선생님께 주의 알림 신호 중 에러 발생",
-                                        err
-                                    );
+                                    console.log(err);
                                 });
-                            console.log(notificationCnt, " : 주의 알림");
                             setNotificationCnt((prev) => {
                                 prev >= 5 ? (prev += 1) : (prev = 0);
                             });
@@ -289,14 +253,9 @@ const StudentWaitLessonRoomPage = () => {
                                 .get(
                                     `${url}/notification/disactive/${lessonNo}/${userId}${currentStatus}`
                                 )
-                                .then((res) => {
-                                    console.log("선생님께 집중 알림 신호 성공");
-                                })
+                                .then((res) => {})
                                 .catch((err) => {
-                                    console.log(
-                                        "선생님께 집중 알림 신호 중 에러 발생",
-                                        err
-                                    );
+                                    console.log(err);
                                 });
                             setIsAttention(true);
                         }
@@ -317,9 +276,6 @@ const StudentWaitLessonRoomPage = () => {
     );
 
     const onAttention = useCallback((timestampBegin, timestampEnd, score) => {
-        console.log(
-            `Attention event occurred between ${timestampBegin} and ${timestampEnd}. Score: ${score}`
-        );
         setAttentionScore(score);
     }, []);
 
@@ -328,9 +284,6 @@ const StudentWaitLessonRoomPage = () => {
             eyeTracker.current.setCalibrationData(calibrationData);
             eyeTracker.current.setUserStatusCallback(onAttention, null, null);
             eyeTracker.current.setAttentionInterval(10);
-            console.log("test 함");
-        } else {
-            console.log("test 안함");
         }
     }, [enterRoom]);
 

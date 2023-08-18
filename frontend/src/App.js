@@ -1,12 +1,8 @@
-import React, { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
 // 컴포넌트
-import Main from "./Main";
-import UserJoinTeacherJob from "./components/auth/UserJoinTeacherJob";
-import UserJoinTeacherEdu from "./components/auth/UserJoinTeacherEdu";
-import UserLogIn from "./components/auth/UserLogIn";
 
 import UserJoinPage from "./pages/auth/UserJoinPage";
 import KakaoUserJoinPage from "./pages/auth/KakaoUserJoinPage";
@@ -32,8 +28,6 @@ import TeacherLessonRoomPage from "./pages/room/TeacherLessonRoomPage";
 
 import { useLocation } from "react-router-dom";
 
-// test용
-import DropTable from "./components/common/table/DropTable";
 import Emoji from "./components/test/Emoji";
 
 // test용
@@ -43,15 +37,6 @@ import EduStudentManagePage from "./pages/EduStudentManagePage";
 import EduTeacherLessonPage from "./pages/EduTeacherLessonPage";
 import EduStudentLessonPage from "./pages/EduStudentLessonPage";
 
-import SoundAlert from "./pages/room/SoundAlert";
-import TeacherRoomFrame from "./pages/room/TeacherRoomFrame";
-import StudentRoomFrame from "./pages/room/StudentRoomFrame";
-import AlertTest from "./pages/room/AlertTest";
-import StudentWaitRoomFrame from "./pages/room/StudentWaitRoomFrame";
-import ChartTest from "./components/test/ChartTest";
-
-import { logOutUser } from "./store/UserStore";
-import { useDispatch, useSelector } from "react-redux";
 import FindIDPwdPage from "./pages/auth/FindIDPwdPage";
 
 import JSConfetti from "js-confetti";
@@ -89,13 +74,8 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-// 콘텐츠의 양이 짧을 때, 하단에 푸터 고정하기 (보류)
 const Wrapper = styled.div`
-    /* display: flex;
-    flex-direction: column;
-    justify-content: space-between; */
     min-height: 100vh;
-    /* ${(props) => (props.hideComponent ? "padding-bottom: 12rem;" : "")} */
     box-sizing: border-box;
     position: relative;
 `;
@@ -104,16 +84,9 @@ const StyledDiv = styled.div`
     padding-bottom: 12rem;
 `;
 
-// const ContentWrapper = styled.div`
-//     display: flex;
-//     flex-direction: column;
-// `;
-
 function App() {
     const location = useLocation();
     const hideComponent = location.pathname.startsWith("/lessonroom");
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     // 로그인 여부
     const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
@@ -122,17 +95,6 @@ function App() {
     }
     const isLoginData = false;
 
-    // useEffect(() => {
-    //     if (!localStorage.getItem("accessToken") && isLoginData === true) {
-    //         alert("다시 로그인해주세요!");
-    //         dispatch(logOutUser());
-    //         navigate("/");
-    //     }
-    // }, [localStorage.getItem("accessToken")]);
-    // const hideComponentTeacher = location.pathname.startsWith(
-    //     "/lessonroom/teacher"
-    // );
-    // const hideComponentWait = location.pathname.startsWith("/lessonroom/wait");
     return (
         <>
             <GlobalStyle />
@@ -148,28 +110,11 @@ function App() {
                     ></Route>
 
                     <Route path="/lesson" element={<LessonPage />}></Route>
-                    {/* @@@ 임시 강의룸 / 아이디 비밀번호 찾기 @@@ */}
                     <Route
                         path="/find/idpwd"
                         element={<FindIDPwdPage />}
                     ></Route>
 
-                    {/* 임시 라인 차트@@@ */}
-                    <Route path="/temp/chart" element={<ChartTest />}></Route>
-                    <Route path="/temp" element={<AlertTest />}></Route>
-                    <Route
-                        path="/temp/teacher/room"
-                        element={<TeacherRoomFrame />}
-                    ></Route>
-                    <Route
-                        path="/temp/student/room"
-                        element={<StudentRoomFrame />}
-                    ></Route>
-                    <Route
-                        path="/temp/student/wait/room"
-                        element={<StudentWaitRoomFrame />}
-                    ></Route>
-                    {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
                     <Route
                         path="/lesson/join"
                         element={<ClassJoinPage />}
@@ -218,10 +163,6 @@ function App() {
                         path="/lessonroom/wait/:lessonNo/:lessonRoundNo"
                         element={<StudentWaitLessonRoomPage />}
                     />
-                    {/* <Route 
-                    path="/lessonroom/student/:lessonNo/:lessonRoundNo"
-                    element={<StudentLessonRoomPage/>}
-                /> */}
                     <Route
                         path="/lessonroom/teacher/:lessonNo/:lessonRoundNo"
                         element={<TeacherLessonRoomPage />}
@@ -235,7 +176,6 @@ function App() {
                     <Route path="*" element={<MainPage />} />
                 </Routes>
 
-                {/* <div>TOP</div> */}
                 {!hideComponent && <TopButton />}
                 {!hideComponent && <StyledDiv></StyledDiv>}
                 {!hideComponent && <Footer />}

@@ -61,7 +61,6 @@ const FindIDPwd = () => {
                 headers: { "Content-Type": "application/json" },
             })
             .then((res) => {
-                console.log(res.data);
                 setCertEmailCode(res.data);
             })
             .catch((err) => console.log(err));
@@ -73,7 +72,6 @@ const FindIDPwd = () => {
     const [certEmailCheckSuccessMSG, setCertEmailCheckSuccessMSG] =
         useState("");
     const certEmailFormCheck = () => {
-        console.log(certEmailCheck, "이메일코드");
         if (certEmailCode && Number(certEmailCheck) === Number(certEmailCode)) {
             setCertEmailValidCheck(true);
             setCertEmailCheckMSG("");
@@ -92,7 +90,6 @@ const FindIDPwd = () => {
         axios
             .post(`${url}/user/find/id?email=${userEmail}`)
             .then((response) => {
-                console.log(response);
                 // ID가 나온다. //response.data에 존재함.
                 setFindIdCheck(true);
                 setFindId(response.data);
@@ -108,7 +105,6 @@ const FindIDPwd = () => {
                 `${url}/user/find/pwd?userId=${userId}&userEmail=${userEmail}`
             )
             .then((response) => {
-                console.log(response);
                 // 비밀번호 변경.
                 setFindPwdCheck(response.data);
             });

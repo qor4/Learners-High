@@ -5,7 +5,6 @@ import { styled } from "styled-components";
 
 import LessonStatusBox from "../common/LessonStatusBox";
 
-// react-icon import
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -21,7 +20,6 @@ const StyledItemWrap = styled.div`
 export const StyledThumbnail = styled.img`
     width: 100%;
     border-radius: 1.25rem;
-    /* position: relative; */
 `;
 
 const StyledItemThumb = styled.img`
@@ -72,7 +70,6 @@ const LessonItem = (props) => {
                 setThumbnailURL(false);
             });
     }, [lessonNo]);
-    console.log(props);
     return (
         <StyledItemWrap>
             {/* 강의 썸네일 담을 공간 (+ 찜 아이콘) */}

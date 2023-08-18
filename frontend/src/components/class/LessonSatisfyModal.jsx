@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 import tokenHttp, { url, homeurl } from "../../api/APIPath";
@@ -9,7 +9,7 @@ import styled from "styled-components";
 import Card from "../common/Card";
 import "./LessonSatisfyModal.css";
 
-import { HiOutlineStar, HiStar } from "react-icons/hi";
+import { HiStar } from "react-icons/hi";
 import { useSelector } from "react-redux";
 
 const ButtonWrap = styled.div`
@@ -40,58 +40,61 @@ const CsatBlock = styled.div`
 const LessonSatisfyModal = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const userNo = useSelector(state=> state.user.userNo) // 학생No
+    const userNo = useSelector((state) => state.user.userNo); // 학생No
     const { lessonNo, lessonRoundNo, teacherNo } = useParams();
 
-    const [lessonRoundCsat, setLessonRoundCsat] = useState(5)
-    const [teacherCsat, setTeacherCsat] = useState(5)
+    const [lessonRoundCsat, setLessonRoundCsat] = useState(5);
+    const [teacherCsat, setTeacherCsat] = useState(5);
     const createCsat = () => {
-            const data = { 
-                lessonNo, 
-                lessonRoundCsat, 
-                lessonRoundNo, 
-                studentNo: userNo, 
-                teacherCsat, 
-                teacherNo };
-            tokenHttp
-                .post(`${url}/csat/create`, data, {
-                    headers: { "Content-Type": "application/json" },
-                })
-                .then((res) => {
-                    console.log(res);
-                    navigate("/");
-                })
-                .catch((err) => console.log(err, "에러 메시지"));
-            navigate('/')
-            };
+        const data = {
+            lessonNo,
+            lessonRoundCsat,
+            lessonRoundNo,
+            studentNo: userNo,
+            teacherCsat,
+            teacherNo,
+        };
+        tokenHttp
+            .post(`${url}/csat/create`, data, {
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res) => {
+                navigate("/");
+            })
+            .catch((err) => console.log(err, "에러 메시지"));
+        navigate("/");
+    };
 
     const goToHome = () => {
-        navigate('/')
+        navigate("/");
     };
-
 
     const drawLessonStar = (e) => {
-        const newLessonRating = parseInt(e.target.value)
-        setLessonRoundCsat(newLessonRating)
-        console.log(newLessonRating, "짠");
+        const newLessonRating = parseInt(e.target.value);
+        setLessonRoundCsat(newLessonRating);
     };
     const drawTeacherStar = (e) => {
-        const newteacherCsat = parseInt(e.target.value)
-        setTeacherCsat(newteacherCsat)
-        console.log(newteacherCsat, "짠");
+        const newteacherCsat = parseInt(e.target.value);
+        setTeacherCsat(newteacherCsat);
     };
 
-    useEffect(()=> {
-        tokenHttp.get(`${url}/csat/before/create/dupli/check?studentNo=${Number(userNo)}&teacherNo=${Number(teacherNo)}&lessonRoundNo=${Number(lessonRoundNo)}
-        `)
-        .then(res=>{
-            console.log(res)
-            if (res.data.resultCode === -1) {
-                window.location.href=homeurl
-            }
-        })
-        .catch(err=>console.log(err, '###$$$$$$$$$$$$$$$$'))
-    }, [])
+    useEffect(() => {
+        tokenHttp
+            .get(
+                `${url}/csat/before/create/dupli/check?studentNo=${Number(
+                    userNo
+                )}&teacherNo=${Number(teacherNo)}&lessonRoundNo=${Number(
+                    lessonRoundNo
+                )}
+        `
+            )
+            .then((res) => {
+                if (res.data.resultCode === -1) {
+                    window.location.href = homeurl;
+                }
+            })
+            .catch((err) => console.log(err));
+    }, []);
 
     return (
         <>
@@ -115,7 +118,11 @@ const LessonSatisfyModal = () => {
                                 <HiStar />
                                 <HiStar />
                                 <HiStar />
-                                <span style={{width: `${lessonRoundCsat*20}%`}}>
+                                <span
+                                    style={{
+                                        width: `${lessonRoundCsat * 20}%`,
+                                    }}
+                                >
                                     <HiStar />
                                     <HiStar />
                                     <HiStar />
@@ -135,16 +142,16 @@ const LessonSatisfyModal = () => {
                     </CsatWrap>
                 </Card>
                 <Card $skyBlue>
-                <CsatWrap>
-                    <CsatBlock>강사 만족도</CsatBlock>
-                    <CsatBlock>
-                    <span className="teacherStar">
+                    <CsatWrap>
+                        <CsatBlock>강사 만족도</CsatBlock>
+                        <CsatBlock>
+                            <span className="teacherStar">
                                 <HiStar />
                                 <HiStar />
                                 <HiStar />
                                 <HiStar />
                                 <HiStar />
-                                <span style={{width: `${teacherCsat*20}%`}}>
+                                <span style={{ width: `${teacherCsat * 20}%` }}>
                                     <HiStar />
                                     <HiStar />
                                     <HiStar />
@@ -160,9 +167,8 @@ const LessonSatisfyModal = () => {
                                     onInput={drawTeacherStar}
                                 />
                             </span>
-
-                    </CsatBlock>
-                </CsatWrap>
+                        </CsatBlock>
+                    </CsatWrap>
                 </Card>
                 <ButtonWrap>
                     <Button

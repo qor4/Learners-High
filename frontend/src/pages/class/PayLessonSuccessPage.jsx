@@ -1,53 +1,45 @@
-import React, {useEffect, useState} from "react"
-import { useNavigate } from "react-router-dom"
-import { url } from "../../api/APIPath"
-import tokenHttp from "../../api/APIPath"
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { url } from "../../api/APIPath";
+import tokenHttp from "../../api/APIPath";
 
-import PayLessonSuccess from "../../components/class/PayLessonSuccess"
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 
 const PayLessonSuccessPage = () => {
-  const navigate = useNavigate()
+    const navigate = useNavigate();
 
-  const userNo = useSelector(state => state.user.userNo)
+    const userNo = useSelector((state) => state.user.userNo);
 
-  const [couplingWithServer, setCouplingWithServer] = useState(false)
-  const [payDataset, setPayDataset] = useState({})
-  
-  useEffect(()=> {
-    console.log("왔어?")
-    const pg_token = new URL(window.location.href).searchParams.get("pg_token")
-    console.log(pg_token)
-    tokenHttp.get(`${url}/kakaoPay/success`, {params: {pg_token}})
-    .then(res=>{
-        const lessonNo = Number(res.data.item_code)
-        const data = {userNo, lessonNo}
-        // setCouplingWithServer(true)
+    useEffect(() => {
+        const pg_token = new URL(window.location.href).searchParams.get(
+            "pg_token"
+        );
         tokenHttp
-        .post(`${url}/student/apply`, data, {
-            headers: { "Content-Type": "application/json" },
-        })
-        .then((response) => {
-          alert(response.data.resultMsg)
-        });
-        // 강의 상세 vs 수강목록
-        navigate(`/lesson/info/${lessonNo}`)
-      })
-    .catch(err => console.log(err, "에러"))
-}, [])
+            .get(`${url}/kakaoPay/success`, { params: { pg_token } })
+            .then((res) => {
+                const lessonNo = Number(res.data.item_code);
+                const data = { userNo, lessonNo };
+                tokenHttp
+                    .post(`${url}/student/apply`, data, {
+                        headers: { "Content-Type": "application/json" },
+                    })
+                    .then((response) => {
+                        alert(response.data.resultMsg);
+                    });
+                // 강의 상세 vs 수강목록
+                navigate(`/lesson/info/${lessonNo}`);
+            })
+            .catch((err) => console.log(err, "에러"));
+    }, []);
 
-
-
-  return (
-    <>
-    {/* {
+    return (
+        <>
+            {/* {
       couplingWithServer &&
       <PayLessonSuccess/>
     } */}
-    </>
+        </>
+    );
+};
 
-  )
-}
-
-export default PayLessonSuccessPage
+export default PayLessonSuccessPage;

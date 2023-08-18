@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Container } from "@material-ui/core";
-import tokenHttp, { url } from "../api/APIPath";
+import { url } from "../api/APIPath";
 
 import TeacherIntroduceBox from "../components/class/TeacherIntroduceBox";
 import LessonList from "../components/class/LessonList";
@@ -39,7 +39,6 @@ const TeacherProfilePage = () => {
                 `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
             )
             .then((response) => {
-                console.log(response.data.result);
                 setTeacherLessonDataSet(response.data.result);
             });
 
@@ -48,7 +47,6 @@ const TeacherProfilePage = () => {
                 `${url}/teacher/lesson/list/${userNo}?status=${selectedStatus}`
             )
             .then((response) => {
-                console.log(response.data.result);
                 setTeacherLessonDataSet(response.data.result);
             });
     }, [userNo, selectedStatus]);

@@ -18,7 +18,6 @@ import {
 import { StyledTitleText } from "../class/LessonItemBox";
 
 import Button from "../common/Button";
-import Input from "../common/Input";
 import Card from "../common/Card";
 
 const FlexWrap = styled.div`
@@ -61,17 +60,14 @@ const MypageInfo = ({ userNo }) => {
     const { urlId } = useParams();
     const nowId = useSelector((state) => state.user.userId);
     const userType = useSelector((state) => state.user.userType);
-    // const userNo = useSelector((state) => state.user.userType);
     const validCanModify = urlId === nowId; // 수정 가능한지 체크
 
     useEffect(() => {
         tokenHttp.get(`${url}/mypage/${userNo}`).then((res) => {
-            // resultCode로 확인 수정@@@ 0이 정상
             setMypageInfo(res.data.result);
-            console.log(res.data);
         });
         axios.get(`${url}/s3/profile-load/${userNo}`).then((res) => {
-            if (res.data.resultCode === -1 ) {
+            if (res.data.resultCode === -1) {
                 setProfileImg(false);
             } else {
                 setProfileImg(res.data);
@@ -97,7 +93,6 @@ const MypageInfo = ({ userNo }) => {
         tokenHttp.put(`${url}/mypage/modify/${userNo}`, mypageInfo, {
             headers: { "Content-Type": "application/json" },
         });
-        // 마이페이지로 리다이렉트해야할듯.
         setIsEditing(false);
     };
 
@@ -117,11 +112,7 @@ const MypageInfo = ({ userNo }) => {
                 <ImgInfoWrap>
                     {/* 강사 이미지 */}
                     <StyledThumbnail
-                        src={
-                            profileImg
-                                ? profileImg
-                                : "/assets/bannerimg.jpg"
-                        }
+                        src={profileImg ? profileImg : "/assets/blank-profile.png"}
                         alt="teacher-img"
                         crossOrigin="anonymous"
                     />
@@ -171,12 +162,11 @@ const MypageInfo = ({ userNo }) => {
             ) : (
                 <form onSubmit={(e) => e.preventDefault()}>
                     <ImgInfoWrap>
-                        {/* 이미지 변경 가능하도록 수정@@@ */}
                         <StyledThumbnail
                             src={
                                 profileImg
                                     ? profileImg
-                                    : "/assets/bannerimg.jpg"
+                                    : "/assets/blank-profile.png"
                             }
                             alt="teacher-img"
                             crossOrigin="anonymous"

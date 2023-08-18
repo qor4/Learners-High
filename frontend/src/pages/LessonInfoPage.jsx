@@ -66,9 +66,7 @@ const LessonInfoPage = (props) => {
         if (!pathByEduStudentLessonPage) {
             axios
                 .put(`${url}/lesson/viewcount?lessonNo=${lessonNo}`)
-                .then((response) => {
-                    console.log("viewCount +1 성공!");
-                });
+                .then((response) => {});
         }
     }, []);
 
@@ -108,8 +106,6 @@ const LessonInfoPage = (props) => {
 
     // 수강신청 버튼 클릭했을 때
     const handleApplyChange = () => {
-        console.log("수강신청 버튼을 클릭했습니다.");
-        console.log(data);
         setShowPayLessonModal(true);
         document.body.classList.add("overflow-hidden");
     };
@@ -134,8 +130,6 @@ const LessonInfoPage = (props) => {
 
         return `${ampm} ${formattedHours}시 ${formattedMinutes}분`;
     };
-
-    console.log(lessonInfoDataSet);
 
     return (
         <div>
