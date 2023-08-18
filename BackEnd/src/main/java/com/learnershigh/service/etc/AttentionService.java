@@ -343,37 +343,25 @@ public class AttentionService {
     // 한 학생이 들은 모든 강의중 가장 집중도가 높은 수업이름 출력
     public String oneStudentMaxlessonAvg(Long userNo) {
 
-        System.out.println("userNo");
 
-        double max = Integer.MIN_VALUE;
+        double max = 0.0;
 
         String rs = "";
 
-        System.out.println("되니?");
         List<StudentLessonList> list = studentLessonListRepository.findAllByUserNo(userRepository.findByUserNo(userNo));
-        System.out.println(list.toString());
-
         for (StudentLessonList sll : list) {
 
             List<LessonRound> lrlist = lessonRoundRepository.findAllByLessonNo(sll.getLessonNo());
 
-            System.out.println("lrlist :" + lrlist.toString());
-
-            Long result = 0L;
-
             double sum = 0.0;
 
             for (LessonRound lr : lrlist) {
-
                 sum += oneStudentOneRoundAttentionAvg(userNo, lr.getLessonRoundNo()); // 들어갈 변수값들 넣어야함.
-
             }
             if (sum > max) {
                 max = sum;
-                result = sll.getLessonNo().getLessonNo();
+                rs = sll.getLessonNo().getLessonName();
             }
-
-            rs = lessonRepository.findByLessonNo(result).getLessonName();
         }
 
         return rs;
