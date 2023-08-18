@@ -82,7 +82,6 @@ const GuestMain = () => {
     // 인기 강의 데이터 get 요청
     useEffect(() => {
         axios.get(`${url}/lesson/list/main`).then((response) => {
-            console.log(response.data.result);
             setPopularLessonDataSet(response.data.result);
         });
     }, []);
@@ -159,9 +158,12 @@ const GuestMain = () => {
                                 강사에게는 이런 점이 좋습니다.
                             </StyledTitleText>
                             <StyledExplainText align="right">
-                                수업의 흐름을 끊지 않고 주의력이 흐트러진 학생에게 알림을 보낼 수 있습니다.
-                                강사님의 원활한 수업 진행을 위해 학생별 출석 데이터를 관리할 수 있게 해드립니다.
-                                수업에 대한 학생들의 집중도를 제공하여, 더 나은 강의를 제공할 수 있도록 조력하였습니다.
+                                수업의 흐름을 끊지 않고 주의력이 흐트러진
+                                학생에게 알림을 보낼 수 있습니다. 강사님의
+                                원활한 수업 진행을 위해 학생별 출석 데이터를
+                                관리할 수 있게 해드립니다. 수업에 대한 학생들의
+                                집중도를 제공하여, 더 나은 강의를 제공할 수
+                                있도록 조력하였습니다.
                             </StyledExplainText>
                         </TitleExplainWrap>
                     </FlexWrap>
@@ -172,9 +174,12 @@ const GuestMain = () => {
                                 학생에게는 이런 점이 좋습니다.
                             </StyledTitleText>
                             <StyledExplainText align="left">
-                                본인이 가장 열심히 들었던 과목을 보여드려, 당신이 흥미를 가지는 강의를 알려드립니다.
-                                같은 강의를 듣는 학생들과 비교해, 나의 집중도를 보여드립니다.
-                                이를 통해 당신과 맞는 강사는 누구인지, 더 흥미를 끈 과목은 무엇인지 알려드리려고 합니다.
+                                본인이 가장 열심히 들었던 과목을 보여드려,
+                                당신이 흥미를 가지는 강의를 알려드립니다. 같은
+                                강의를 듣는 학생들과 비교해, 나의 집중도를
+                                보여드립니다. 이를 통해 당신과 맞는 강사는
+                                누구인지, 더 흥미를 끈 과목은 무엇인지
+                                알려드리려고 합니다.
                             </StyledExplainText>
                         </TitleExplainWrap>
                         <StyledThumbnail

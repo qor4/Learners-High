@@ -16,7 +16,6 @@ const LessonItemBoxList = ({ lessonList }) => {
     const userType = useSelector((state) => state.user.userType);
     const userNo = useSelector((state) => state.user.userNo);
 
-    console.log(lessonList);
     return (
         <>
             {lessonList.map((lessonInfo, index) => (

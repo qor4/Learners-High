@@ -3,16 +3,11 @@ import styled from "styled-components";
 
 import Card from "../common/Card";
 
-const StyledImg = styled.img`
-    position: absolute;
-    bottom: 0;
-`;
-
 const StyledDiv = styled.div`
     text-align: center;
     font-size: 1.75rem;
     font-weight: bold;
-`
+`;
 
 const Title = (props) => {
     return (

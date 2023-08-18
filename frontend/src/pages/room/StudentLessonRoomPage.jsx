@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
 
 // openvidu
@@ -14,11 +13,9 @@ import { useCallback } from "react";
 // 강의룸 틀
 import styled from "styled-components";
 import { Typography } from "@mui/material";
-import { HiMicrophone, HiVideoCamera } from "react-icons/hi";
 import {
     ControlButtonWrap,
     LessonControlBar,
-    RoomFrameWrap,
     ScreenShare,
     StudentScreen,
 } from "./TeacherRoomFrame";
@@ -29,12 +26,8 @@ import {
     PiVideoCameraSlashBold, // 카메라 off
     PiMicrophoneBold, //마이크 On
     PiMicrophoneSlashBold, // 마이크 Off
-    PiMonitorBold, // 빈 모니터
-    PiMonitorPlayBold, // 재생버튼 있는 모니터
 } from "react-icons/pi";
 
-import JSConfetti from "js-confetti";
-import { conteffi } from "../../App";
 // 수업 컨트롤 바, 화면 공유 Wrap
 const ControlBarShareWrap = styled.div`
     width: 75%;
@@ -73,10 +66,8 @@ const StudentLessonRoomPage = ({
     // 강사 No.
     const userNo = useSelector((state) => state.user.userNo);
     const userId = useSelector((state) => state.user.userId);
-    const userType = useSelector((state) => state.user.userType);
     const userName = useSelector((state) => state.user.userName);
     const { lessonNo, lessonRoundNo } = useParams();
-    const navigate = useNavigate();
 
     // session, state 선언
     const [mySessionId, setMySessionId] = useState(undefined);
@@ -106,7 +97,6 @@ const StudentLessonRoomPage = ({
 
     // session이 바뀌면 하는 것
     const leaveSession = useCallback(async () => {
-        console.log(session);
         if (session) {
             await session.disconnect();
         }
@@ -135,16 +125,12 @@ const StudentLessonRoomPage = ({
         let mySession = newOV.initSession();
 
         mySession.on("sessionDisconnected", (event) => {
-            console.log("sessionDisconnected 종료됨");
             leaveSession();
         });
-        mySession.on("streamDestroyed", (event) => {
-            console.log("streamDestroyed 종료됨");
-        });
+        mySession.on("streamDestroyed", (event) => {});
 
         // Session 개체에서 추가된 subscriber를 subscribers 배열에 저장
         mySession.on("streamCreated", (event) => {
-            ///////////////// 여기서 선생 찾기
             if (
                 JSON.parse(JSON.parse(event.stream.connection.data).clientData)
                     .userNo === Number(teacherNo)
@@ -152,12 +138,10 @@ const StudentLessonRoomPage = ({
                 const subscriber = mySession.subscribe(event.stream, undefined);
                 setTeacher(subscriber);
             }
-            // console.log(JSON.parse(event.stream.streamManager.stream.connection.data).clientData, "님이 접속했습니다.");
         });
 
         // 서버 측에서 예기치 않은 비동기 오류가 발생할 때 Session 개체에 의해 트리거 되는 이벤트
         mySession.on("exception", async (exception) => {
-            console.warn(exception);
             if (exception.name === "ICE_CONNECTION_DISCONNECTED") {
                 setOV(null);
                 leaveSession();
@@ -230,21 +214,12 @@ const StudentLessonRoomPage = ({
         }
     }, [videoEnabled, audioEnabled, publisher]);
 
-    const showConteffi = () => {
-        conteffi.addConfetti({
-            emojis: ["🍔", "🍕", "🍺"],
-            emojiSize: 100,
-            confettiNumber: 30,
-          });
-        };
-
     return (
         <>
             {/* 수업 컨트롤 바 / 화면 공유가 담길 div 박스 */}
             <ControlBarShareWrap>
                 {/* 학생 수업 관리 바 */}
                 <LessonControlBar>
-                    {/* 수업 타이틀 @@@ */}
                     <Typography fontWeight={"bold"} color={"white"}>
                         수업 타이틀 : {lessonName}
                     </Typography>

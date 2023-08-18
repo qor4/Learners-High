@@ -1,7 +1,6 @@
 // 강의 상태 (진행중, 종료 등), 회차, 수업 과목 이름 등을 넣어줄 UI 컴포넌트
 import styled, { css } from "styled-components";
 
-// 박스 사이즈 => 수정@@@
 const SIZES = {
     md: css`
         height: 28px;
@@ -11,16 +10,12 @@ const SIZES = {
         height: 40px;
         line-height: 32px;
 
-        /* display: flex;
-        justify-content: center;
-        align-items: center; */
     `,
 };
 
 const StyledBox = styled.span`
     display: inline-block;
     width: auto;
-    /* background-color: #e1e6f9; */
     border-radius: 12px;
     box-sizing: border-box;
     padding: 4px 12px;

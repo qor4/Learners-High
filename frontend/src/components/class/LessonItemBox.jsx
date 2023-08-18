@@ -99,7 +99,6 @@ const LessonItemBox = ({ lessonInfo }) => {
             tokenHttp
                 .get(`${url}/teacher/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
-                    console.log(response.data);
                     setAttendRate(response.data.result.attendRate);
                 });
         } else if (userType === "S") {
@@ -107,7 +106,6 @@ const LessonItemBox = ({ lessonInfo }) => {
             tokenHttp
                 .get(`${url}/student/${userNo}/lesson/${lessonNo}/rate`)
                 .then((response) => {
-                    console.log(response.data)
                     setAttendRate(response.data.result.attendRate);
                 });
         }

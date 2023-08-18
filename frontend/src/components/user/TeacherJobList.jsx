@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import tokenHttp, { url } from "../../api/APIPath";
 import { Grid } from "@material-ui/core";
 
@@ -42,11 +41,9 @@ const TeacherJobList = ({ userNo }) => {
 
     useEffect(() => {
         tokenHttp.get(`${url}/mypage/job/list/${userNo}`).then((res) => {
-            console.log(res.data.result);
             setTeacherJobList(res.data.result);
         });
     }, []);
-    console.log(teacherJobList);
 
     /** 경력 추가를 눌렀을 때 */
     const addJobInputItem = () => {
@@ -55,23 +52,10 @@ const TeacherJobList = ({ userNo }) => {
 
     /** 완료 버튼을 눌렀을 때 */
     const handleOnClickSubmitEnd = () => {
-        console.log("완료! + @@@ axios 추가해줘야됨")
         // const data = {
         //     companyName: companyName,
         // };
     };
-
-    // const onChange = (event, index) => {
-    //     if (index > jobInputList.length) return; // 예외처리
-
-    //     const { value, name } = event.currentTarget;
-
-    //     // 인풋 배열의 copy
-    //     const jobInputListCopy = JSON.parse(JSON.stringify(jobInputList));
-    //     jobInputListCopy[index][name] = value;
-    //     setJobInputList(jobInputListCopy);
-    //     console.log(jobInputList);
-    // };
 
     return (
         <>

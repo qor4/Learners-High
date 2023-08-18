@@ -4,12 +4,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import styled from "styled-components";
-import { HiMenu, HiOutlineX } from "react-icons/hi";
 
 import Modal from "./Modal";
 import UserLogin from "../auth/UserLogIn";
 import { UserLogOut } from "../auth/UserLogOut";
-
 
 // 강의 개설 확인 모달
 import ClassJoinCheckModal from "../class/ClassJoinCheckModal";
@@ -84,26 +82,23 @@ const Header = () => {
     const [controlLessonJoin, setControlLessonJoin] = useState(false);
     // 강의 개설할 때
     const goToLessonJoin = () => {
-        console.log("실행?");
         tokenHttp
             .get(`${url}/lesson/writing/${userNo}`)
             .then((res) => {
-                console.log(res, "수정여부 확인 결과값");
                 if (res.data.result.isWriting) {
                     setControlLessonJoin(true);
                     setLessonNo(res.data.result.lessonNo);
                     return;
                 }
-                navigate(`/lesson/join`, {state: {isInterLoading:true}});
+                navigate(`/lesson/join`, { state: { isInterLoading: true } });
             })
             .catch((err) => {
-                console.log(err, "에러내용");
-                navigate(`/lesson/join`, {state: {isInterLoading:true}});
+                console.log(err);
+                navigate(`/lesson/join`, { state: { isInterLoading: true } });
             });
     };
     const initControllLessonJoin = () => {
         setControlLessonJoin(false);
-        // setLessonNo("")
     };
 
     return (
@@ -156,7 +151,6 @@ const Header = () => {
                                     수업 관리
                                 </NavStyle>
                                 <NavStyle onClick={goToLessonJoin}>
-                                {/* <NavStyle to={`/lesson/join`}> */}
                                     <span>강의 개설</span>
                                 </NavStyle>
                             </HeaderCommonNav>

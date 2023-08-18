@@ -34,8 +34,6 @@ const StyledSmallText = styled.div`
 
 const UserLogIn = (props) => {
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user);
-    console.log(user);
     const [logInForm, setLogInForm] = useState({
         userId: "",
         userPassword: "",
@@ -50,7 +48,6 @@ const UserLogIn = (props) => {
     };
 
     const userLogIn = () => {
-        console.log(logInForm, "로그인");
         axios
             .post(`${url}/user/login`, logInForm, {
                 headers: { "Content-Type": "application/json" },
@@ -58,7 +55,6 @@ const UserLogIn = (props) => {
             .then((res) => {
                 if (res.data.resultCode === 0) {
                     // 로그인 성공
-                    alert("로그인!"); // 여기 꼭 확인하기!!
                     localStorage.setItem(
                         "accessToken",
                         res.data.result.token.accessToken

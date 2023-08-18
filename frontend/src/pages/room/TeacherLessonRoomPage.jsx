@@ -11,16 +11,11 @@ import UserVideoComponent from "../../components/stream/UserVideoComponent";
 import ChatComponent from "../../components/chat/ChatComponent";
 
 // 강사 강의룸 스타일링
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Typography } from "@mui/material";
 import "./TeacherLessonRoomPage.css";
 
-import {
-    HiMicrophone,
-    HiVideoCamera,
-    HiDesktopComputer,
-    HiOutlineBell,
-} from "react-icons/hi";
+import { HiOutlineBell } from "react-icons/hi";
 
 import {
     PiVideoCameraBold, // 카메라 on
@@ -178,10 +173,28 @@ const StateButton = styled(Button)`
     border-radius: 0.75rem;
     border: 1px solid #000;
 
-    :hover {
+    /* :hover {
         cursor: pointer;
         background-color: #e1e6f9;
+    } */
+
+    /* 버튼이 비활성화되어 있을 때 */
+    &:disabled {
+        /* 비활성화된 스타일 */
+        background-color: gray;
+        color: white;
+        /* 여기에 추가 스타일을 설정할 수 있습니다. */
     }
+
+    /* 버튼이 활성화되어 있을 때 */
+    ${({ isActive }) =>
+        isActive &&
+        css`
+            /* 활성화된 스타일 */
+            background-color: white;
+            color: red;
+            /* 여기에 추가 스타일을 설정할 수 있습니다. */
+        `}
 `;
 
 // 채팅 컴포넌트 Wrap
@@ -303,11 +316,7 @@ const TeacherLessonRoomPage = () => {
                 .delete(
                     `${url}/lessonroom/teacher/${lessonNo}/${lessonRoundNo}/${userNo}`
                 )
-                .then((res) => {
-                    if (res.data.resultCode !== 200) {
-                        console.log(res.data.resultMsg);
-                    }
-                })
+                .then((res) => {})
                 .catch((err) => {
                     console.error(err);
                 });
@@ -354,18 +363,9 @@ const TeacherLessonRoomPage = () => {
                     },
                 ].slice()
             );
-            // 새 구독자에 대한 상태 업데이트
-            console.log("사용자가 입장하였습니다.");
-            // console.log(JSON.parse(event.stream.streamManager.stream.connection.data.clientData), "님이 접속했습니다.");
         });
 
-        // Session 개체에서 제거된 관련 subsrciber를 subsribers 배열에서 제거
         mySession.on("streamDestroyed", (event) => {
-            // setSubscribers((preSubscribers) =>
-            //     preSubscribers.filter(
-            //         (subscriber) => subscriber !== event.stream.streamManager
-            //     )
-            // );
             setStudentList((prev) =>
                 prev.filter(
                     (student) =>
@@ -375,9 +375,6 @@ const TeacherLessonRoomPage = () => {
                         ).userId
                 )
             );
-
-            console.log("사용자가 나갔습니다.");
-            // console.log(JSON.parse(event.stream.connection.data.clientData), "님이 접속을 종료했습니다.")
         });
 
         // 서버 측에서 예기치 않은 비동기 오류가 발생할 때 Session 개체에 의해 트리거 되는 이벤트
@@ -455,10 +452,8 @@ const TeacherLessonRoomPage = () => {
     const toggleShare = async () => {
         try {
             if (shareEnabled) {
-                console.log("공유 시작");
                 await screenShare();
             } else {
-                console.log("공유 종료");
                 await showCam();
             }
         } catch (error) {
@@ -468,7 +463,7 @@ const TeacherLessonRoomPage = () => {
         }
     };
 
-    const screenShare =  async () => {
+    const screenShare = async () => {
         const videoSource =
             navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
         const sharePublisher = await OV.initPublisher(
@@ -498,14 +493,11 @@ const TeacherLessonRoomPage = () => {
                     );
                 }
             }
-
         );
 
-
-        
         sharePublisher.once("accessDenied", (event) => {
             console.warn("ScreenShare: Access Denied");
-            if(event.name == 'SCREEN_CAPTURE_DENIED'){
+            if (event.name === "SCREEN_CAPTURE_DENIED") {
                 showCam();
             }
         });
@@ -518,7 +510,7 @@ const TeacherLessonRoomPage = () => {
         sharePublisher.once("streamPlaying", async () => {
             setShareEnabled(true);
         });
-        
+
         await session.unpublish(publisher);
         setPublisher(sharePublisher);
         await session.publish(sharePublisher);
@@ -543,7 +535,7 @@ const TeacherLessonRoomPage = () => {
         setMainStreamManager(newPublisher);
 
         setShareEnabled(false);
-    },[audioEnabled,videoEnabled,OV,session,publisher]);
+    }, [audioEnabled, videoEnabled, OV, session, publisher]);
 
     return (
         <>
@@ -556,7 +548,6 @@ const TeacherLessonRoomPage = () => {
                             {/* {subscribers.map((sub, i) => ( */}
                             {studentList.map((sub, i) => (
                                 <>
-                                    {console.log(studentList[i], "####")}
                                     <StudentScreen key={`${i}-subscriber1`}>
                                         <StudentName>
                                             {sub.studentName}
@@ -640,11 +631,9 @@ const TeacherLessonRoomPage = () => {
                                     <div>{sub.studentName}</div>
                                     <StateFlex>
                                         {/* 여기에 집중 여부에 따라 바꿀 것. */}
-                                        {console.log(studentList[idx], "####")}
                                         {studentList[idx].status === 0 &&
                                             studentList[idx].isActive && (
                                                 <>
-                                                    {/* 이때 하나. */}
                                                     <div>
                                                         <span
                                                             style={{
@@ -671,7 +660,7 @@ const TeacherLessonRoomPage = () => {
                                                     </div>
                                                 </>
                                             )}
-                                        {studentList[idx].status === 1 &&  ( //여긴 무조건 무조건 주의임
+                                        {studentList[idx].status === 1 && ( //여긴 무조건 무조건 주의임
                                             <>
                                                 {/* 이때 하나. */}
                                                 <div>
@@ -688,9 +677,16 @@ const TeacherLessonRoomPage = () => {
                                         {/* 여기여기 */}
 
                                         <StateButton
-                                            disabled={(studentList[idx].status === 1 && !studentList[idx].isActive)||
-                                                (studentList[idx].status===0 && !studentList[idx].isActive)}
-                                            style={{padding: 0} }
+                                            disabled={
+                                                (studentList[idx].status ===
+                                                    1 &&
+                                                    !studentList[idx]
+                                                        .isActive) ||
+                                                (studentList[idx].status ===
+                                                    0 &&
+                                                    !studentList[idx].isActive)
+                                            }
+                                            style={{ padding: 0 }}
                                             onClick={() => {
                                                 tokenHttp
                                                     .post(
@@ -711,9 +707,6 @@ const TeacherLessonRoomPage = () => {
                                                         }
                                                     )
                                                     .then((res) => {
-                                                        console.log(
-                                                            "send 성공"
-                                                        );
                                                         const studentListCopy =
                                                             studentList.map(
                                                                 (item, i) => {

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import tokenHttp, { url } from "../../api/APIPath";
@@ -13,11 +12,9 @@ const TeacherEduItem = ({ item }) => {
     const [eduItem, setEduItem] = useState(item);
     const [isEditing, setIsEditing] = useState(false);
 
-    const userNo = useSelector((state) => state.user.userNo);
-
     const { urlId } = useParams();
     const userId = useSelector((state) => state.user.userId);
-    const validCanModify = urlId === userId; // 수정 가능한지 체크
+    const validCanModify = urlId === userId;
 
     const {
         eduCareerNo,

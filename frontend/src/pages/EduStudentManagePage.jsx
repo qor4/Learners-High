@@ -1,7 +1,6 @@
 // 학생 수업 관리 목록 페이지
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import tokenHttp, { url } from "../api/APIPath";
 
 import { styled } from "styled-components";
@@ -36,6 +35,21 @@ export const StyledButtonWrap = styled.div`
     }
 `;
 
+const StyledChartTemp = styled.div`
+    width: 45%;
+`;
+
+const InfoRateWrapTemp = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 45%;
+
+    & > *:not(:first-child) {
+        margin-top: 2rem;
+    }
+`;
 const EduStudentManagePage = () => {
     const userNo = useSelector((state) => state.user.userNo);
     const userName = useSelector((state) => state.user.userName);
@@ -87,39 +101,38 @@ const EduStudentManagePage = () => {
             });
     }, []);
 
-
-
     return (
         <>
             {/* 분석 내용이 들어갈 공간입니다.@@@ */}
             <StyledCsatInfoWrap>
                 <Container maxWidth="md">
                     <ImgInfoWrap>
-                        {/* 분석 차트가 들어갈 공간입니다!@@@ */}
-                        <StyledChart>
-                            <ApexChart
-                                width={350}
-                                chartType="pie"
-                                type="typepie"
-                                seriesData={lessonTypeCountDataSet}
-                            />
-                        </StyledChart>
-                        <InfoRateWrap>
+                        <InfoRateWrapTemp>
                             <StyledTitleText>
                                 {userName}님의 수강 목록 분석
                             </StyledTitleText>
-                            {highAttentionLesson !== "데이터 없음" ? (
+                            {/* {highAttentionLesson !== "데이터 없음" ? (
                                 <Card>
                                     {userName}님의 가장 집중도가 높은 수업은{" "}
                                     <strong>{highAttentionLesson}</strong>
                                     입니다.
                                 </Card>
                             ) : (
-                                <NoneDataText style={{ marginLeft: 0 }}>
-                                    데이터 없음
-                                </NoneDataText>
-                            )}
-                        </InfoRateWrap>
+                                // <NoneDataText style={{ marginLeft: 0 }}>
+                                //     데이터 없음
+                                // </NoneDataText>
+                                null
+                            )} */}
+                        </InfoRateWrapTemp>
+                        {/* 분석 차트가 들어갈 공간입니다!@@@ */}
+                        <StyledChartTemp>
+                            <ApexChart
+                                width={350}
+                                chartType="pie"
+                                type="typepie"
+                                seriesData={lessonTypeCountDataSet}
+                            />
+                        </StyledChartTemp>
                     </ImgInfoWrap>
                 </Container>
             </StyledCsatInfoWrap>

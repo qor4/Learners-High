@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import tokenHttp, { url } from "../../api/APIPath";
 
 import { HiOutlinePlusCircle } from "react-icons/hi";
@@ -9,15 +8,12 @@ import LessonStatusBox from "../common/LessonStatusBox";
 import Card from "../common/Card";
 import { FlexListWrap, StyledListAdd } from "./TeacherJobList";
 
-
-
 const TeacherEduList = ({ userNo }) => {
     const [teacherEduList, setTeacherEduList] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         tokenHttp.get(`${url}/mypage/edu/list/${userNo}`).then((res) => {
-            console.log(res.data.result);
             setTeacherEduList(res.data.result);
         });
     }, []);
@@ -29,7 +25,6 @@ const TeacherEduList = ({ userNo }) => {
 
     /** 완료 버튼을 눌렀을 때 */
     const handleOnClickSubmitEnd = () => {
-        console.log("완료! + @@@ axios 추가해줘야됨")
         // const data = {
         //     companyName: companyName,
         // };

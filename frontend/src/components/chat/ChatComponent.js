@@ -1,61 +1,60 @@
-import React, {useState, useRef} from 'react';
-import './ChatComponent.css';
+import React, { useState, useRef } from "react";
+import "./ChatComponent.css";
 import { useEffect } from "react";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
 
-
-
-const ChatComponent = (props) => { 
-    // const chatState = {
-    //     messageList : [],
-    //     message:""
-    // }
-    const [messageList, setMessageList] = useState([])
-    const [chatMessage, setChatMessage] = useState("")
+const ChatComponent = (props) => {
+    const [messageList, setMessageList] = useState([]);
+    const [chatMessage, setChatMessage] = useState("");
     // user를 받기
     const userName = props.userName;
     const streamManager = props.streamManager;
     const connectionId = props.connectionId;
-    console.log(connectionId, "connectionId")
-   
-    // const chatScroll = React.createRef(); // 규돈 버전
-    const chatScroll = useRef()
+
+    const chatScroll = useRef();
 
     useEffect(() => {
-        streamManager.stream.session.on('signal:chat', (event) => {
+        streamManager.stream.session.on("signal:chat", (event) => {
             const data = JSON.parse(event.data);
-            let tmpMessageList = [...messageList, { connectionId: event.from.connectionId, nickname: data.nickname, message: data.message } ];
+            let tmpMessageList = [
+                ...messageList,
+                {
+                    connectionId: event.from.connectionId,
+                    nickname: data.nickname,
+                    message: data.message,
+                },
+            ];
             setTimeout(() => {
-                // 사용자 그림 
+                // 사용자 그림
             }, 50);
-            setMessageList([...tmpMessageList])
+            setMessageList([...tmpMessageList]);
             scrollToBottom();
         });
-        return () => {
-            console.log('render 종료')
-         };
     }, [messageList]);
 
     function handlePressKey(event) {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
             sendMessage();
         }
     }
 
     function sendMessage() {
-        console.log("send : ",chatMessage);
         if (userName && chatMessage) {
-            let message = chatMessage.replace(/ +(?= )/g, '');
-            if (message !== '' && message !== ' ') {
-                const data = { message: message, nickname: userName, streamId: streamManager.stream.streamId };
+            let message = chatMessage.replace(/ +(?= )/g, "");
+            if (message !== "" && message !== " ") {
+                const data = {
+                    message: message,
+                    nickname: userName,
+                    streamId: streamManager.stream.streamId,
+                };
                 streamManager.stream.session.signal({
                     data: JSON.stringify(data),
-                    type: 'chat',
+                    type: "chat",
                 });
-                scrollToBottom()
+                scrollToBottom();
             }
         }
-        setChatMessage('');
+        setChatMessage("");
     }
 
     function scrollToBottom() {
@@ -63,7 +62,7 @@ const ChatComponent = (props) => {
             try {
                 chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
             } catch (err) {
-                console.log('scroll error')
+                console.log("scroll error");
             }
         }, 20);
     }
@@ -77,7 +76,10 @@ const ChatComponent = (props) => {
                             key={i}
                             id="remoteUsers"
                             className={
-                                'message' + (data.connectionId !== connectionId ? ' left' : ' right')
+                                "message" +
+                                (data.connectionId !== connectionId
+                                    ? " left"
+                                    : " right")
                             }
                         >
                             {/* 유저 이미지 */}
@@ -94,16 +96,18 @@ const ChatComponent = (props) => {
                         </div>
                     ))}
                 </div>
-             <div id="messageInput">
+                <div id="messageInput">
                     <input
                         placeholder="채팅 보내기"
                         id="chatInput"
                         value={chatMessage}
-                        onChange={(e)=>setChatMessage(e.currentTarget.value)}
+                        onChange={(e) => setChatMessage(e.currentTarget.value)}
                         onKeyDown={handlePressKey}
                     />
                     {/* 버튼 으로 대체  */}
-                    <div id="sendButton" onClick={sendMessage}><PiPaperPlaneTiltBold /></div>
+                    <div id="sendButton" onClick={sendMessage}>
+                        <PiPaperPlaneTiltBold />
+                    </div>
                     {/* <Tooltip title="Send message">
                         <Fab size="small" id="sendButton" onClick={sendMessage}>
                             <Send />
@@ -113,6 +117,6 @@ const ChatComponent = (props) => {
             </div>
         </div>
     );
-}
+};
 
 export default ChatComponent;

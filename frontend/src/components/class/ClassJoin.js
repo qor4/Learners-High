@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Container } from "@material-ui/core";
 
 import { url } from "../../api/APIPath";
@@ -13,13 +13,10 @@ import axios from "axios";
 
 import MenuCard from "../common/MenuCard";
 import Button from "../common/Button";
-import Input from "../common/Input";
 
 import tokenHttp from "../../api/APIPath";
-import Modal from "../common/Modal";
 import { ImgWrap, StyledImg, StyledImgInput } from "../auth/UserJoin";
 import { styled, css } from "styled-components";
-import { StyledInput } from "../auth/UserJoinTeacherEdu";
 import { FiftyWrap } from "../user/MypageInfo";
 
 /** display:flex 줄 wrap */
@@ -240,8 +237,6 @@ const ClassJoin = ({
         }
     }, []);
 
-    // console.log(lessonNo) @@@@@@@
-
     const nextPage = () => {
         const data = {
             lessonInfo: lessonInfo,
@@ -256,7 +251,6 @@ const ClassJoin = ({
             userNo: userNo,
             lessonNo: lessonNo,
         };
-        console.log(data, "이게 데이터임");
         changeChildPage(data);
         // navigate("/lesson/round/join"); // 언급 필요. lessonRoundJoin url 생성 // 갈아끼울건지 - props 등
     };
@@ -271,7 +265,6 @@ const ClassJoin = ({
     const [lessonTypeList, setLessonTypeList] = useState([]);
     useEffect(() => {
         axios.get(`${url}/lesson/type`).then((res) => {
-            // console.log(res.data.list[0], "들어왔니") // 들어옴
             setLessonTypeList(res.data.result);
         });
     }, []);
@@ -303,12 +296,8 @@ const ClassJoin = ({
         setLessonTypeName(rlt.lessonTypeName);
         setLessonTypeNo(rlt.lessonTypeNo);
         setSearchClicked(false);
-        // console.log(lessonTypeName)
-        console.log(rlt, "이벤트"); // 이슈 해결! () => 함수(값)
     };
 
-    // 썸네일 업로드를 했을 때 (파일 선택을 했을 때) => 이후 수정@@@
-    // 썸네일 이미지 넣는 URL -> 문제 1순위
     const [thumbnailURL, setThumbnailURL] = useState("/assets/all-banner1.png");
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -369,7 +358,6 @@ const ClassJoin = ({
             maxStudent: maxStudent,
             userNo: userNo, // 임시
         };
-        console.log(data, "데이터");
         tokenHttp
             .post(`${url}/lesson/join`, data, {
                 headers: { "Content-Type": "application/json" },
@@ -393,7 +381,7 @@ const ClassJoin = ({
                                 },
                             }
                         )
-                        .then((res) => console.log(res))
+                        .then((res) => {})
                         .catch((err) => console.log(err));
                 }
                 return lessonNo;
@@ -411,7 +399,6 @@ const ClassJoin = ({
                         { headers: { "Content-Type": "application/json" } }
                     )
                     .then((res) => {
-                        console.log(res, "강의세부회차 성공");
                         const lessonRoundNoDataSet = res.data.result;
                         for (
                             let i = 0;
@@ -422,16 +409,8 @@ const ClassJoin = ({
                                 ParentLessonRoundDataSet[i]
                                     .lessonRoundFileOriginName
                             ) {
-                                console.log(
-                                    lessonRoundNoDataSet[i],
-                                    "회차정보"
-                                );
                                 const formData = new FormData();
-                                console.log(
-                                    ParentLessonRoundDataSet[i]
-                                        .lessonRoundFileName,
-                                    "파일이니?"
-                                );
+
                                 formData.append(
                                     "multipartFile",
                                     ParentLessonRoundDataSet[i]
@@ -453,16 +432,14 @@ const ClassJoin = ({
                                             },
                                         }
                                     )
-                                    .then((res) =>
-                                        console.log(res, "학습자료 전송 성공")
-                                    )
+                                    .then((res) => {})
                                     .catch((err) =>
                                         console.log(err, "학습자료 전송 실패")
                                     );
                             }
                         }
                     });
-                    alert("임시저장 성공")
+                alert("임시저장 성공");
             })
             .catch((err) => {
                 alert("임시저장 실패");
