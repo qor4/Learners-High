@@ -52,15 +52,20 @@
 
 
 
-## 실시간 퀴즈
-![ezgif.com-crop__6_](/uploads/ab502756b3186bcb97a14581c0a6c811/ezgif.com-crop__6_.gif)![ezgif.com-crop__7_](/uploads/d6adb725f5a8adf3562ffe8e069eff29/ezgif.com-crop__7_.gif)![ezgif.com-crop__8_](/uploads/2c5085bdb377a7fc5b70f87566a42851/ezgif.com-crop__8_.gif)
- 
+## 📕 메인 화면
+<img src="https://github.com/handaldog/Learners-High/assets/96431408/32f49336-67ae-4a5c-921d-916ea4c20090" width="300" height="400">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/97580f8b-b870-48f7-a0f8-7b275706c71d" width="300" height="400">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/97580f8b-b870-48f7-a0f8-7b275706c71d" width="300" height="400">&nbsp;
 
+## 🎭 학생 페이지
+<img src="https://github.com/handaldog/Learners-High/assets/96431408/f1fdd112-b887-42b9-9c4b-92ff30945c51" width="300" height="400">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/07bb9ebc-1973-42a2-80d0-60624abcd7d5" width="300" height="400">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/bf8cd46e-3c2c-48a5-924f-0e1e14a04821" width="300" height="400">&nbsp;
 
-## 문제 은행
-   ![ezgif.com-crop__3_](/uploads/68b674d94a18afdcf64859cb9d4dd765/ezgif.com-crop__3_.gif)![ezgif.com-crop__4_](/uploads/1436a18e4a2947ea6859a02e4e31305d/ezgif.com-crop__4_.gif)![ezgif.com-crop__5_](/uploads/98edb74f349bace53bd05903dad7c20f/ezgif.com-crop__5_.gif)
-## 그룹 퀴즈
-![ezgif.com-crop__13_](/uploads/dd7d2f0f6eab7c3b69e94961a88c9f23/ezgif.com-crop__13_.gif)![ezgif.com-crop__11_](/uploads/2137c704956c99829067602a524096aa/ezgif.com-crop__11_.gif)![ezgif.com-crop__12_](/uploads/55356bd5148472e838d343bb19363c69/ezgif.com-crop__12_.gif)
+## 👩‍🏫 강사 페이지
+<img src="https://github.com/handaldog/Learners-High/assets/96431408/ebcdc605-7985-4c25-a7f9-7493776da715" width="300" height="400">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/70e06fe9-40e6-40b9-90d4-dc507fdb7f2a" width="300" height="400">&nbsp;
+
+## 🙋‍♀️ 선생님 강의 화면
+<img src="https://github.com/handaldog/Learners-High/assets/96431408/641dd9b4-5e2f-4162-b0a0-ec823875e1cf" width="500" height="300">&nbsp;
+
+## 👨‍💻 학생 강의 화면
+<img src="https://github.com/handaldog/Learners-High/assets/96431408/cdad51e5-9a42-495b-8f85-517ecb03c0d4" width="500" height="300">&nbsp;<img src="https://github.com/handaldog/Learners-High/assets/96431408/98eab2d8-a59d-4c03-b497-93fe6d357bc5" width="500" height="300">&nbsp;
 
 
 
@@ -70,16 +75,14 @@
 **Backend**
 <br>
 
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/fastapi-009688?style=for-the-badge&logo=fastapi&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=mongoDB&logoColor=white">
 - Java : Oracle OpenJDK 11
 - SpringBoot 2.7.17
 - Spring Data Jpa 
-- queryDSL 5.0.0
-- Junit 4.13.1
 - Gradle 7.6.1
 - MySQL 서버 : latest
-- MongoDB 4.4.25
-- Redis 7.2.3
+- MongoDB latest
+
 
 <br>
 
