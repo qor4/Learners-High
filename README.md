@@ -113,11 +113,9 @@
 - Ubuntu 20.04 LTS
 - Jenkins 2.414.3
 - Docker Engine 24.0.5
+- Docker Compose : latest
 - Nginx 1.18.0
 - SSL
-- Grafana latest
-- Prometheus 2.44.0
-- netdata
 
 <br>
 
