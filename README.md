@@ -228,10 +228,10 @@
 
 # 👩‍💻 팀원 역할 분배
 
-| 신동민            | 선다영 | 유혜빈   | 임규돈  | 허다은  |
-| ----------------- | -------- | -------- | ------- | ------- | ------- |
-| <img src="/uploads/8ad736c6a77bab0a28256ad4e24c43f6/승빈.jpg" width="130" height="180">|<img src="/uploads/45a418b2a453fc594f9dbea09881a0e0/수빈.jpg" width="130" height="180">|<img src="/uploads/0f822718f1b8f228d7878bafcf47629b/수인.jpg" width="130" height="180">|<img src="/uploads/74c2481cd9cf916373a4a54d00956703/웃는_내사진.jpg" width="130" height="180">|<img src="/uploads/c2639bd2635da0f0a2823c3c789af50c/태영.jpg" width="130" height="180">|
-| Leader & Backend | Frontend | Frontend | Infra | Backend |
+|[신동민(팀장)]()|[선다영]()|[유혜빈]()|[임규돈](https://github.com/KyuDonLim)|[허다은](https://github.com/qor4)|
+| :-----: | :-----: | :-----: | :-----: | :-----: | 
+| <img src="https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:00893681-c4ab-405c-9fda-8815b1c1d5a5/02d64838-c0e2-435e-83e8-58c638ad9ee8/128" width="100" height="100"> | <img src="https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:521746e3-7a90-4d58-88df-62a48044f977/56caaec1-4b89-4d91-aac4-2bbf1f569a67/128" width="100" height="100"> | <img src="https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:203a1cfa-e050-4115-ab3c-d858478f99e6/1fd1e68c-00b7-4717-9207-c738c20d9c11/128" width="100" height="100"> | <img src="https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:8b84e6e5-afaa-4b78-acc6-c22365995f4c/f177b918-af1b-427a-b62c-5cc9e9af6efa/128" width="100" height="100"> | <img src="https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/623b26d594742a00683dcf29/37a31514-6e9d-4862-89bf-f0a5ecc1b39c/128" width="100" height="100"> |
+|**Frontend**|**Frontend**|**Backend**|**Infra**|**Backend**|
 
 <br>
 <br>
